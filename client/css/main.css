@@ -1,0 +1,922 @@
+@import url("https://fonts.googleapis.com/css?family=Lato|Open+Sans");
+/* line 1, ../sass/layout/_base.scss */
+body {
+  background-color: #e5eaed;
+  font-family: "Open Sans", sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+/* line 8, ../sass/layout/_base.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Lato", sans-serif;
+}
+
+/* line 2, ../sass/layout/_layout.scss */
+section.secondCtaImage {
+  height: 175px;
+  background: #f5a623;
+}
+/* line 5, ../sass/layout/_layout.scss */
+section.secondCtaImage p {
+  font-family: "Lato", sans-serif;
+  color: white;
+}
+/* line 11, ../sass/layout/_layout.scss */
+section.vprops2 .item {
+  height: 165px;
+  background: red;
+}
+
+/* line 18, ../sass/layout/_layout.scss */
+footer {
+  background: #e8ecea;
+  height: 30px;
+}
+
+/* line 23, ../sass/layout/_layout.scss */
+.legal {
+  padding: 10px;
+}
+
+/* line 26, ../sass/layout/_layout.scss */
+#menuRestaurantBar {
+  border-bottom: solid 1px mediumseagreen;
+}
+
+
+/*normal: 400, semi-bold: 600, bold: 700; light: 300*/
+/*COLORS:
+Green (original):     #74c046;
+Green darker:         #5d9d36;
+Green light:          #d8eecb; (slider center)
+Grey (original):      #566f7d;
+Grey light:           #e5eaed;
+Grey very light:      #f3f5f7;
+Grey dark:            #41545f; (menu button type);
+Grey dark:            #528a2f; (menu button border);
+*/
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+  /* line 18, ../sass/layout/_old.scss */
+  .yesPaddingX {
+    padding-left: 5em;
+    padding-right: 5em;
+  }
+
+  /* line 22, ../sass/layout/_old.scss */
+  .yesPaddingLeft {
+    padding-left: 5em;
+  }
+  .padding-60{
+    padding-left: 60px; 
+  }
+}
+/* Landscape tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+  /* line 29, ../sass/layout/_old.scss */
+  .yesPaddingX {
+    padding-left: 5em;
+    padding-right: 5em;
+  }
+
+  /* line 33, ../sass/layout/_old.scss */
+  .yesPaddingLeft {
+    padding-left: 5em;
+  }
+}
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+  /* line 40, ../sass/layout/_old.scss */
+  .yesPaddingX {
+    padding-left: 5em;
+    padding-right: 5em;
+  }
+
+  /* line 44, ../sass/layout/_old.scss */
+  .yesPaddingLeft {
+    padding-left: 3em;
+  }
+}
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+  /* line 51, ../sass/layout/_old.scss */
+  .yesPaddingX {
+    padding-left: 5em;
+    padding-right: 5em;
+  }
+
+  /* line 55, ../sass/layout/_old.scss */
+  .yesPaddingLeft {
+    padding-left: 3em;
+  }
+}
+/* Portrait phones and smaller */
+@media (max-width: 480px) {
+  /* line 62, ../sass/layout/_old.scss */
+  .yesPaddingX {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  /* line 66, ../sass/layout/_old.scss */
+  .yesPaddingLeft {
+    padding-left: 1em;
+  }
+}
+/* line 73, ../sass/layout/_old.scss */
+p {
+  font-weight: 400;
+  color: #000000;
+  line-height: 1.3em;
+}
+
+/* line 79, ../sass/layout/_old.scss */
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* line 84, ../sass/layout/_old.scss */
+.borderRight {
+  border-right: 2px solid;
+}
+
+/* line 88, ../sass/layout/_old.scss */
+.inBlock {
+  display: inline-block;
+}
+
+/* line 92, ../sass/layout/_old.scss */
+.noPadding {
+  padding: 0;
+}
+
+/* line 96, ../sass/layout/_old.scss */
+.half-m-t {
+  margin-top: 0.5em;
+}
+
+/* line 100, ../sass/layout/_old.scss */
+.yesPaddingTop {
+  padding-top: 1em;
+}
+
+/* line 104, ../sass/layout/_old.scss */
+.yesPaddingBottom {
+  padding-bottom: 1em;
+}
+
+/* line 110, ../sass/layout/_old.scss */
+.yesMarginY {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* line 115, ../sass/layout/_old.scss */
+.yesMarginY-2 {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+/* line 120, ../sass/layout/_old.scss */
+.yesMarginY-3 {
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
+/* line 125, ../sass/layout/_old.scss */
+.yesMarginRight {
+  margin-right: 1em;
+}
+
+/* line 129, ../sass/layout/_old.scss */
+.yesMarginX {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+/* line 134, ../sass/layout/_old.scss */
+.padToCenter {
+  padding-left: 23%;
+}
+
+/* line 138, ../sass/layout/_old.scss */
+.noPaddingX {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* line 143, ../sass/layout/_old.scss */
+.editForAddRestDet {
+  color: blue;
+}
+
+/* line 147, ../sass/layout/_old.scss */
+.alignCenter {
+  text-align: center;
+}
+
+/* line 151, ../sass/layout/_old.scss */
+/*a {
+  text-decoration: none;
+  display: block;
+  color: #111111;
+}
+
+/* line 157, ../sass/layout/_old.scss */
+/*
+
+a:hover {
+  text-decoration: none;
+  display: block;
+  color: #0c8da0;
+}*/
+
+/***** HEADER *****/
+/* line 165, ../sass/layout/_old.scss */
+.header-container {
+  border: none;
+  background-color: #fff;
+  padding: 0;
+  margin-top: 0;
+  padding-top: 1em;
+  box-sizing: border-box;
+  max-height: 15%;
+  width: 100%;
+}
+
+/*This is important.Do not erase*/
+/* line 177, ../sass/layout/_old.scss */
+.header-container .row {
+  margin-right: 0;
+}
+
+/*.header-container .banner {*/
+/*text-align: left;*/
+/*}*/
+/* line 185, ../sass/layout/_old.scss */
+.logo {
+  margin-left: 5%;
+  max-width: 100px;
+}
+
+/* line 190, ../sass/layout/_old.scss */
+.logo img {
+  width: 100%;
+}
+
+/* line 194, ../sass/layout/_old.scss */
+.banner {
+  padding-left: 0;
+  max-width: 210px;
+}
+
+/* line 199, ../sass/layout/_old.scss */
+.banner img {
+  width: 100%;
+}
+
+/* line 203, ../sass/layout/_old.scss */
+.slogan {
+  /*background-color: #74c046;*/
+  background-color: #6EC1C2;
+  font-size: 106%;
+  letter-spacing: -0.01em;
+  margin-top: 1em;
+  padding: 0.7% 0 0.7% 0;
+  text-align: center;
+  text-transform: uppercase;
+  word-spacing: 0.1em;
+}
+
+/* line 215, ../sass/layout/_old.scss */
+.slogan p {
+  color: #000;
+  font-weight: 600;
+  line-height: 1.8em;
+  margin: 0;
+}
+
+/***** PAGE CONTENT *****/
+/* line 225, ../sass/layout/_old.scss */
+.page-content {
+  background-color: #e5eaed;
+  padding-bottom: 6em;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* line 232, ../sass/layout/_old.scss */
+hr {
+  border-top-color: #cccccc;
+  margin: 0.5em 0;
+}
+
+/* line 237, ../sass/layout/_old.scss */
+h2,
+h3 {
+  color: #000;
+}
+
+/* line 242, ../sass/layout/_old.scss */
+h2 {
+  margin-top: 14px;
+  font-size: 26px;
+}
+
+/* line 247, ../sass/layout/_old.scss */
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* line 252, ../sass/layout/_old.scss */
+h4 {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* line 258, ../sass/layout/_old.scss */
+h6 {
+  margin-bottom: 0;
+}
+
+/* line 262, ../sass/layout/_old.scss */
+ul {
+  padding: 0 0 0 0;
+  list-style-type: none;
+}
+
+/* line 267, ../sass/layout/_old.scss */
+img {
+  width: 100%;
+  margin-top: .5em;
+}
+
+/***** VIEW SINGLE ITEM *****/
+/* line 275, ../sass/layout/_old.scss */
+.subBar {
+  background-color: #d8eecb;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  color: #41545f;
+  padding: 10px 15px;
+  text-transform: uppercase;
+}
+
+/* line 284, ../sass/layout/_old.scss */
+#bestHere li,
+#bestHere li a {
+  color: #5d9d36;
+}
+
+/* line 289, ../sass/layout/_old.scss */
+#viewTheDish {
+  margin-bottom: 3%;
+}
+
+/* line 293, ../sass/layout/_old.scss */
+#viewTheDish img.theDish {
+  max-width: 200px;
+  float: left;
+}
+
+/* line 298, ../sass/layout/_old.scss */
+#viewTheDish h4 {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+/* line 303, ../sass/layout/_old.scss */
+.yelpSmallStars {
+  height: 26px;
+  width: 100%;
+  background-image: url("../images/stars_map@2x.png");
+}
+
+/* line 309, ../sass/layout/_old.scss */
+.yelpSmallStars0 {
+  background-position: 522px 4222px;
+}
+
+/* line 313, ../sass/layout/_old.scss */
+.yelpSmallStars1half {
+  background-position: 522px 4176px;
+}
+
+/* line 317, ../sass/layout/_old.scss */
+.yelpSmallStars4 {
+  background-position: 522px 4056px;
+}
+
+/* line 321, ../sass/layout/_old.scss */
+img.yelpLogoImg {
+  margin: 0 0 8px 0;
+  width: auto;
+}
+
+/* line 326, ../sass/layout/_old.scss */
+#viewTopReview img {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+/* line 331, ../sass/layout/_old.scss */
+#viewTopReview h5 {
+  color: #5d9d36;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* line 337, ../sass/layout/_old.scss */
+#viewTopReview cite {
+  color: #5d9d36;
+  display: block;
+  line-height: 1.1em;
+  margin: 3px 0;
+}
+
+/* line 344, ../sass/layout/_old.scss */
+.reviewBody {
+  color: #566f7d;
+  font-size: 1.3rem;
+  line-height: 1.8rem;
+}
+
+/* line 350, ../sass/layout/_old.scss */
+.reviewImage {
+  padding-right: 0;
+}
+
+/* line 354, ../sass/layout/_old.scss */
+.reviewImageBest {
+  max-height: 100px;
+  overflow: hidden;
+}
+
+/* line 359, ../sass/layout/_old.scss */
+.reviewBox {
+  -webkit-box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 3px 3px 3px 0px rgba(0, 0, 0, 0.2);
+  border: 1px solid #566f7d;
+  color: #566f7d;
+  float: right;
+  margin-left: 6px;
+}
+
+/* line 369, ../sass/layout/_old.scss */
+.reviewBox td {
+  border-right: 1px solid #566f7d;
+  padding: 0 4px;
+}
+
+/* line 374, ../sass/layout/_old.scss */
+.bestHeader {
+  margin-bottom: 10px;
+}
+
+/* line 378, ../sass/layout/_old.scss */
+#hours {
+  margin-top: 0;
+}
+
+/***** map *****/
+/* line 385, ../sass/layout/_old.scss */
+#viewMap {
+  /*background-color: rgb(229,234,237);*/
+  height: 20rem;
+  margin: 2rem 0;
+}
+
+/***** FORM *****/
+/*overrides bootstrap neg margin*/
+/* line 397, ../sass/layout/_old.scss */
+.form-horizontal .form-group {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* line 402, ../sass/layout/_old.scss */
+.form-control,
+input {
+  background-color: #f3f5f7;
+  /*width: auto;*/
+}
+
+/*label,*/
+/* line 409, ../sass/layout/_old.scss */
+.dropdown-label {
+  margin-right: 8px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* line 415, ../sass/layout/_old.scss */
+.scrollable-menu {
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+  /*padding-left: 12px;*/
+}
+
+/* line 422, ../sass/layout/_old.scss */
+input[type="checkbox"] {
+  margin-right: 4px;
+}
+
+/* line 426, ../sass/layout/_old.scss */
+button.dropdown-label {
+  padding: 5px 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  border-radius: 3px;
+  width: 100%;
+}
+
+/* line 434, ../sass/layout/_old.scss */
+ul.dropdown-menu {
+  width: 100%;
+  /*padding-left: 45%;*/
+}
+
+/* line 439, ../sass/layout/_old.scss */
+.dropdown-header {
+  color: #5d9d36;
+  padding-left: 0px;
+  font-size: 100%;
+  font-weight: 600;
+}
+
+/* line 447, ../sass/layout/_old.scss */
+#distance-number,
+#distanceIng-number {
+  width: 50px;
+  padding: 4px 4px 4px 6px;
+  display: inline-block;
+  height: 29px;
+  margin-bottom: 6px;
+}
+
+/* line 456, ../sass/layout/_old.scss */
+#distanceIng-number {
+  margin-right: 6px;
+}
+
+/* line 460, ../sass/layout/_old.scss */
+.input-group-inline,
+.input-group-btn-inline {
+  display: inline-block;
+}
+
+/***** DROPDOWNS, CHECKBOXES, SLIDERS, BUTTONS *****/
+/* line 468, ../sass/layout/_old.scss */
+#sortByWhat .dropdown-menu {
+  min-width: 0;
+}
+
+/* line 472, ../sass/layout/_old.scss */
+.dropdown-menu > li > a {
+  padding: 3px 13px;
+}
+
+/* line 476, ../sass/layout/_old.scss */
+.dropdown-toggle {
+  line-height: 1.1;
+}
+
+/* line 480, ../sass/layout/_old.scss */
+.checkbox-inline + .checkbox-inline {
+  margin-left: 0;
+}
+
+/* line 484, ../sass/layout/_old.scss */
+.checkbox-inline:last-of-type {
+  margin-right: 0;
+}
+
+/* line 488, ../sass/layout/_old.scss */
+.slider-selection,
+.tick-slider-selection,
+.in-selection {
+  background: #d8eecb;
+}
+
+/* line 494, ../sass/layout/_old.scss */
+.slideDiv {
+  color: #566f7d;
+  display: table;
+  font-weight: 700;
+  width: 100%;
+}
+
+/* line 501, ../sass/layout/_old.scss */
+.slider,
+.slider-horizontal,
+.slider-track,
+.sliderLabel {
+  display: table-cell;
+  vertical-align: middle;
+  width: auto;
+}
+
+/* line 510, ../sass/layout/_old.scss */
+.slider,
+.slider-horizontal {
+  width: 100%;
+}
+
+/* line 515, ../sass/layout/_old.scss */
+.sliderLabel:first-of-type {
+  padding-right: 14px;
+}
+
+/* line 519, ../sass/layout/_old.scss */
+.sliderLabel:last-of-type {
+  padding-left: 14px;
+}
+
+/* line 523, ../sass/layout/_old.scss */
+.checkbox-inline {
+  font-size: 12px;
+}
+
+/* line 527, ../sass/layout/_old.scss */
+button[type="submit"] {
+  background-color: mediumseagreen;
+  background-image: none;
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 1em;
+  letter-spacing: 1px;
+  text-align: center;
+  text-shadow: none;
+  text-transform: uppercase;
+}
+
+/* line 539, ../sass/layout/_old.scss */
+button[type="submit"]:hover {
+  color: #ffffff;
+  font-weight: 400;
+  opacity: 0.9;
+  font-size: 1em;
+  text-shadow: none;
+  text-transform: uppercase;
+}
+
+/* line 549, ../sass/layout/_old.scss */
+button[type="view"] {
+  background-color: #e41a6a;
+  background-image: none;
+  color: #ffffff;
+  font-weight: 400;
+  text-align: center;
+  text-shadow: none;
+}
+
+/* line 558, ../sass/layout/_old.scss */
+span.blueUnderline {
+  color: blue;
+  text-decoration: underline;
+}
+
+/* line 563, ../sass/layout/_old.scss */
+.submitDiv {
+  text-align: center;
+}
+
+/**********/
+/* line 569, ../sass/layout/_old.scss */
+#moreOptionsLink {
+  text-align: center;
+}
+
+/* line 573, ../sass/layout/_old.scss */
+.moreCTA a {
+  color: #566f7d;
+  font-weight: 600;
+}
+
+/* line 578, ../sass/layout/_old.scss */
+.more {
+  font-size: 12px;
+}
+
+/* line 582, ../sass/layout/_old.scss */
+.more label {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+/* line 587, ../sass/layout/_old.scss */
+.more p {
+  margin-bottom: 0;
+}
+
+/* line 591, ../sass/layout/_old.scss */
+.more p:last-of-type {
+  margin-bottom: 10px;
+}
+
+/* line 595, ../sass/layout/_old.scss */
+span.moreLabel {
+  font-weight: 600;
+}
+
+/* line 599, ../sass/layout/_old.scss */
+.info p {
+  /*font-weight: */
+}
+
+/* line 603, ../sass/layout/_old.scss */
+#moreRestaurant,
+#view_single_item_moreOptions,
+#bestHere,
+#viewTraditional {
+  display: none;
+}
+
+/* line 610, ../sass/layout/_old.scss */
+span.labelCaps {
+  text-transform: uppercase;
+}
+
+/***** BEST MENU ITEMS AT THIS RESTAURANT *****/
+/* line 617, ../sass/layout/_old.scss */
+li.best {
+  border-bottom: 1px solid;
+  padding-bottom: 12px;
+}
+
+/* line 622, ../sass/layout/_old.scss */
+li.best:last-of-type {
+  border-bottom: none;
+}
+
+/* line 626, ../sass/layout/_old.scss */
+.ellipses {
+  /*word-wrap: break-word;*/
+  height: 110px;
+  margin-bottom: 0;
+}
+
+/***** font-awesome *****/
+/* line 635, ../sass/layout/_old.scss */
+.fa-chevron-circle-down:before,
+.fa-chevron-circle-right:before {
+  color: #5d9d36;
+  margin-left: 2px;
+}
+
+/***** star ratings ****/
+/*.starsRow {
+    margin: 6px 0 16px 0;
+}*/
+/* line 648, ../sass/layout/_old.scss */
+.starsDiv,
+.starsDivHalf {
+  padding: 0;
+}
+
+/* line 653, ../sass/layout/_old.scss */
+.starsDiv label,
+.starsDivHalf label {
+  margin: 0 0 5px 0;
+  width: 100%;
+  line-height: 16px;
+}
+
+/* line 660, ../sass/layout/_old.scss */
+.starsDiv i,
+.starsDivHalf i {
+  font-size: 24px;
+  color: #74c046;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* line 668, ../sass/layout/_old.scss */
+.starsDivHalf i {
+  font-size: 18px;
+}
+
+/* line 672, ../sass/layout/_old.scss */
+.starsDivSmall {
+  margin-bottom: -9px;
+}
+
+/* line 676, ../sass/layout/_old.scss */
+.starsDivSmall i {
+  font-size: 14px;
+}
+
+/* line 680, ../sass/layout/_old.scss */
+.starsDiv h4 {
+  margin-bottom: 2px;
+  margin-top: 0;
+}
+
+/* line 685, ../sass/layout/_old.scss */
+.fa-fw {
+  width: auto;
+}
+
+/***** FOOTER *****/
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#e5eaed+0,e5eaed+100&amp;0+0,1+20 */
+/* line 695, ../sass/layout/_old.scss */
+#footer {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  height: 72px;
+  padding-top: 30px;
+  text-align: center;
+  width: 100%;
+  z-index: 9;
+  background-color: #e5eaed;
+  background: -moz-linear-gradient(top, rgba(229, 234, 237, 0) 0%, #e5eaed 30%, #e5eaed 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(229, 234, 237, 0)), color-stop(30%, #e5eaed), color-stop(100%, #e5eaed));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(229, 234, 237, 0) 0%, #e5eaed 30%, #e5eaed 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(229, 234, 237, 0) 0%, #e5eaed 30%, #e5eaed 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(229, 234, 237, 0) 0%, #e5eaed 30%, #e5eaed 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, rgba(229, 234, 237, 0) 0%, #e5eaed 30%, #e5eaed 100%);
+  /* W3C */
+  /*filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#00e5eaed', endColorstr='#e5eaed', GradientType=0);*/
+  /* IE6-9 */
+}
+
+/* line 721, ../sass/layout/_old.scss */
+.menu-button {
+  /*background-color: #74c046;*/
+  background-color: #6EC1C2;
+  height: 42px;
+  border-right: 2px solid #004447;
+  padding: 11px 0 0 0;
+  text-transform: uppercase;
+  font-weight: 700;
+  display: inline-block;
+}
+
+/* line 731, ../sass/layout/_old.scss */
+div.menu-button a {
+  text-decoration: none;
+  display: block;
+  color: #111111;
+}
+
+/* line 737, ../sass/layout/_old.scss */
+div.menu-button a:hover {
+  text-decoration: none;
+  display: block;
+  color: #C93413;
+}
+
+/* line 743, ../sass/layout/_old.scss */
+.menu-button:last-of-type {
+  border-right: none;
+}
+
+/* line 747, ../sass/layout/_old.scss */
+.hyperlinks {
+  color: #0B0080;
+}
+
+/* line 751, ../sass/layout/_old.scss */
+.itemImage img {
+  width: 295px;
+}
+
+/* line 755, ../sass/layout/_old.scss */
+.greyText {
+  color: #5e5e5e;
+}
+
+/* line 759, ../sass/layout/_old.scss */
+.font12 {
+  font-size: 12px;
+}
+
+/* line 764, ../sass/layout/_old.scss */
+.verticalCenter {
+  vertical-align: middle;
+}
+
+/* For profile modal */
+/* line 769, ../sass/layout/_old.scss */
+.modal-backdrop.in {
+  z-index: auto !important;
+}
+
+/* line 773, ../sass/layout/_old.scss */
+.init-hide {
+  display: none;
+}
+
+/*# sourceMappingURL=main.css.map */

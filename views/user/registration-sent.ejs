@@ -1,0 +1,37 @@
+<%- include ie-check %>
+<%- include('../common/head', {title: 'Registration Sent', description: 'Email registration sent'}) 
+%>
+<%- include('../common/heading-banner') %>
+<div class="container">
+    <div class="well registration-message-container centerBlock text-center">
+        <h3> Registration Success! </h3>
+        <div class="alert alert-success">
+            <%- message %>
+        </div>
+        <% if(link) {%>
+            <p>Thanks for registering with <%= locals.appName %>! Enter the code 1234 or click <a href="<%- link %>" class="green">here</a> to validate your phone number.</p>
+        <% } %>
+        <input type="hidden" id="note-register" value="<%- note %>" name="note-register">
+        <a href="/" class="btn btn-primary btn-block green"> Ok </a>
+    </div>
+</div>
+<% include ../common/footer %>
+<%- include('../common/foot', {
+    scripts: [
+        "/js/users.js"
+    ]
+}) %>
+<script>
+   $(document).ready(function () {
+       var note = $('#note-register').val()
+       swal({
+            title: "Registration Success!",
+            text: note,
+            type: "success",
+            allowOutsideClick: true,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#3cb371"
+        })
+   })
+</script>
+

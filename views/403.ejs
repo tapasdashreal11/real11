@@ -1,0 +1,22 @@
+<%- include('common/head', {
+  title: "403 Forbidden", 
+  description: "Forbidden page access."
+})%>
+<%- include('common/heading-banner') %>
+<div class="container text-center error-container">
+  <div>
+    <h1 class="red"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> OOPS! </h1>
+    <h2 class="black">403 - Authorization is required to view this page!</h2>
+    <% if (typeof error !== 'undefined') { %>
+      <pre class="error"><code>
+        	<%- error %>
+      </code></pre>
+      <% } else { %>
+       <p class="error">
+          Login and valid authorization is required to visit this page. If you think this may an error, please <a class="green" href="mailto:<%- locals.supportEmail %>">contact our development team</a>.
+        </p>
+      <% } %>
+  </div>
+</div>
+<% include common/footer %>
+<%- include('common/foot') %>

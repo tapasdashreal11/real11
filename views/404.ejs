@@ -1,0 +1,23 @@
+<%- include('common/head', {
+  title: "Unexpected Error", 
+  description: "There was  problem processing request."
+})%>
+<%- include('common/heading-banner') %>
+<div class="container text-center error-container">
+  <div>
+    <h1 class="red"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> OOPS!</h1>
+    <h2 class="black">404 - PAGE NOT FOUND!</h2>
+    <% if (typeof error !== 'undefined') { %>
+      <pre class="error"><code>
+        	<%- error %>
+      </code></pre>
+      <% } else { %>
+       <p class="error">
+         The page you are looking for can't be found.
+        </p>
+      <% } %>
+      <h3><a href="/" class="green"> GO BACK TO HOMEPAGE </a></h3>
+  </div>
+</div>
+<% include common/footer %>
+<%- include('common/foot') %>

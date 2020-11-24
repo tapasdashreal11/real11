@@ -1,0 +1,15 @@
+<% if (error && error.length > 0) { %>
+<div id="alert" class="alert alert-danger">
+  <p id="error"><%= error %></p>
+  <% if (error[0].toString().indexOf('This email is not registered') != -1) { %>
+  <div class="text-center buttons">
+    <br>
+    <button onclick="createAcount()" class="btn green">Yes</button>
+    <button onclick="closeAlert()" class=" btn green">No</button>
+  </div>
+  <% } %>
+</div>
+<% } %>
+<% if (locals.success && locals.success.length > 0) { %>
+  <div class="alert alert-success"><%=success%> </div>
+<% } %>
