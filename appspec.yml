@@ -7,13 +7,13 @@ hooks:
 BeforeInstall:
   - location: /home/ubuntu/scripts/before-install
     timeout: 300
-    runas:  ubuntu  
+    runas:  root  
 AfterInstall:
   - location: /home/ubuntu/scripts/install-pkgs
     timeout: 120
-    runas: ubuntu
+    runas: root
 ApplicationStart:
   - location: /home/ubuntu/scripts/app-start
     timeout: 60
-    runas: ubuntu
+    runas: root
   
