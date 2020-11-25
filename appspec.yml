@@ -5,10 +5,6 @@ files:
   destination: /home/ubuntu/node
 
 hooks:
-BeforeInstall:
-  - location: /bin/before-install
-    timeout: 30
-    runas:  root  
 AfterInstall:
   - location: /bin/install-pkgs
     timeout: 120
