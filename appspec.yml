@@ -7,7 +7,6 @@ files:
   - object: /home/ubuntu/node 
     owner: ubuntu
     group: ubuntu
-    mode: 777
 hooks:  
 AfterInstall:
   - location: /home/ubuntu/scripts/install-pkgs
