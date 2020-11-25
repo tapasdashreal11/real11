@@ -14,13 +14,11 @@ hooks:
 BeforeInstall:
     - location: bin/before-install
       timeout: 30
-      runas:  root
-      
+      runas:  root  
 AfterInstall:
    - location: bin/install-pkgs
      timeout: 1200
      runas: root
-
 ApplicationStart:
    - location: bin/app-start
      timeout: 60
