@@ -17,4 +17,3 @@ ApplicationStart:
   - location: /bin/app-start
     timeout: 60
     runas: root
-
