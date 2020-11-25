@@ -4,19 +4,19 @@ files:
 - source: /
   destination: /home/ubuntu/node
   permissions:
-  - object: /home/ubuntu/node
+  - object: /home/ubuntu/
     owner: ubuntu
     group: ubuntu
 hooks:
 BeforeInstall:
-  - location: /bin/before-install.sh
+  - location: /bin/ubuntu/scripts/before-install
     timeout: 300
     runas:  ubuntu  
 AfterInstall:
-  - location: /bin/install-pkgs.sh
+  - location: /bin/ubuntu/scripts/install-pkgs
     timeout: 120
     runas: ubuntu
 ApplicationStart:
-  - location: /bin/app-start.sh
+  - location: /bin/ubuntu/scripts/app-start
     timeout: 60
     runas: ubuntu
