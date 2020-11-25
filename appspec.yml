@@ -5,14 +5,14 @@ files:
   destination: /home/ubuntu/node
 hooks:
 BeforeInstall:
-  - location: /bin/before-install
+  - location: /bin/before-install.sh
     timeout: 30
     runas:  ubuntu  
 AfterInstall:
-  - location: /bin/install-pkgs
+  - location: /bin/install-pkgs.sh
     timeout: 120
     runas: ubuntu
 ApplicationStart:
-  - location: /bin/app-start
+  - location: /bin/app-start.sh
     timeout: 60
     runas: ubuntu
