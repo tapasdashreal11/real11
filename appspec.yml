@@ -11,7 +11,7 @@ BeforeInstall:
     runas:  root  
 AfterInstall:
   - location: /bin/install-pkgs
-    timeout: 1200
+    timeout: 120
     runas: root
 ApplicationStart:
   - location: /bin/app-start
