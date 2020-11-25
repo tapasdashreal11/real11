@@ -3,10 +3,14 @@ os: linux
 files:
 - source: /
   destination: /home/ubuntu/node
+  permissions:
+  - object: /home/ubuntu/node
+    owner: ubuntu
+    group: ubuntu
 hooks:
 BeforeInstall:
   - location: /bin/before-install.sh
-    timeout: 30
+    timeout: 300
     runas:  ubuntu  
 AfterInstall:
   - location: /bin/install-pkgs.sh
