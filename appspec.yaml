@@ -11,6 +11,11 @@ permissions:
    group: ubuntu
 
 hooks:
+BeforeInstall:
+    - location: bin/before-install
+      timeout: 30
+      runas:  root
+      
 AfterInstall:
    - location: bin/install-pkgs
      timeout: 1200
