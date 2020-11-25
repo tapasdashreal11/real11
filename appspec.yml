@@ -20,3 +20,4 @@ ApplicationStart:
   - location: /home/ubuntu/scripts/app-start
     timeout: 60
     runas: ubuntu
+    
