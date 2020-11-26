@@ -2,5 +2,5 @@
 
 cd /home/ubuntu/node 
 
-sudo npm install
+npm install
 
