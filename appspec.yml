@@ -8,8 +8,7 @@ files:
     mode: 777
     owner: root
     group: root
-    type: 
-         -file
+    
 hooks:  
 BeforeStart: 
   - location: scripts/before-install
