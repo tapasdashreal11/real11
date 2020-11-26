@@ -6,7 +6,6 @@ files:
   permission: 
   -object: /home/ubuntu/node/scripts
    owner: root
-   group: root
    mode: 777
    type: 
       - directory
