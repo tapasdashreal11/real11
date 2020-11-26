@@ -8,12 +8,16 @@ files:
     owner: ubuntu
     group: ubuntu
 hooks:  
+BeforeStart: 
+  - location: /scripts/before-install
+    timeout: 300
+    runas: root
 AfterInstall:
-  - location: /home/ubuntu/scripts/install-pkgs
+  - location: /scripts/install-pkgs
     timeout: 120
     runas: root
 ApplicationStart:
-  - location: /home/ubuntu/scripts/app-start
+  - location: /scripts/app-start
     timeout: 60
     runas: root
   
