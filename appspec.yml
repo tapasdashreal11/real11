@@ -13,15 +13,15 @@ files:
     
 hooks:  
 BeforeStart: 
-  - location: scripts/before-install.sh
+  - location: scripts/beforeinstall.sh
     timeout: 300
     runas: root
 AfterInstall:
-  - location: scripts/install-pkgs.sh
+  - location: scripts/installpkgs.sh
     timeout: 120
     runas: root
 ApplicationStart:
-  - location: scripts/app-start.sh
+  - location: scripts/appstart.sh
     timeout: 120
     runas: root
   
