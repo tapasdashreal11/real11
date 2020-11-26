@@ -6,10 +6,10 @@ files:
   permissions:
   - object: /home/ubuntu/node/scripts/*.sh
     mode: 777
-    owner: root
-    group: root
+    owner: ubuntu
+    group: ubuntu
     type : 
-          -file
+         - file
     
 hooks:  
 BeforeStart: 
