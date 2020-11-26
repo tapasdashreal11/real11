@@ -9,15 +9,15 @@ files:
     group: ubuntu
 hooks:  
 BeforeStart: 
-  - location: /scripts/before-install
+  - location: scripts/before-install
     timeout: 300
     runas: root
 AfterInstall:
-  - location: /scripts/install-pkgs
+  - location: scripts/install-pkgs
     timeout: 120
     runas: root
 ApplicationStart:
-  - location: /scripts/app-start
-    timeout: 60
+  - location: scripts/app-start
+    timeout: 120
     runas: root
   
