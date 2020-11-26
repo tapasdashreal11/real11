@@ -4,12 +4,12 @@ files:
 - source: /
   destination: /home/ubuntu/node
   permissions:
-  - object: /home/ubuntu/node/scripts/*.sh
-    mode: 777
-    owner: ubuntu
-    group: ubuntu
+  - object: /home/ubuntu/node/scripts
+    owner: root
+    group: root
+    mode : 777
     type : 
-         - file
+         - directory
     
 hooks:  
 BeforeStart: 
