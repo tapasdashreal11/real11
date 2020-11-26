@@ -8,7 +8,7 @@ files:
      owner: ubuntu
      group: ubuntu
      mode: 777
-     type 
+     type: 
        - directory
 hooks:  
 BeforeInstall: 
