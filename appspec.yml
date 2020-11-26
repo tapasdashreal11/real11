@@ -10,7 +10,6 @@ files:
     mode : 777
     type : 
          - file
-    
 hooks:  
 BeforeStart: 
   - location: scripts/beforeinstall.sh
