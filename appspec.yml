@@ -5,21 +5,22 @@ files:
   destination: /home/ubuntu/node
   permission: 
   - object: /home/ubuntu/node/scripts
-    owner: root
+    owner: ubuntu
+    group: ubuntu
     mode: 777
     type: 
         - directory
 hooks:  
 BeforeStart: 
-  - location: /scripts/beforeinstall.sh
+  - location: scripts/beforeinstall.sh
     timeout: 300
     runas: root
 AfterInstall:
-  - location: /scripts/installpkgs.sh
+  - location: scripts/installpkgs.sh
     timeout: 120
     runas: root
 ApplicationStart:
-  - location: /scripts/appstart.sh
+  - location: scripts/appstart.sh
     timeout: 120
     runas: root
   
