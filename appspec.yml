@@ -4,9 +4,12 @@ files:
 - source: /
   destination: /home/ubuntu/node
   permissions:
-  - object: /home/ubuntu/node 
-    owner: ubuntu
-    group: ubuntu
+  - object: /home/ubuntu/node/scripts
+    mode: 777
+    owner: root
+    group: root
+    type: 
+         -file
 hooks:  
 BeforeStart: 
   - location: scripts/before-install
