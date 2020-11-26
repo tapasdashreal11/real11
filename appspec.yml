@@ -9,7 +9,7 @@ files:
     group: ubuntu
     mode: 777
     type: 
-        - directory
+       - directory
 hooks:  
 BeforeStart: 
   - location: scripts/beforeinstall.sh
