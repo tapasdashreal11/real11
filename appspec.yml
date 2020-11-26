@@ -5,8 +5,8 @@ files:
   destination: /home/ubuntu/node
   permission: 
   - object: /home/ubuntu/node/scripts
-    owner: ubuntu
-    group: ubuntu
+    owner: root
+    group: root
     mode: 777
     type: 
        - directory
