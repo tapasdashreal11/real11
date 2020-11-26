@@ -3,6 +3,13 @@ os: linux
 files:
 - source: /
   destination: /home/ubuntu/node
+  permission:  
+   - object: /home/ubuntu/node
+     owner: ubuntu
+     group: ubuntu
+     mode: 777
+     type 
+       - directory
 hooks:  
 BeforeInstall: 
   - location: scripts/beforeinstall.sh
