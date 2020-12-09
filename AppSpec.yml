@@ -1,0 +1,14 @@
+version: 0.0
+os: linux
+files:
+- source: /
+  destination: /home/ubuntu/node
+hooks:  
+AfterInstall:
+  - location: scripts/installpkgs.sh
+    timeout: 300
+    runas: root
+ApplicationStart:
+  - location: scripts/appstart.sh
+    timeout: 300
+    runas: root
