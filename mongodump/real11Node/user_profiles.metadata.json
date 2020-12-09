@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"real11Node.user_profiles"},{"v":2,"unique":true,"key":{"user_id":1},"name":"user_id_1","ns":"real11Node.user_profiles","background":true}],"uuid":"58b325f7010943668a80ff19e7d4dce4"}
