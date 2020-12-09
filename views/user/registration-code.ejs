@@ -1,0 +1,71 @@
+<%- include ie-check %>
+<%- include('../common/head', {title: 'Registration Sent', description: 'Email registration sent'}) 
+%>
+<%- include('../common/heading-banner') %>
+<style>
+    .input-code{
+        height: 40px;
+    }
+    .text-note {
+        font-size: 12px;
+        text-align: left;
+        color: #586069;
+    }
+    .btn-confirm, .btn-send-to{
+        width: 100%;
+        height: 35px;
+        line-height: 22.5px;
+        font-size: 16px;
+        padding: 0px;
+        text-transform: uppercase;
+    }
+    .btn-send-to {
+        background: #fff;
+        color: mediumseagreen;
+        border: 1px solid mediumseagreen;
+    }
+    .btn-confirm{
+        color: #fff;
+        background: mediumseagreen;
+    }
+</style>
+<div class="container">     
+    <div class="row">
+        <input type="hidden" id="phone-register" value="<%- phone %>" name="phone-register">
+        <input type="hidden" id="id-register" value="<%- userId %>" name="id-register">
+        <input type="hidden" id="link-reset" value="<%- link %>" name="link-register">
+        <div class="col-md-12">
+            <h3>Confirm CODE</h3>
+            <% if(message) {%>
+                <div class="alert alert-success"><%- message %></div>
+            <% } %>
+            <p class="text-center" style="margin-top: 30px;">Please enter the 4 digit code we sent you via text here</p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <input  placeholder="Enter code" id="code-confirm" name="code" required="true" maxlength="4" type="text" class="form-control input-code">
+            </div>
+        </div>
+        <div class="col-md-12" id="alert-valid-code" style="display: none">
+            <p class="alert alert-danger" style="font-size: 14px;"></p>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-6">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <button type="button" id="btn-send-to" class="btn btn-send-to btn-sp-green">send again</button>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <button type="button" disabled id="btn-confirm" class="btn btn-confirm btn-sp-green">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% include ../common/footer %>
+<%- include('../common/foot', {
+    scripts: [
+        "/js/users.js"
+    ]
+}) %>

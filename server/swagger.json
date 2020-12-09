@@ -1,0 +1,4718 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Real11",
+    "description": "This is an API documentation"
+  },
+  "servers": [
+    {
+      "description": "Deploy server",
+      "url": "http://192.168.1.124:3003"
+    },
+    {
+      "description": "localmachine server",
+      "url": "http://localhost:3003"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "Operations about user"
+    },
+    {
+      "name": "Sub User",
+      "description": "Operations about sub user"
+    },
+    {
+      "name": "Sub User Settings",
+      "description": "Sub user settings"
+    },
+    {
+      "name": "Company",
+      "description": "Operations about company"
+    },
+    {
+      "name": "Company Branch",
+      "description": "Operations about company branch"
+    },
+    {
+      "name": "Department",
+      "description": "Operations about the Department"
+    },
+    {
+      "name": "Leave Types",
+      "description": "Operttions about the Leaves"
+    },
+    {
+      "name": "Job Category",
+      "description": "Opertaions about the job category"
+    },
+    {
+      "name": "Skill Category",
+      "description": "Operations about the skill category"
+    },
+    {
+      "name": "Employee Profile",
+      "description": "Operations about Employee profile"
+    },
+    {
+      "name": "Employee Profile Settings",
+      "description": "Employee settings"
+    },
+    {
+      "name": "Assign And Unassign Ids",
+      "description": "Admin assign the parent Ids"
+    },
+    {
+      "name": "Document Types",
+      "description": "Operations about Comapany Document Types"
+    },
+    {
+      "name": "Job Profile",
+      "description": "Operations about Comapany Job profile"
+    },
+    {
+      "name": "Holiday",
+      "description": "Operations about Company Holiday"
+    }
+  ],
+  "paths": {
+    "/users/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Logs user into the system",
+        "operationId": "loginUser",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "Login Email",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "Login Password",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/user/signup-via-email": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "User SignupViaMail",
+        "operationId": "userSignup",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "Signup Email",
+                    "type": "string"
+                  },
+                  "redirectUrl": {
+                    "description": "Need to confrim your Email",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "redirectUrl"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/confirm-registration": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "User confrim registration",
+        "operationId": "confirm user registation",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "description": "Need token to confrim registration",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "Enter your desired password",
+                    "type": "string"
+                  },
+                  "passwordConfirmation": {
+                    "description": "Please Re-enter your password",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token",
+                  "password",
+                  "passwordConfirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/password/request-reset": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "User reset password registration token",
+        "operationId": "reset password registration token",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "description": "Please enter your registered email",
+                    "type": "string"
+                  },
+                  "redirectUrl": {
+                    "description": "Need to reset your password",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "redirectUrl"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/password/set": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "set your new password",
+        "operationId": "register new password",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "description": "Need token to set password",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "Enter your desired password",
+                    "type": "string"
+                  },
+                  "passwordConfirmation": {
+                    "description": "Please Re-enter your password",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token",
+                  "password",
+                  "passwordConfirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/add-subuser/{parentUserId}": {
+      "post": {
+        "tags": [
+          "Sub User"
+        ],
+        "summary": "Add a new sub user",
+        "operationId": "new sub user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent user id to add sub user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "sub user name",
+                    "type": "string"
+                  },
+                  "email": {
+                    "description": "Enter your registered Email",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "description": "Please enter the phone number",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "phone"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update-subuser/{parentUserId}/{subUserId}": {
+      "post": {
+        "tags": [
+          "Sub User"
+        ],
+        "summary": "Update details of the sub user",
+        "operationId": "update sub user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent user id to update sub users",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "subUserId",
+            "required": true,
+            "description": "Need sub user id to update individual sub user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "update sub user name",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "description": "update the phone number",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "phone"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/delete-subuser/{parentUserId}/{subUserId}": {
+      "delete": {
+        "tags": [
+          "Sub User"
+        ],
+        "summary": "Delete the sub user",
+        "operationId": "delete sub user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent user id to delete sub users",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "subUserId",
+            "required": true,
+            "description": "Need sub user id to delete individual sub user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/list-subusers/{parentUserId}": {
+      "get": {
+        "tags": [
+          "Sub User"
+        ],
+        "summary": "List all the sub users of a parent user",
+        "operationId": "list sub users",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent user id to list the sub users",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/subuser-set-password/{userId}": {
+      "post": {
+        "tags": [
+          "Sub User Settings"
+        ],
+        "summary": "Add a new sub user",
+        "operationId": "setSubUserPassword",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "Need sub user id to set password",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "description": "Password",
+                    "type": "string"
+                  },
+                  "passwordConfirmation": {
+                    "description": "Password Confirmation",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "password",
+                  "passwordConfirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-company/{parentUserId}": {
+      "post": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "If parent user add the company",
+        "operationId": "parent add company",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent id to add company",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/parent_add_company"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-company/{parentUserId}/{subUserId}": {
+      "post": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "If sub user add the company",
+        "operationId": "sub user add company",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent id to add company",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "subUserId",
+            "required": true,
+            "description": "Need sub user id to add company",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/parent_add_company"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/update-company/{parentUserId}/{companyId}": {
+      "post": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "if parent user update the company",
+        "operationId": "parent user update company",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent id to update company",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to update individual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/parent_user_update_company"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/update-company/{parentUserId}/{subUserId}/{companyId}": {
+      "post": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "if sub user update the company",
+        "operationId": "sub user update company",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent id to update company",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "subUserId",
+            "required": true,
+            "description": "Need subUser id to update company",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to update individual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/parent_user_update_company"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/delete-company/{companyId}": {
+      "delete": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "Delete the Company",
+        "operationId": "delete company",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to delete company",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/company-list/{parentUserId}": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "List all the Companies of a parent user",
+        "operationId": "list companies",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "required": true,
+            "description": "Need parent user id to list the companies",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/subuser-company-list/{subUserId}": {
+      "get": {
+        "tags": [
+          "Company"
+        ],
+        "summary": "List all the Companies of a sub user",
+        "operationId": "listSubUserCompanies",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subUserId",
+            "required": true,
+            "description": "Need sub user id to list the sub user companies",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-branch/{companyParentId}": {
+      "post": {
+        "tags": [
+          "Company Branch"
+        ],
+        "summary": "If parent company add the company branch",
+        "operationId": "company add branch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyParentId",
+            "required": true,
+            "description": "Need company parent id to add branch",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Name of the branch",
+                    "type": "string"
+                  },
+                  "address": {
+                    "description": "Address of the branch",
+                    "type": "string"
+                  },
+                  "email": {
+                    "description": "Email of the branch",
+                    "type": "string"
+                  },
+                  "officialNumber": {
+                    "description": "Official Number of the branch",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "description": "Enter phone number of the branch",
+                    "type": "string"
+                  },
+                  "fax": {
+                    "description": "Fax number of the branch",
+                    "type": "string"
+                  },
+                  "outGoingMails": {
+                    "description": "BCC Address for all outgoing mails of branch",
+                    "type": "string"
+                  },
+                  "gstNumber": {
+                    "description": "GSTNo",
+                    "type": "string"
+                  },
+                  "currency": {
+                    "description": "Home Currency",
+                    "type": "string",
+                    "enum": [
+                      "USD",
+                      "INR"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "address",
+                  "email",
+                  "officialNumber"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/update-branch/{companyParentId}/{branchId}": {
+      "post": {
+        "tags": [
+          "Company Branch"
+        ],
+        "summary": "Update the branch",
+        "operationId": "update branch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyParentId",
+            "required": true,
+            "description": "Need parent id to update branch",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "branchId",
+            "required": true,
+            "description": "Need branch id to update individual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Name of the branch",
+                    "type": "string"
+                  },
+                  "address": {
+                    "description": "Address of the branch",
+                    "type": "string"
+                  },
+                  "officialNumber": {
+                    "description": "Official Number of the branch",
+                    "type": "string"
+                  },
+                  "phone": {
+                    "description": "Enter phone number of the branch",
+                    "type": "string"
+                  },
+                  "fax": {
+                    "description": "Fax number of the branch",
+                    "type": "string"
+                  },
+                  "gstNumber": {
+                    "description": "GSTNo",
+                    "type": "string"
+                  },
+                  "currency": {
+                    "description": "Home Currency",
+                    "type": "string",
+                    "enum": [
+                      "USD",
+                      "INR"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/branch-list/{companyParentId}": {
+      "get": {
+        "tags": [
+          "Company Branch"
+        ],
+        "summary": "List all the branch of a parent company",
+        "operationId": "list branches",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyParentId",
+            "required": true,
+            "description": "Need parent company id to list the branches",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/delete-branch/{branchId}": {
+      "delete": {
+        "tags": [
+          "Company Branch"
+        ],
+        "summary": "Delete the branch",
+        "operationId": "delete branch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "branchId",
+            "required": true,
+            "description": "Need branch id to delete branch",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/branch/add-department/{branchId}": {
+      "post": {
+        "tags": [
+          "Department"
+        ],
+        "summary": "If a branch add the department",
+        "operationId": "add department",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "branchId",
+            "required": true,
+            "description": "Need branch id to add department",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Title of the department",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Description about the department",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/branch/update-department/{branchId}/{departmentId}": {
+      "post": {
+        "tags": [
+          "Department"
+        ],
+        "summary": "Update the Department",
+        "operationId": "update department",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "branchId",
+            "required": true,
+            "description": "Need parent id to update department",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "departmentId",
+            "required": true,
+            "description": "Need department id to update individual",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Title of the branch",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Description of the branch",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/branch/list-department/{branchId}": {
+      "get": {
+        "tags": [
+          "Department"
+        ],
+        "summary": "List all the department of a parent branch",
+        "operationId": "list departments",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "branchId",
+            "required": true,
+            "description": "Need parent branch id to list the deparments",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/branch/delete-department/{departmentId}": {
+      "delete": {
+        "tags": [
+          "Department"
+        ],
+        "summary": "Delete the department",
+        "operationId": "delete department",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "departmentId",
+            "required": true,
+            "description": "Need branch id to delete department",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-leave-type/{companyId}": {
+      "post": {
+        "tags": [
+          "Leave Types"
+        ],
+        "summary": "If user add the leave type",
+        "operationId": "add leave type",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to add leave type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leaveTypeName": {
+                    "description": "Leave Name",
+                    "type": "string"
+                  },
+                  "leaveTypeCode": {
+                    "description": "Leave Code",
+                    "type": "string"
+                  },
+                  "isPaid": {
+                    "description": "Is Paid",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "leaveTypeName",
+                  "leaveTypeCode"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/update-leave-type/{companyId}/{leaveTypeId}": {
+      "post": {
+        "tags": [
+          "Leave Types"
+        ],
+        "summary": "If user wants to the update leave type",
+        "operationId": "update leave type",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to update leave type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "leaveTypeId",
+            "required": true,
+            "description": "Need leave type id to update individual leave",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leaveTypeName": {
+                    "description": "Leave Name",
+                    "type": "string"
+                  },
+                  "leaveTypeCode": {
+                    "description": "Leave Code",
+                    "type": "string"
+                  },
+                  "isPaid": {
+                    "description": "Is Paid",
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/list-leave-types/{companyId}": {
+      "get": {
+        "tags": [
+          "Leave Types"
+        ],
+        "summary": "If user wants list all the leave types",
+        "operationId": "list leave",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to list leave types",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/delete-leave-type/{leaveTypeId}": {
+      "delete": {
+        "tags": [
+          "Leave Types"
+        ],
+        "summary": "If user wants delete the leave types",
+        "operationId": "delete leave type",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leaveTypeId",
+            "required": true,
+            "description": "Need leave type id to delete individual leave type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-job-category/{companyId}": {
+      "post": {
+        "tags": [
+          "Job Category"
+        ],
+        "summary": "If company add the parent job category",
+        "operationId": "add parent job category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to add job category",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/add_parent_job_category"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-job-category/{companyId}/{parentCategoryId}": {
+      "post": {
+        "tags": [
+          "Job Category"
+        ],
+        "summary": "If company add child job category to parent job category",
+        "operationId": "add child job category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to add job category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "parentCategoryId",
+            "required": true,
+            "description": "Need parent category id to refrence the parent job category",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/add_parent_job_category"
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/update-job-category/{companyId}/{jobCategoryId}": {
+      "post": {
+        "tags": [
+          "Job Category"
+        ],
+        "summary": "If company update job category",
+        "operationId": "update job category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to update job category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "jobCategoryId",
+            "required": true,
+            "description": "Need job category id to update the individual job category",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "categoryName": {
+                    "description": "Category Name",
+                    "type": "string"
+                  },
+                  "isActive": {
+                    "description": "Is Active",
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/list-job-categories/{companyId}": {
+      "get": {
+        "tags": [
+          "Job Category"
+        ],
+        "summary": "List all the job categories",
+        "operationId": "list job categories",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to list all categories",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/delete-job-category/{jobCategoryId}": {
+      "delete": {
+        "tags": [
+          "Job Category"
+        ],
+        "summary": "If company wants to delete the job category",
+        "operationId": "delete category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "jobCategoryId",
+            "required": true,
+            "description": "Need job category id to delete individual job category",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/add-skill-category/{categoryId}": {
+      "post": {
+        "tags": [
+          "Skill Category"
+        ],
+        "summary": "If category have skill category",
+        "operationId": "add skill category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "categoryId",
+            "required": true,
+            "description": "Need category id to add skill category",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "skillName": {
+                    "description": "Skill Name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "skillName"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/update-skill-category/{categoryId}/{skillCategoryId}": {
+      "post": {
+        "tags": [
+          "Skill Category"
+        ],
+        "summary": "Update skill category",
+        "operationId": "update skill category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "categoryId",
+            "required": true,
+            "description": "Need category id to update skill category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "skillCategoryId",
+            "required": true,
+            "description": "Need skill category id to update the individual skill category",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "skillName": {
+                    "description": "Skill Name",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/list-skill-category/{categoryId}": {
+      "get": {
+        "tags": [
+          "Skill Category"
+        ],
+        "summary": "List all the Skill categories",
+        "operationId": "list skill categories",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "categoryId",
+            "required": true,
+            "description": "Need category id to list all categories",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/delete-skill-category/{skillCategoryId}": {
+      "delete": {
+        "tags": [
+          "Skill Category"
+        ],
+        "summary": "Delete skill category",
+        "operationId": "delete skill category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "skillCategoryId",
+            "required": true,
+            "description": "Need skill category id to delete individual skill category",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/add-employee/{parentUserId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parentUserId",
+            "description": "parent user Id to add employee profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Employee"
+              }
+            }
+          },
+          "description": "Add employee profile"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-skills/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee skills",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeSkills"
+              }
+            }
+          },
+          "description": "To add employee skills"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-family/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee Family Members",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeFamily"
+              }
+            }
+          },
+          "description": "To add employee family members"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-address/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee Address",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeAddress"
+              }
+            }
+          },
+          "description": "To add employee address"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-educational-details/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee Educational Details",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeEducationalDetails"
+              }
+            }
+          },
+          "description": "To add employee educational details"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-work-experiences/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee Work Experiences",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeWorkExperiences"
+              }
+            }
+          },
+          "description": "To add employee educational details"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-identity-proofs/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee Identity Proofs",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeIdentityProofs"
+              }
+            }
+          },
+          "description": "To add employee identity proofs"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-bank-details/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee bank details",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeBankDetails"
+              }
+            }
+          },
+          "description": "To add employee bank details"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-language-skills/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee language skills",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeLanguageSkills"
+              }
+            }
+          },
+          "description": "To add employee language details"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-hobbies/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee hobbies",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeHoobies"
+              }
+            }
+          },
+          "description": "To add employee hobbies details"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/employee/add-employee-bio/{employeeId}": {
+      "post": {
+        "tags": [
+          "Employee Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "description": "Employee Id to add employee bio",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeBio"
+              }
+            }
+          },
+          "description": "To add employee hobbies bio"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/employee-set-password/{userId}": {
+      "post": {
+        "tags": [
+          "Employee Profile Settings"
+        ],
+        "summary": "Add a new sub user",
+        "operationId": "setEmployeePassword",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "Need user id to set password",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "description": "Password",
+                    "type": "string"
+                  },
+                  "passwordConfirmation": {
+                    "description": "Password Confirmation",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "password",
+                  "passwordConfirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/assign-parentId/{userId}": {
+      "post": {
+        "tags": [
+          "Assign And Unassign Ids"
+        ],
+        "summary": "Assign ParentIds",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "description": "user Id to add individual user parent Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeParentIds"
+              }
+            }
+          },
+          "description": "To add employee hobbies bio"
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully returns the response"
+          },
+          "400": {
+            "description": "Invalid input Parameters"
+          },
+          "401": {
+            "description": "Invalid Access Token"
+          },
+          "404": {
+            "description": "No data found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/unassign-parentId/{userId}": {
+      "post": {
+        "tags": [
+          "Assign And Unassign Ids"
+        ],
+        "summary": "Unassign ParentIds",
+        "operationId": "unAssignIds",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "description": "user Id to delete individual parentIds",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "parentUserId": {
+                    "description": "Parent Id",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "parentUserId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-document-types/{companyId}": {
+      "post": {
+        "tags": [
+          "Document Types"
+        ],
+        "summary": "If company have document types",
+        "operationId": "addDocumentType",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to add document types",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Title Name",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Document Description",
+                    "type": "string"
+                  },
+                  "isRequired": {
+                    "description": "Document Required",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "title"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/update-document-types/{companyId}/{documentTypeId}": {
+      "post": {
+        "tags": [
+          "Document Types"
+        ],
+        "summary": "If company wants to update document types",
+        "operationId": "updateDocumentType",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to update document type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "documentTypeId",
+            "required": true,
+            "description": "Need document type id to update individual document type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Title Name",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Document Description",
+                    "type": "string"
+                  },
+                  "isRequired": {
+                    "description": "Document Required",
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/list-all-document-types/{companyId}": {
+      "get": {
+        "tags": [
+          "Document Types"
+        ],
+        "summary": "If company wants to list all document types",
+        "operationId": "listDocumentTypes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to list document types",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/delete-document-type/{documentTypeId}": {
+      "delete": {
+        "tags": [
+          "Document Types"
+        ],
+        "summary": "If company wants to delete document type",
+        "operationId": "deleteDocumentType",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "documentTypeId",
+            "required": true,
+            "description": "Need document type id to delete individual document type",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-job-profile/{companyId}": {
+      "post": {
+        "tags": [
+          "Job Profile"
+        ],
+        "summary": "If company add a job profile",
+        "operationId": "addJobProfile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to add job profile",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "positionName": {
+                    "description": "Position Name",
+                    "type": "string"
+                  },
+                  "payBasis": {
+                    "description": "Pay Basis",
+                    "type": "string",
+                    "enum": [
+                      "Monthly Salary",
+                      "Daily Wages"
+                    ]
+                  },
+                  "isActive": {
+                    "description": "Status of Profile",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "positionName",
+                  "payBasis"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/update-job-profile/{companyId}/{jobProfileId}": {
+      "post": {
+        "tags": [
+          "Job Profile"
+        ],
+        "summary": "If company wants to update job profile",
+        "operationId": "updatejobProfile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to update job profile",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "jobProfileId",
+            "required": true,
+            "description": "Need job profile id to update individual job profile",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "positionName": {
+                    "description": "Position Name",
+                    "type": "string"
+                  },
+                  "payBasis": {
+                    "description": "Pay Basis",
+                    "type": "string",
+                    "enum": [
+                      "Monthly Salary",
+                      "Daily Wages"
+                    ]
+                  },
+                  "isActive": {
+                    "description": "Status of Profile",
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/list-all-job-profiles/{companyId}": {
+      "get": {
+        "tags": [
+          "Job Profile"
+        ],
+        "summary": "If company wants to list all job profile",
+        "operationId": "listJobProfiles",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to list job profiles",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/delete-job-profile/{jobProfileId}": {
+      "delete": {
+        "tags": [
+          "Job Profile"
+        ],
+        "summary": "If company wants to delete job profile",
+        "operationId": "deleteJobProfile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "jobProfileId",
+            "required": true,
+            "description": "Need job profile id to delete individual job profile",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/add-holiday/{companyId}": {
+      "post": {
+        "tags": [
+          "Holiday"
+        ],
+        "summary": "If company add a Holiday",
+        "operationId": "addHoliday",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to add holiday",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Holiday Title",
+                    "type": "string"
+                  },
+                  "holidayDate": {
+                    "description": "Holday Date",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Holiday Type",
+                    "type": "string",
+                    "enum": [
+                      "NATIONAL",
+                      "STATE",
+                      "WEEKLY",
+                      "FESTIVAL"
+                    ]
+                  }
+                },
+                "required": [
+                  "title",
+                  "holidayDate",
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/update-holiday/{companyId}/{holidayId}": {
+      "post": {
+        "tags": [
+          "Holiday"
+        ],
+        "summary": "If company update a Holiday",
+        "operationId": "updateHoliday",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to update holiday",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "holidayId",
+            "required": true,
+            "description": "Need holiday id to update individual holiday",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Holiday Title",
+                    "type": "string"
+                  },
+                  "holidayDate": {
+                    "description": "Holiday Date",
+                    "type": "string"
+                  },
+                  "type": {
+                    "description": "Holiday Type",
+                    "type": "string",
+                    "enum": [
+                      "NATIONAL",
+                      "STATE",
+                      "WEEKLY",
+                      "FESTIVAL"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/list-all-holidays/{companyId}": {
+      "get": {
+        "tags": [
+          "Holiday"
+        ],
+        "summary": "If company wants to list all holidays",
+        "operationId": "listHolidays",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "companyId",
+            "required": true,
+            "description": "Need company id to list holidays",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/company/delete-holiday/{holidayId}": {
+      "delete": {
+        "tags": [
+          "Holiday"
+        ],
+        "summary": "If company wants to delete holiday",
+        "operationId": "deleteHoliday",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "holidayId",
+            "required": true,
+            "description": "Need holidayId to delete individual holiday",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "headers": {
+              "X-Rate-Limit": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "X-Expires-After": {
+                "description": "date in UTC when token expires",
+                "schema": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "requestBodies": {
+      "add_parent_job_category": {
+        "content": {
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "categoryName": {
+                  "description": "Category Name",
+                  "type": "string"
+                },
+                "isActive": {
+                  "description": "Is Active",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "categoryName"
+              ]
+            }
+          }
+        }
+      },
+      "parent_user_update_company": {
+        "content": {
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "Name of the company",
+                  "type": "string"
+                },
+                "address": {
+                  "description": "Address of the company",
+                  "type": "string"
+                },
+                "officialNumber": {
+                  "description": "Official Number of the company",
+                  "type": "string"
+                },
+                "domicile": {
+                  "type": "string"
+                },
+                "phone": {
+                  "description": "Enter phone number of the company",
+                  "type": "string"
+                },
+                "fax": {
+                  "description": "Fax number of the company",
+                  "type": "string"
+                },
+                "gstNumber": {
+                  "description": "GSTNo",
+                  "type": "string"
+                },
+                "currency": {
+                  "description": "Home Currency",
+                  "type": "string",
+                  "enum": [
+                    "USD",
+                    "INR"
+                  ]
+                },
+                "logoUrl": {
+                  "description": "Company Logo",
+                  "type": "string"
+                },
+                "newLogoUrl": {
+                  "description": "New Company Logo (.jpg)",
+                  "type": "string"
+                },
+                "deleteLogo": {
+                  "description": "Delete Company Logo",
+                  "type": "boolean"
+                },
+                "timeZone": {
+                  "description": "Time Zone on Reports",
+                  "type": "string"
+                },
+                "reportLogo": {
+                  "description": "Company Logo on Reports",
+                  "type": "string"
+                },
+                "autoIncreaseDoc": {
+                  "description": "Auto Increase of Document References",
+                  "type": "string"
+                },
+                "nameInList": {
+                  "description": "Short Name and Name in List",
+                  "type": "boolean"
+                },
+                "printDialog": {
+                  "description": "Open Print Dialog Direct on Reports",
+                  "type": "boolean"
+                },
+                "searchItemList": {
+                  "description": "Search Item List",
+                  "type": "boolean"
+                },
+                "searchCustomerList": {
+                  "description": "Search Customer List",
+                  "type": "boolean"
+                },
+                "searchSupplierList": {
+                  "description": "Search Supplier List",
+                  "type": "boolean"
+                },
+                "epfNumber": {
+                  "description": "EPF Number",
+                  "type": "string"
+                },
+                "panNumber": {
+                  "description": "PAN Number",
+                  "type": "string"
+                },
+                "tanNumber": {
+                  "description": "TAN Number",
+                  "type": "string"
+                },
+                "tdsCircle": {
+                  "description": "TDS Circle/ AO Code",
+                  "type": "string"
+                },
+                "deductionCycle": {
+                  "description": "Deduction Cycle",
+                  "type": "string",
+                  "enum": [
+                    "Monthly",
+                    "Quarterly",
+                    "Yearly"
+                  ]
+                },
+                "loginTimeOut": {
+                  "description": "Login Timeout",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parent_add_company": {
+        "content": {
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "description": "Name of the company",
+                  "type": "string"
+                },
+                "address": {
+                  "description": "Address of the company",
+                  "type": "string"
+                },
+                "email": {
+                  "description": "Email of the company",
+                  "type": "string"
+                },
+                "officialNumber": {
+                  "description": "Official Number of the company",
+                  "type": "string"
+                },
+                "domicile": {
+                  "type": "string"
+                },
+                "phone": {
+                  "description": "Enter phone number of the company",
+                  "type": "string"
+                },
+                "fax": {
+                  "description": "Fax number of the company",
+                  "type": "string"
+                },
+                "outGoingMails": {
+                  "description": "BCC Address for all outgoing mails",
+                  "type": "string"
+                },
+                "gstNumber": {
+                  "description": "GSTNo",
+                  "type": "string"
+                },
+                "currency": {
+                  "description": "Home Currency",
+                  "type": "string",
+                  "enum": [
+                    "USD",
+                    "INR"
+                  ]
+                },
+                "logoUrl": {
+                  "description": "Company Logo",
+                  "type": "string"
+                },
+                "newLogoUrl": {
+                  "description": "New Company Logo (.jpg)",
+                  "type": "string"
+                },
+                "deleteLogo": {
+                  "description": "Delete Company Logo",
+                  "type": "boolean"
+                },
+                "timeZone": {
+                  "description": "Time Zone on Reports",
+                  "type": "string"
+                },
+                "reportLogo": {
+                  "description": "Company Logo on Reports",
+                  "type": "string"
+                },
+                "autoIncreaseDoc": {
+                  "description": "Auto Increase of Document References",
+                  "type": "string"
+                },
+                "nameInList": {
+                  "description": "Short Name and Name in List",
+                  "type": "boolean"
+                },
+                "printDialog": {
+                  "description": "Open Print Dialog Direct on Reports",
+                  "type": "boolean"
+                },
+                "searchItemList": {
+                  "description": "Search Item List",
+                  "type": "boolean"
+                },
+                "searchCustomerList": {
+                  "description": "Search Customer List",
+                  "type": "boolean"
+                },
+                "searchSupplierList": {
+                  "description": "Search Supplier List",
+                  "type": "boolean"
+                },
+                "epfNumber": {
+                  "description": "EPF Number",
+                  "type": "string"
+                },
+                "panNumber": {
+                  "description": "PAN Number",
+                  "type": "string"
+                },
+                "tanNumber": {
+                  "description": "TAN Number",
+                  "type": "string"
+                },
+                "tdsCircle": {
+                  "description": "TDS Circle/ AO Code",
+                  "type": "string"
+                },
+                "deductionCycle": {
+                  "description": "Deduction Cycle",
+                  "type": "string",
+                  "enum": [
+                    "Monthly",
+                    "Quarterly",
+                    "Yearly"
+                  ]
+                },
+                "loginTimeOut": {
+                  "description": "Login Timeout",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "address",
+                "email",
+                "officialNumber"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Members": {
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": [
+              "Mother",
+              "Father",
+              "Brother",
+              "Sister",
+              "Uncle",
+              "Aunt",
+              "Spouse",
+              "Son",
+              "Daughter"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "age": {
+            "type": "string"
+          },
+          "occupation": {
+            "type": "string"
+          },
+          "education": {
+            "type": "string"
+          },
+          "income": {
+            "type": "string"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "doorNum": {
+            "type": "string"
+          },
+          "streetName1": {
+            "type": "string"
+          },
+          "streetName2": {
+            "type": "string"
+          },
+          "landmark": {
+            "type": "string"
+          },
+          "zipcode": {
+            "type": "string"
+          },
+          "district": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          }
+        }
+      },
+      "EducationalDetails": {
+        "type": "object",
+        "properties": {
+          "courseName": {
+            "type": "string"
+          },
+          "instituteName": {
+            "type": "string"
+          },
+          "passOutYear": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "scoredPercent": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkExperiences": {
+        "type": "object",
+        "properties": {
+          "companyName": {
+            "type": "string"
+          },
+          "designation": {
+            "type": "string"
+          },
+          "experienceYears": {
+            "type": "string"
+          },
+          "jobDescription": {
+            "type": "string"
+          },
+          "relivingReason": {
+            "type": "string"
+          },
+          "relivingIs": {
+            "type": "string",
+            "enum": [
+              "Formal",
+              "Informal"
+            ]
+          },
+          "remarks": {
+            "type": "string"
+          }
+        }
+      },
+      "IdentityProofs": {
+        "type": "object",
+        "properties": {
+          "identityName": {
+            "type": "string"
+          },
+          "identityNum": {
+            "type": "string"
+          },
+          "authorityName": {
+            "type": "string"
+          },
+          "issuePlace": {
+            "type": "string"
+          },
+          "expiryDate": {
+            "type": "string"
+          },
+          "remarks": {
+            "type": "string"
+          }
+        }
+      },
+      "LanguageSkills": {
+        "type": "object",
+        "properties": {
+          "toSpeak": {
+            "type": "string"
+          },
+          "toRead": {
+            "type": "string"
+          },
+          "toWrite": {
+            "type": "string"
+          }
+        }
+      },
+      "Skills": {
+        "type": "object",
+        "properties": {
+          "skillId": {
+            "type": "string"
+          },
+          "experienceYears": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "object",
+            "properties": {
+              "month": {
+                "type": "string"
+              },
+              "year": {
+                "type": "string"
+              }
+            }
+          },
+          "endDate": {
+            "type": "object",
+            "properties": {
+              "month": {
+                "type": "string"
+              },
+              "year": {
+                "type": "string"
+              }
+            }
+          },
+          "remarks": {
+            "type": "string"
+          }
+        }
+      },
+      "Hobbies": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "timeBound": {
+            "type": "string",
+            "enum": [
+              "Frequent",
+              "Often",
+              "Occasional",
+              "Rare"
+            ]
+          },
+          "remarks": {
+            "type": "string"
+          }
+        }
+      },
+      "Employee": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string"
+          },
+          "departmentId": {
+            "type": "string"
+          },
+          "branchId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "esiPfJoiningDate": {
+            "type": "string"
+          },
+          "joiningDate": {
+            "type": "string"
+          },
+          "relivingDate": {
+            "type": "string"
+          },
+          "resignDate": {
+            "type": "string"
+          },
+          "resignReason": {
+            "type": "string"
+          },
+          "settlement": {
+            "type": "object",
+            "properties": {
+              "finalAmount": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string"
+              },
+              "mode": {
+                "type": "string"
+              },
+              "refNum": {
+                "type": "string"
+              },
+              "remarks": {
+                "type": "string"
+              }
+            }
+          },
+          "contactDetails": {
+            "type": "object",
+            "properties": {
+              "personal": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string"
+                  },
+                  "landLineNum": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              },
+              "official": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string"
+                  },
+                  "landLineNum": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "departmentId",
+          "branchId",
+          "name",
+          "companyId"
+        ]
+      },
+      "EmployeeSkills": {
+        "type": "object",
+        "properties": {
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Skills"
+            }
+          }
+        }
+      },
+      "EmployeeFamily": {
+        "type": "object",
+        "properties": {
+          "family": {
+            "type": "object",
+            "properties": {
+              "members": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Members"
+                }
+              }
+            }
+          }
+        }
+      },
+      "EmployeeAddress": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Address"
+            }
+          }
+        }
+      },
+      "EmployeeEducationalDetails": {
+        "type": "object",
+        "properties": {
+          "educationalDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EducationalDetails"
+            }
+          }
+        }
+      },
+      "EmployeeWorkExperiences": {
+        "type": "object",
+        "properties": {
+          "workExperiences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkExperiences"
+            }
+          }
+        }
+      },
+      "EmployeeIdentityProofs": {
+        "type": "object",
+        "properties": {
+          "identityProofs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentityProofs"
+            }
+          }
+        }
+      },
+      "EmployeeBankDetails": {
+        "type": "object",
+        "properties": {
+          "bankDetails": {
+            "type": "object",
+            "properties": {
+              "official": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "accountNum": {
+                    "type": "string"
+                  },
+                  "accountPlace": {
+                    "type": "string"
+                  },
+                  "accountType": {
+                    "type": "string"
+                  },
+                  "debitCardNum": {
+                    "type": "string"
+                  },
+                  "debitCardType": {
+                    "type": "string"
+                  },
+                  "remarks": {
+                    "type": "string"
+                  }
+                }
+              },
+              "personal": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "accountNum": {
+                    "type": "string"
+                  },
+                  "accountPlace": {
+                    "type": "string"
+                  },
+                  "accountType": {
+                    "type": "string"
+                  },
+                  "debitCardNum": {
+                    "type": "string"
+                  },
+                  "debitCardType": {
+                    "type": "string"
+                  },
+                  "remarks": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "EmployeeLanguageSkills": {
+        "type": "object",
+        "properties": {
+          "languageSkills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LanguageSkills"
+            }
+          }
+        }
+      },
+      "EmployeeHoobies": {
+        "type": "object",
+        "properties": {
+          "hobbies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Hobbies"
+            }
+          }
+        }
+      },
+      "EmployeeParentIds": {
+        "type": "object",
+        "properties": {
+          "parentIdsData": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              },
+              "parentUserId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "EmployeeBio": {
+        "type": "object",
+        "properties": {
+          "bio": {
+            "type": "object",
+            "properties": {
+              "height": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string"
+              },
+              "moleIdentification": {
+                "type": "string"
+              },
+              "bloodGroup": {
+                "type": "string"
+              },
+              "eyePower": {
+                "type": "string"
+              },
+              "handicapped": {
+                "type": "boolean"
+              },
+              "handicappedPercent": {
+                "type": "string"
+              },
+              "multipleHandicapped": {
+                "type": "boolean"
+              },
+              "multipleHandicappedPercent": {
+                "type": "string"
+              },
+              "illness": {
+                "type": "object",
+                "properties": {
+                  "physical": {
+                    "type": "object",
+                    "properties": {
+                      "physicalIllnessName": {
+                        "type": "string"
+                      },
+                      "treatmentName": {
+                        "type": "string"
+                      },
+                      "hospitalName": {
+                        "type": "string"
+                      },
+                      "treatmentDuration": {
+                        "type": "string"
+                      },
+                      "illnessStatus": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "mental": {
+                    "type": "object",
+                    "properties": {
+                      "mentalIllnessName": {
+                        "type": "string"
+                      },
+                      "treatmentName": {
+                        "type": "string"
+                      },
+                      "hospitalName": {
+                        "type": "string"
+                      },
+                      "treatmentDuration": {
+                        "type": "string"
+                      },
+                      "illnessStatus": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

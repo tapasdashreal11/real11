@@ -1,0 +1,2 @@
+"use strict";self.addEventListener("push",function(i){var n=i.data.json(),t=n.title,o=n.message,e=n.icon,a={url:n.url};self.registration.showNotification(t||"Notification",{body:o,icon:e||"/images/favicon.ico",data:a})}),self.addEventListener("notificationclick",function(i){i.notification.close();var n=i.notification.data.url;i.waitUntil(clients.matchAll({type:"window"}).then(function(i){for(var t=0;t<i.length;t++){var o=i[t];if("/"==o.url&&"focus"in o)return o.focus()}if(clients.openWindow)return clients.openWindow(n)}))});
+//# sourceMappingURL=service-worker.js.map

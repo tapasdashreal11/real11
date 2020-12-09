@@ -1,0 +1,23 @@
+<%- include('common/head', {
+  title: "505 Unexpected Error", 
+  description: "There was a problem processing your request."
+})%>
+<%- include('common/heading-banner') %>
+<div class="container text-center error-container">
+  <div>
+    <h1 class="red"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> OOPS!</h1>
+    <h2 class="black">505 - We had a problem processing this request!</h2>
+    <% if (typeof error !== 'undefined') { %>
+      <pre class="error"><code>
+        	<%- error %>
+      </code></pre>
+      <% } else { %>
+       <p class="error">
+          Our team is working on this as we speak.<br/>
+          If the problem persists, please <a class="green" href="mailto:<%- locals.supportEmail ">contact our development team</a> and inform them of the time that the error occured, and anything you might have done that may have caused the error.
+        </p>
+      <% } %>
+  </div>
+</div>
+<% include common/footer %>
+<%- include('common/foot') %>
