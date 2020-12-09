@@ -90,3 +90,4 @@ Use [Recordit](http://recordit.co/) to create GIF screencasts for UX changes. Al
 ### Troubleshooting
 + Periodically, it is helpful to run ```npm install ``` after ```git pull origin develop ``` to ensure latest 3rd party packages get installed locally.
 + If ```npm install ``` is showing errors, and certain modules are not getting installed (i.e. confirming from the error message that the module in question is in the "dependencies" field in the package.json file, but not in the node_modules subdirectory), one possibility would be updating npm itself via ```sudo npm install npm@latest -g``` and then re-running ```npm install```.
+###my random changes
