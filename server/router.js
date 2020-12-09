@@ -61,6 +61,8 @@ const askToAakash = require('./api/v1/users/ask-to-aakash-api');
 
 const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
 const  joinContest  = require('./api/v1/contest/join-contest');
+//const  joinContest  = require('./api/v1/contest/join-contest-session');
+//const  joinContest  = require('./api/v1/contest/join-contest-new');
 const  contestList  = require('./api/v1/contest/contest-list');
 const  { contestDetailNew,contestLeaderboard, contestDetail }  = require('./api/v1/contest/contest-detail');
 const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breakup');
@@ -68,8 +70,8 @@ const  { applyContestInviteCode }  = require('./api/v1/contest/apply-contest-inv
 const  categoryContestList  = require('./api/v1/contest/category-contest-list');
 
 const appSettingApi = require("./api/v1/common/app-settings");
-
-const {
+const user_offers = require("./api/v1/common/app-analysis-api");
+const { 
    // contestList,
     // contestDetail,
     // joinedContestList,
@@ -241,7 +243,8 @@ router.get('/api/v1/get-match-list/:sport?',  matchList);
 router.post('/api/v1/team-profile-comparision', auth.authenticate.jwtLogin, teamProfileComparision);
 router.post('/api/v1/team-profile-paging', teamProfilePaging);
 
-router.get('/api/v1/app-setting', appSettingApi);
+router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
+router.get('/api/v1/app-setting', appSettingApi); 
 router.post('/api/v1/verify-otp', usersVerifyOtp);
 router.get('/api/v1/bankDetails', auth.authenticate.jwtLogin, usersBankDetails);
 router.post('/api/v1/personal_details', auth.authenticate.jwtLogin, usersProfile);

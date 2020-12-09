@@ -36,8 +36,7 @@ class ModelService {
                                                 { $eq: [ "$category_id", "$$catId" ]},
                                                 { $eq: [ "$match_id",  filter.match_id ]},
                                                 { $eq: [ "$sport",  filter.sport ]},
-                                                { $ne: [ "$is_full", 1 ]},
-                                                { $ne: [ "$admin_create", 1 ]},
+                                                { $ne: [ "$is_full", 1 ]}
                                             ]  
                                         }
                                     }
@@ -169,7 +168,6 @@ class ModelService {
                                                 { $eq: [ "$match_id",  filter.match_id ]},
                                                 { $eq: [ "$sport",  filter.sport ]},
                                                 { $ne: [ "$is_full", 1 ]},
-                                                { $ne: [ "$admin_create", 1 ]},
                                             ]  
                                         }
                                     }

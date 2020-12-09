@@ -26,8 +26,9 @@ config.system = {
 
 config.dbConnection = {
   dbName: process.env.MONGO_DB || 'real11Node',
-  string: process.env.DB_PR || 'mongodb://real11dev:real11-1234567@15.207.243.122:27056,15.207.243.122:27057,15.207.243.122:27058/real11_data?replicaSet=rs0&authSource=admin',
-  mongoURI: process.env.DB_PR || "mongodb://real11dev:real11-1234567@15.207.243.122:27056,15.207.243.122:27057,15.207.243.122:27058/real11_data?replicaSet=rs0&authSource=admin", 
+  string: process.env.DB_PR || 'mongodb://real11:real11dev#123@ip-172-31-40-1.ap-south-1.compute.internal:27027,ip-172-31-37-102.ap-south-1.compute.internal:27027,ip-172-31-36-75.ap-south-1.compute.internal:27027/real11?authSource=admin&replicaSet=real11-mongo-rs1',
+  mongoURI: process.env.DB_PR, 
+  mongoURIFORANALYSIS: process.env.DB_PR_ANALYSIS, 
   mysql: {
     host: process.env.DB_HOST || 'localhost',
     user: process.env.SQLDB_USER,
@@ -175,6 +176,12 @@ config.redis = {
 config.leaderboard_redis = {
   // host: 'localhost', //'redis-leaderboard.k6nkix.ng.0001.aps1.cache.amazonaws.com',
   host: process.env.LEARBOARD_REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379
+}
+
+config.useranalysis_redis = {
+  // host: 'localhost', //'redis-leaderboard.k6nkix.ng.0001.aps1.cache.amazonaws.com',
+  host: process.env.USER_ANALYSIS_REDIS_HOST || 'localhost',
   port: process.env.REDIS_PORT || 6379
 }
 

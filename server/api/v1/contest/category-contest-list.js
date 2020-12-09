@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
         var finalResult = {};
         var match_contest_dataall = [];         
         if (category_id) {
-            //console.log('** Not From Redis ***');
+            
             let filter = {
                 "match_id": parseInt(match_id),
                 "sport":match_sport,

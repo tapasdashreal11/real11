@@ -14,7 +14,9 @@ module.exports = async (req, res, dbs) => {
     let userId = req.userId;
     result = [];
     try {
-      var filter = { "user_id": userId, added_type:{$in:[11,12,13]} }
+      var d = new Date();
+      d.setDate(d.getDate() - 60);
+      var filter = { "user_id": userId, added_type:{$in:[11,12,13]},  "txn_date":{ $gt: d.toISOString()} }
       let usersData = await Transactions.find(filter, {"txn_date":1, "added_type":1, "txn_amount":1, "local_txn_id":1, "txn_date":1}).sort({"txn_date": -1 }).limit(50);
 
       if(usersData && usersData.length > 0){

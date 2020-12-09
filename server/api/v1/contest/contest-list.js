@@ -5,6 +5,7 @@ const ApiUtility = require('../../api.utility');
 const ObjectId = require('mongoose').Types.ObjectId;
 const { RedisKeys } = require('../../../constants/app');
 const ModelService = require("../../ModelService");
+const UserAnalysis = require("../../../models/user-analysis");
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
@@ -24,7 +25,7 @@ module.exports = async (req, res) => {
         ];
         if (user_id) {
             queryArray.push(
-                PlayerTeam.find({ user_id: user_id, match_id: match_id,sport: match_sport }).countDocuments(),
+                PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id),sport: match_sport }).countDocuments(),
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id),sport:match_sport },{_id:1,contest_id:1,player_team_id:1}).exec()
             )
         }
@@ -63,15 +64,40 @@ module.exports = async (req, res) => {
             redis.redisObj.set('user-contest-teamIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(Helper.parseUserTeams(userTeamIds)));
             redis.redisObj.set('user-contest-joinedContestIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(joinedContestIds));
             redis.setRedis(RedisKeys.MATCH_CONTEST_LIST + req.params.match_id, match_contest_data);
-            var finalResult = ApiUtility.success({
+            let resObj = {
                 match_contest: match_contest_data,
                 my_teams: myTeamsCount,
                 my_contests: joinedContestIds.length || 0,
                 joined_contest_ids: joinedContestIds,
                 user_team_ids: Helper.parseUserTeams(userTeamIds),
-                joined_teams_count: Helper.parseContestTeamsJoined(joinedTeamsCount)
-            });
-            return res.send(finalResult);
+                joined_teams_count: Helper.parseContestTeamsJoined(joinedTeamsCount),
+                user_rentation_bonous :{}
+            };
+            let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
+            try {
+                redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
+                    if (data) {
+                        resObj['user_rentation_bonous']= data; 
+                    } else {
+                        let fileds = { match_name: 1, match_id: 1, user_id: 1, series_id: 1, is_offer_type: 1, contest_ids: 1, sport: 1, offer_amount: 1, offer_percent: 1 };
+                        let userAnalysisData = await UserAnalysis.findOne({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }, fileds);
+                        if (userAnalysisData && userAnalysisData._id) {
+                            userAnalysisData.offer_amount = userAnalysisData.offer_amount? parseFloat(userAnalysisData.offer_amount):0;
+                            userAnalysisData.offer_percent = userAnalysisData.offer_percent? parseFloat(userAnalysisData.offer_percent):0;
+                            redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, userAnalysisData);
+                            resObj['user_rentation_bonous']= userAnalysisData;
+                        } else {
+                            redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, {});
+                            resObj['user_rentation_bonous'] = {};
+                        }
+                    }
+                    var finalResult = ApiUtility.success(resObj);
+                    return res.send(finalResult);
+                });
+            } catch (err) {
+                var finalResult = ApiUtility.success(resObj);
+                return res.send(finalResult);
+            }
         } else {
            return res.send(ApiUtility.failed('Something went wrong!!'));
         }

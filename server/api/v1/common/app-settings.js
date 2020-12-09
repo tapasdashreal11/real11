@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
             if(data){
                 response["data"] = data;
             } else {
-                let appSettingData = await Settings.findOne({},{priority_match_sport:1});
+                let appSettingData = await Settings.findOne({},{priority_match_sport:1,android_vc:1,iphone_vc:1,is_maintenance:1,sport_type:1});
                 redis.setRedis('app-sport-setting', appSettingData);
                 response["data"] = appSettingData;
             }

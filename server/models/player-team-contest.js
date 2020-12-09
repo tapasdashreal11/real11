@@ -95,9 +95,9 @@ playerTeamContestSchema.statics.getUserTeamByMatchId = function(match_id, contes
     {
         $unwind: "$user"
     },
-    // {
-    //   $sort : {"rank": 1}
-    // },
+    {
+      $sort : {"rank": 1}
+    },
     {
       $limit:9,
     },
@@ -106,7 +106,6 @@ playerTeamContestSchema.statics.getUserTeamByMatchId = function(match_id, contes
 
 playerTeamContestSchema.statics.getAllTeamsByMatchId = function(match_id, contest_id, user_id, sport, aakashId) {
   if(aakashId) {
-    console.log('dfdsf');
     return this.aggregate([
       {
         $match: {
@@ -115,9 +114,6 @@ playerTeamContestSchema.statics.getAllTeamsByMatchId = function(match_id, contes
           contest_id:ObjectId(contest_id),
           user_id:{$nin:[ObjectId(user_id),ObjectId(aakashId)]}
         },
-      },
-      {
-        $limit:100,
       },
       {
           $lookup: {
@@ -129,6 +125,12 @@ playerTeamContestSchema.statics.getAllTeamsByMatchId = function(match_id, contes
       },
       {
           $unwind: "$user"
+      },
+      {
+        $sort : {"rank": 1}
+      },
+      {
+        $limit:100,
       },
     ]);
   } else {
@@ -142,9 +144,6 @@ playerTeamContestSchema.statics.getAllTeamsByMatchId = function(match_id, contes
         },
       },
       {
-        $limit:100,
-      },
-      {
           $lookup: {
               from: 'users',
               localField: 'user_id',
@@ -154,6 +153,12 @@ playerTeamContestSchema.statics.getAllTeamsByMatchId = function(match_id, contes
       },
       {
           $unwind: "$user"
+      },
+      {
+        $sort : {"rank": 1}
+      },
+      {
+        $limit:100,
       },
     ]);
   }

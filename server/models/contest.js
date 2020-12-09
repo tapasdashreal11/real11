@@ -210,7 +210,7 @@ contestSchema.statics.createAutoContest = async function(contestData, series_id,
   }
 }
 
-contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmount,winAmount,cashAmount,playerTeamContestId,contestData, extraAmount,match_sport) {
+contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmount,winAmount,cashAmount,playerTeamContestId,contestData, extraAmount,match_sport,retention_bonus_amount) {
   //console.log("22222***************")
   let surpriseAmount  = extraAmount || 0;
   let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
@@ -247,6 +247,7 @@ contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmoun
   saveEntity.total_amount   =	totalAmount;
   saveEntity.admin_comission=	comission;
   saveEntity.player_team_contest_id=	playerTeamContestId;
+  saveEntity.retention_bonus = retention_bonus_amount|| 0;
   console.log("JoinContestDetail*************121221")
   JoinContestDetail.create(saveEntity);
   // PlayerTeamContest.findByIdAndUpdate(ObjectId(playerTeamContestId) , { "total_amount": totalAmount , "bonus_amount": bonusAmount}, { new: true });

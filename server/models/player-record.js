@@ -158,9 +158,23 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
   let mType = type;
   let rePnt = {};
 
-  let record = await LiveScore.find({ 'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport }, { 'point': 1, 'match_type': 1, 'player_name': 1 , "player_id": 1}).sort({ _id: -1 });
-
-  if ((mType == 'Test') || (mType == 'First-class')) {
+  // let record = await LiveScore.find({ 'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport }, { 'point': 1, 'match_type': 1, 'player_name': 1 , "player_id": 1}).sort({ _id: -1 });
+  let record = await LiveScore.aggregate([
+    {
+      $match: {'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport}
+    },
+    {
+      $group: {
+        "_id":"$player_id",
+        "point": {$sum: "$point"},
+        "match_type": {$first: "$match_type"},
+        "player_name": {$first: "$player_name"},
+        "player_id": {$first: "$player_id"},
+      }
+    },
+    { $sort: { _id: -1 } }
+  ]);
+  if ((mType == 'Test') || (mType == 'TEST') || (mType == 'First-class')) {
     rePnt = await PointSystem.findOne({ 'matchType': '3' });
   } else if (mType == 'ODI') {
     rePnt = await PointSystem.findOne({ 'matchType': '2' });
@@ -177,7 +191,6 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
 
       recordItem = JSON.parse(JSON.stringify(record[i]));
       point = (recordItem['point']) ? parseFloat(recordItem['point']) : 0;
-
       if (rePnt) {
         let captainPoint = rePnt.othersCaptain;
         let viceCaptainPoint = rePnt.othersViceCaptain;

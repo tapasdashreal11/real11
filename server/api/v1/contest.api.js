@@ -206,9 +206,9 @@ module.exports = {
             let myContestCount = 0;
 
             if (user_id) {
-                myTeamsCount = await PlayerTeam.find({ user_id: user_id, match_id: match_id }).countDocuments();
+                myTeamsCount = await PlayerTeam.find({ user_id: user_id, match_id: match_id,sport: match_sport}).countDocuments();
                     myContestCount = await PlayerTeamContest.aggregate([{
-                        $match: { user_id: user_id, match_id: parseInt(match_id) }
+                        $match: { user_id: user_id, match_id: parseInt(match_id),sport: match_sport }
                     },
                     {
                         $group: { _id: "$contest_id", count: { $sum: 1 } }
@@ -976,15 +976,17 @@ module.exports = {
         try {
             let data = {};
             let data1 = {};
-            let sport = 1;
+            //let sport = 1;
             let setting = config;
-            const { contest_id, entry_fee, match_id } = req.body;
+            const { contest_id, entry_fee, match_id , series_id,sport } = req.body;
             let decoded = {
                 user_id: req.userId,
                 contest_id: contest_id || '',
                 entry_fee: entry_fee,
                 match_id: match_id,
+                series_id:series_id
             }
+            let match_sport = sport ? parseInt(sport) : 1;
             // //////console.log(req.userId);
             let userdata = await User.findOne({ _id: decoded['user_id'] })
             if (userdata) {
@@ -1019,47 +1021,72 @@ module.exports = {
                 let extraAmount = 0;
                 let cashBalance = 0;
                 let winningBalance = 0;
-                if (userdata) {
-                    if (decoded['contest_id']) {
-                        if (useAmount > userdata.bonus_amount) {
-                            usableAmt = userdata.bonus_amount;
-                        } else {
-                            usableAmt = useAmount;
+                let redisKeyForRentation = 'app-analysis-' + decoded['user_id'] + '-' + decoded['match_id'] + '-' + match_sport;
+                let userOfferAmount = 0;
+                let retention_bonus_amount =0;
+                let calEntryFees = entryFee;
+                try {
+                    redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
+                        if (rdata && entryFee>0) {
+                            console.log('popup redis before join contest *********');
+                            console.log(rdata);
+                            userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
+                            console.log('userOfferAmount',userOfferAmount);
+                            let pContestId = contest_id; //ObjectId(contest_id);
+                            let offerContests = rdata.contest_ids || [];
+                            if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && _.includes(offerContests,pContestId))){
+                                calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
+                                retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                             }    
                         }
-                        let extraBalance = userdata.extra_amount || 0;
-                        let remainingFee = entryFee - usableAmt;
-
-                        let indianDate = Date.now();
-                        indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
-                        if (extraBalance) {
-                            let perDayExtraAmt = 0;
-                            let perDayLimit = config.extra_bonus_perday_limit;
-
-                            if (String(userdata.extra_amount_date) == String(indianDate)) {
-                                perDayExtraAmt = userdata.perday_extra_amount;
+                        if (userdata) {
+                            if (decoded['contest_id']) {
+                                if (useAmount > userdata.bonus_amount) {
+                                    usableAmt = retention_bonus_amount > 0 ? 0 : userdata.bonus_amount;
+                                } else {
+                                    usableAmt = retention_bonus_amount > 0 ? 0 : useAmount;
+                                }
+                                let extraBalance = userdata.extra_amount || 0;
+                                let remainingFee = retention_bonus_amount > 0 ? calEntryFees : entryFee - usableAmt;
+        
+                                let indianDate = Date.now();
+                                indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
+                                if (extraBalance) {
+                                    let perDayExtraAmt = 0;
+                                    let perDayLimit = config.extra_bonus_perday_limit;
+        
+                                    if (String(userdata.extra_amount_date) == String(indianDate)) {
+                                        perDayExtraAmt = userdata.perday_extra_amount;
+                                    }
+                                    if (perDayExtraAmt < perDayLimit) {
+                                        extraAmount = (extraBalance > remainingFee) ? remainingFee : extraBalance;
+                                        extraAmount = ((perDayExtraAmt + extraAmount) > perDayLimit) ? (perDayLimit - perDayExtraAmt) : extraAmount
+                                    }
+                                }
                             }
-                            if (perDayExtraAmt < perDayLimit) {
-                                extraAmount = (extraBalance > remainingFee) ? remainingFee : extraBalance;
-                                extraAmount = ((perDayExtraAmt + extraAmount) > perDayLimit) ? (perDayLimit - perDayExtraAmt) : extraAmount
-                            }
+                            cashBalance = userdata.cash_balance;
+                            winningBalance = userdata.winning_balance;
                         }
-                    }
-                    cashBalance = userdata.cash_balance;
-                    winningBalance = userdata.winning_balance;
+                        data['cash_balance'] = (cashBalance) ? cashBalance : 0;
+                        data['winning_balance'] = (winningBalance) ? winningBalance : 0;
+                        data['usable_bonus'] = usableAmt ? parseFloat(usableAmt.toFixed(2)) : 0;
+                        data['extra_amount'] = extraAmount ? parseFloat(extraAmount.toFixed(2)) : 0;
+                        data['entry_fee'] = (entryFee) ? parseInt(entryFee) : 0;
+                        data['user_offer_amount'] = (retention_bonus_amount) ? parseFloat(retention_bonus_amount.toFixed(2)) : 0;
+                        data['calculated_entry_fee'] = (calEntryFees) ? parseFloat(calEntryFees.toFixed(2)) : 0;
+                        data['usable_bonus_percent'] = 0; //adminPer;
+                        data1 = data;
+                        res.send(ApiUtility.success(data1)); 
+                    });
+                } catch (err) {
+                    consolelog('error in catch block in cache****',err);
+                    return res.send(ApiUtility.failed("Something went wrong!!"));
                 }
-                data['cash_balance'] = (cashBalance) ? cashBalance : 0;
-                data['winning_balance'] = (winningBalance) ? winningBalance : 0;
-                data['usable_bonus'] = usableAmt ? parseFloat(usableAmt.toFixed(2)) : 0;
-                data['extra_amount'] = extraAmount ? parseFloat(extraAmount.toFixed(2)) : 0;
-                data['entry_fee'] = (entryFee) ? parseInt(entryFee) : 0;
-                data['usable_bonus_percent'] = 0; //adminPer;
-                data1 = data;
-                res.send(ApiUtility.success(data1));
+                
             } else {
                 return res.send(ApiUtility.failed("User not found."));
             }
         } catch (error) {
-            //////////consolelog(error);
             res.send(ApiUtility.failed(error.message));
         }
     },

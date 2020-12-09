@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 var _ = require('lodash');
-
+var Schema = mongoose.Schema,ObjectId = Schema.ObjectId;
 
 
 // {
@@ -69,4 +69,5 @@ const AdminSchema = mongoose.Schema({
     }
 );
 
-module.exports = mongoose.model('user_profile', AdminSchema);
+
+module.exports = mongoose.model('user_profile', AdminSchema, 'user_profile');

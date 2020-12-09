@@ -76,6 +76,9 @@ var transactionSchema = new Schema({
   txn_amount: {
     type: Number
   },
+  retantion_amount: {
+    type: Number,default:0
+  },
   currency: {
     type: String
   },

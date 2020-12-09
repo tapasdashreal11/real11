@@ -291,7 +291,7 @@ async function cricketPreview(decoded, liveScore, cb) {
             
             result.push({
                 'player_id': row.player_id,
-                'player_role': val.playing_role,
+                'player_role': val ? val.playing_role : '',
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
                 'player_credit': val['player_credit'],
@@ -559,7 +559,7 @@ async function footabllPreview(decoded, liveScore, cb) {
                 'player_role': val.player_role,
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
-                'player_credit': val['player_credit'],
+                'player_credit': val && val['player_credit'] ? toString(val['player_credit']):'0',
                 'selection_percent': "0%",  //percent,
                 'points': row.point,
                 'in_contest': (isInContest.length > 0) ? true : false,

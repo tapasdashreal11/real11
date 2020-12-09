@@ -24,6 +24,9 @@ var joinContestDetailsSchema = new Schema({
   bonus_amount: {
     type: Number
   },
+  retention_bonus: {
+    type: Number
+  },
   winning_amount: {
     type: Number
   },

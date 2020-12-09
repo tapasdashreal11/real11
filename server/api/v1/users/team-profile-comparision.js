@@ -31,19 +31,16 @@ module.exports = {
       }
       
       try {
+        let userProData =  await UserProfile.findOne({user_id : ObjectId(params.friend_user_id)});
 
         let userData =  await Users.findOne({_id : new ObjectId(params.friend_user_id), status : 1});
         if(userData) {
-
+          
           let sport = 1;
-          const contestCount = 0;
-          const paidContests = 0;
-          const totalMatches = 0;
-          const totalSeries = 0;
-          const totalMatchWin = 0;
+          
+          const totalPaidContest = userProData && userProData.paid_contest_count ? userProData.paid_contest_count : 0;
 
           let level	= 1;
-          let totalPaidContest = 0; //paidContests["0"] ? paidContests["0"].player_team_id : 0;
           if(totalPaidContest >= 0) {
             let ratio		=	totalPaidContest / 20;
             let ratioPlus	=	parseInt(ratio) + 1;
@@ -55,10 +52,10 @@ module.exports = {
           data.team_name  = userData.team_name || '';
           data.image  = userData.image ? `${config.imageBaseUrl}/users/${userData.image}` : '';
           data.contest_level  = level || '';
-          data.contest_finished  = 0; //contestCount["0"] ? contestCount["0"].player_team_id : 0;
-          data.total_match  = 0; //totalMatches["0"] ? totalMatches["0"].player_team_id : 0;
-          data.total_series  = 0; //totalSeries["0"] ? totalSeries["0"].player_team_id : 0;
-          data.series_wins  = 0; //totalMatchWin["0"] ? totalMatchWin["0"].player_team_id : 0;
+          data.contest_finished  = userProData && userProData.contest_finished ? userProData.contest_finished : 0;
+          data.total_match  = userProData && userProData.total_match ? userProData.total_match : 0;
+          data.total_series  = userProData && userProData.total_series ? userProData.total_series : 0;
+          data.series_wins  =  userProData && userProData.series_wins ? userProData.series_wins : 0;
 
           response['message'] = "Profile Comparison";
           response['data'] = data;
