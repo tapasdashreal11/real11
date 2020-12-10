@@ -1,4 +1,4 @@
-require('dotenv').config({path:"/home/ubuntu/real11-node/.env"})
+//require('dotenv').config({path:"/home/ubuntu/real11-node/.env"})
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
