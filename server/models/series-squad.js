@@ -103,6 +103,7 @@ var seriesSquadSchema = new Schema({
 	notification_status: { type: String, default: '' },
 	notification_title: { type: String, default: '' },
 	contest_count: { type: Number, default: 0 },
+	xfactors:{type:Array,default:[]},
 	players: { type: Array, default: [] },
 	playing_11: { type: Array, default: [] },
 	parent_id: { type: Number },

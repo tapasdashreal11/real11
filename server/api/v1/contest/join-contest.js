@@ -426,49 +426,59 @@ module.exports = async (req, res) => {
                                                                         };
                                                                         let sortm = { createdAt: -1 }
                                                                         let serverTimeu = moment(Date.now()).format(config.DateFormat.datetime);
-                                                                        redis.getRedis(matchContestUserKey, function (err, contestData) { // Get Redis
+                                                                       await redis.getRedis(matchContestUserKey, function (err, contestData) { // Get Redis
                                                                             if (!contestData) {
                                                                                 getMatchRedisData(0, { "user_id": user_id, "pagesize": 25 }, {}, sortm, match_sport, function (results) {
                                                                                     results['server_time'] = serverTimeu;
+                                                                                    console.log("Join contest data in redis when data is empty****",results);
                                                                                     redis.setRedis(matchContestUserKey, results);
                                                                                 })
                                                                             } else {
-                                                                                SeriesSquad.findOne({ 'match_id': parseInt(match_id), 'sport': match_sport, 'series_id': parseInt(series_id) }).then(function (data) {
+                                                                                SeriesSquad.findOne({ 'match_id': parseInt(match_id), 'sport': match_sport, 'series_id': parseInt(series_id) }).then(async function (data) {
                                                                                     let conIndex = _.findIndex(contestData.upcoming_match, { "match_id": decoded['match_id'] });
                                                                                     if (conIndex < 0) {
-                                                                                        var newLiveArray = {
-                                                                                            "_id": mycontId || 0,
-                                                                                            "match_id": parseInt(match_id),
-                                                                                            "series_id": parseInt(series_id),
-                                                                                            "match_status": "Not Started",
-                                                                                            "local_team_id": parseInt(data.localteam_id),
-                                                                                            "local_team_name": data.localteam_short_name || data.localteam,
-                                                                                            // "local_team_flag": config.imageBaseUrl + data.local_flag || "",
-                                                                                            "visitor_team_id": parseInt(data.visitorteam_id),
-                                                                                            "visitor_team_name": data.visitorteam_short_name || data.visitorteam,
-                                                                                            // "visitor_team_flag": config.imageBaseUrl + data.local_flag || "",
-                                                                                            "local_team_flag": data.local_flag ? config.imageBaseUrl + '/' + data.local_flag : "",
-                                                                                            "visitor_team_flag": data.visitor_flag ? config.imageBaseUrl + '/' + data.visitor_flag : "",
-                                                                                            "series_name": data.series_name,
-                                                                                            "star_date": moment(data.time).format("YYYY-MM-DD"),
-                                                                                            "star_time": moment(data.time).format("HH:mm"),
-                                                                                            "server_time": serverTimeu,
-                                                                                            "sort_time": data.time,
-                                                                                            // "total_contest": totalContestKey
-                                                                                        };
-
-                                                                                        if (totalContestKey > 0) {
-                                                                                            newLiveArray['total_contest'] = totalContestKey;
+                                                                                        const mData = await MyContestModel.findOne({ match_id: parseInt(match_id),sport: match_sport, user_id: user_id },{_id:1});
+                                                                                        if(mData && mData._id){
+                                                                                            console.log("after join this is seires squad data*****");
+                                                                                            mycontId = mData._id
+                                                                                            var newLiveArray = {
+                                                                                                "_id": mycontId,
+                                                                                                "match_id": parseInt(match_id),
+                                                                                                "series_id": parseInt(series_id),
+                                                                                                "match_status": "Not Started",
+                                                                                                "local_team_id": parseInt(data.localteam_id),
+                                                                                                "local_team_name": data.localteam_short_name || data.localteam,
+                                                                                                // "local_team_flag": config.imageBaseUrl + data.local_flag || "",
+                                                                                                "visitor_team_id": parseInt(data.visitorteam_id),
+                                                                                                "visitor_team_name": data.visitorteam_short_name || data.visitorteam,
+                                                                                                // "visitor_team_flag": config.imageBaseUrl + data.local_flag || "",
+                                                                                                "local_team_flag": data.local_flag ? config.imageBaseUrl + '/' + data.local_flag : "",
+                                                                                                "visitor_team_flag": data.visitor_flag ? config.imageBaseUrl + '/' + data.visitor_flag : "",
+                                                                                                "series_name": data.series_name,
+                                                                                                "star_date": moment(data.time).format("YYYY-MM-DD"),
+                                                                                                "star_time": moment(data.time).format("HH:mm"),
+                                                                                                "server_time": serverTimeu,
+                                                                                                "sort_time": data.time,
+                                                                                                // "total_contest": totalContestKey
+                                                                                            };
+    
+                                                                                            if (totalContestKey > 0) {
+                                                                                                newLiveArray['total_contest'] = totalContestKey;
+                                                                                            }
+    
+                                                                                            contestData.upcoming_match.push(newLiveArray);
+    
+                                                                                            var newContDataSort = _.sortBy(contestData.upcoming_match, ['sort_time', 'desc']);
+    
+                                                                                            contestData.upcoming_match = newContDataSort;
+                                                                                            contestData['server_time'] = serverTimeu;
+    
+                                                                                            redis.setRedis(matchContestUserKey, contestData);
+                                                                                        } else {
+                                                                                            console.log("My Match contest id not found for after join *****",match_id);
+                                                                                            redis.redisObj.del(matchContestUserKey);
                                                                                         }
-
-                                                                                        contestData.upcoming_match.push(newLiveArray);
-
-                                                                                        var newContDataSort = _.sortBy(contestData.upcoming_match, ['sort_time', 'desc']);
-
-                                                                                        contestData.upcoming_match = newContDataSort;
-                                                                                        contestData['server_time'] = serverTimeu;
-
-                                                                                        redis.setRedis(matchContestUserKey, contestData);
+                                                                                        
 
                                                                                     } else {
                                                                                         if (totalContestKey > 0) {

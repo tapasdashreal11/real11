@@ -210,6 +210,7 @@ class PlayerTeamService {
                     "vice_captain_selected": '0%',
                     "player_record": "$playerRecord",
                     "playing_11": 1,
+                    "xfactors": 1,
                 }
             },
         ]).toArray((error, results) => {
@@ -237,6 +238,12 @@ class PlayerTeamService {
                                 playerData.is_playing_show = 0
                                 playerData.is_playing = 0
                             }
+                            if (playerData.xfactors && playerData.xfactors.length > 0) {
+                                playerData.is_xfactor = (playerData.xfactors.indexOf(playerData.player_id) > -1) ? 1 : 0;
+                            } else {
+                                playerData.is_xfactor = 0
+                            }
+
                             if (playerStats && playerStats[playerData.player_id]) {
 
                                 playerData.selected_by = (playerStats[playerData.player_id]["selectedBy"] && playerStats[playerData.player_id]["selectedBy"] != "NaN") ? `${playerStats[playerData.player_id]["selectedBy"]}%` : "0%";

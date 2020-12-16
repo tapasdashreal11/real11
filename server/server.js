@@ -1,4 +1,4 @@
-require('dotenv').config({path:"/home/ubuntu/node/.env"});
+require('dotenv').config()
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');

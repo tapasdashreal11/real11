@@ -254,7 +254,7 @@ const sendSMTPMail = (to, subject, message) => {
     };
       
     transporter.sendMail(mailOptions, function(error, info) {
-      if (err) {
+      if (error) {
         console.log(error);
       } else {
         console.log(info);

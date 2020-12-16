@@ -36,7 +36,8 @@ class ModelService {
                                                 { $eq: [ "$category_id", "$$catId" ]},
                                                 { $eq: [ "$match_id",  filter.match_id ]},
                                                 { $eq: [ "$sport",  filter.sport ]},
-                                                { $ne: [ "$is_full", 1 ]}
+                                                { $ne: [ "$is_full", 1 ]},
+                                                { $ne: [ "$is_private", 1 ]},
                                             ]  
                                         }
                                     }
@@ -732,6 +733,9 @@ class ModelService {
                             "server_time": serverTime1,
                             "playing_11": "$playing_11",
                             "sort": "$sort",
+                            "xfactors":"$xfactors",
+                            "is_notification":{$cond: { if: { $eq: [ "$notification_status", '1' ] }, then: true, else: false }},
+                            "notification_title":"$notification_title"
                         }
                     }
                 ], (err, data) => {
