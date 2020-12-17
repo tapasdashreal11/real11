@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 const dbConf = require('../config').dbConnection;
 const { mongoURIFORANALYSIS } = dbConf;
-var conn = mongoose.createConnection(mongoURIFORANALYSIS,{ useNewUrlParser: true ,useUnifiedTopology: true});
+var conn = mongoose.createConnection(mongoURIFORANALYSIS,{ useNewUrlParser: true});
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
     

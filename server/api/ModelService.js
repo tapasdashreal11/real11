@@ -42,7 +42,7 @@ class ModelService {
                                         }
                                     }
                                 },
-                                {$limit : limit},
+                                //{$limit : limit},
                                 { $sort: {"created": -1}},                           
                                 { $project: { joined_users:1, contest:1,localteam: 1, visitorteam_id:1, series_id: 1, status:1, category_id:1, contest_id:1, invite_code : 1, match_id:1, before_time_bonus :1, after_time_bonus :1, usable_bonus_time:1 } }
                             ],
