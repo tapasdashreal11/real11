@@ -193,6 +193,7 @@ module.exports = async (req, res) => {
                                                                     retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
                                                                  }
                                                                  console.log('Join contest rdata*****',rdata);
+                                                                 console.log('calEntryFees****',calEntryFees,'retention_bonus_amount',retention_bonus_amount);
                                                              }
                                                             if(calEntryFees>0){
                                                                 const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount,retention_bonus_amount);
