@@ -17,6 +17,7 @@ module.exports = async (req, res) => {
         const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 1;
         let match_series_id = series_id ? parseInt(series_id) : 1;
+        console.log("match_series_id***",match_series_id);
         let filter = {
             "match_id": parseInt(match_id),
             "sport": match_sport,
