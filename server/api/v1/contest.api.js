@@ -987,6 +987,7 @@ module.exports = {
                 series_id:series_id
             }
             let match_sport = sport ? parseInt(sport) : 1;
+            let match_series_id = series_id ? parseInt(series_id) : 1;
             // //////console.log(req.userId);
             let userdata = await User.findOne({ _id: decoded['user_id'] })
             if (userdata) {
@@ -1021,7 +1022,7 @@ module.exports = {
                 let extraAmount = 0;
                 let cashBalance = 0;
                 let winningBalance = 0;
-                let redisKeyForRentation = 'app-analysis-' + decoded['user_id'] + '-' + decoded['match_id'] + '-' + match_sport;
+                let redisKeyForRentation = 'app-analysis-' + decoded['user_id'] + '-' + decoded['match_id'] + '_' + match_series_id  + '-' + match_sport;
                 let userOfferAmount = 0;
                 let retention_bonus_amount =0;
                 let calEntryFees = entryFee;

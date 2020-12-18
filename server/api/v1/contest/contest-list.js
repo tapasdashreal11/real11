@@ -13,9 +13,10 @@ const Helper = require('./../common/helper');
 module.exports = async (req, res) => {
     try {
         //console.log('call in redis***');
-        const { match_id, sport } = req.params;
+        const { match_id, sport,series_id } = req.params;
         const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 1;
+        let match_series_id = series_id ? parseInt(series_id) : 1;
         let filter = {
             "match_id": parseInt(match_id),
             "sport": match_sport,
@@ -96,14 +97,14 @@ module.exports = async (req, res) => {
                         joined_teams_count: Helper.parseContestTeamsJoined(joinedTeamsCount),
                         user_rentation_bonous: {}
                     };
-                    let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
+                    let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id + '_' + match_series_id + '-' + match_sport;
                     try {
                         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
                             if (data) {
                                 resObj['user_rentation_bonous'] = data;
                             } else {
                                 let fileds = { match_name: 1, match_id: 1, user_id: 1, series_id: 1, is_offer_type: 1, contest_ids: 1, sport: 1, offer_amount: 1, offer_percent: 1 };
-                                let userAnalysisData = await UserAnalysis.findOne({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }, fileds);
+                                let userAnalysisData = await UserAnalysis.findOne({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport,series_id:match_series_id }, fileds);
                                 if (userAnalysisData && userAnalysisData._id) {
                                     userAnalysisData.offer_amount = userAnalysisData.offer_amount ? parseFloat(userAnalysisData.offer_amount) : 0;
                                     userAnalysisData.offer_percent = userAnalysisData.offer_percent ? parseFloat(userAnalysisData.offer_percent) : 0;
