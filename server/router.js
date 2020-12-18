@@ -199,7 +199,7 @@ router.post('/api/v1/login', usersLogin);
 router.post('/api/v1/signup', usersSignup);
 router.get('/api/v1/banner-list', bannerList);
 //router.get('/api/v1/contest-list/:match_id/:sport?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
-router.get('/api/v1/contest-list/:match_id/:sport/series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
+router.get('/api/v1/contest-list/:match_id/:sport/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
