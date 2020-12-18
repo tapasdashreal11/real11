@@ -192,7 +192,7 @@ module.exports = async (req, res) => {
                                                                 console.log('pContestId***',pContestId,offerContests);
                                                                 console.log('userOfferAmount****',userOfferAmount);
 
-                                                                if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 &&  offerContests.length > 0  && rdata.is_offer_type == 2 && _.includes(offerContests,pContestId))){
+                                                                if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 &&  offerContests.length > 0  && rdata.is_offer_type == 2 && _.find(offerContests,pContestId))){
                                                                     console.log('userOfferAmount**** innnnnn',userOfferAmount);
                                                                     userOfferAmount = userOfferAmount.toFixed(2);
                                                                     calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
