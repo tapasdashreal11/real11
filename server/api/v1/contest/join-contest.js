@@ -369,6 +369,7 @@ module.exports = async (req, res) => {
                                                                         } else if (userBounousData.is_offer_type == 2){
                                                                             let percent = userBounousData.offer_percent ? parseFloat(userBounousData.offer_percent):0;
                                                                             await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
+                                                                            console.log('redisKeyForRentation**',redisKeyForRentation);
                                                                             redis.userAnalysisRedisObj.del(redisKeyForRentation);
                                                                              
                                                                         }
