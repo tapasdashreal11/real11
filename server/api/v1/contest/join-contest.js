@@ -187,10 +187,13 @@ module.exports = async (req, res) => {
                                                                 userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
                                                                 let pContestId = contest_id; //ObjectId(contest_id);
                                                                 let offerContests = rdata.contest_ids || [];
+                                                                console.log('userOfferAmount****',userOfferAmount);
                                                                 if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && offerContests.length > 0  && rdata.is_offer_type == 2 && _.includes(offerContests,pContestId))){
+                                                                    console.log('userOfferAmount**** innnnnn',userOfferAmount);
                                                                     userOfferAmount = userOfferAmount.toFixed(2);
                                                                     calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                                                     retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                                                    console.log('userOfferAmount**** in else',userOfferAmount,calEntryFees);
                                                                  }
                                                                  console.log('Join contest rdata*****',rdata);
                                                                  console.log('calEntryFees****',calEntryFees,'retention_bonus_amount',retention_bonus_amount);
