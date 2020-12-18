@@ -176,7 +176,7 @@ module.exports = async (req, res) => {
                                                         let calEntryFees = entryFee;
                                                         let retention_bonus_amount = 0;
                                                         let userBounousData = {};
-                                                        let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
+                                                        let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + series_id + '_'+ match_sport;
                                                         if (contestType == 'Paid') {
                                                             // work for user rentation and cal amount for data
                                                             
