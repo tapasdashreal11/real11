@@ -98,7 +98,7 @@ module.exports = async (req, res) => {
                         joined_teams_count: Helper.parseContestTeamsJoined(joinedTeamsCount),
                         user_rentation_bonous: {}
                     };
-                    let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id + '_' + match_series_id + '-' + match_sport;
+                    let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id + '-' + match_series_id + '-' + match_sport;
                     try {
                         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
                             if (data) {
