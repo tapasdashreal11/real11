@@ -366,12 +366,13 @@ module.exports = async (req, res) => {
                                                                             await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_amount": -retention_bonus_amount } });
                                                                             userBounousData.offer_amount = ((userBounousData.offer_amount) - retention_bonus_amount); 
                                                                             redis.setRedisForUserAnaysis(redisKeyForRentation,userBounousData); 
-                                                                        } else if (userBounousData.is_offer_type == 2){
+                                                                        } else if (userBounousData.is_offer_type == 2) {
                                                                             let percent = userBounousData.offer_percent ? parseFloat(userBounousData.offer_percent):0;
                                                                             await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
                                                                             console.log('redisKeyForRentation**',redisKeyForRentation);
                                                                             //redis.userAnalysisRedisObj.del(redisKeyForRentation);
-                                                                            redis.deleteRedisFavouriteContest(redisKeyForRentation);
+                                                                            userBounousData.offer_percent = 0;
+                                                                            redis.setRedisForUserAnaysis(redisKeyForRentation,userBounousData);
                                                                              
                                                                         }
                                                                         
