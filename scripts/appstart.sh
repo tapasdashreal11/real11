@@ -3,5 +3,5 @@
 
  cd /home/ubuntu/node
 
- pm2 restart node 
+ #pm2 restart node 
 
