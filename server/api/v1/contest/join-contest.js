@@ -371,13 +371,13 @@ module.exports = async (req, res) => {
                                                                             await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
                                                                             console.log('redisKeyForRentation**',redisKeyForRentation);
                                                                             //redis.userAnalysisRedisObj.del(redisKeyForRentation);
-                                                                            redis.userAnalysisRedisObj.del(redisKeyForRentation, function(err, response) {
+                                                                            await redis.userAnalysisRedisObj.del(redisKeyForRentation, function(err, response) {
                                                                                 if (response == 1) {
-                                                                                   console.log("Deleted Successfully!")
-                                                                                } else{
-                                                                                 console.log("Cannot delete")
+                                                                                   console.log("Redis Deleted Successfully!");
+                                                                                } else {
+                                                                                 console.log("Redis Cannot delete***",err);
                                                                                 }
-                                                                             })
+                                                                             });
                                                                              
                                                                         }
                                                                         
