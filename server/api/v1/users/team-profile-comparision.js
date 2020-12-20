@@ -52,11 +52,22 @@ module.exports = {
           data.team_name  = userData.team_name || '';
           data.image  = userData.image ? `${config.imageBaseUrl}/users/${userData.image}` : '';
           data.contest_level  = level || '';
-          data.contest_finished  = userProData && userProData.contest_finished ? userProData.contest_finished : 0;
-          data.total_match  = userProData && userProData.total_match ? userProData.total_match : 0;
-          data.total_series  = userProData && userProData.total_series ? userProData.total_series : 0;
-          data.series_wins  =  userProData && userProData.series_wins ? userProData.series_wins : 0;
+          
+          if(userData.user_type== 7 ||userData.user_type== 55 ){
 
+            data.contest_finished  = userProData && userProData.contest_finished ? (userProData.contest_finished >5 ?(parseInt(userProData.contest_finished/5)):(userProData.contest_finished)) : 0;
+            data.total_match  = userProData && userProData.total_match ? (userProData.total_match>5?(parseInt(userProData.total_match/5)):(userProData.total_match)) : 0;
+            data.total_series  = userProData && userProData.total_series ? (userProData.total_series>5?(parseInt(userProData.total_series/5)):(userProData.total_series)) : 0;
+            data.series_wins  =  userProData && userProData.series_wins ? (userProData.series_wins>5?(parseInt(userProData.series_wins/5)):(userProData.series_wins)) : 0;
+  
+          }else{
+            data.contest_finished  = userProData && userProData.contest_finished ? userProData.contest_finished : 0;
+            data.total_match  = userProData && userProData.total_match ? userProData.total_match : 0;
+            data.total_series  = userProData && userProData.total_series ? userProData.total_series : 0;
+            data.series_wins  =  userProData && userProData.series_wins ? userProData.series_wins : 0;
+  
+          }
+          
           response['message'] = "Profile Comparison";
           response['data'] = data;
           response['status'] = true;
