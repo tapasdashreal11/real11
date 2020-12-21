@@ -176,12 +176,12 @@ module.exports = async (req, res) => {
                                                         let calEntryFees = entryFee;
                                                         let retention_bonus_amount = 0;
                                                         let userBounousData = {};
-                                                        let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + series_id + '-'+ match_sport;
+                                                        let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id  + '-'+ match_sport;
                                                         if (contestType == 'Paid') {
                                                             // work for user rentation and cal amount for data
                                                             
                                                             let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1};
-                                                            let rdata = await UserAnalysis.findOne({ user_id: user_id,match_id:decoded['match_id'],series_id:decoded['series_id'],sport:match_sport},fileds);
+                                                            let rdata = await UserAnalysis.findOne({ user_id: user_id,match_id:decoded['match_id'],sport:match_sport},fileds);
                                                             if(rdata && rdata._id && entryFee>0){
                                                                 userBounousData = rdata;
                                                                 userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
