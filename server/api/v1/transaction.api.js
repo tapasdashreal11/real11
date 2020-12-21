@@ -446,7 +446,6 @@ module.exports = {
                                                 }
 
                                                 // Manage tnxdata
-                                                let extraPercentAmount   =   0;
                                                 if (txnData) {
                                                     if (decoded['coupon_id'] && decoded['discount_amount'] > 0) {
                                                         let couponCode = await PaymentOffers.findOne({ '_id': decoded['coupon_id'] });
@@ -485,11 +484,10 @@ module.exports = {
                                                                                 if (couponCode.coupon_type === 'extra') {
                                                                                     users.extra_amount = parseFloat(users.extra_amount) + parseFloat(discountAmount);
                                                                                     txnType = TransactionTypes.EXTRA_BONUS;
+                                                                                } else if(couponCode.coupon_type === 'extra_deposit') {
+                                                                                    users.cash_balance = parseFloat(users.cash_balance) + parseFloat(discountAmount);
+                                                                                    txnType = TransactionTypes.EXTRA_DEPOSITE;
                                                                                 } else {
-                                                                                    
-                                                                                    if(couponCode.deposit_percent && couponCode.deposit_percent > 0) {
-                                                                                        extraPercentAmount = parseFloat(couponCode.deposit_percent/100) * parseFloat(txnData.txn_amount)
-                                                                                    }
                                                                                     users.bonus_amount = parseFloat(users.bonus_amount) + parseFloat(discountAmount);
                                                                                     txnType = TransactionTypes.COUPON_BONUS
                                                                                 }
@@ -506,7 +504,7 @@ module.exports = {
                                                 }
                                                 let txn_status = false;
                                                 if (txnData) {
-                                                    users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount) + parseFloat(extraPercentAmount);
+                                                    users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
                                                     let res = await User.update({ '_id': decoded['user_id'] }, { $set: { cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
                                                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
 

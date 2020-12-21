@@ -12,7 +12,6 @@ const AdminSchema = mongoose.Schema({
     status: { type: Number, enum: [1,0], default: 1 },
     first_deposite: { type: Number, enum: [1,0], default: 0 },
     coupon_type: { type: String, default: '' },
-    deposit_percent: { type: Number, default: 0 },
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },

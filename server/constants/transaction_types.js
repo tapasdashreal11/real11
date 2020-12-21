@@ -18,5 +18,6 @@ module.exports = {
     MATCH_REFUND:17,
     TDS:18,
     EXTRA_BONUS: 19,
-    BONUS_WIN: 20
+    BONUS_WIN: 20,
+    EXTRA_DEPOSITE: 21
 }

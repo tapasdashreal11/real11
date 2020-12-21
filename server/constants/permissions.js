@@ -26,7 +26,8 @@ const TransactionTypesByValues =  [
   "Match Cancelled",
   "Tax Deducted at Source",
   "Extra Amount",
-  "Team clash bonus"
+  "Team clash bonus",
+  "Extra Deposite"
 ];
 
 module.exports = {
