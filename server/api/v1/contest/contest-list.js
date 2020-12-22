@@ -12,7 +12,7 @@ const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
 module.exports = async (req, res) => {
     try {
-        //console.log('call in redis***');
+        console.log('contest list from main api***');
         const { match_id, sport,series_id } = req.params;
         const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 1;
@@ -60,14 +60,19 @@ module.exports = async (req, res) => {
 
             let redisKeyForFavouriteContest = 'favourite-contest-' + user_id;
             try {
-                await redis.getRedisFavouriteContest(redisKeyForFavouriteContest, async (err, data) => {
-                    if (data) {
-                        userFavouriteContest = data;
+                await redis.getRedisFavouriteContest(redisKeyForFavouriteContest, async (err, favData) => {
+                    if (favData) {
+                        userFavouriteContest = favData;
+                        if(userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length){
+                            for (const cData of userFavouriteContest.contest_data) {
+                                cData.contest_id = ObjectId(cData.contest_id)
+                            }
+                        }
                     } else {
                         if (user_id) {
                             let userFavouriteConetsData = await FavouriteContest.findOne({ user_id: user_id, status: 1 });
                             if (userFavouriteConetsData && userFavouriteConetsData._id) {
-
+    
                                 redis.setRedisFavouriteContest(redisKeyForFavouriteContest, userFavouriteConetsData);
                                 userFavouriteContest = userFavouriteConetsData;
                             } else {
@@ -75,7 +80,6 @@ module.exports = async (req, res) => {
                                 userFavouriteContest = {};
                             }
                         }
-
                     }
                     for (const matchContests of match_contest_data) {
                         for (const contest of matchContests.contests) {
