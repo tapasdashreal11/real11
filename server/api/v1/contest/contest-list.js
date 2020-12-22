@@ -64,10 +64,14 @@ module.exports = async (req, res) => {
                     if (favData) {
                         userFavouriteContest = favData;
                         if(userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length){
-                            userFavouriteContest.contest_data.map(x => {if(x.contest_id) ObjectId(x.contest_id)});
+                            userFavouriteContest = userFavouriteContest.contest_data.map(x => {
+                                if(x.contest_id) ObjectId(x.contest_id)
+                                return x;
+                            });
+                            console.log('Redis Dtaa*****',favData);
                         }
                         
-                        console.log('Redis Dtaa*****',favData);
+                        
                     } else {
                         if (user_id) {
                             let userFavouriteConetsData = await FavouriteContest.findOne({ user_id: user_id, status: 1 });
