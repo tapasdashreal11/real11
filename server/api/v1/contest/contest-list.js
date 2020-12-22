@@ -67,10 +67,7 @@ module.exports = async (req, res) => {
                             for (const cData of userFavouriteContest.contest_data) {
                                 cData.contest_id = ObjectId(cData.contest_id)
                             }
-                            console.log('Redis Dtaa*****',favData);
                         }
-                        
-                        
                     } else {
                         if (user_id) {
                             let userFavouriteConetsData = await FavouriteContest.findOne({ user_id: user_id, status: 1 });
@@ -83,10 +80,7 @@ module.exports = async (req, res) => {
                                 userFavouriteContest = {};
                             }
                         }
-
                     }
-
-                    
                     for (const matchContests of match_contest_data) {
                         for (const contest of matchContests.contests) {
                             joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
