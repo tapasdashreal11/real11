@@ -81,6 +81,7 @@ module.exports = async (req, res) => {
 
                     
                     for (const matchContests of match_contest_data) {
+                        console.log('userFavouriteContest***',userFavouriteContest);
                         for (const contest of matchContests.contests) {
                             joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
                             contest.my_team_ids = myContestCount && _.filter(myContestCount, { contest_id: contest.contest_id }) ? _.filter(myContestCount, { contest_id: contest.contest_id }) : [];
