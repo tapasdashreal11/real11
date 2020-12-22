@@ -103,6 +103,7 @@ module.exports = {
 }
 
 async function cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
+    // console.log(liveMatch);return false;
     try {
         let data    =   [];
         let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
@@ -143,7 +144,9 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                     
                     // Get players Points 
                     let pointsArray = await PlayerRecord.getPlayerPointPreview(series_id, match_id, player_list, captain, viceCaptain, liveMatch.type, sport);
-    
+                    
+                    // console.log(pointsArray,'adassd');
+                    // return false;
                     for (let teamValue of playerTeamDetails) {
                         teamValue = playerData[teamValue];
                         if (teamValue) {
@@ -153,29 +156,29 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                             }
     
                             let point = 0;
-                            point =  pointsArray[teamValue.player_id] ?  pointsArray[teamValue.player_id] : 0
+                            point =  pointsArray[teamValue.player_id] ?  pointsArray[teamValue.player_id]['point'] : 0;
+                            let playerRole =  pointsArray[teamValue.player_id] ?  pointsArray[teamValue.player_id]['player_role'] : teamValue.playing_role;
                             // await PlayerRecord.getPlayerPoint(series_id, match_id, teamValue.player_id, captain, viceCaptain);
-                            
+                            // console.log(point);
                             let dreamPlayers = {}
-    
                             islocalTeam = (localPlayers.indexOf(teamValue.player_id) > -1) ? true : false;
                             playerDetail[teamKey] = {};
                             playerDetail[teamKey]['name'] = teamValue.player_name;
                             playerDetail[teamKey]['player_id'] = teamValue.player_id;
                             playerDetail[teamKey]['image'] = playerImage;
-                            playerDetail[teamKey]['role'] = teamValue.playing_role;
+                            playerDetail[teamKey]['role'] = playerRole; //teamValue.playing_role;
                             playerDetail[teamKey]['credits'] = teamValue.player_credit;
                             playerDetail[teamKey]['points'] = point;
                             playerDetail[teamKey]['is_local_team'] = islocalTeam;
                             playerDetail[teamKey]['in_dream_team'] = (dreamPlayers.length > 0) ? true : false;
     
-                            if (teamValue.playing_role.indexOf('Wicketkeeper') > -1) {
+                            if (playerRole.indexOf('Wicketkeeper') > -1) {
                                 totalWicketkeeper += 1;
-                            } else if (teamValue.playing_role.indexOf('Bowler') > -1) {
+                            } else if (playerRole.indexOf('Bowler') > -1) {
                                 totalBowler += 1;
-                            } else if (teamValue.playing_role.indexOf('Batsman') > -1) {
+                            } else if (playerRole.indexOf('Batsman') > -1) {
                                 totalBatsman += 1;
-                            } else if (teamValue.playing_role.indexOf('Allrounder') > -1) {
+                            } else if (playerRole.indexOf('Allrounder') > -1) {
                                 totalAllrounder += 1;
                             }
                             teamKey++;
@@ -264,7 +267,8 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                             }
 
                             let point = 0;
-                            point =  pointsArray[teamValue.player_id] ? pointsArray[teamValue.player_id] : 0
+                            point =  pointsArray[teamValue.player_id] ? pointsArray[teamValue.player_id]["point"] : 0;
+                            let playerRole =  pointsArray[teamValue.player_id] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.player_role;
                             
                             let dreamPlayers = {}
 
@@ -273,19 +277,19 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                             playerDetail[teamKey]['name'] = teamValue.player_name;
                             playerDetail[teamKey]['player_id'] = teamValue.player_id;
                             playerDetail[teamKey]['image'] = playerImage;
-                            playerDetail[teamKey]['role'] = teamValue.player_role;
+                            playerDetail[teamKey]['role'] = playerRole; //teamValue.player_role;
                             playerDetail[teamKey]['credits'] = (teamValue.player_credit).toString();
                             playerDetail[teamKey]['points'] = point;
                             playerDetail[teamKey]['is_local_team'] = islocalTeam;
                             playerDetail[teamKey]['in_dream_team'] = (dreamPlayers.length > 0) ? true : false;
 
-                            if (teamValue.player_role.indexOf('Defender') > -1) {
+                            if (playerRole.indexOf('Defender') > -1) {
                                 totalDefender += 1;
-                            } else if (teamValue.player_role.indexOf('Forward') > -1) {
+                            } else if (playerRole.indexOf('Forward') > -1) {
                                 totalForward += 1;
-                            } else if (teamValue.player_role.indexOf('Goalkeeper') > -1) {
+                            } else if (playerRole.indexOf('Goalkeeper') > -1) {
                                 totalGoalkeeper += 1;
-                            } else if (teamValue.player_role.indexOf('Midfielder') > -1) {
+                            } else if (playerRole.indexOf('Midfielder') > -1) {
                                 totalMidfielder += 1;
                             }
                             teamKey++;
@@ -324,7 +328,7 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
 async function getFootballPlayerPoint(series_id, match_id, player_ids, captain, viceCaptain, sport) {
     let point = 0;
 
-    let record = await LiveScore.find({ 'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport }, { 'point': 1, 'player_name': 1 , "player_id": 1}).sort({ _id: -1 });
+    let record = await LiveScore.find({ 'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport }, { 'point': 1, 'player_name': 1 , "player_id": 1,"player_role":1}).sort({ _id: -1 });
 
     let teamDataArray = {}
     if (record) {
@@ -341,7 +345,10 @@ async function getFootballPlayerPoint(series_id, match_id, player_ids, captain, 
                 point = point * viceCaptainPoint;
             }
             
-            teamDataArray[recordItem.player_id] = point;
+            // teamDataArray[recordItem.player_id] = point;
+            teamDataArray[recordItem.player_id] = [];
+            teamDataArray[recordItem.player_id]["point"] = point;
+            teamDataArray[recordItem.player_id]['player_role'] = recordItem['player_role'] ? recordItem['player_role'] : '';
         }
     }
     return teamDataArray
