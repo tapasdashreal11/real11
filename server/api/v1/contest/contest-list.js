@@ -60,12 +60,14 @@ module.exports = async (req, res) => {
 
             let redisKeyForFavouriteContest = 'favourite-contest-' + user_id;
             try {
-                let dddd = false;
                 await redis.getRedisFavouriteContest(redisKeyForFavouriteContest, async (err, favData) => {
                     if (favData) {
                         userFavouriteContest = favData;
+                        if(userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length){
+                            userFavouriteContest.contest_data.map(x => {if(x.contest_id) ObjectId(x.contest_id)});
+                        }
+                        
                         console.log('Redis Dtaa*****',favData);
-                        dddd = true;
                     } else {
                         if (user_id) {
                             let userFavouriteConetsData = await FavouriteContest.findOne({ user_id: user_id, status: 1 });
@@ -83,8 +85,6 @@ module.exports = async (req, res) => {
 
                     
                     for (const matchContests of match_contest_data) {
-                        if(dddd) console.log('userFavouriteContest**',userFavouriteContest);
-
                         for (const contest of matchContests.contests) {
                             joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
                             contest.my_team_ids = myContestCount && _.filter(myContestCount, { contest_id: contest.contest_id }) ? _.filter(myContestCount, { contest_id: contest.contest_id }) : [];
