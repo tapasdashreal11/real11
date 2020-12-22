@@ -64,10 +64,9 @@ module.exports = async (req, res) => {
                     if (favData) {
                         userFavouriteContest = favData;
                         if(userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length){
-                            userFavouriteContest = userFavouriteContest.contest_data.map(x => {
-                                if(x.contest_id) ObjectId(x.contest_id)
-                                return x;
-                            });
+                            for (const cData of userFavouriteContest.contest_data) {
+                                cData.contest_id = ObjectId(cData.contest_id)
+                            }
                             console.log('Redis Dtaa*****',favData);
                         }
                         
