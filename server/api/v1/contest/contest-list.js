@@ -12,7 +12,7 @@ const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
 module.exports = async (req, res) => {
     try {
-        //console.log('call in redis***');
+        console.log('contest list from main api***');
         const { match_id, sport,series_id } = req.params;
         const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 1;
