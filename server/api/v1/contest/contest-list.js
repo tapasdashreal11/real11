@@ -61,21 +61,22 @@ module.exports = async (req, res) => {
             let redisKeyForFavouriteContest = 'favourite-contest-' + user_id;
             try {
                 await redis.getRedisFavouriteContest(redisKeyForFavouriteContest, async (err, data) => {
-                    if (data) {
+                    /*if (data) {
                         userFavouriteContest = data;
                     } else {
-                        if (user_id) {
-                            let userFavouriteConetsData = await FavouriteContest.findOne({ user_id: user_id, status: 1 });
-                            if (userFavouriteConetsData && userFavouriteConetsData._id) {
+                        
 
-                                redis.setRedisFavouriteContest(redisKeyForFavouriteContest, userFavouriteConetsData);
-                                userFavouriteContest = userFavouriteConetsData;
-                            } else {
-                                redis.setRedisFavouriteContest(redisKeyForFavouriteContest, {});
-                                userFavouriteContest = {};
-                            }
+                    }*/
+                    if (user_id) {
+                        let userFavouriteConetsData = await FavouriteContest.findOne({ user_id: user_id, status: 1 });
+                        if (userFavouriteConetsData && userFavouriteConetsData._id) {
+
+                            redis.setRedisFavouriteContest(redisKeyForFavouriteContest, userFavouriteConetsData);
+                            userFavouriteContest = userFavouriteConetsData;
+                        } else {
+                            redis.setRedisFavouriteContest(redisKeyForFavouriteContest, {});
+                            userFavouriteContest = {};
                         }
-
                     }
                     for (const matchContests of match_contest_data) {
                         for (const contest of matchContests.contests) {

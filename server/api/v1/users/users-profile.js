@@ -51,7 +51,6 @@ module.exports = {
           data.image = user.image || '';
           data.email = user.email || '';
           data.contest_finished = userProData && userProData.contest_finished ? userProData.contest_finished : 0;    // (!_.isEmpty(contestCount)) ? contestCount["0"].player_team_id : 0;
-          data.total_match = userProData && userProData.total_match ? userProData.total_match : 0; //(!_.isEmpty(totalMatches)) ? totalMatches["0"].player_team_id : 0;
           data.total_series = userProData && userProData.total_series ? userProData.total_series : 0; // (!_.isEmpty(totalSeries)) ? totalSeries["0"].player_team_id : 0;
           data.series_wins = userProData && userProData.series_wins ? userProData.series_wins : 0; // (!_.isEmpty(totalMatchWin)) ? totalMatchWin["0"].player_team_id : 0;
           data.contest_level = level;
