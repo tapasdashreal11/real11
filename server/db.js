@@ -97,6 +97,6 @@ module.exports = {
    */
   getMongo: () => mongoose.connection.db,
 
-  getAnalysisDb:() =>  mongoose.createConnection(mongoURIFORANALYSIS,{ useNewUrlParser: true,useUnifiedTopology: true}),
+  getAnalysisDb:() =>  mongoose.createConnection(mongoURIFORANALYSIS,{ useNewUrlParser: true,useUnifiedTopology: false}),
 
 };
