@@ -80,6 +80,7 @@ module.exports = async (req, res) => {
           insertData.email = params.email;
           insertData.language = params.language;
           insertData.invite_code = params.invite_code;
+          insertData.clevertap_id = params.clevertap_id || '';
           insertData.refer_id = createUserReferal(10);
           // insertData.bonus_amount = 50;
   
