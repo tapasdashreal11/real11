@@ -606,6 +606,9 @@ module.exports = {
                                                 if (couponCode.coupon_type === 'extra') {
                                                     authUser.extra_amount = parseFloat(authUser.extra_amount) + parseFloat(discountAmount);
                                                     txnType = TransactionTypes.EXTRA_BONUS;
+                                                } else if(couponCode.coupon_type === 'extra_deposit') {
+                                                    authUser.cash_balance = parseFloat(authUser.cash_balance) + parseFloat(discountAmount);
+                                                    txnType = TransactionTypes.EXTRA_DEPOSITE;
                                                 } else {
                                                     authUser.bonus_amount = parseFloat(authUser.bonus_amount) + parseFloat(discountAmount);
                                                     txnType = TransactionTypes.COUPON_BONUS

@@ -170,6 +170,7 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
         "match_type": {$first: "$match_type"},
         "player_name": {$first: "$player_name"},
         "player_id": {$first: "$player_id"},
+        "player_role": {$first: "$player_role"},
       }
     },
     { $sort: { _id: -1 } }
@@ -201,8 +202,9 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
           point = point * viceCaptainPoint;
         }
       }
-
-      teamDataArray[recordItem.player_id] = point;
+      teamDataArray[recordItem.player_id] = [];
+      teamDataArray[recordItem.player_id]["point"]  =  point;
+      teamDataArray[recordItem.player_id]["player_role"]  = recordItem['player_role'] ? recordItem['player_role'] : '';
     }
   }
   return teamDataArray
