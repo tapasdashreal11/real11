@@ -1,4 +1,5 @@
-require('dotenv').config()
+//require('dotenv').config({path:"/Users/shashi_real11/Desktop/new-repo-code/nodereal11/.env"})
+require('dotenv').config({path:"/home/ubuntu/node/.env"})
 const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
