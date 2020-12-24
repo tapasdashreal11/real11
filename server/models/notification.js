@@ -9,7 +9,7 @@ var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
 const AdminSchema = mongoose.Schema({
-  nitification_type: Number,
+  notification_type: Number,
   unique_string: String,
   user_id: {
     type: ObjectId
