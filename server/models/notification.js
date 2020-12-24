@@ -5,12 +5,15 @@ const mongoose = require('mongoose');
 // {"id":"1","user_id":"33424","nitification_type":"3","unique_string":"",
 // "title":"Transaction","notification":"Your transaction is successful.",
 // "match_data":"","date":"2019-06-18","status":"1","is_send":"1"}
-
+var Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
 
 const AdminSchema = mongoose.Schema({
   nitification_type: String,
   unique_string: String,
-  user_id: String,
+  user_id: {
+    type: ObjectId
+  },
  
   title: String,
   notification: String,
@@ -27,4 +30,4 @@ const AdminSchema = mongoose.Schema({
 );
 
 // AdminSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model('Notification', AdminSchema);
+module.exports = mongoose.model('Notification', AdminSchema,'notifications');

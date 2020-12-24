@@ -1,6 +1,6 @@
 const async = require('async');
 const Notifications = require("../../../models/notification");
-const { ObjectId } = require('mongodb');
+const ObjectId = require('mongoose').Types.ObjectId;
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 const _ = require('lodash');
@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
     let userId = req.userId;
 
     try {
-      let result = await Notifications.find({ user_id: userId }).sort({ _id: -1 }).limit(25);
+      let result = await Notifications.find({ user_id: ObjectId(userId) }).sort({ _id: -1 }).limit(25);
 
       if (!_.isEmpty(result)) {
         response["message"] = null;
