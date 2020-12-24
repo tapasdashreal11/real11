@@ -12,7 +12,6 @@ module.exports = async (req, res) => {
     var response = { status: false, message: "Invalid Request", data: {} };
     let params = req.body;
     let userId = req.userId;
-
     try {
       let result = await Notifications.find({ user_id: ObjectId(userId) }).sort({ _id: -1 }).limit(25);
 

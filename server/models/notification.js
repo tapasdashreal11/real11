@@ -9,18 +9,18 @@ var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 
 const AdminSchema = mongoose.Schema({
-  nitification_type: String,
+  nitification_type: Number,
   unique_string: String,
   user_id: {
     type: ObjectId
   },
- 
   title: String,
   notification: String,
   match_data: String,
   date: String,  
-  is_send: { type: String, enum: [1,0] },
-  status: { type: String, enum: [1,0] }  
+  retention_bonous: { type: Object,default:{}},
+  is_send: { type: Number, enum: [1,0] },
+  status: { type: Number, enum: [1,0] }  
     
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
