@@ -17,7 +17,7 @@ const AdminSchema = mongoose.Schema({
   title: String,
   notification: String,
   match_data: String,
-  date: String,  
+  date: Date,  
   retention_bonous: { type: Object,default:{}},
   is_send: { type: Number, enum: [1,0] },
   status: { type: Number, enum: [1,0] }  
