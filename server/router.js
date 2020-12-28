@@ -61,9 +61,11 @@ const askToAakash = require('./api/v1/users/ask-to-aakash-api');
 
 const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
 const  joinContest  = require('./api/v1/contest/join-contest');
+const  joinContestNew  = require('./api/v1/contest/join-contest');
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
 const  contestList  = require('./api/v1/contest/contest-list');
+const  contestListNew  = require('./api/v1/contest/contest-list');
 const  { contestDetailNew,contestLeaderboard, contestDetail }  = require('./api/v1/contest/contest-detail');
 const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breakup');
 const  { applyContestInviteCode }  = require('./api/v1/contest/apply-contest-invite-code');
@@ -200,6 +202,7 @@ router.post('/api/v1/signup', usersSignup);
 router.get('/api/v1/banner-list', bannerList);
 //router.get('/api/v1/contest-list/:match_id/:sport?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
+router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
@@ -231,6 +234,7 @@ router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.
 router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
+router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNew);
 router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
