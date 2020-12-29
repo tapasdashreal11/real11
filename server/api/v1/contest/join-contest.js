@@ -548,7 +548,7 @@ module.exports = async (req, res) => {
                                             let response = {};
                                             await session.abortTransaction();
                                             session.endSession();
-                                           // console.log("error in catch***",errorr);
+                                            console.log("error in catch***",errorr);
                                             var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
                                             if (MatchContestData) {
                                                 response.status = false;
