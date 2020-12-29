@@ -97,13 +97,13 @@ module.exports = async (req, res) => {
 
                                     if (MatchContestData) {
                                         response.status = false;
-                                        response.message = "This contest is full, please join other contest.";
+                                        response.message = "1 This contest is full, please join other contest.";
                                         response.data = { contest_id: MatchContestData.contest_id };
-                                        response.error_code = null;
+                                        response.error_code = null; 
                                         return res.json(response);
                                     } else {
                                         response.status = false;
-                                        response.message = "This contest is full, please join other contest.";
+                                        response.message = "2 This contest is full, please join other contest.";
                                         response.error_code = null;
                                         return res.json(response);
                                     }
@@ -135,7 +135,7 @@ module.exports = async (req, res) => {
                                                     session.endSession();
                                                     let response = {};
                                                     response.status = false;
-                                                    response.message = "This contest is full, please join other contest.";
+                                                    response.message = "3 This contest is full, please join other contest.";
                                                     response.error_code = null;
                                                     return res.json(response);
                                                 }
@@ -521,13 +521,13 @@ module.exports = async (req, res) => {
                                                     var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
                                                     if (MatchContestData) {
                                                         response.status = false;
-                                                        response.message = "This contest is full, please join other contest.";
+                                                        response.message = "4 This contest is full, please join other contest.";
                                                         response.data = { contest_id: MatchContestData.contest_id };
                                                         response.error_code = null;
                                                         return res.json(response);
                                                     } else {
                                                         response.status = false;
-                                                        response.message = "This contest is full, please join other contest.";
+                                                        response.message = "5 This contest is full, please join other contest.";
                                                         response.error_code = null;
                                                         return res.json(response);
                                                     }
@@ -539,7 +539,7 @@ module.exports = async (req, res) => {
                                                     // console.log('Error in else *****');
                                                     let response = {};
                                                     response.status = false;
-                                                    response.message = "This contest is full, please join other contest.";
+                                                    response.message = "6 This contest is full, please join other contest.";
                                                     response.error_code = null;
                                                     return res.json(response);
                                             }
@@ -552,13 +552,13 @@ module.exports = async (req, res) => {
                                             var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
                                             if (MatchContestData) {
                                                 response.status = false;
-                                                response.message = "This contest is full, please join other contest.";
+                                                response.message = "7 This contest is full, please join other contest.";
                                                 response.data = { contest_id: MatchContestData.contest_id };
                                                 response.error_code = null;
                                                 return res.json(response);
                                             } else {
                                                 response.status = false;
-                                                response.message = "This contest is full, please join other contest.";
+                                                response.message = "8 This contest is full, please join other contest.";
                                                 response.error_code = null;
                                                 return res.json(response);
                                             }
