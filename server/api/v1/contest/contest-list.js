@@ -80,6 +80,8 @@ module.exports = async (req, res) => {
                             }
                         }
                     }
+                    console.log('list*********1');
+
                     for (const matchContests of match_contest_data) {
                         for (const contest of matchContests.contests) {
                             joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
@@ -87,7 +89,7 @@ module.exports = async (req, res) => {
                             //contest.is_favourite = userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length > 0 && _.find(userFavouriteContest.contest_data, { contest_id: contest.contest_id }) ? true : false;
                         }
                     }
-
+                    console.log('list*********2');
                     redis.redisObj.set(`${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`, JSON.stringify(joinedTeamsCount));
                     redis.redisObj.set('user-contest-teamIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(Helper.parseUserTeams(userTeamIds)));
                     redis.redisObj.set('user-contest-joinedContestIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(joinedContestIds));
@@ -104,6 +106,7 @@ module.exports = async (req, res) => {
                     };
                     let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id +  '-' + match_sport;
                     try {
+                        console.log('list*********3');
                         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
                             if (data) {
                                 resObj['user_rentation_bonous'] = data;
@@ -120,10 +123,12 @@ module.exports = async (req, res) => {
                                     resObj['user_rentation_bonous'] = {};
                                 }
                             }
+                            console.log('list*********4',resObj);
                             var finalResult = ApiUtility.success(resObj);
                             return res.send(finalResult);
                         });
                     } catch (err) {
+                        console.log('list*********errrrr');
                         var finalResult = ApiUtility.success(resObj);
                         return res.send(finalResult);
                     }
