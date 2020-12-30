@@ -40,6 +40,7 @@ module.exports = async (req, res) => {
             let joinedContestIds = [];
             let joinedTeamsCount = {};
             let userFavouriteContest = {};
+            console.log('listdddddd*****');
             if (user_id) {
                 myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : 0;
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
