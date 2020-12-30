@@ -17,14 +17,13 @@ module.exports = async (req, res) => {
         const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 1;
         let match_series_id = series_id ? parseInt(series_id) : 1;
-        console.log("match_series_id***",match_series_id);
         let filter = {
             "match_id": parseInt(match_id),
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
         let queryArray = [
-            (new ModelService(Category)).getMatchContestLatest({ status: 1 }, filter, 5)
+            (new ModelService(Category)).getMatchContestLatestNew({ status: 1 }, filter, 5)
         ];
         if (user_id) {
             queryArray.push(
@@ -85,7 +84,7 @@ module.exports = async (req, res) => {
                         for (const contest of matchContests.contests) {
                             joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
                             contest.my_team_ids = myContestCount && _.filter(myContestCount, { contest_id: contest.contest_id }) ? _.filter(myContestCount, { contest_id: contest.contest_id }) : [];
-                            contest.is_favourite = userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length > 0 && _.find(userFavouriteContest.contest_data, { contest_id: contest.contest_id }) ? true : false;
+                            //contest.is_favourite = userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length > 0 && _.find(userFavouriteContest.contest_data, { contest_id: contest.contest_id }) ? true : false;
                         }
                     }
 
@@ -100,7 +99,8 @@ module.exports = async (req, res) => {
                         joined_contest_ids: joinedContestIds,
                         user_team_ids: Helper.parseUserTeams(userTeamIds),
                         joined_teams_count: Helper.parseContestTeamsJoined(joinedTeamsCount),
-                        user_rentation_bonous: {}
+                        user_rentation_bonous: {},
+                        user_favourite_contest: userFavouriteContest || {}
                     };
                     let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id +  '-' + match_sport;
                     try {
