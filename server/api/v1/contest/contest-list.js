@@ -31,7 +31,9 @@ module.exports = async (req, res) => {
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec()
             )
         }
+        console.log('listdddddd11*****');
         const mcResult = await Promise.all(queryArray);
+        console.log('listdddddd*after****',mcResult);
         if (mcResult && mcResult.length > 0) {
             let myTeamsCount = 0;
             let myContestCount = [];
@@ -137,6 +139,7 @@ module.exports = async (req, res) => {
 
                 });
             } catch (errs) {
+                console.log('listdddddd*after****errs',errs);
                 return res.send(ApiUtility.failed('Something went wrong!!'));
             }
 
@@ -147,6 +150,7 @@ module.exports = async (req, res) => {
         }
 
     } catch (error) {
+        console.log('listdddddd*after****error',error);
         return res.send(ApiUtility.failed('Something went wrong!!'));
     }
 
