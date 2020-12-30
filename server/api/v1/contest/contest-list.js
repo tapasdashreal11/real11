@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
             is_full: { $ne: 1 }
         };
         let queryArray = [
-            (new ModelService(Category)).getMatchContestLatestNew({ status: 1 }, filter, 5)
+            (new ModelService(Category)).getMatchContestLatest({ status: 1 }, filter, 5)
         ];
         if (user_id) {
             queryArray.push(
