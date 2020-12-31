@@ -12,7 +12,6 @@ const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
 module.exports = async (req, res) => {
     try {
-        console.log('contest list from main api***');
         const { match_id, sport,series_id } = req.params;
         const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 1;
@@ -31,9 +30,7 @@ module.exports = async (req, res) => {
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec()
             )
         }
-        console.log('listdddddd11*****');
         const mcResult = await Promise.all(queryArray);
-        console.log('listdddddd*after****',mcResult);
         if (mcResult && mcResult.length > 0) {
             let myTeamsCount = 0;
             let myContestCount = [];
@@ -42,13 +39,10 @@ module.exports = async (req, res) => {
             let joinedContestIds = [];
             let joinedTeamsCount = {};
             let userFavouriteContest = {};
-            console.log('listdddddd*****');
             if (user_id) {
                 myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : 0;
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
-                //console.log(myContestCount);
-
-
+                
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
 
@@ -83,8 +77,7 @@ module.exports = async (req, res) => {
                             }
                         }
                     }
-                    console.log('list*********1');
-
+                    
                     for (const matchContests of match_contest_data) {
                         for (const contest of matchContests.contests) {
                             joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
@@ -92,7 +85,6 @@ module.exports = async (req, res) => {
                             //contest.is_favourite = userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length > 0 && _.find(userFavouriteContest.contest_data, { contest_id: contest.contest_id }) ? true : false;
                         }
                     }
-                    console.log('list*********2');
                     redis.redisObj.set(`${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`, JSON.stringify(joinedTeamsCount));
                     redis.redisObj.set('user-contest-teamIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(Helper.parseUserTeams(userTeamIds)));
                     redis.redisObj.set('user-contest-joinedContestIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(joinedContestIds));
@@ -109,7 +101,6 @@ module.exports = async (req, res) => {
                     };
                     let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id +  '-' + match_sport;
                     try {
-                        console.log('list*********3');
                         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
                             if (data) {
                                 resObj['user_rentation_bonous'] = data;
@@ -126,12 +117,10 @@ module.exports = async (req, res) => {
                                     resObj['user_rentation_bonous'] = {};
                                 }
                             }
-                            console.log('list*********4',resObj);
                             var finalResult = ApiUtility.success(resObj);
                             return res.send(finalResult);
                         });
                     } catch (err) {
-                        console.log('list*********errrrr');
                         var finalResult = ApiUtility.success(resObj);
                         return res.send(finalResult);
                     }
@@ -139,18 +128,16 @@ module.exports = async (req, res) => {
 
                 });
             } catch (errs) {
-                console.log('listdddddd*after****errs',errs);
+                console.log('contest list error in catch',errs);
                 return res.send(ApiUtility.failed('Something went wrong!!'));
             }
-
-
 
         } else {
             return res.send(ApiUtility.failed('Something went wrong!!'));
         }
 
     } catch (error) {
-        console.log('listdddddd*after****error',error);
+        console.log('contest list error in catch',error);
         return res.send(ApiUtility.failed('Something went wrong!!'));
     }
 
