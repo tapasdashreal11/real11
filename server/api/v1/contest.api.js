@@ -1036,10 +1036,10 @@ module.exports = {
                             console.log('userOfferAmount',userOfferAmount);
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
-                            let prContestId = matchContestData && matchContestData.parent_contest_id ? matchContestData.parent_contest_id:pContestId;
+                            let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
                             console.log('prContestId***',prContestId);
                             console.log('pContestId***',pContestId);
-                            if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) ||_.includes(offerContests,prContestId)))){
+                            if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) || _.includes(offerContests,prContestId)))){
                                 calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                 retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
                              }    
