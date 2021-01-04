@@ -1071,6 +1071,7 @@ module.exports = {
                             }
                             cashBalance = userdata.cash_balance;
                             winningBalance = userdata.winning_balance;
+                            console.log("userdata.winning_balance***",userdata.winning_balance);
                         }
                         data['cash_balance'] = (cashBalance) ? cashBalance : 0;
                         data['winning_balance'] = (winningBalance) ? winningBalance : 0;
