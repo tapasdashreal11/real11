@@ -1031,14 +1031,13 @@ module.exports = {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                         if (rdata && entryFee>0) {
                             console.log('popup redis before join contest *********');
-                            console.log(rdata);
+                            //console.log(rdata);
                             userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
                             console.log('userOfferAmount',userOfferAmount);
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
                             let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
-                            console.log('prContestId***',prContestId);
-                            console.log('pContestId***',pContestId);
+                            
                             if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) || _.includes(offerContests,prContestId)))){
                                 calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                 retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
@@ -1081,6 +1080,7 @@ module.exports = {
                         data['calculated_entry_fee'] = (calEntryFees) ? parseFloat(calEntryFees.toFixed(2)) : 0;
                         data['usable_bonus_percent'] = 0; //adminPer;
                         data1 = data;
+                        console.log('data*****',data)
                         res.send(ApiUtility.success(data1)); 
                     });
                 } catch (err) {
