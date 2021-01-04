@@ -115,6 +115,7 @@ const AdminSchema = mongoose.Schema({
     affiliate_amount : { type: Number, default: 0 },
     ip_address:{ type:String },
     clevertap_id:{ type:String,default: '' },
+    appsflayer_id:{ type:String,default: '' },
     instant_withdraw: { type: Number, enum: [1,0], default: 0 },
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
