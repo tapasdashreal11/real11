@@ -81,7 +81,7 @@ module.exports = async (req, res) => {
                     for (const matchContests of match_contest_data) {
                         for (const contest of matchContests.contests) {
                             joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
-                            //contest.my_team_ids = myContestCount && _.filter(myContestCount, { contest_id: contest.contest_id }) ? _.filter(myContestCount, { contest_id: contest.contest_id }) : [];
+                            contest.my_team_ids = []; //myContestCount && _.filter(myContestCount, { contest_id: contest.contest_id }) ? _.filter(myContestCount, { contest_id: contest.contest_id }) : [];
                             //contest.is_favourite = userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length > 0 && _.find(userFavouriteContest.contest_data, { contest_id: contest.contest_id }) ? true : false;
                         }
                     }
