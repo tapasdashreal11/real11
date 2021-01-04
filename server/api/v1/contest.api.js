@@ -1016,7 +1016,7 @@ module.exports = {
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
-                console.log("useabl offer***",useableBonusPer);
+                console.log("useabl offer***",useableBonusPer,match_id);
                 let useAmount = eval((useableBonusPer / 100) * entryFee);
                 // ////////console.log(useAmount);
                 let usableAmt = 0;
