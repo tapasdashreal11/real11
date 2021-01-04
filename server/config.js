@@ -68,21 +68,21 @@ config.mobikwik = {
 }
 
 // Sender Email Credentials and configurations
+// config.smtp = {
+//   port: "587",
+//   username: 'info@real11.com',
+//   password: '4yi&I!Z.lPXq',
+//   fromEmail:'info@real11.com',
+//   host: "mailer.datanetfantasy.co.in"
+// }
+
 config.smtp = {
   port: "587",
-  username: 'info@real11.com',
-  password: '4yi&I!Z.lPXq',
-  fromEmail:'info@real11.com',
-  host: "mailer.datanetfantasy.co.in"
+  username: 'marketinglyg7r0',
+  password: 'marketinglyg7r0_070e6285170a1f31595e0e7f7b3e8db7',
+  fromEmail: "info@mail.real11.com", //'info@real11.com',
+  host: "smtp.pepipost.com"
 }
-// config.smtp = {
-//   port: "",
-//   protocol: "",
-//   service: 'SendGrid',
-//   username: 'rajatjain40610',
-//   password: 'digitech40610',
-//   fromEmail:'rajatjain4061@gmail.com'
-// }
 
 config.auth = {
   'facebook': {

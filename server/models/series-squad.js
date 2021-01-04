@@ -78,7 +78,7 @@ var seriesSquadSchema = new Schema({
 		type: String
 	},
 	pdf_created: {
-		type: Date
+		type: Number
 	},
 	localteam_short_name: {
 		type: String
@@ -109,6 +109,12 @@ var seriesSquadSchema = new Schema({
 	parent_id: { type: Number },
 	youtuber_distributed: { type: Boolean, default: 0 },
 	inning_number: { type: Number },
+	venue_name: { type: String, default: "" },
+	venue_id: { type: Number, default: 0 },
+	time_zone: { type: String, default: "" },
+	event_name: { type: String, default:"" },
+	league_code: { type: String, default:"" },
+	end_date: { type: Date },
 }, {
 	timestamps: true
 });

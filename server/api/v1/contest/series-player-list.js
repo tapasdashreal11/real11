@@ -559,7 +559,7 @@ async function footabllPreview(decoded, liveScore, cb) {
                 'player_role': val.player_role,
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
-                'player_credit': val && val['player_credit'] ? toString(val['player_credit']):'0',
+                'player_credit': val && val['player_credit'] ? val['player_credit'].toString() : '0',
                 'selection_percent': "0%",  //percent,
                 'points': row.point,
                 'in_contest': (isInContest.length > 0) ? true : false,
