@@ -978,6 +978,7 @@ module.exports = {
             let data1 = {};
             //let sport = 1;
             let setting = config;
+            let matchContestData = {};
             const { contest_id, entry_fee, match_id , series_id,sport } = req.body;
             let decoded = {
                 user_id: req.userId,
@@ -996,7 +997,7 @@ module.exports = {
                 let entryFee = 0;
                 if (decoded['contest_id']) {
                     let contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
-                    let matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'], match_id: match_id });
+                     matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'], match_id: match_id });
                     entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                     if (matchContestData && matchContestData.usable_bonus_time) {
                         //////console.log("matchInviteCode", matchContest, moment().isBefore(matchContest.usable_bonus_time))
@@ -1035,7 +1036,8 @@ module.exports = {
                             console.log('userOfferAmount',userOfferAmount);
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
-                            if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && _.includes(offerContests,pContestId))){
+                            let prContestId = matchContestData && matchContestData.parent_contest_id ? matchContestData.parent_contest_id:pContestId;
+                            if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) ||_.includes(offerContests,prContestId)))){
                                 calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                 retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
                              }    

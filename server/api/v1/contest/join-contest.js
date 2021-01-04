@@ -189,9 +189,10 @@ module.exports = async (req, res) => {
                                                                 let offerContests = rdata && rdata.contest_ids && (rdata.contest_ids).length>0 ? rdata.contest_ids.map(itm => {
                                                                     return ObjectId(itm)
                                                                 }):[];
+                                                               let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id):pContestId;
                                                                 
 
-                                                                if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 &&  offerContests.length > 0  && rdata.is_offer_type == 2 && _.find(offerContests,pContestId))){
+                                                                if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 &&  offerContests.length > 0  && rdata.is_offer_type == 2 && ( _.find(offerContests,pContestId) ||  _.find(offerContests,prContestId)))){
                                                                     
                                                                     userOfferAmount = userOfferAmount.toFixed(2);
                                                                     calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
