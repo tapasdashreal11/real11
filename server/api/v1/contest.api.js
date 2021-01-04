@@ -1046,6 +1046,7 @@ module.exports = {
                         if (userdata) {
                             if (decoded['contest_id']) {
                                 if (useAmount > userdata.bonus_amount) {
+                                    console.log("userdata.bonus_amount***",userdata.bonus_amount);
                                     usableAmt = retention_bonus_amount > 0 ? 0 : userdata.bonus_amount;
                                 } else {
                                     usableAmt = retention_bonus_amount > 0 ? 0 : useAmount;
