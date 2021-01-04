@@ -1046,11 +1046,8 @@ module.exports = {
                                     usableAmt = 0;
                                 } else {
                                     if (useAmount > userdata.bonus_amount) {
-                                        
                                         usableAmt = userdata.bonus_amount;
-                                        console.log('useAmount**** if',useAmount,usableAmt);
                                     } else {
-                                        console.log('useAmount**** else',useAmount);
                                         usableAmt = useAmount;
                                     }
                                 }
