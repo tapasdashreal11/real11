@@ -44,7 +44,7 @@ class ModelService {
                                 },
                                 //{$limit : limit},
                                 { $sort: {"created": -1}},                           
-                                { $project: { joined_users:1, contest:1,localteam: 1, visitorteam_id:1, series_id: 1, status:1, category_id:1, contest_id:1, invite_code : 1, match_id:1, before_time_bonus :1, after_time_bonus :1, usable_bonus_time:1 } }
+                                { $project: { joined_users:1, contest:1,localteam: 1, visitorteam_id:1, series_id: 1, status:1, category_id:1, parent_contest_id:1,contest_id:1, invite_code : 1, match_id:1, before_time_bonus :1, after_time_bonus :1, usable_bonus_time:1 } }
                             ],
                             as: 'matchContest',
                         }
@@ -83,6 +83,7 @@ class ModelService {
                                     as: "sec",
                                     in: {
                                         "contest_id": "$$sec.contest_id",
+                                        "parent_contest_id":"$$sec.parent_contest_id",
                                         "entry_fee": "$$sec.contest.entry_fee",
                                         "prize_money": "$$sec.contest.winning_amount",
                                         "is_full": "$$sec.contest.is_full",
@@ -177,7 +178,7 @@ class ModelService {
                                 },
                                 //{$limit : limit},
                                 { $sort: {"created": -1}},                           
-                                { $project: { joined_users:1, contest:1,localteam: 1, visitorteam_id:1, series_id: 1, status:1, category_id:1, contest_id:1, invite_code : 1, match_id:1, before_time_bonus :1, after_time_bonus :1, usable_bonus_time:1 } }
+                                { $project: { joined_users:1, contest:1,localteam: 1, visitorteam_id:1, series_id: 1, status:1, category_id:1,parent_contest_id:1, contest_id:1, invite_code : 1, match_id:1, before_time_bonus :1, after_time_bonus :1, usable_bonus_time:1 } }
                             ],
                             as: 'matchContest',
                         }
@@ -216,6 +217,7 @@ class ModelService {
                                     as: "sec",
                                     in: {
                                         "contest_id": "$$sec.contest_id",
+                                        "parent_contest_id":"$$sec.parent_contest_id",
                                         "entry_fee": "$$sec.contest.entry_fee",
                                         "prize_money": "$$sec.contest.winning_amount",
                                         "is_full": "$$sec.contest.is_full",
