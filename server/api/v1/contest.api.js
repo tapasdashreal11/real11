@@ -1016,7 +1016,7 @@ module.exports = {
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
-                // ////////console.log(useableBonusPer);
+                console.log("useabl offer***",useableBonusPer);
                 let useAmount = eval((useableBonusPer / 100) * entryFee);
                 // ////////console.log(useAmount);
                 let usableAmt = 0;
@@ -1047,10 +1047,13 @@ module.exports = {
                             if (decoded['contest_id']) {
                                 if(retention_bonus_amount > 0){
                                     usableAmt = 0;
-                                }else{
+                                } else {
                                     if (useAmount > userdata.bonus_amount) {
+                                        
                                         usableAmt = userdata.bonus_amount;
+                                        console.log('useAmount**** if',useAmount,usableAmt);
                                     } else {
+                                        console.log('useAmount**** else',useAmount);
                                         usableAmt = useAmount;
                                     }
                                 }
