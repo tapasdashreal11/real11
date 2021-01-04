@@ -1045,11 +1045,14 @@ module.exports = {
                         }
                         if (userdata) {
                             if (decoded['contest_id']) {
-                                if (useAmount > userdata.bonus_amount) {
-                                    console.log("userdata.bonus_amount***",userdata.bonus_amount);
-                                    usableAmt = retention_bonus_amount > 0 ? 0 : userdata.bonus_amount;
-                                } else {
-                                    usableAmt = retention_bonus_amount > 0 ? 0 : useAmount;
+                                if(retention_bonus_amount > 0){
+                                    usableAmt = 0;
+                                }else{
+                                    if (useAmount > userdata.bonus_amount) {
+                                        usableAmt = userdata.bonus_amount;
+                                    } else {
+                                        usableAmt = useAmount;
+                                    }
                                 }
                                 let extraBalance = userdata.extra_amount || 0;
                                 let remainingFee = retention_bonus_amount > 0 ? calEntryFees : entryFee - usableAmt;
