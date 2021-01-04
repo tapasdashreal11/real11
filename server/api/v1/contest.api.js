@@ -997,7 +997,7 @@ module.exports = {
                 let entryFee = 0;
                 if (decoded['contest_id']) {
                     let contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
-                     matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'], match_id: match_id });
+                     matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                     entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                     if (matchContestData && matchContestData.usable_bonus_time) {
                         //////console.log("matchInviteCode", matchContest, moment().isBefore(matchContest.usable_bonus_time))
@@ -1016,7 +1016,6 @@ module.exports = {
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
-                console.log("useabl offer***",useableBonusPer,match_id);
                 let useAmount = eval((useableBonusPer / 100) * entryFee);
                 // ////////console.log(useAmount);
                 let usableAmt = 0;
@@ -1031,9 +1030,7 @@ module.exports = {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                         if (rdata && entryFee>0) {
                             console.log('popup redis before join contest *********');
-                            //console.log(rdata);
                             userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
-                            console.log('userOfferAmount',userOfferAmount);
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
                             let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
