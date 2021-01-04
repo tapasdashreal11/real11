@@ -77,7 +77,7 @@ module.exports = async (req, res) => {
                             }
                         }
                     }
-                    redis.setRedis(RedisKeys.MATCH_CONTEST_LIST + req.params.match_id, match_contest_data);
+                    
                     for (const matchContests of match_contest_data) {
                         for (const contest of matchContests.contests) {
                             joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
@@ -88,7 +88,7 @@ module.exports = async (req, res) => {
                     redis.redisObj.set(`${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`, JSON.stringify(joinedTeamsCount));
                     redis.redisObj.set('user-contest-teamIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(Helper.parseUserTeams(userTeamIds)));
                     redis.redisObj.set('user-contest-joinedContestIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(joinedContestIds));
-                    
+                    redis.setRedis(RedisKeys.MATCH_CONTEST_LIST + req.params.match_id, match_contest_data);
                     let resObj = {
                         match_contest: match_contest_data,
                         my_teams: myTeamsCount,
