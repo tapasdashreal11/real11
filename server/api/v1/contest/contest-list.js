@@ -72,7 +72,7 @@ module.exports = async (req, res) => {
                                 redis.setRedisFavouriteContest(redisKeyForFavouriteContest, userFavouriteConetsData);
                                 userFavouriteContest = userFavouriteConetsData;
                             } else {
-                                redis.setRedisFavouriteContest(redisKeyForFavouriteContest, {});
+                                //redis.setRedisFavouriteContest(redisKeyForFavouriteContest, {});
                                 userFavouriteContest = {};
                             }
                         }
@@ -113,7 +113,7 @@ module.exports = async (req, res) => {
                                     redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, userAnalysisData);
                                     resObj['user_rentation_bonous'] = userAnalysisData;
                                 } else {
-                                    redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, {});
+                                    //redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, {});
                                     resObj['user_rentation_bonous'] = {};
                                 }
                             }
