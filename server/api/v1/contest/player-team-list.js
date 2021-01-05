@@ -156,8 +156,8 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                             }
     
                             let point = 0;
-                            point =  pointsArray[teamValue.player_id] ?  pointsArray[teamValue.player_id]['point'] : 0;
-                            let playerRole =  pointsArray[teamValue.player_id] ?  pointsArray[teamValue.player_id]['player_role'] : teamValue.playing_role;
+                            point =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]['point'] ?  pointsArray[teamValue.player_id]['point'] : 0;
+                            let playerRole =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["player_role"] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.playing_role;
                             // await PlayerRecord.getPlayerPoint(series_id, match_id, teamValue.player_id, captain, viceCaptain);
                             // console.log(point);
                             let dreamPlayers = {}
@@ -267,8 +267,8 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                             }
 
                             let point = 0;
-                            point =  pointsArray[teamValue.player_id] ? pointsArray[teamValue.player_id]["point"] : 0;
-                            let playerRole =  pointsArray[teamValue.player_id] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.player_role;
+                            point =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["point"] ? pointsArray[teamValue.player_id]["point"] : 0;
+                            let playerRole =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["player_role"] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.player_role;
                             
                             let dreamPlayers = {}
 
