@@ -245,6 +245,7 @@ router.post('/api/v1/create-transaction-id', auth.authenticate.jwtLogin, createT
 router.get('/api/v1/joined-contest-matches/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatches);
 router.get('/api/v1/apply-contest-invite-code/:invite_code', auth.authenticate.jwtLogin, applyContestInviteCode);
 router.get('/api/v1/get-match-list/:sport?',  matchList);
+router.get('/api/v1/get-match-detail/:match_id/:sport/:series_id',  redis.cacheMiddle);
 router.post('/api/v1/team-profile-comparision', auth.authenticate.jwtLogin, teamProfileComparision);
 router.post('/api/v1/team-profile-paging', teamProfilePaging);
 
