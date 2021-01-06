@@ -43,7 +43,7 @@ module.exports = {
                 series_id: series_id,
                 match_id: match_id,
                 sport: sport,
-            }, { localteam_id: 1, time: 1, date: 1, type: 1 });
+            }, { localteam_id: 1, time: 1, date: 1, type: 1, visitorteam_id: 1 });
 
             if (!liveMatch) {
                 return res.send(ApiUtility.failed('Match Detail not found'));
@@ -219,7 +219,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
 async function footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
     try {
         let data    =   [];
-        let playerRecord = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, sport: sport });
+        let playerRecord = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport });
         if (playerRecord && playerRecord.length == 11) {
             let playerData = {};
             for (const value of playerRecord) {
