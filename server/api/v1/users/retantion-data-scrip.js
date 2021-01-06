@@ -7,13 +7,10 @@ module.exports = {
   favouriteContestCreate: async (req, res) => {
     try {
       var response = { status: false, message: "Invalid Request", data: {} };
-       console.log('test***');
       try {
         let {
             bulkdata
         } = req.body
-
-        console.log('test***1');
         if(bulkdata && _.isArray(bulkdata) && bulkdata.length>0){
             if(bulkdata){
                 for (const item of bulkdata) {
@@ -24,8 +21,6 @@ module.exports = {
                 
                 FavouriteContest.insertMany(bulkdata)
                 .then(function(mongooseDocuments) {
-                    console.log('test***3');
-                    console.log(mongooseDocuments);
                     for (const resItem of mongooseDocuments) {
                         let redisKeyForFavouriteContest = 'favourite-contest-' + resItem.user_id;
                         redis.setRedisFavouriteContest(redisKeyForFavouriteContest, resItem);
@@ -37,7 +32,7 @@ module.exports = {
                 })
                 .catch(function(err) {
                     /* Error handling */
-                    console.log('test***4');
+                    console.log('error in carch bulk',err);
                     return res.json(response);
                 });
             }
@@ -57,23 +52,19 @@ module.exports = {
   retentionBonousCreate: async (req, res) => {
     try {
       var response = { status: false, message: "Invalid Request", data: {} };
-       console.log('test***');
       try {
         let {
             bulkdata
         } = req.body
-
-        console.log('test***1');
         if(bulkdata && _.isArray(bulkdata) && bulkdata.length>0){
             if(bulkdata){
                 for (const item of bulkdata) {
-                    item.contest_ids = item.contest_ids.map(s => ObjectId(s));
+                    if(item && item.contest_ids && item.contest_ids.length>0){
+                        item.contest_ids = item.contest_ids.map(s => ObjectId(s));
+                    }
                 }
-                
                 UserAnalysis.insertMany(bulkdata)
                 .then(function(mongooseDocuments) {
-                    console.log('test***3');
-                    console.log(mongooseDocuments);
                     for (const resItem of mongooseDocuments) {
                         let redisKeyForUserAnalysis = 'app-analysis-' + resItem.user_id + '-' + resItem.match_id +  '-' + resItem.sport;
                         redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, resItem);
@@ -85,7 +76,7 @@ module.exports = {
                 })
                 .catch(function(err) {
                     /* Error handling */
-                    console.log('test***4');
+                    console.log('error in carch bulk',err);
                     return res.json(response);
                 });
             }
