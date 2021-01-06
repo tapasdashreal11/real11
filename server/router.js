@@ -59,6 +59,8 @@ const withdrawHistory = require('./api/v1/users/withdraw-history');
 const { joinedContestList } = require('./api/v1/contest/joined-contest-list');
 const askToAakash = require('./api/v1/users/ask-to-aakash-api');
 
+const { favouriteContestCreate } = require('./api/v1/users/retantion-data-scrip');
+
 const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
 const  joinContest  = require('./api/v1/contest/join-contest');
 const  joinContestNew  = require('./api/v1/contest/join-contest');
@@ -248,6 +250,7 @@ router.get('/api/v1/get-match-list/:sport?',  matchList);
 router.get('/api/v1/get-match-detail/:match_id/:sport/:series_id',  redis.cacheMiddle);
 router.post('/api/v1/team-profile-comparision', auth.authenticate.jwtLogin, teamProfileComparision);
 router.post('/api/v1/team-profile-paging', teamProfilePaging);
+router.post('/api/v1/favouite-create', favouriteContestCreate);
 
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
 router.get('/api/v1/app-setting', appSettingApi); 
