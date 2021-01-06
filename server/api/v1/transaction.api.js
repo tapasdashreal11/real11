@@ -655,9 +655,9 @@ module.exports = {
             let user_id = req.userId;
             var start = new Date();
             start.setHours(0,0,0,0);
-           if(user_id){
+            if(user_id){
             let couponCode = await PaymentOffers.find(
-                {coupon_type:{$in:['extra','bonus','extra_deposit']},status:1, expiry_date:{$gte:start.toISOString()}});
+                {coupon_type:{$in:['extra','bonus','extra_deposit']},status:1, expiry_date:{$gte:start.toISOString()}}).limit(40);
                 var fnData = _.chain(couponCode)
                               .groupBy("coupon_type")
                                .map((value, key) => ({ _id: key, coupon_type: key, info: value }))
