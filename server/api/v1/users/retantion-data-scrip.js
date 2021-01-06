@@ -68,6 +68,7 @@ module.exports = {
             if(bulkdata){
                 for (const item of bulkdata) {
                     for (let cData of item.contest_ids) {
+                        console.log(cData);
                         cData= ObjectId(cData)
                     }
                 }
