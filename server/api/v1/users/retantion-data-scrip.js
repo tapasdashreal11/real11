@@ -80,8 +80,6 @@ module.exports = {
                     return res.json(response);
                 });
             }
-           
-
         }
         
       } catch (err) {

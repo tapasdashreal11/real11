@@ -870,7 +870,7 @@ class ModelService {
                             "playing_11": "$playing_11",
                             "sort": "$sort",
                             "xfactors":"$xfactors",
-                            "is_notification":{$cond: { if: { $eq: [ "$notification_status", '1' ] }, then: true, else: false }},
+                            "is_notification":{$cond: { if: { $eq: [ "$notification_status", 'active' ] }, then: true, else: false }},
                             "notification_title":"$notification_title"
                         }
                     }
