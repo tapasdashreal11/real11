@@ -67,7 +67,7 @@ module.exports = {
         if(bulkdata && _.isArray(bulkdata) && bulkdata.length>0){
             if(bulkdata){
                 for (const item of bulkdata) {
-                    item.contest_ids.map(s => ObjectId(s));
+                    item.contest_ids = item.contest_ids.map(s => ObjectId(s));
                 }
                 
                 UserAnalysis.insertMany(bulkdata)
