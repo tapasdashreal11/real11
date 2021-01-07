@@ -19,5 +19,6 @@ module.exports = {
     TDS:18,
     EXTRA_BONUS: 19,
     BONUS_WIN: 20,
-    EXTRA_DEPOSITE: 21
+    EXTRA_DEPOSITE: 21,
+    FIRST_DEPOSITE_BONUS: 22
 }

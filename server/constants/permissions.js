@@ -27,7 +27,8 @@ const TransactionTypesByValues =  [
   "Tax Deducted at Source",
   "Extra Amount",
   "Team clash bonus",
-  "Extra Deposite"
+  "Extra Deposite",
+  "First Deposite Bonus"
 ];
 
 module.exports = {

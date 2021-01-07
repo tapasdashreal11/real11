@@ -414,7 +414,7 @@ module.exports = {
                                         if (authUser) {
 
                                             let txnEntity = {};
-
+                                            let isCouponUsed = false;
                                             let date = new Date();
                                             txnEntity.user_id = decoded['user_id'];
                                             txnEntity.order_id = decoded['order_id'];
@@ -483,6 +483,7 @@ module.exports = {
                                                                             let updateCouponCode = await UserCouponCodes.updateOne({ 'coupon_code_id': decoded['coupon_id'], user_id: decoded['user_id'], status: 0 }, { $set: { status: 1 } });
                                                                             if (updateCouponCode && updateCouponCode.nModified > 0) {
                                                                                 let txnType = '';
+                                                                                isCouponUsed = true;
                                                                                 if (couponCode.coupon_type === 'extra') {
                                                                                     users.extra_amount = parseFloat(users.extra_amount) + parseFloat(discountAmount);
                                                                                     txnType = TransactionTypes.EXTRA_BONUS;
@@ -507,7 +508,14 @@ module.exports = {
                                                 let txn_status = false;
                                                 if (txnData) {
                                                     users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
-                                                    let res = await User.update({ '_id': decoded['user_id'] }, { $set: { cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
+                                                    if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && !isCouponUsed){
+                                                      let amountAdded  = parseFloat(txnData.txn_amount);
+                                                      users.bonus_amount = amountAdded * 2;
+                                                      let date = new Date();
+                                                      let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
+                                                      Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, users.bonus_amount);
+                                                    }
+                                                    let res = await User.update({ '_id': decoded['user_id'] }, { $set: { isFirstPaymentAdded:1,cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
                                                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
 
                                                     txn_status = true;
