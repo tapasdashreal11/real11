@@ -267,6 +267,7 @@ const sendSMTPMail = (to, subject, message) => {
 
 const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
   try {
+    console.log('fsdfdsfdsfsdf****');
     let payload     = {};
     payload.badge_count = '1';
     payload.message = notification;
@@ -298,7 +299,7 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
         
     }
   } catch(error) {
-    console.log(error);
+    console.log("fsfsfsfsf errorrr",error);
   }
 };
 
