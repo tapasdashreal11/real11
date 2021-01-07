@@ -665,7 +665,7 @@ module.exports = {
                                .map((value, key) => ({ _id: key, coupon_type: key, info: value }))
                               .value()
             
-            redis.setRedisForUserAnaysis(fnData, redisKeyForAddCashCoupon);
+            redis.setRedisForUserAnaysis(redisKeyForAddCashCoupon, fnData);
             return res.send(ApiUtility.success(fnData));
            } else{
             return res.send(ApiUtility.failed("Something went wrong!!"));
