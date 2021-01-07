@@ -87,6 +87,9 @@ module.exports = async (req, res) => {
           // insertData.bonus_amount = 50;
           if(params && params.device_id)
            insertData.device_id = params.device_id;
+
+           if(params && params.device_type)
+           insertData.device_type = params.device_type;
   
           insertData.team_name = createTeamName(params.email);
           insertData.bonus_amount = config.referral_bouns_amount;
