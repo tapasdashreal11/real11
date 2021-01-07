@@ -143,7 +143,7 @@ module.exports = async (req, res) => {
           await PanDetails.create(bank_details);
           console.log('*****params',params);
           if(params && params.device_id && params.device_id && params.device_type =='Android'){
-            Helper.sendNotificationFCM(insertId,12,params.device_id,'Welcome','Hi,welcome to Real11');
+            Helper.sendNotificationFCM(insertId,12,"e_dCQ2c8QFq1K2KeS6b-BP:APA91bHVI3dPluhZS0-dRIQ-p-7pHyosiEXyj4f1IKiLYIJ0qbpT123KCssK8hTSoQl-m1-AqBYHo5f8EOhyHcgc8KO80VNmzjiMRWIcz4HbMvjoIy6yITVJ0RfeHgiyDg_vcOPC-TyE",'Welcome','Hi,welcome to Real11');
           }
           
           insertData.user_id = insertId;
