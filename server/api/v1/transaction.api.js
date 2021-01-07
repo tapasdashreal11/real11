@@ -414,7 +414,7 @@ module.exports = {
                                         if (authUser) {
 
                                             let txnEntity = {};
-                                            let isCouponUsed = false;
+                                            let isCouponUsed = 0;
                                             let date = new Date();
                                             txnEntity.user_id = decoded['user_id'];
                                             txnEntity.order_id = decoded['order_id'];
@@ -483,7 +483,7 @@ module.exports = {
                                                                             let updateCouponCode = await UserCouponCodes.updateOne({ 'coupon_code_id': decoded['coupon_id'], user_id: decoded['user_id'], status: 0 }, { $set: { status: 1 } });
                                                                             if (updateCouponCode && updateCouponCode.nModified > 0) {
                                                                                 let txnType = '';
-                                                                                isCouponUsed = true;
+                                                                                isCouponUsed = 1;
                                                                                 if (couponCode.coupon_type === 'extra') {
                                                                                     users.extra_amount = parseFloat(users.extra_amount) + parseFloat(discountAmount);
                                                                                     txnType = TransactionTypes.EXTRA_BONUS;
@@ -508,8 +508,9 @@ module.exports = {
                                                 let txn_status = false;
                                                 if (txnData) {
                                                     users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
-                                                    if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && !isCouponUsed){
+                                                    if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
                                                       let amountAdded  = parseFloat(txnData.txn_amount);
+                                                      console.log('first time user is coming*****');
                                                       users.bonus_amount = amountAdded * 2;
                                                       let date = new Date();
                                                       let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
