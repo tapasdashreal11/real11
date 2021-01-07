@@ -16,6 +16,7 @@ const { sendSMTPMail } = require("./common/helper.js");
 const https = require('https');
 const { exception } = require('console');
 const _ = require('lodash');
+const redis = require('../../../lib/redis');
 
 module.exports = {
 
@@ -655,6 +656,7 @@ module.exports = {
             let user_id = req.userId;
             var start = new Date();
             start.setHours(0,0,0,0);
+            let redisKeyForAddCashCoupon = 'add-cash-coupon-list';
             if(user_id){
             let couponCode = await PaymentOffers.find(
                 {coupon_type:{$in:['extra','bonus','extra_deposit']},status:1, expiry_date:{$gte:start.toISOString()}}).limit(40);
@@ -663,8 +665,8 @@ module.exports = {
                                .map((value, key) => ({ _id: key, coupon_type: key, info: value }))
                               .value()
             
-
-            return res.send(ApiUtility.success(fnData))
+            redis.setRedisForUserAnaysis(fnData, redisKeyForAddCashCoupon);
+            return res.send(ApiUtility.success(fnData));
            } else{
             return res.send(ApiUtility.failed("Something went wrong!!"));
            }

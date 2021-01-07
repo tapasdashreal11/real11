@@ -270,7 +270,7 @@ router.post('/api/v1/check-transactions', auth.authenticate.jwtLogin, checkTrans
 router.post('/api/v1/forgot-password', forgotPassword);
 router.post('/api/v1/reset-password', resetPassword);
 router.get('/api/v1/reset-password-view/:verify_string', resetPasswordView);
-router.get('/api/v1/view-add-cash-coupon',auth.authenticate.jwtLogin, couponForAddCash);
+router.get('/api/v1/view-add-cash-coupon',auth.authenticate.jwtLogin,redis.cacheMiddle, couponForAddCash);
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
 router.post('/api/v1/update_personal_details', auth.authenticate.jwtLogin, usersUpdateDetails);
