@@ -280,7 +280,7 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
         },
         data: payload,
     };
-    // console.log(message);return false;
+     console.log(message);
     const fcm = new FCM(config.fcmKey);
     try{
         let send = fcm.send(message);

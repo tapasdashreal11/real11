@@ -12,6 +12,7 @@ const { currentDateTimeFormat, createUserReferal, generateTransactionId, createT
 const config = require('../../../config');
 const _ = require('lodash');
 const moment = require('moment');
+const Helper = require('./../common/helper');
 
 // @params
 // {
@@ -84,6 +85,8 @@ module.exports = async (req, res) => {
           insertData.appsflayer_id = params.appsflayer_id || '';
           insertData.refer_id = createUserReferal(10);
           // insertData.bonus_amount = 50;
+          if(params && params.device_id)
+           insertData.device_id = params.device_id;
   
           insertData.team_name = createTeamName(params.email);
           insertData.bonus_amount = config.referral_bouns_amount;
@@ -135,7 +138,11 @@ module.exports = async (req, res) => {
           await BankDetails.create(bank_details);  
           await Profile.create(bank_details);
           await PanDetails.create(bank_details);
-  
+
+          if(params && params.device_id && params.device_id && params.device_type =='Android'){
+            Helper.sendNotificationFCM(insertId,12,params.device_id,'Welcome!!','Hi,welcome to Real11');
+          }
+          
           insertData.user_id = insertId;
           insertData.otp = 0;
            
