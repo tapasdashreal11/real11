@@ -508,14 +508,19 @@ module.exports = {
                                                 let txn_status = false;
                                                 if (txnData) {
                                                     users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
-                                                    if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
-                                                      let amountAdded  = parseFloat(txnData.txn_amount);
-                                                      console.log('first time user is coming*****');
-                                                      users.bonus_amount = amountAdded * 2;
-                                                      let date = new Date();
-                                                      let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
-                                                      Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, users.bonus_amount);
+                                                    try{
+                                                        if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
+                                                            let amountAdded  = parseFloat(txnData.txn_amount);
+                                                            console.log('first time user is coming*****');
+                                                            users.bonus_amount = amountAdded * 2;
+                                                            let date = new Date();
+                                                            let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
+                                                            Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, users.bonus_amount);
+                                                          }
+                                                    }catch(errrrr){
+                                                        console.log('first time user is coming errrr*****',errrrr);
                                                     }
+                                                    
                                                     let res = await User.update({ '_id': decoded['user_id'] }, { $set: { isFirstPaymentAdded:1,cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
                                                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
 
