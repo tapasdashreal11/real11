@@ -281,10 +281,18 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
         },
         data: payload,
     };
-     console.log(message);
+     console.log(message,'****',config.fcmKey);
     const fcm = new FCM(config.fcmKey);
+    
     try{
-        let send = fcm.send(message);
+     //   let send = fcm.send(message);
+        fcm.send(message, function(err, response){
+          if (err) {
+              console.log("Something has gone wrong!",err);
+          } else {
+              console.log("Successfully sent with response: ", response);
+          }
+      });
         let notifyObj  = {
           user_id:  uid,
           notification_type : notiType,
