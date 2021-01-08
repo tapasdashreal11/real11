@@ -276,7 +276,8 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
         collapse_key: 'green',
         notification: {
             title: title,
-            body: notification
+            body: notification,
+            sound : "default"
         },
         data: payload,
     };
