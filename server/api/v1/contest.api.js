@@ -2037,7 +2037,7 @@ module.exports = {
                     var start = new Date();
                         start.setHours(0,0,0,0);
                     couponData = await PaymentOffers.findOne({ 'coupon_code': regCode, status: 1,expiry_date:{$gte:start.toISOString()} });
-                    // //////console.log(decoded, couponData);return false;
+                    console.log('couponData***',couponData);
                     if (couponData) {
                         let userCouponCount = await UserCouponCodes.find({ 'user_id': decoded['user_id'], 'coupon_code_id': couponData._id, 'status': 1 }).countDocuments();
                         if (userCouponCount >= couponData.per_user_limit && couponData.per_user_limit) {
