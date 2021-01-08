@@ -68,7 +68,6 @@ module.exports = async (req, res) => {
 				tokendata.email = user.email;
 
 				var tokelDelMany = await Tokens.deleteMany({"userId":ObjectId(user._id)});
-				console.log("device id in otp verify*****",  params.device_id);
 				let token = await generateClientToken(tokendata);        
 				await Users.update({ _id: user._id }, { $set: { otp: '', otp_time: '', token: token, device_id: params.device_id, device_type: params.device_type,status:1 } });
 	

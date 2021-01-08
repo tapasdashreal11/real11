@@ -145,7 +145,8 @@ module.exports = {
                             player_ids.push(row.player_id);
                         }
 
-                        let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                        //let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                        let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam.user) {
                             let teamUserDetail = userTeam.user;
                             teamData[teamCount] = {};
@@ -370,7 +371,8 @@ module.exports = {
                     if (!userTeam.user) {
                         userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1, "image": 1 });
                     }
-                    let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                   // let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                    let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                     if (userTeam.user) {
 
                         let teamUserDetail = userTeam.user;
@@ -558,7 +560,8 @@ module.exports = {
                                 userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1, "image": 1 });
                             }
                         }
-                        let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                        //let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                        let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam.user) {
                             let teamUserDetail = userTeam.user;
                             teamData[teamCount] = {};
