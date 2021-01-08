@@ -681,7 +681,7 @@ module.exports = {
             
             redis.setRedisForAddCashCoupon(redisKeyForAddCashCoupon, fnData);
             return res.send(ApiUtility.success(fnData));
-           } else{
+           } else {
             return res.send(ApiUtility.failed("Something went wrong!!"));
            }
         }catch (error) {

@@ -267,7 +267,6 @@ const sendSMTPMail = (to, subject, message) => {
 
 const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
   try {
-    console.log('fsdfdsfdsfsdf****');
     let payload     = {};
     payload.badge_count = '1';
     payload.message = notification;
@@ -281,16 +280,15 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
         },
         data: payload,
     };
-     console.log(message,'****',config.fcmKey);
     const fcm = new FCM(config.fcmKey);
     
     try{
      //   let send = fcm.send(message);
         fcm.send(message, function(err, response){
           if (err) {
-              console.log("Something has gone wrong!",err);
+              console.log("Something has gone wrong with fcm",err);
           } else {
-              console.log("Successfully sent with response: ", response);
+              console.log("Successfully sent with response", response);
           }
       });
         let notifyObj  = {

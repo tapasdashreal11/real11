@@ -142,12 +142,11 @@ module.exports = async (req, res) => {
           await BankDetails.create(bank_details);  
           await Profile.create(bank_details);
           await PanDetails.create(bank_details);
-          console.log('*****params',params);
           try{
             if(params && params.device_id && params.device_id){
-              Helper.sendNotificationFCM(insertId,12,params.device_id,'Welcome','Hi,welcome to Real11');
+              Helper.sendNotificationFCM(insertId,12,params.device_id,'Welcome!!','Welcome to Real11');
             }
-          }catch(errrrr){}
+          }catch(errr){}
           
           
           insertData.user_id = insertId;
