@@ -450,7 +450,9 @@ module.exports = {
                                                 // Manage tnxdata
                                                 if (txnData) {
                                                     if (decoded['coupon_id'] && decoded['discount_amount'] > 0) {
-                                                        let couponCode = await PaymentOffers.findOne({ '_id': decoded['coupon_id'] });
+                                                        var start = new Date();
+                                                        start.setHours(0,0,0,0);
+                                                        let couponCode = await PaymentOffers.findOne({ '_id': decoded['coupon_id'],expiry_date:{$gte:start.toISOString()} });
 
                                                         if (couponCode) {
                                                             if (decoded['txn_amount'] >= couponCode.min_amount) {
@@ -511,7 +513,6 @@ module.exports = {
                                                     try{
                                                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
                                                             let amountAdded  = parseFloat(txnData.txn_amount);
-                                                            console.log('first time user is coming*****');
                                                             users.bonus_amount = parseFloat(users.bonus_amount)+ (amountAdded);
                                                             let date = new Date();
                                                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
