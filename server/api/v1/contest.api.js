@@ -1071,7 +1071,7 @@ module.exports = {
                             }
                             cashBalance = userdata.cash_balance;
                             winningBalance = userdata.winning_balance;
-                            console.log("userdata.winning_balance***",userdata.winning_balance);
+                           
                         }
                         data['cash_balance'] = (cashBalance) ? cashBalance : 0;
                         data['winning_balance'] = (winningBalance) ? winningBalance : 0;
@@ -2034,7 +2034,9 @@ module.exports = {
                     // $couponData	=	$this->PaymentOffers->find()->where(['coupon_code LIKE'=>$decoded['coupon_code'],'expiry_date >='=>$currentDateTime,'status'=>ACTIVE])->first();
                     // //////console.log(currentDateTime,"expiry_date");
                     var regCode = new RegExp(["^", coupon_code, "$"].join(""), "i");
-                    couponData = await PaymentOffers.findOne({ 'coupon_code': regCode, status: 1 });
+                    var start = new Date();
+                        start.setHours(0,0,0,0);
+                    couponData = await PaymentOffers.findOne({ 'coupon_code': regCode, status: 1,expiry_date:{$gte:start.toISOString()} });
                     // //////console.log(decoded, couponData);return false;
                     if (couponData) {
                         let userCouponCount = await UserCouponCodes.find({ 'user_id': decoded['user_id'], 'coupon_code_id': couponData._id, 'status': 1 }).countDocuments();
