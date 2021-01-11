@@ -134,7 +134,9 @@ module.exports = {
                                     myTeamNo.push((joined.player_team) ? joined.player_team.team_count : 0);
                                     //winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
                                     console.log('joined.price_win****',joined);
-                                    winningAmt.push((joined && joined.price_win) ?parseFloat(joined.price_win) : 0);
+                                   const ddd = (joined && joined.price_win) ? parseFloat(joined.price_win) : 0;
+                                   console.log('joined.ddd****',ddd);
+                                    winningAmt.push(ddd);
                                 }
                             }
 
