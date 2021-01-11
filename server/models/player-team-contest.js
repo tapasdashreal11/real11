@@ -36,6 +36,9 @@ var playerTeamContestSchema = new Schema({
   winning_amount: {
     type: Number
   },
+  price_win: {
+    type: Number
+  },
   winning_amount_distributed: {
     type: Number,
     enum: [1,0],
