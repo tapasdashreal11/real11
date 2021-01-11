@@ -511,12 +511,12 @@ module.exports = {
                     }
                 }
                 console.log('********',mergedTeam.length,joinedTeams);
-                
-                if (mergedTeam && mergedTeam.length == 0 || (contestDetail.contest_size <= 100 && joinedTeams > mergedTeam.length) ) {
+
+                if (mergedTeam && mergedTeam.length == 0 || (joinedTeams && joinedTeams <= 100 && joinedTeams > mergedTeam.length) ) {
                     myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id,sport);
                     console.log("hello one step  ****");
                     let allTeams = [];
-                    if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
+                    if ((reviewMatch.time >= Date.now() && joinedTeams <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
                         console.log("hello test ****");
                         allTeams = await getRedisLeaderboard(match_id, contest_id);
                         console.log("data in befor if redis*****",joinedTeams);
