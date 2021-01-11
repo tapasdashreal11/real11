@@ -457,6 +457,7 @@ module.exports = {
             }
             if (!contestData) {
                 let contestDetail = await Contest.findOne({ _id: contest_id });
+                let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
                 contestDetail = JSON.parse(JSON.stringify(contestDetail));
                 let prizeMoney = 0;
                 let totalTeams = 0;
@@ -517,7 +518,7 @@ module.exports = {
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
                         allTeams = await getRedisLeaderboard(match_id, contest_id);
                         
-                        if (_.isEmpty(allTeams)) {
+                        if (_.isEmpty(allTeams) || (allTeams && allTeams.length && joinedTeams > allTeams.length)) {
                             let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                                 allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id,sport, aakashData._id);
@@ -632,7 +633,7 @@ module.exports = {
                 multipleTeam = (contestDetail.multiple_team && contestDetail.multiple_team == 'yes') ? true : false;
                 gadgetLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'gadget') ? true : false;
                 aakashLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'aakash') ? true : false;
-                let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
+                
                 let is_joined = (myTeamIds.length > 0) ? true : false;
 
                 let bonusAmount = 0; //config.admin_percentage;
