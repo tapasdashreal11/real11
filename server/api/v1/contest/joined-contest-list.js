@@ -228,6 +228,8 @@ module.exports = {
                                 return a + b;
                             }, 0);
 
+                            console.log('***totalWinningAmount',totalWinningAmount);
+
                             contest[contestKey] = {};
                             contest[contestKey]['confirm_winning'] = winComfimed.toString();
                             contest[contestKey]['is_gadget'] = isGadget;
