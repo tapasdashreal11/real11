@@ -510,7 +510,8 @@ module.exports = {
                         mergedTeam = [...myTeams, ...allTeams];
                     }
                 }
-                //console.log('********',mergedTeam);
+                console.log('********',mergedTeam.length,joinedTeams);
+                
                 if (mergedTeam && mergedTeam.length == 0 || (contestDetail.contest_size <= 100 && joinedTeams > mergedTeam.length) ) {
                     myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id,sport);
                     console.log("hello one step  ****");
