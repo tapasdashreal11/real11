@@ -53,7 +53,7 @@ module.exports = {
                         if (!details) {
                             return res.send(ApiUtility.failed("Match Contest Not found"));
                         }
-                        if (details && team_list_pdf) {
+                        if (details && details.team_list_pdf) {
                             let pdfName = details.team_list_pdf ? config.imageBaseUrl + '/' + details.team_list_pdf : '';
                             data1 = { 'url': pdfName };
                             return res.send(ApiUtility.success(data1));
