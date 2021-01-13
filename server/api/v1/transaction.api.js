@@ -489,7 +489,7 @@ module.exports = {
                                                                                 if (couponCode.coupon_type === 'extra') {
                                                                                     users.extra_amount = parseFloat(users.extra_amount) + parseFloat(discountAmount);
                                                                                     txnType = TransactionTypes.EXTRA_BONUS;
-                                                                                } else if(couponCode.coupon_type === 'extra_deposit') {
+                                                                                } else if(couponCode.coupon_type === 'extra_deposite') {
                                                                                     users.cash_balance = parseFloat(users.cash_balance) + parseFloat(discountAmount);
                                                                                     txnType = TransactionTypes.EXTRA_DEPOSITE;
                                                                                 } else {
@@ -623,7 +623,7 @@ module.exports = {
                                                 if (couponCode.coupon_type === 'extra') {
                                                     authUser.extra_amount = parseFloat(authUser.extra_amount) + parseFloat(discountAmount);
                                                     txnType = TransactionTypes.EXTRA_BONUS;
-                                                } else if(couponCode.coupon_type === 'extra_deposit') {
+                                                } else if(couponCode.coupon_type === 'extra_deposite') {
                                                     authUser.cash_balance = parseFloat(authUser.cash_balance) + parseFloat(discountAmount);
                                                     txnType = TransactionTypes.EXTRA_DEPOSITE;
                                                 } else {
