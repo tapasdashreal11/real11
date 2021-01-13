@@ -95,6 +95,13 @@ var contestSchema = new Schema({
   "is_private": {
     "type": Number
   },
+  "is_private": {
+    "type": Number
+  },
+  "maximum_team_size":{
+    "type":Number,
+    default:1
+  },
   breakup:{
     "type":[{
       name:String, 

@@ -113,7 +113,7 @@ module.exports = async (req, res) => {
                                 var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': teamId }
                                 let playerTeamRes = await PlayerTeamContest.findOne(PlayerTeamContestFilter);
                                 let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
-                                let maxTeamSize = 9;
+                                let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
 
                                 if (joinedContestWithTeamCounts < maxTeamSize) {
                                     if (!playerTeamRes) {
@@ -332,6 +332,7 @@ module.exports = async (req, res) => {
                                                            
                                                         }
                                                         let totalEntryAmount = cashAmount + winAmount + bonusAmount + extraAmount;
+                                                        
                                                         if (contestType == "Free" || (contestType == "Paid" && totalEntryAmount > 0 && calEntryFees > 0 && totalEntryAmount == calEntryFees && userWalletStatus) || (calEntryFees == 0 && retention_bonus_amount >0 && userWalletStatus)) {
                                                             try {
                                                                 contest.bonus_amount = bonusAmount;
@@ -711,6 +712,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         entity.invite_code = contestData.invite_code;
         entity.breakup = contestData.breakup;
         entity.created = new Date();
+        entity.maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 1;
         if (parentContestId) {
             entity.parent_id = parentContestId;
         } else {
@@ -763,7 +765,8 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
                 auto_create: contestData.auto_create,
                 used_bonus: contestData.used_bonus,
                 winner_percent: contestData.winner_percent,
-                breakup: contestData.breakup
+                breakup: contestData.breakup,
+                maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 1
             };
 
 
