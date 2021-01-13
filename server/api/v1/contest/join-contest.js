@@ -766,7 +766,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
                 used_bonus: contestData.used_bonus,
                 winner_percent: contestData.winner_percent,
                 breakup: contestData.breakup,
-                maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 1
+                maximum_team_size : contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 1
             };
 
 
