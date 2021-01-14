@@ -274,7 +274,7 @@ router.get('/api/v1/view-add-cash-coupon',auth.authenticate.jwtLogin,redis.cache
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
 router.post('/api/v1/update_personal_details', auth.authenticate.jwtLogin, usersUpdateDetails);
-router.post('/api/v1/friend-referal-detail', auth.authenticate.jwtLogin, usersFriendReferral);
+router.post('/api/v1/friend-referal-detail', auth.authenticate.jwtLogin, usersFriendReferral); 
 router.post('/api/v1/friend-referral-list/:page?/:pagesize?', auth.authenticate.jwtLogin, usersReferralList);
 router.post('/api/v1/logout', auth.authenticate.jwtLogin, usersLogout);
 router.get('/api/v1/notification-list', auth.authenticate.jwtLogin, notificationList);

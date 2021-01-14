@@ -513,10 +513,11 @@ module.exports = {
                                                     try{
                                                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
                                                             let amountAdded  = parseFloat(txnData.txn_amount);
-                                                            users.bonus_amount = parseFloat(users.bonus_amount)+ (amountAdded);
+                                                            let finalAmount = amountAdded > 2 ? 2: amountAdded;
+                                                            users.bonus_amount = parseFloat(users.bonus_amount)+ (finalAmount);
                                                             let date = new Date();
                                                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
-                                                            Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, amountAdded);
+                                                            Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                                                           }
                                                     }catch(errrrr){
                                                         console.log('first time user is coming errrr*****',errrrr);
