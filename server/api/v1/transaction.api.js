@@ -513,7 +513,7 @@ module.exports = {
                                                     try{
                                                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
                                                             let amountAdded  = parseFloat(txnData.txn_amount);
-                                                            let finalAmount = amountAdded > 6 ? 6: amountAdded;
+                                                            let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
                                                             users.bonus_amount = parseFloat(users.bonus_amount)+ (finalAmount);
                                                             let date = new Date();
                                                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];

@@ -1079,7 +1079,7 @@ module.exports = {
                         data['extra_amount'] = extraAmount ? parseFloat(extraAmount.toFixed(2)) : 0;
                         data['entry_fee'] = (entryFee) ? parseInt(entryFee) : 0;
                         data['user_offer_amount'] = (retention_bonus_amount) ? parseFloat(retention_bonus_amount.toFixed(2)) : 0;
-                        data['calculated_entry_fee'] = (calEntryFees) ? parseFloat(calEntryFees.toFixed(2)) : 0;
+                        data['calculated_entry_fee'] = (calEntryFees && _.isNumber(calEntryFees)) ? parseFloat(calEntryFees.toFixed(2)) : 0;
                         data['usable_bonus_percent'] = 0; //adminPer;
                         data1 = data;
                         console.log('data*****',data)

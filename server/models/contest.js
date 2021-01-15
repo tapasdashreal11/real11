@@ -255,7 +255,7 @@ contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmoun
   saveEntity.admin_comission=	comission;
   saveEntity.player_team_contest_id=	playerTeamContestId;
   saveEntity.retention_bonus = retention_bonus_amount|| 0;
-  console.log("JoinContestDetail*************121221")
+  console.log("JoinContestDetail*************121221");
   JoinContestDetail.create(saveEntity);
   // PlayerTeamContest.findByIdAndUpdate(ObjectId(playerTeamContestId) , { "total_amount": totalAmount , "bonus_amount": bonusAmount}, { new: true });
   return true;

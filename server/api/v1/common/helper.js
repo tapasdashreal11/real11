@@ -291,7 +291,7 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
           } else {
               console.log("Successfully sent with response", response);
           }
-      });
+         });
         let notifyObj  = {
           user_id:  uid,
           notification_type : notiType,
