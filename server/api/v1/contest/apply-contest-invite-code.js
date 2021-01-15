@@ -64,6 +64,12 @@ module.exports = {
 
                                 let finalDate = moment(seriesSquad.time).utc().format(config.DateFormat.date);
                                 let finalTime = moment(seriesSquad.time).utc().format(config.DateFormat.time);
+                                let ctime = Date.now();
+                                let mtime = seriesSquad.time;
+                                if (mtime < ctime) {
+                                    return res.send(ApiUtility.failed('Match has been started.'));
+                                }
+
                                 matchData['series_id'] = contestMatch.series_id;
                                 matchData['match_id'] = contestMatch.match_id;
                                 matchData['series_name'] = seriesSquad.series_name ? seriesSquad.series_name : '';
@@ -91,9 +97,11 @@ module.exports = {
                                     matchData['is_joined'] = (teamsJoined && teamsJoined.length > 0) ? true : false;
                                     matchData['my_teams_count'] = 0;
                                     matchData['my_team_ids'] = myTeamIds;
-                                    
+                                    return res.send(ApiUtility.success(matchData));
+                                } else {
+                                    return res.send(ApiUtility.failed("Data not found"));
                                 }
-                                return res.send(ApiUtility.success(matchData));
+                                
                             } else {
                                 return res.send(ApiUtility.failed('The unique code looks invalid! Please check again.'));
                             }
