@@ -76,6 +76,7 @@ module.exports = async (req, res) => {
 				
 				finalResponse.token = token;
 				let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id });
+				console.log("referalUser",referalUser);
                 if (referalUser && referalUser.refered_by) {
                     finalResponse.refered_by_id = referalUser.refered_by;
                 } 
@@ -92,6 +93,7 @@ module.exports = async (req, res) => {
 				response["status"]	=	true;
 				response["token"]	=	token;
 				response["data"]	=	finalResponse;
+				console.log('hello***');
 				return res.json(response);
 
 			} else {
