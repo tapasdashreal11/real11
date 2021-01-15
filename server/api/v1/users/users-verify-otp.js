@@ -13,6 +13,7 @@ const logger = require("../../../../utils/logger")(module);
 const { generateClientToken, sendMail, sendSMTPMail} = require("../common/helper");
 const { RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
+const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 
 module.exports = async (req, res) => {
 	try {
@@ -98,6 +99,13 @@ module.exports = async (req, res) => {
 
 				finalResponse.token = token;
 				// console.log(finalResponse);return false;
+				try{
+					let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id });
+					if (referalUser && referalUser.referal_code) {
+						finalResponse.refered_by_code = referalUser.referal_code;
+					}
+				}catch(errrrr){}
+
 				Tokens.create(tokenInsertData);
 				delete finalResponse.password;
 				delete finalResponse.otp;
