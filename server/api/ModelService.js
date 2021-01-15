@@ -117,7 +117,8 @@ class ModelService {
                                         "is_joined": is_joined, 
                                         "infinite_breakup" : {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: {"winner_percent": "$$sec.contest.winner_percent", "winner_amount": "$$sec.contest.winning_amount_times"}, else: {} }},
                                         "is_aakash_team": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "aakash" ] }, then: true, else: false }},
-                                        "is_favourite":false
+                                        "is_favourite":false,
+                                        "maximum_team_size": "$$sec.contest.maximum_team_size",  
                                     }
                                 }
                             },
@@ -251,7 +252,8 @@ class ModelService {
                                         "is_joined": is_joined, 
                                         "infinite_breakup" : {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: {"winner_percent": "$$sec.contest.winner_percent", "winner_amount": "$$sec.contest.winning_amount_times"}, else: {} }},
                                         "is_aakash_team": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "aakash" ] }, then: true, else: false }},
-                                        "is_favourite":false
+                                        "is_favourite":false,
+                                        "maximum_team_size": "$$sec.contest.maximum_team_size"
                                     }
                                 }
                             },
