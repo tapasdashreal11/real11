@@ -9,6 +9,7 @@ const logger = require("../../../../utils/logger")(module);
 const { generateClientToken } = require("../common/helper");
 const { RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
+const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 
 module.exports = async (req, res) => {
 	try {
@@ -74,6 +75,10 @@ module.exports = async (req, res) => {
 				tokenInsertData.device_type	=	params.device_type;
 				
 				finalResponse.token = token;
+				let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id });
+                if (referalUser && referalUser.refered_by) {
+                    finalResponse.refered_by_id = referalUser.refered_by;
+                } 
 
 				//****************Set Toen In Redis**************** */
 				var newTokenObj = {user_id : user._id, token : token}
