@@ -96,7 +96,6 @@ module.exports = async (req, res) => {
 				response["status"]	=	true;
 				response["token"]	=	token;
 				response["data"]	=	finalResponse;
-				console.log('hello***');
 				return res.json(response);
 
 			} else {
