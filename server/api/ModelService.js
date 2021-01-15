@@ -118,7 +118,7 @@ class ModelService {
                                         "infinite_breakup" : {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: {"winner_percent": "$$sec.contest.winner_percent", "winner_amount": "$$sec.contest.winning_amount_times"}, else: {} }},
                                         "is_aakash_team": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "aakash" ] }, then: true, else: false }},
                                         "is_favourite":false,
-                                        "maximum_team_size": "$$sec.contest.maximum_team_size",  
+                                        "maximum_team_size": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: { $cond: { if: { $ifNull: ["$$sec.contest.multiple_team",false] },then: "$$sec.contest.multiple_team",else: 9 } }, else: 1 }}  
                                     }
                                 }
                             },
@@ -253,7 +253,7 @@ class ModelService {
                                         "infinite_breakup" : {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: {"winner_percent": "$$sec.contest.winner_percent", "winner_amount": "$$sec.contest.winning_amount_times"}, else: {} }},
                                         "is_aakash_team": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "aakash" ] }, then: true, else: false }},
                                         "is_favourite":false,
-                                        "maximum_team_size": "$$sec.contest.maximum_team_size"
+                                        "maximum_team_size": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: { $cond: { if: { $ifNull: ["$$sec.contest.multiple_team",false] },then: "$$sec.contest.multiple_team",else: 9 } }, else: 1 }}
                                     }
                                 }
                             },
