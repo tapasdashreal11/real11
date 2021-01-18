@@ -240,7 +240,7 @@ module.exports = {
 
                                 if (response.body && response.body.resultInfo.resultStatus != 'F') {
                                     response = response.body
-                                    let flag = false
+                                    let flag = true
                                     if (response && response.txnToken && PAYMENT_MODE == "UPI_INTENT" && flag == true) {
                                         var paytmParams = {};
 
