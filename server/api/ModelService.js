@@ -1526,7 +1526,8 @@ class ModelService {
                             "type":"$banner_type",
                             "image":"$image",
                             "url":"$url",
-                            "offer_id":"$offer_id"
+                            "offer_id":"$offer_id",
+                            "sport":"$sport"
                         }
                     },
                     {
@@ -1683,6 +1684,7 @@ class ModelService {
                             "series_id":"$series_id",
                             "url" : "$url",
                             "type" : "$type",
+                            "sport":"$sport",
                             "upcoming" : {
                                 "_id":"$seriesSquad._id",
                                 "match_id": "$seriesSquad.match_id",
