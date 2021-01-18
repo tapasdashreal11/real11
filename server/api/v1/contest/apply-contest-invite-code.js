@@ -70,8 +70,6 @@ module.exports = {
                                 let sdateTime = moment(seriesSquad.time).utc();
                                 let cdateTime = moment(new Date()).utc();
                                 console.log('seriesSquad',seriesSquad);
-                                console.log('sdateTime',sdateTime);
-                                console.log('cdateTime',cdateTime);
                                 var isAfter = moment().isBefore(sdateTime);
                                 if (isAfter) {
                                     return res.send(ApiUtility.failed('Match has been started.'));
@@ -90,6 +88,7 @@ module.exports = {
                                 matchData['star_time'] = finalTime;
                                 matchData['total_contest'] = totalContest ? totalContest : 0;
                                 matchData['sport'] = contestMatch.sport;
+                                console.log("contestMatch",contestMatch);
                                 if (contestMatch.contest) {
                                     matchData['contest_id'] = contestMatch.contest_id;
                                     matchData['category_id'] = contestMatch.category_id;
