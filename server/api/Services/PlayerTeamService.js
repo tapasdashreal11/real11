@@ -209,13 +209,12 @@ class PlayerTeamService {
                     "captain_selected": '0%',
                     "vice_captain_selected": '0%',
                     "player_record": "$playerRecord",
+                    "is_last_played": {$cond: {if: {$ne:["$seriesScore", null]}, then: 1, else: 0}},
                     "playing_11": 1,
                     "xfactors": 1,
-                    "is_last_played": true,
                 }
             },
         ]).toArray((error, results) => {
-            // console.log(results);return false;
             if (error) {
                 console.error("PlayerTeam.getDbPlayerList catch error", error)
                 return cb(error);
@@ -413,7 +412,7 @@ class PlayerTeamService {
                         "id": "$seriesplayers._id"
                     },
                     "playing_11": 1,
-                    "is_last_played": true,
+                    "is_last_played": {$cond: {if: {$ne:["$seriesScore", null]}, then: 1, else: 0}},
                 }
             },
         ]).toArray((error, results) => {
