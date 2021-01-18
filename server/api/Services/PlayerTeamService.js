@@ -211,6 +211,7 @@ class PlayerTeamService {
                     "player_record": "$playerRecord",
                     "playing_11": 1,
                     "xfactors": 1,
+                    "is_last_played": true,
                 }
             },
         ]).toArray((error, results) => {
@@ -412,6 +413,7 @@ class PlayerTeamService {
                         "id": "$seriesplayers._id"
                     },
                     "playing_11": 1,
+                    "is_last_played": true,
                 }
             },
         ]).toArray((error, results) => {
