@@ -72,7 +72,7 @@ module.exports = {
                                 console.log('seriesSquad',seriesSquad);
                                 console.log('sdateTime',sdateTime);
                                 console.log('cdateTime',cdateTime);
-                                var isAfter = moment(sdateTime).isBefore(cdateTime);
+                                var isAfter = moment().isBefore(sdateTime);
                                 if (isAfter) {
                                     return res.send(ApiUtility.failed('Match has been started.'));
                                 }
