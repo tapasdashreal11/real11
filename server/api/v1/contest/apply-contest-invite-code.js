@@ -70,7 +70,8 @@ module.exports = {
                                 let sdateTime = moment(seriesSquad.time).utc();
                                 let cdateTime = moment(new Date()).utc();
                                 console.log('seriesSquad',seriesSquad);
-                                var isAfter = moment().isBefore(sdateTime);
+                                var isAfter = moment(sdateTime).isBefore(cdateTime);
+                                console.log('isAfter',isAfter);
                                 if (isAfter) {
                                     return res.send(ApiUtility.failed('Match has been started.'));
                                 }
