@@ -66,7 +66,9 @@ module.exports = {
                                 let finalTime = moment(seriesSquad.time).utc().format(config.DateFormat.time);
                                 let ctime = Date.now();
                                 let mtime = seriesSquad.time;
-                                if (mtime < ctime) {
+                                console.log('finalDate',finalDate);
+                                console.log('ctime***',ctime);
+                                if (finalDate < ctime) {
                                     return res.send(ApiUtility.failed('Match has been started.'));
                                 }
 
