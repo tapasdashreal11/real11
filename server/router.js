@@ -45,6 +45,7 @@ const {
 } = require('./api/v1/users/reset-password');
 
 const usersVerifyOtp = require('./api/v1/users/users-verify-otp');
+const usersVerifyRF = require('./api/v1/users/user-verify-referal');
 const {
     profile,
     getAffiliateAmount
@@ -257,6 +258,7 @@ router.post('/api/v1/retention-bonous-create', retentionBonousCreate);
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
 router.get('/api/v1/app-setting', appSettingApi); 
 router.post('/api/v1/verify-otp', usersVerifyOtp);
+router.get('/api/v1/verify-rf-code/:invite_code', usersVerifyRF);
 router.get('/api/v1/bankDetails', auth.authenticate.jwtLogin, usersBankDetails);
 router.post('/api/v1/personal_details', auth.authenticate.jwtLogin, usersProfile);
 router.post('/api/v1/user-account-datail', auth.authenticate.jwtLogin, usersProfile);

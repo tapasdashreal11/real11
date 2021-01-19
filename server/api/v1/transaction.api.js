@@ -519,7 +519,7 @@ module.exports = {
                                                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
                                                             Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                                                           }
-                                                    }catch(errrrr){
+                                                    } catch(errrrr){
                                                         console.log('first time user is coming errrr*****',errrrr);
                                                     }
                                                     
@@ -578,6 +578,7 @@ module.exports = {
             if (txnData && txnData._id && txnData.status == false) {
                 let authUser = await User.findOne({ '_id': txnData.user_id });
                 if (!txnData.status && authUser) {
+                    let isCouponUsed = 0;
                     if (txnData.coupon_id && txnData.discount_amount && txnData.discount_amount > 0) {
                         let couponCode = await PaymentOffers.findOne({ '_id': txnData.coupon_id });
                         if (couponCode) {
@@ -621,6 +622,7 @@ module.exports = {
                                             let updateCouponCode = await UserCouponCodes.updateOne({ 'coupon_code_id': txnData.coupon_id, user_id: authUser._id, status: 0 }, { $set: { status: 1 } });
                                             if (updateCouponCode && updateCouponCode.nModified > 0) {
                                                 let txnType = '';
+                                                isCouponUsed = 1;
                                                 if (couponCode.coupon_type === 'extra') {
                                                     authUser.extra_amount = parseFloat(authUser.extra_amount) + parseFloat(discountAmount);
                                                     txnType = TransactionTypes.EXTRA_BONUS;
@@ -649,8 +651,22 @@ module.exports = {
                              // console.log('result',result);
                          });
                      } */
+
+                     try{
+                        if(authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 2 && isCouponUsed == 0){
+                            let amountAdded  = parseFloat(txnData.txn_amount);
+                            let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
+                            authUser.bonus_amount = parseFloat(authUser.bonus_amount)+ (finalAmount);
+                            let date = new Date();
+                            let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + authUser._id;
+                            Transaction.saveTransaction(authUser._id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                          }
+                    } catch(errrrr){
+                        console.log('first time user is coming errrr*****',errrrr);
+                    }
+
                     authUser.cash_balance = parseFloat(authUser.cash_balance) + parseFloat(txnData.txn_amount);
-                    User.updateOne({ '_id': ObjectId(authUser._id) }, { cash_balance: authUser.cash_balance, bonus_amount: authUser.bonus_amount, extra_amount: authUser.extra_amount }, { new: true }).then((data) => {
+                    User.updateOne({ '_id': ObjectId(authUser._id) }, {isFirstPaymentAdded:1, cash_balance: authUser.cash_balance, bonus_amount: authUser.bonus_amount, extra_amount: authUser.extra_amount }, { new: true }).then((data) => {
                         // console.log("MyContestModel-------", data);
                         if (data && data.nModified == 1) {
                             Transaction.updateOne({ '_id': ObjectId(transactionId) }, { $set: { status: true, txn_id: transactionId } }).then((txnData) => {
