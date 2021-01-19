@@ -65,6 +65,7 @@ const { favouriteContestCreate,retentionBonousCreate } = require('./api/v1/users
 const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
 const  joinContest  = require('./api/v1/contest/join-contest');
 const  joinContestNew  = require('./api/v1/contest/join-contest');
+const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
 const  contestList  = require('./api/v1/contest/contest-list');
@@ -238,7 +239,7 @@ router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.
 router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
-router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNew);
+router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne);
 router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
