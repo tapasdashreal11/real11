@@ -28,7 +28,9 @@ module.exports = async (req, res) => {
         let startTime = Date.now();
         const user_id = req.userId;
         const { } = req.params;
-        const { team_id, contest_id, series_id, match_id, sport } = req.body;
+        const { team_id, contest_id, series_id, match_id, sport,rf_code,refer_by_user_id } = req.body;
+        let refer_code = rf_code ? rf_code: 'G90K7On6H9';
+        let refer_by_user = refer_by_user_id ? refer_by_user_id: "5f65fce7e42a92091bb21f46";
         let match_sport = sport ? parseInt(sport) : 1;
 
         let decoded = {
@@ -346,7 +348,7 @@ module.exports = async (req, res) => {
                                                                     
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
-                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch,joinedContestCount);
+                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch,joinedContestCount,refer_code,refer_by_user);
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount >0 && contestType == "Paid")) {
                                                                     await Contest.saveJoinContestDetail(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount,match_sport,retention_bonus_amount);
@@ -607,7 +609,7 @@ module.exports = async (req, res) => {
  * @param {*} parentContestId 
  * @param {*} session 
  */
-async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch,joinedContestCount) {
+async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch,joinedContestCount,refer_code,refer_by_user) {
     try {
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
@@ -633,20 +635,20 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 }
 
                 try{
-                    if(contestData && contestData.entry_fee>0){
-                        await ContestInvite.create({refer_code:'G90K7On6H9',refer_by_user:'5f65fce7e42a92091bb21f46',refered_user:user_id,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport});
+                    if(contestData && contestData.entry_fee > 0 && refer_code && !_.isEmpty(refer_code) && refer_by_user && !_.isEmpty(refer_by_user)){
+                        await ContestInvite.create({refer_code:refer_code,refer_by_user:refer_by_user,refered_user:user_id,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport});
                         if(user_id){
-                          let rfuserTotalCounts = await ContestInvite.find({refer_by_user:'5f65fce7e42a92091bb21f46',use_status:0,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport}).countDocuments();
+                          let rfuserTotalCounts = await ContestInvite.find({refer_by_user:refer_by_user,use_status:0,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport}).countDocuments();
                           console.log("rfuserTotalCounts*****",rfuserTotalCounts);
                           if(rfuserTotalCounts >= 10){
                              const upData = await ContestInvite.updateMany(
-                                   { refer_by_user:ObjectId('5f65fce7e42a92091bb21f46'),use_status:0,contest_id:ObjectId(contest_id),match_id:match_id,series_id:series_id,sport:match_sport},
+                                   { refer_by_user:ObjectId(refer_by_user),use_status:0,contest_id:ObjectId(contest_id),match_id:match_id,series_id:series_id,sport:match_sport},
                                    { $set: { use_status : 1 } }
                                   );
                               if(upData){
                                   console.log('upData***',upData);
-                               let uAnalysisData = await UserAnalysis.findOne({ user_id: ObjectId('5f65fce7e42a92091bb21f46'),match_id:match_id,series_id:series_id,sport:match_sport});
-                               let redisKeyForRentation = 'app-analysis-' + '5f65fce7e42a92091bb21f46' + '-' + match_id  + '-'+ match_sport; 
+                               let uAnalysisData = await UserAnalysis.findOne({ user_id: ObjectId(refer_by_user),match_id:match_id,series_id:series_id,sport:match_sport});
+                               let redisKeyForRentation = 'app-analysis-' + refer_by_user + '-' + match_id  + '-'+ match_sport; 
                                if(uAnalysisData && uAnalysisData._id){
                                    console.log('upData* in if cond');
                                    await UserAnalysis.updateOne({ _id: ObjectId(uAnalysisData._id) }, { $set: { "offer_percent": 100,"is_offer_type":2 } });
@@ -654,7 +656,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                                    redis.setRedisForUserAnaysis(redisKeyForRentation,uAnalysisData); 
                                 } else {
                                    console.log('upData* in else cond');
-                                    let offerObj = {"match_id":match_id,"series_id":series_id,"is_offer_type":2,"sport":match_sport,"offer_amount":0,"offer_percent":100,"match_name":"Offer Message","contest_ids":[ObjectId(contest_id)],"user_id":ObjectId("5f65fce7e42a92091bb21f46")};
+                                    let offerObj = {"match_id":match_id,"series_id":series_id,"is_offer_type":2,"sport":match_sport,"offer_amount":0,"offer_percent":100,"match_name":"Offer Message","contest_ids":[ObjectId(contest_id)],"user_id":ObjectId(refer_by_user)};
                                     UserAnalysis.insertMany([offerObj])
                                     .then(function(mongooseDocuments) {
                                        for (const resItem of mongooseDocuments) {
