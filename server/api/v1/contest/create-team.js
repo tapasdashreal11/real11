@@ -217,7 +217,7 @@ module.exports = {
                                 return res.send(ApiUtility.success(data1));
                             // });
                         } else {
-                            return res.send(ApiUtility.failed("You can not create team more than 9 teams."));
+                            return res.send(ApiUtility.failed("You can not create team more than '$totalTemCount' teams."));
                         }
                     } else {
                         if (team_id) {
