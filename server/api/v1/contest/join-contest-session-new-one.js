@@ -633,8 +633,20 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 }
 
                 try{
-                    ContestInvite.create({refer_code:'G90K7On6H9',refer_by_user:'5f65fce7e42a92091bb21f46',refered_user:user_id,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport});
-                }catch(errrrrr){}
+                    await ContestInvite.create({refer_code:'G90K7On6H9',refer_by_user:'5f65fce7e42a92091bb21f46',refered_user:user_id,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport});
+                   
+                     if(user_id){
+                       let rfuserTotalCounts = await ContestInvite.find({refer_by_user:'5f65fce7e42a92091bb21f46',use_status:0,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport}).countDocuments();
+                       console.log("rfuserTotalCounts*****",rfuserTotalCounts);
+                       if(rfuserTotalCounts >= 10){
+                            ContestInvite.updateMany(
+                                { refer_by_user:'5f65fce7e42a92091bb21f46',use_status:0,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport},
+                                { $set: { "use_status" : 1 } }
+                             );
+                        }
+                     }
+
+                } catch (errrrrr){}
 
                
                 let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
