@@ -5,14 +5,7 @@ const User = require('../../../models/user');
 const LiveScore = require('../../../models/live-score');
 const PointsBreakup = require('../../../models/points-breakup');
 const ApiUtility = require('../../api.utility');
-// const { ObjectId } = require('mongodb');
-// const moment = require('moment');
-// const config = require('../../../config');
-// const ModelService = require("../../ModelService");
 const _ = require("lodash");
-// const redis = require('../../../../lib/redis');
-// const mqtt = require('../../../../lib/mqtt');
-// const { RedisKeys } = require('../../../constants/app');
 const SeriesPlayer = require('../../../models/series-player');
 
 module.exports = {
@@ -138,35 +131,9 @@ async function cricketPreview(decoded, liveScore, cb) {
                 }
             }
 
-            /* let selectedBy = await PlayerTeam.aggregate([
-                { $match: { "players": row.player_id, 'series_id':decoded['series_id'],'match_id':decoded['match_id'], sport: sport } },
-                {
-                    $lookup: {
-                    from: 'player_team_contest',
-                    as: 'player_team_contest',
-                    let: { player_team_id: '$_id' },
-                    pipeline: [
-                        {
-                        $match: {
-                            $expr: {
-                            $and: [
-                                { $eq: ['$player_team_id', '$$player_team_id'] },
-                            ]
-                            }
-                        }
-                        },
-                    ]
-                    }
-                },
-            ]);
-            if(totalTeam > 0){
-                percent = ((selectedBy.length/totalTeam)*100).toFixed(0)+'%';
-            } */
-
-            // val = this.getPlayerImage(row.playerId,series_id);
             let val = playerData[row.player_id];
-            // console.log(val.playing_role);
             let playerRecord = {};
+            let selectedPercent =   "";
             if (decoded['is_player_state']) {
                 playerBrackup = await PointsBreakup.aggregate([
                     {
@@ -284,6 +251,7 @@ async function cricketPreview(decoded, liveScore, cb) {
                         'actual': 0,
                         'points': value.total_point
                     };
+                    selectedPercent  =  value.selected_by ? value.selected_by + "%" : '0.00' + "%";
                 }
             }
 
@@ -295,7 +263,7 @@ async function cricketPreview(decoded, liveScore, cb) {
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
                 'player_credit': val['player_credit'],
-                'selection_percent': "0%",  //percent,
+                'selection_percent': selectedPercent,  //percent,
                 'points': row.point,
                 'in_contest': (isInContest.length > 0) ? true : false,
                 'team_number': Array.from(new Set(teamNo)), //teamNum,
@@ -358,83 +326,17 @@ async function footabllPreview(decoded, liveScore, cb) {
                 //     }
                 // },
             ]);
-            // console.log(isInContest.length, "player", row.player_id)
+            
             if (isInContest.length > 0) {
                 for (const rows of isInContest) {
                     teamNo.push(rows.team_count);
                 }
             }
 
-            /* let selectedBy = await PlayerTeam.aggregate([
-                { $match: { "players": row.player_id, 'series_id':decoded['series_id'],'match_id':decoded['match_id'] } },
-                {
-                    $lookup: {
-                    from: 'player_team_contest',
-                    as: 'player_team_contest',
-                    let: { player_team_id: '$_id' },
-                    pipeline: [
-                        {
-                        $match: {
-                            $expr: {
-                            $and: [
-                                { $eq: ['$player_team_id', '$$player_team_id'] },
-                            ]
-                            }
-                        }
-                        },
-                    ]
-                    }
-                },
-            ]);
-            if(totalTeam > 0){
-                percent = ((selectedBy.length/totalTeam)*100).toFixed(0)+'%';
-            } */
-
-            // val = this.getPlayerImage(row.playerId,series_id);
             let val = playerData[row.player_id];
             let playerRecord = {};
-            // if (decoded['is_player_state']) {
-            //     playerBrackup = await PointsBreakup.aggregate([
-            //         {
-            //             $match: { 'series_id': decoded['series_id'], 'match_id': decoded['match_id'], 'player_id': row.player_id }
-            //         },
-            //         {
-            //             $group: {
-            //                 _id: $player_id,
-            //                 'minutes_played': { $sum: 1 },
-            //                 'in_starting_point': { $sum: 1 },
-            //                 'runs': { $sum: 1 },
-            //                 'runs_point': { $sum: 1 },
-            //                 'fours': { $sum: 1 },
-            //                 'fours_point': { $sum: 1 },
-            //                 'sixes': { $sum: 1 },
-            //                 'sixes_point': { $sum: 1 },
-            //                 'strike_rate': { $sum: 1 },
-            //                 'strike_rate_point': { $sum: 1 },
-            //                 'century_halfCentury': { $sum: 1 },
-            //                 'century_halfCentury_point': { $sum: 1 },
-            //                 'duck_out': { $sum: 1 },
-            //                 'duck_out_point': { $sum: 1 },
-            //                 'wickets': { $sum: 1 },
-            //                 'wickets_point': { $sum: 1 },
-            //                 'maiden_over': { $sum: 1 },
-            //                 'maiden_over_point': { $sum: 1 },
-            //                 'economy_rate': { $sum: 1 },
-            //                 'economy_rate_point': { $sum: 1 },
-            //                 'bonus': { $sum: 1 },
-            //                 'bonus_point': { $sum: 1 },
-            //                 'catch': { $sum: 1 },
-            //                 'catch_point': { $sum: 1 },
-            //                 'run_outStumping': { $sum: 1 },
-            //                 'run_outStumping_point': { $sum: 1 },
-            //                 'run_out': { $sum: 1 },
-            //                 'run_out_point': { $sum: 1 },
-            //                 'total_point': { $sum: 1 },
-            //             }
-            //         }
-            //     ]);
-            // } else {
-            // }
+            let selectedPercent =   "";
+
             playerBrackup = await PointsBreakup.find({ 'series_id': decoded['series_id'], 'match_id': decoded['match_id'], 'player_id': row.player_id })
             // console.log(playerBrackup);
             if (playerBrackup) {
@@ -550,6 +452,7 @@ async function footabllPreview(decoded, liveScore, cb) {
                         'actual': 0,
                         'points': value.total_point
                     };
+                    selectedPercent  =  value.selected_by ? value.selected_by + "%" : '0.00' + "%";
                 }
             }
 
@@ -560,7 +463,7 @@ async function footabllPreview(decoded, liveScore, cb) {
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
                 'player_credit': val && val['player_credit'] ? val['player_credit'].toString() : '0',
-                'selection_percent': "0%",  //percent,
+                'selection_percent': selectedPercent,  //percent,
                 'points': row.point,
                 'in_contest': (isInContest.length > 0) ? true : false,
                 'team_number': Array.from(new Set(teamNo)), //teamNum,

@@ -215,6 +215,9 @@ var pointsBreakupSchema = new Schema({
   clearance_point: {
     type: Number
   },
+  selected_by: {
+    type: String
+  },
 
 });
 
