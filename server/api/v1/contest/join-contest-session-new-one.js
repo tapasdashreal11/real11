@@ -641,7 +641,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                        if(rfuserTotalCounts >= 10){
                             ContestInvite.updateMany(
                                 { refer_by_user:'5f65fce7e42a92091bb21f46',use_status:0,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport},
-                                { $set: { "use_status" : 1 } }
+                                { $set: { use_status : 1 } }
                              );
                         }
                      }
