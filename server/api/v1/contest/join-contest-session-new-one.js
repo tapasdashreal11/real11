@@ -639,10 +639,34 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                        let rfuserTotalCounts = await ContestInvite.find({refer_by_user:'5f65fce7e42a92091bb21f46',use_status:0,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport}).countDocuments();
                        console.log("rfuserTotalCounts*****",rfuserTotalCounts);
                        if(rfuserTotalCounts >= 10){
-                           await ContestInvite.updateMany(
+                          const upData = await ContestInvite.updateMany(
                                 { refer_by_user:ObjectId('5f65fce7e42a92091bb21f46'),use_status:0,contest_id:ObjectId(contest_id),match_id:match_id,series_id:series_id,sport:match_sport},
                                 { $set: { use_status : 1 } }
-                             );
+                               );
+                           if(upData){
+                            let uAnalysisData = await UserAnalysis.findOne({ user_id: ObjectId('5f65fce7e42a92091bb21f46'),match_id:match_id,series_id:series_id,sport:match_sport});
+                            let redisKeyForRentation = 'app-analysis-' + '5f65fce7e42a92091bb21f46' + '-' + match_id  + '-'+ match_sport; 
+                            if(uAnalysisData && uAnalysisData._id){
+                                await UserAnalysis.updateOne({ _id: ObjectId(uAnalysisData._id) }, { $set: { "offer_percent": 100,"is_offer_type":2 } });
+                                uAnalysisData.offer_percent = 100; 
+                                redis.setRedisForUserAnaysis(redisKeyForRentation,uAnalysisData); 
+                             } else {
+                                 let offerObj = {"match_id":match_id,"series_id":series_id,"is_offer_type":2,"sport":match_sport,"offer_amount":0,"offer_percent":100,"match_name":"Offer Message","contest_ids":[ObjectId(contest_id)],"user_id":ObjectId("5f65fce7e42a92091bb21f46")};
+                                 UserAnalysis.insertMany([offerObj])
+                                 .then(function(mongooseDocuments) {
+                                    for (const resItem of mongooseDocuments) {
+                                        redis.setRedisForUserAnaysis(redisKeyForRentation, resItem);
+                                    }
+                                 })
+                                 .catch(function(err) {
+                                     /* Error handling */
+                                     console.log('error in offer add in join contest',err);
+                                 });
+                                 await UserAnalysis.create(offerObj);
+                             } 
+                            
+                           }
+                              
                         }
                      }
 
