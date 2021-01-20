@@ -5,14 +5,7 @@ const User = require('../../../models/user');
 const LiveScore = require('../../../models/live-score');
 const PointsBreakup = require('../../../models/points-breakup');
 const ApiUtility = require('../../api.utility');
-// const { ObjectId } = require('mongodb');
-// const moment = require('moment');
-// const config = require('../../../config');
-// const ModelService = require("../../ModelService");
 const _ = require("lodash");
-// const redis = require('../../../../lib/redis');
-// const mqtt = require('../../../../lib/mqtt');
-// const { RedisKeys } = require('../../../constants/app');
 const SeriesPlayer = require('../../../models/series-player');
 
 module.exports = {
@@ -167,6 +160,7 @@ async function cricketPreview(decoded, liveScore, cb) {
             let val = playerData[row.player_id];
             // console.log(val.playing_role);
             let playerRecord = {};
+            let selectedPercent =   "";
             if (decoded['is_player_state']) {
                 playerBrackup = await PointsBreakup.aggregate([
                     {
@@ -284,6 +278,7 @@ async function cricketPreview(decoded, liveScore, cb) {
                         'actual': 0,
                         'points': value.total_point
                     };
+                    selectedPercent  =  value.selected_by ? value.selected_by : '0.00' + "%";
                 }
             }
 
@@ -295,7 +290,7 @@ async function cricketPreview(decoded, liveScore, cb) {
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
                 'player_credit': val['player_credit'],
-                'selection_percent': "0%",  //percent,
+                'selection_percent': selectedPercent,  //percent,
                 'points': row.point,
                 'in_contest': (isInContest.length > 0) ? true : false,
                 'team_number': Array.from(new Set(teamNo)), //teamNum,
@@ -393,6 +388,7 @@ async function footabllPreview(decoded, liveScore, cb) {
             // val = this.getPlayerImage(row.playerId,series_id);
             let val = playerData[row.player_id];
             let playerRecord = {};
+            let selectedPercent =   "";
             // if (decoded['is_player_state']) {
             //     playerBrackup = await PointsBreakup.aggregate([
             //         {
@@ -550,6 +546,7 @@ async function footabllPreview(decoded, liveScore, cb) {
                         'actual': 0,
                         'points': value.total_point
                     };
+                    selectedPercent  =  value.selected_by ? value.selected_by : '0.00' + "%";
                 }
             }
 
@@ -560,7 +557,7 @@ async function footabllPreview(decoded, liveScore, cb) {
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
                 'player_credit': val && val['player_credit'] ? val['player_credit'].toString() : '0',
-                'selection_percent': "0%",  //percent,
+                'selection_percent': selectedPercent,  //percent,
                 'points': row.point,
                 'in_contest': (isInContest.length > 0) ? true : false,
                 'team_number': Array.from(new Set(teamNo)), //teamNum,
