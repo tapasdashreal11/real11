@@ -21,6 +21,9 @@ var settingsSchema = new Schema({
 	},
 	sport_type: {
 		type: Array
+	},
+	max_team_create: {
+		type: Number
 	}
 });
 

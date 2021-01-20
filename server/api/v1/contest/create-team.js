@@ -9,6 +9,7 @@ const redis = require('../../../../lib/redis');
 const mqtt = require('../../../../lib/mqtt');
 const PlayerTeamService = require('../../Services/PlayerTeamService');
 const { RedisKeys } = require('../../../constants/app');
+const Settings = require("../../../models/settings");
 
 module.exports = {
     
@@ -174,7 +175,9 @@ module.exports = {
                             series_id: series_id,
                             sport: sport
                         });
-                        if (team_count < 9) {
+                        let appSettingData = await Settings.findOne({}, { max_team_create: 1 });
+                        const totalTemCount = appSettingData && appSettingData._id && appSettingData.max_team_create ? appSettingData.max_team_create : 9;
+                        if (team_count < totalTemCount) {
                             team_count += 1;
                             // console.log(team_count);
                             // return false;
