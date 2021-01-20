@@ -644,13 +644,16 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                                 { $set: { use_status : 1 } }
                                );
                            if(upData){
+                               console.log('upData***',upData);
                             let uAnalysisData = await UserAnalysis.findOne({ user_id: ObjectId('5f65fce7e42a92091bb21f46'),match_id:match_id,series_id:series_id,sport:match_sport});
                             let redisKeyForRentation = 'app-analysis-' + '5f65fce7e42a92091bb21f46' + '-' + match_id  + '-'+ match_sport; 
                             if(uAnalysisData && uAnalysisData._id){
+                                console.log('upData* in if cond');
                                 await UserAnalysis.updateOne({ _id: ObjectId(uAnalysisData._id) }, { $set: { "offer_percent": 100,"is_offer_type":2 } });
                                 uAnalysisData.offer_percent = 100; 
                                 redis.setRedisForUserAnaysis(redisKeyForRentation,uAnalysisData); 
                              } else {
+                                console.log('upData* in else cond');
                                  let offerObj = {"match_id":match_id,"series_id":series_id,"is_offer_type":2,"sport":match_sport,"offer_amount":0,"offer_percent":100,"match_name":"Offer Message","contest_ids":[ObjectId(contest_id)],"user_id":ObjectId("5f65fce7e42a92091bb21f46")};
                                  UserAnalysis.insertMany([offerObj])
                                  .then(function(mongooseDocuments) {
