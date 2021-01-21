@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
                             response["message"] = "You can't use this Referal Code.";
                             return res.json(response);
                         }
-                        const ptcCoount = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user._id, 'match_id': decoded['match_id'], 'sport': sport, 'series_id': decoded['series_id'] }).countDocuments();
+                        const ptcCoount = await PlayerTeamContest.find({ 'contest_id': ObjectId(contest_id), 'user_id':ObjectId(user._id), 'match_id': decoded['match_id'], 'sport': sport, 'series_id': decoded['series_id'] }).countDocuments();
                         console.log("rptcCoount***",ptcCoount);
                         if(ptcCoount>0){
                             response["message"] = "Referal Code Verified Successfully.";
