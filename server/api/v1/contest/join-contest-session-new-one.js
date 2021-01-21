@@ -29,8 +29,8 @@ module.exports = async (req, res) => {
         const user_id = req.userId;
         const { } = req.params;
         const { team_id, contest_id, series_id, match_id, sport,rf_code,refer_by_user_id } = req.body;
-        let refer_code = rf_code ? rf_code: 'G90K7On6H9';
-        let refer_by_user = refer_by_user_id ? refer_by_user_id: "5f65fce7e42a92091bb21f46";
+        let refer_code = rf_code ? rf_code:'';
+        let refer_by_user = refer_by_user_id ? refer_by_user_id:'';
         let match_sport = sport ? parseInt(sport) : 1;
 
         let decoded = {
