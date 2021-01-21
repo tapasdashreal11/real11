@@ -1527,13 +1527,14 @@ class ModelService {
                             "image":"$image",
                             "url":"$url",
                             "offer_id":"$offer_id",
-                            "sport":"$sport"
+                            "sport":"$sport",
+                            "match_id":"$match_id"
                         }
                     },
                     {
                         $lookup: {
                             from: 'series_squad',
-                            let: { seriesId: "$sseries_id" },
+                            let: { seriesId: "$sseries_id",matchId: "$match_id" },
                             pipeline: [
                                 {
                                     $match: {  
@@ -1541,6 +1542,7 @@ class ModelService {
                                             $and :[
                                                 {$eq: [ "$status", 1 ]},
                                                 {$eq: [ "$series_id", "$$seriesId" ]},
+                                                {$eq: [ "$match_id", "$$matchId" ]},
                                                 {$ne: [ "$visitorteam_id", 0 ]},
                                                 {$ne: [ "$localteam_id", 0 ]},
                                                 {$gte: [ "$time", currentDate ]},

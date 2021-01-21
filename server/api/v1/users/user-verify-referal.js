@@ -14,7 +14,6 @@ module.exports = async (req, res) => {
             series_id: parseInt(series_id),
             contest_id: contest_id
         }
-        console.log("req.params",req.params);
 		try {
             if(auth_user_id){
                 if(invite_code && !_.isEmpty(invite_code)){
@@ -26,7 +25,6 @@ module.exports = async (req, res) => {
                             return res.json(response);
                         }
                         const ptcCoount = await PlayerTeamContest.find({ 'contest_id': ObjectId(contest_id), 'user_id':ObjectId(user._id), 'match_id': decoded['match_id'], 'sport': sport, 'series_id': decoded['series_id'] }).countDocuments();
-                        console.log("rptcCoount***",ptcCoount);
                         if(ptcCoount>0){
                             response["message"] = "Referal Code Verified Successfully.";
                             response["status"] = true;
