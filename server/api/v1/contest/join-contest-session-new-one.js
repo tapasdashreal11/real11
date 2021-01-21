@@ -638,24 +638,20 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     if(contestData && contestData.entry_fee > 0 && refer_code && !_.isEmpty(refer_code) && refer_by_user && !_.isEmpty(refer_by_user)){
                         await ContestInvite.create({refer_code:refer_code,refer_by_user:refer_by_user,refered_user:user_id,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport});
                         if(user_id){
-                          let rfuserTotalCounts = await ContestInvite.find({refer_by_user:refer_by_user,use_status:0,contest_id:contest_id,match_id:match_id,series_id:series_id,sport:match_sport}).countDocuments();
-                          console.log("rfuserTotalCounts*****",rfuserTotalCounts);
+                          let rfuserTotalCounts = await ContestInvite.find({refer_by_user:refer_by_user,use_status:0,contest_id:contest_id,match_id:match_id,series_id:series_id}).countDocuments();
                           if(rfuserTotalCounts >= 10){
                              const upData = await ContestInvite.updateMany(
                                    { refer_by_user:ObjectId(refer_by_user),use_status:0,contest_id:ObjectId(contest_id),match_id:match_id,series_id:series_id,sport:match_sport},
                                    { $set: { use_status : 1 } }
                                   );
                               if(upData){
-                                  console.log('upData***',upData);
                                let uAnalysisData = await UserAnalysis.findOne({ user_id: ObjectId(refer_by_user),match_id:match_id,series_id:series_id,sport:match_sport});
                                let redisKeyForRentation = 'app-analysis-' + refer_by_user + '-' + match_id  + '-'+ match_sport; 
                                if(uAnalysisData && uAnalysisData._id){
-                                   console.log('upData* in if cond');
-                                   await UserAnalysis.updateOne({ _id: ObjectId(uAnalysisData._id) }, { $set: { "offer_percent": 100,"is_offer_type":2 } });
+                                   await UserAnalysis.updateOne({ _id: ObjectId(uAnalysisData._id) }, { $set: { "offer_percent": 100,"is_offer_type":2,"contest_ids":[ObjectId(contest_id)] } });
                                    uAnalysisData.offer_percent = 100; 
                                    redis.setRedisForUserAnaysis(redisKeyForRentation,uAnalysisData); 
                                 } else {
-                                   console.log('upData* in else cond');
                                     let offerObj = {"match_id":match_id,"series_id":series_id,"is_offer_type":2,"sport":match_sport,"offer_amount":0,"offer_percent":100,"match_name":"Offer Message","contest_ids":[ObjectId(contest_id)],"user_id":ObjectId(refer_by_user)};
                                     UserAnalysis.insertMany([offerObj])
                                     .then(function(mongooseDocuments) {
