@@ -85,6 +85,7 @@ module.exports = async (req, res) => {
           insertData.clevertap_id = params.clevertap_id || '';
           insertData.appsflayer_id = params.appsflayer_id || '';
           insertData.refer_id = createUserReferal(10);
+          insertData.isFirstPaymentAdded = 2;
           // insertData.bonus_amount = 50;
           if(params && params.device_id)
            insertData.device_id = params.device_id;

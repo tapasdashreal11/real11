@@ -299,6 +299,7 @@ module.exports = {
                     is_infinite: (contestDetail.infinite_contest_size == 1) ? true : false,
                     infinite_breakup: finiteBreakupDetail,
                     is_aakash_team: aakashLeague,
+                    maximum_team_size:multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1
                 }
                 if (reviewMatch == "In Progress") {
                     redis.setRedis(contestDataAPIKey, contestData)
