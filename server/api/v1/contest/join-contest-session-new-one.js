@@ -574,7 +574,7 @@ module.exports = async (req, res) => {
                                         return res.send(ApiUtility.failed("Already Joined Contest."));
                                     }
                                 } else {
-                                    return res.send(ApiUtility.failed("You can not add more than '$maxTeamSize' teams."));
+                                    return res.send(ApiUtility.failed("You can not add more than ${maxTeamSize} teams."));
                                 }
                             } else {
                                 return res.send(ApiUtility.failed('You have no team to join this contest.'));
