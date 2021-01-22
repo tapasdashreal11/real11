@@ -103,6 +103,7 @@ module.exports = async (req, res) => {
                     let newMatchContestData = match_contest_data;
                     try{
                          newMatchContestData = _.remove(newMatchContestData, function(e) {
+                             console.log('e*********',e.contest_id);
                             return (ObjectId(e.category_id).equals(ObjectId('600a7d84a3d2553aa779eae7')) && userCategory.is_beginner_user == 0 ) ||
                             (ObjectId(e.category_id).equals(ObjectId('600a7dfaa3d2553aa779eae8')) && userCategory.is_super_user == 0 )
                         });
