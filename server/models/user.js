@@ -116,7 +116,9 @@ const AdminSchema = mongoose.Schema({
     ip_address:{ type:String },
     clevertap_id:{ type:String,default: '' },
     appsflayer_id:{ type:String,default: '' },
-    isFirstPaymentAdded:{ type:Number,default: 2 }, // default  wiil be 2 after added it will be 1
+    isFirstPaymentAdded:{ type:Number,default: 0 }, // default  wiil be 0 after added it will be 1
+    is_super_user:{ type:Number,default: 0 }, // default  wiil be 0 after added it will be 1
+    is_dimond_user:{ type:Number,default: 0 }, // default  wiil be 0 after added it will be 1
     instant_withdraw: { type: Number, enum: [1,0], default: 0 },
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },

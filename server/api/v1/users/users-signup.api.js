@@ -11,6 +11,7 @@ const logger = require("../../../../utils/logger")(module);
 const { currentDateTimeFormat, createUserReferal, generateTransactionId, createTeamName } = require("../common/helper");
 const config = require('../../../config');
 const _ = require('lodash');
+const redis = require('../../../../lib/redis');
 const moment = require('moment');
 const Helper = require('./../common/helper');
 const { cat } = require('shelljs');
@@ -149,6 +150,17 @@ module.exports = async (req, res) => {
             }
           }catch(errr){}
           
+          try {
+            if(user && user._id){
+              let redisKeyForUserCategory = 'user-category-' + user._id;
+              let userCatObj = {
+                  is_super_user : 0,
+                  is_dimond_user : 0,
+                  is_beginner_user :1
+              };
+              redis.setRedisForUserCategory(redisKeyForUserCategory,userCatObj); 
+            }
+         } catch(errrrrr){}
           
           insertData.user_id = insertId;
           insertData.otp = 0;
