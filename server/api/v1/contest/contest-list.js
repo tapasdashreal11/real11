@@ -21,28 +21,38 @@ module.exports = async (req, res) => {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
+        let userCategory = {
+            is_super_user : 0,
+            is_dimond_user : 0,
+            is_beginner_user :0
+        };
         let queryArray = [
             (new ModelService(Category)).getMatchContestLatest({ status: 1 }, filter, 5)
         ];
         if (user_id) {
+            let redisKeyForUserCategory = 'user-category-' + user_id;
             queryArray.push(
                 PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }).countDocuments(),
-                PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec()
+                PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec(),
+                getPromiseForAnalysis(redisKeyForUserCategory, userCatObj)
             )
         }
         const mcResult = await Promise.all(queryArray);
         if (mcResult && mcResult.length > 0) {
             let myTeamsCount = 0;
             let myContestCount = [];
+            
             let match_contest_data = mcResult && mcResult[0] ? mcResult[0] : []
             let userTeamIds = {};
             let joinedContestIds = [];
             let joinedTeamsCount = {};
             let userFavouriteContest = {};
+           
             if (user_id) {
                 myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : 0;
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
-                
+                 userCategory = mcResult && mcResult.length > 3 && mcResult[3] ? JSON.parse(JSON.stringify(mcResult[3]))  : userCatObj;
+                console.log('userCategory*****',userCategory);
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
 
@@ -59,6 +69,7 @@ module.exports = async (req, res) => {
                 await redis.getRedisFavouriteContest(redisKeyForFavouriteContest, async (err, favData) => {
                     if (favData) {
                         userFavouriteContest = favData;
+                        console.log('data redis favData****',favData,'match',match_id);
                         if(userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length){
                             for (const cData of userFavouriteContest.contest_data) {
                                 cData.contest_id = ObjectId(cData.contest_id)
@@ -89,8 +100,16 @@ module.exports = async (req, res) => {
                     redis.redisObj.set('user-contest-teamIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(Helper.parseUserTeams(userTeamIds)));
                     redis.redisObj.set('user-contest-joinedContestIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(joinedContestIds));
                     redis.setRedis(RedisKeys.MATCH_CONTEST_LIST + req.params.match_id, match_contest_data);
+                    let newMatchContestData = match_contest_data;
+                    try{
+                         newMatchContestData = _.remove(match_contest_data, function(e) {
+                            return (ObjectId(e.category_id).equals(ObjectId('600a7d84a3d2553aa779eae7')) && userCategory.is_beginner_user == 0 ) ||
+                            (ObjectId(e.category_id).equals(ObjectId('600a7dfaa3d2553aa779eae8')) && userCategory.is_super_user == 0 )
+                        });
+                    }catch(eerrrr){}
+                   
                     let resObj = {
-                        match_contest: match_contest_data,
+                        match_contest: newMatchContestData,
                         my_teams: myTeamsCount,
                         my_contests: joinedContestIds.length || 0,
                         joined_contest_ids: joinedContestIds,
@@ -104,6 +123,7 @@ module.exports = async (req, res) => {
                         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
                             if (data) {
                                 resObj['user_rentation_bonous'] = data;
+                                console.log('data redis****',data,'match',match_id);
                             } else {
                                 let fileds = { match_name: 1, match_id: 1, user_id: 1, series_id: 1, is_offer_type: 1, contest_ids: 1, sport: 1, offer_amount: 1, offer_percent: 1 };
                                 let userAnalysisData = await UserAnalysis.findOne({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }, fileds);
@@ -141,4 +161,18 @@ module.exports = async (req, res) => {
         return res.send(ApiUtility.failed('Something went wrong!!'));
     }
 
+}
+
+function getPromiseForAnalysis(key, defaultValue){
+    return new Promise((resolve, reject) => {
+        redis.redisForUserAnalysis.get(key, (err, data) => {
+            if (err) {
+                reject(defaultValue);
+            }
+            if (data == null) {
+                data = defaultValue
+            }
+            resolve(data)
+        })
+    })
 }
