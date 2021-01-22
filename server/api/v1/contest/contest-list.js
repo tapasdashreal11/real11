@@ -102,7 +102,7 @@ module.exports = async (req, res) => {
                     redis.setRedis(RedisKeys.MATCH_CONTEST_LIST + req.params.match_id, match_contest_data);
                     let newMatchContestData = match_contest_data;
                     try{
-                         newMatchContestData = _.remove(match_contest_data, function(e) {
+                         newMatchContestData = _.remove(newMatchContestData, function(e) {
                             return (ObjectId(e.category_id).equals(ObjectId('600a7d84a3d2553aa779eae7')) && userCategory.is_beginner_user == 0 ) ||
                             (ObjectId(e.category_id).equals(ObjectId('600a7dfaa3d2553aa779eae8')) && userCategory.is_super_user == 0 )
                         });
