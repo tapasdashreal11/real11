@@ -254,6 +254,7 @@ module.exports = {
                             contest[contestKey]['is_infinite'] = (contestValue.doc.contest.infinite_contest_size == 1) ? true : false;
                             contest[contestKey]['infinite_breakup'] = finiteBreakupDetail;
                             contest[contestKey]['is_aakash_team'] = aakashLeague;
+                            contest[contestKey]['maximum_team_size'] = (contestValue.doc.contest.multiple_team && contestValue.doc.contest.multiple_team == 'yes') ? (contestValue.doc.contest.maximum_team_size) : (contestValue.doc.contest.maximum_team_size);
                             contestKey++;
                         }
                     }
