@@ -165,7 +165,7 @@ module.exports = async (req, res) => {
 
 function getPromiseForAnalysis(key, defaultValue){
     return new Promise((resolve, reject) => {
-        redis.redisForUserAnalysis.get(key, (err, data) => {
+        redis.userAnalysisRedisObj.redisForUserAnalysis.get(key, (err, data) => {
             if (err) {
                 reject(defaultValue);
             }
