@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
             if (user_id) {
                 myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : 0;
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
-                 userCategory = mcResult && mcResult.length > 3 && mcResult[3] ? JSON.parse(mcResult[3])  : userCategory;
+                 userCategory = mcResult && mcResult.length > 3 && mcResult[3] && !_.isEmpty(mcResult[3]) ? JSON.parse(mcResult[3])  : userCategory;
                 console.log('userCategory*****',userCategory);
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
