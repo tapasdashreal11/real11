@@ -160,9 +160,12 @@ module.exports = async (req, res) => {
                   is_dimond_user : 0,
                   is_beginner_user :1
               };
+              console.log('redisKeyForUserCategory***',redisKeyForUserCategory);
               redis.setRedisForUserCategory(redisKeyForUserCategory,userCatObj); 
             }
-         } catch(errrrrr){}
+         } catch(errrrrr){
+          console.log('insertId*** errrr',insertId,errrrrr);
+         }
           
           insertData.user_id = insertId;
           insertData.otp = 0;
