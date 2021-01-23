@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
             queryArray.push(
                 PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }).countDocuments(),
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec(),
-                getPromiseForAnalysis(redisKeyForUserCategory, userCategory)
+                getPromiseForAnalysis(redisKeyForUserCategory, "{}")
             )
         }
         const mcResult = await Promise.all(queryArray);
@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
             if (user_id) {
                 myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : 0;
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
-                 userCategory = mcResult && mcResult.length > 3 && mcResult[3] ? JSON.parse(JSON.stringify(mcResult[3]))  : userCategory;
+                 userCategory = mcResult && mcResult.length > 3 && mcResult[3] ? JSON.parse(mcResult[3])  : userCategory;
                 console.log('userCategory*****',userCategory);
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
