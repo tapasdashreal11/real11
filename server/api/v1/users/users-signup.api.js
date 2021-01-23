@@ -152,8 +152,9 @@ module.exports = async (req, res) => {
           }catch(errr){}
           
           try {
-            if(user && user._id){
-              let redisKeyForUserCategory = 'user-category-' + user._id;
+            if(insertId){
+              console.log('insertId***',insertId);
+              let redisKeyForUserCategory = 'user-category-' + insertId;
               let userCatObj = {
                   is_super_user : 0,
                   is_dimond_user : 0,
