@@ -381,6 +381,17 @@ module.exports = async (req, res) => {
                                                                 
                                                                 return res.send(ApiUtility.failed(error.message));
                                                             }
+                                                            // worked for user category set redis
+                                                            try {
+                                                                let redisKeyForUserCategory = 'user-category-' + user_id;
+                                                                let userCatObj = {
+                                                                    is_super_user : authUser.is_super_user ? authUser.is_super_user : 0,
+                                                                    is_dimond_user : authUser.is_dimond_user ? authUser.is_dimond_user : 0,
+                                                                    is_beginner_user : authUser.isFirstPaymentAdded ? (authUser.isFirstPaymentAdded == 2 ? 1 : 1) : 0
+                                                                };
+                                                                redis.setRedisForUserAnaysis(redisKeyForUserCategory,userCatObj); 
+                                                             } catch(errrrrr){}
+
                                                             // TODO: Save Contest
                                                             let playerContest = {};
                                                             playerContest.id = newContestId;
@@ -584,15 +595,7 @@ module.exports = async (req, res) => {
                         return res.send(ApiUtility.failed('You can not join contest, match already started'));
                     }
 
-                    try {
-                        let redisKeyForUserCategory = 'user-category-' + user_id;
-                        let userCatObj = {
-                            is_super_user : authUser.is_super_user ? authUser.is_super_user : 0,
-                            is_dimond_user : authUser.is_dimond_user ? authUser.is_dimond_user : 0,
-                            is_beginner_user : authUser.isFirstPaymentAdded ? (authUser.isFirstPaymentAdded == 2 ? 1 : 0) : 0
-                        };
-                        redis.setRedisForUserCategory(redisKeyForUserCategory,userCatObj); 
-                     } catch(errrrrr){}
+                   
                 } else {
                     return res.send(ApiUtility.failed("You are not authenticated user."));
                 }
