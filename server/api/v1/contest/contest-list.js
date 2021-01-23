@@ -101,7 +101,7 @@ module.exports = async (req, res) => {
                     try{
                          newMatchContestData = _.reject(newMatchContestData, function(e) {
                              console.log('e*********',e.category_id);
-                            return (ObjectId(e.category_id).equals(ObjectId('600a7d84a3d2553aa779eae7')) && userCategory.is_beginner_user == 0 ) ||
+                            return (ObjectId(e.category_id).equals(ObjectId('600a7d84a3d2553aa779eae7')) && userCategory.is_beginner_user == 0 ) &&
                             (ObjectId(e.category_id).equals(ObjectId('600a7dfaa3d2553aa779eae8')) && userCategory.is_super_user == 0 )
                         });
                     }catch(eerrrr){}
