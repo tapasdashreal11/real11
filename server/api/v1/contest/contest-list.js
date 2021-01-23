@@ -21,10 +21,7 @@ module.exports = async (req, res) => {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
-        let userCategory = {
-            is_super_user : 0,
-            is_dimond_user : 0,
-            is_beginner_user :0
+        let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0
         };
         let queryArray = [
             (new ModelService(Category)).getMatchContestLatest({ status: 1 }, filter, 5)
