@@ -691,7 +691,7 @@ module.exports = {
             let redisKeyForAddCashCoupon = 'add-cash-coupon-list';
             if(user_id){
             let couponCode = await PaymentOffers.find(
-                {coupon_type:{$in:['extra','bonus','extra_deposite']},status:1, expiry_date:{$gte:start.toISOString()}}).limit(40);
+                {coupon_type:{$in:['extra','bonus','extra_deposite']},status:1,is_public:true, expiry_date:{$gte:start.toISOString()}}).limit(40);
                 var fnData = _.chain(couponCode)
                               .groupBy("coupon_type")
                                .map((value, key) => ({ _id: key, coupon_type: key, info: value }))
