@@ -100,7 +100,8 @@ module.exports = async (req, res) => {
                     let newMatchContestData = match_contest_data;
                     try{
                          newMatchContestData = _.reject(newMatchContestData, function(e) {
-                            //userCategory = userCategory?
+                            
+                            userCategory = _.isEmpty(userCategory)?{is_super_user : 0,is_dimond_user : 0,is_beginner_user :0}: userCategory;
                              if(userCategory)console.log('e*********',e.category_id,userCategory.is_beginner_user,userCategory.is_super_user);
                             return (ObjectId(e.category_id).equals(ObjectId('600a7d84a3d2553aa779eae7')) && userCategory && userCategory.is_beginner_user == 0 ) ||
                             (ObjectId(e.category_id).equals(ObjectId('600a7dfaa3d2553aa779eae8')) && userCategory && userCategory.is_super_user == 0 )
