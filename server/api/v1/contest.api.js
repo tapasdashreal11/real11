@@ -1013,6 +1013,7 @@ module.exports = {
                     if (useableBonusPer == '') {
                         useableBonusPer = adminPer;
                     }
+                    data['contest_shareable'] = contestData && contestData.contest_shareable ? contestData.contest_shareable : 0;
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
