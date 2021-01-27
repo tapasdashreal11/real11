@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
             if(auth_user_id){
                 if(invite_code && !_.isEmpty(invite_code)){
                     var regCode = new RegExp(["^", invite_code, "$"].join(""), "i");
-                    let user = await Users.findOne({ refer_id: regCode, status: 1 });
+                    let user = await Users.findOne({ refer_id: regCode });
                     if (user && user._id) {
                         if(ObjectId(auth_user_id).equals(ObjectId(user._id))){
                             response["message"] = "You can't use this Referal Code.";

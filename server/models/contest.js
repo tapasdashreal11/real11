@@ -102,6 +102,10 @@ var contestSchema = new Schema({
     "type":Number,
     default:1
   },
+  "contest_shareable":{
+    "type":Number,
+    default:0
+  },
   breakup:{
     "type":[{
       name:String, 
