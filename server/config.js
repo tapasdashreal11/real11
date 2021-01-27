@@ -192,6 +192,12 @@ config.mqtt = {
   password: process.env.MQTT_PASS || "",
 }
  
+// This is used to define cat for user according to contest cat
+config.user_category = {
+  beginner_cat: '600a7d84a3d2553aa779eae7',
+  super_cat:'600a7dfaa3d2553aa779eae8',
+  dimond_cat:'600c0d4ba3d2553aa779f03c'
+}
 
 config.admin_percentage = 10.00;
 config.contest_commission = 10.00;

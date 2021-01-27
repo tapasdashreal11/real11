@@ -10,6 +10,7 @@ const FavouriteContest = require("../../../models/favourite-contest");
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
+const config = require('./../../../config');
 module.exports = async (req, res) => {
     try {
         const { match_id, sport,series_id } = req.params;
@@ -103,9 +104,9 @@ module.exports = async (req, res) => {
                             
                             userCategory = _.isEmpty(userCategory)?{is_super_user : 0,is_dimond_user : 0,is_beginner_user :0}: userCategory;
                              if(userCategory)console.log('e*********',e.category_id,userCategory.is_beginner_user,userCategory.is_super_user);
-                            return (ObjectId(e.category_id).equals(ObjectId('600a7d84a3d2553aa779eae7')) && userCategory && userCategory.is_beginner_user == 0 ) ||
-                            (ObjectId(e.category_id).equals(ObjectId('600a7dfaa3d2553aa779eae8')) && userCategory && userCategory.is_super_user == 0 ) ||
-                            (ObjectId(e.category_id).equals(ObjectId('600c0d4ba3d2553aa779f03c')) && userCategory && userCategory.is_dimond_user == 0 )
+                            return (ObjectId(e.category_id).equals(ObjectId(config.user_category.beginner_cat)) && userCategory && userCategory.is_beginner_user == 0 ) ||
+                            (ObjectId(e.category_id).equals(ObjectId(config.user_category.super_cat)) && userCategory && userCategory.is_super_user == 0 ) ||
+                            (ObjectId(e.category_id).equals(ObjectId(config.user_category.dimond_cat)) && userCategory && userCategory.is_dimond_user == 0 )
                         });
                     }catch(eerrrr){}
                    
