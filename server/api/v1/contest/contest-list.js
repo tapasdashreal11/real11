@@ -102,8 +102,8 @@ module.exports = async (req, res) => {
                     try{
                          newMatchContestData = _.reject(newMatchContestData, function(e) {
                             
-                            userCategory = _.isEmpty(userCategory)?{is_super_user : 0,is_dimond_user : 0,is_beginner_user :0}: userCategory;
-                             if(userCategory)console.log('e*********',e.category_id,userCategory.is_beginner_user,userCategory.is_super_user);
+                            userCategory = _.has(userCategory, "is_super_user") && _.has(userCategory, "is_dimond_user") && _.has(userCategory, "is_beginner_user")?userCategory :{is_super_user : 0,is_dimond_user : 0,is_beginner_user :0};
+                            if(userCategory)console.log('e*********',e.category_id,userCategory.is_beginner_user,userCategory.is_super_user);
                             return (ObjectId(e.category_id).equals(ObjectId(config.user_category.beginner_cat)) && userCategory && userCategory.is_beginner_user == 0 ) ||
                             (ObjectId(e.category_id).equals(ObjectId(config.user_category.super_cat)) && userCategory && userCategory.is_super_user == 0 ) ||
                             (ObjectId(e.category_id).equals(ObjectId(config.user_category.dimond_cat)) && userCategory && userCategory.is_dimond_user == 0 )
