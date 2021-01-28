@@ -384,16 +384,18 @@ module.exports = async (req, res) => {
                                                             // worked for user category set redis
                                                             
                                                             try {
+                                                                  if(contestData && contestData.entry_fee && contestData.entry_fee > 0){
                                                                     if(authUser && authUser.is_beginner_user && authUser.is_beginner_user ==1){
                                                                         await User.findOneAndUpdate({ '_id': ObjectId(user_id)}, { $set: { is_beginner_user: 0 } });
                                                                     }
                                                                     let redisKeyForUserCategory = 'user-category-' + user_id;
                                                                     let userCatObj = {
-                                                                        is_super_user : authUser.is_super_user ? authUser.is_super_user : 0,
-                                                                        is_dimond_user : authUser.is_dimond_user ? authUser.is_dimond_user : 0,
+                                                                        is_super_user : authUser && authUser.is_super_user ? authUser.is_super_user : 0,
+                                                                        is_dimond_user : authUser && authUser.is_dimond_user ? authUser.is_dimond_user : 0,
                                                                         is_beginner_user : 0
                                                                     };
                                                                     redis.setRedisForUserAnaysis(redisKeyForUserCategory,userCatObj); 
+                                                                  }
                                                              } catch(errrrrr){}
 
                                                             // TODO: Save Contest
