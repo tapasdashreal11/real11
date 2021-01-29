@@ -346,7 +346,7 @@ module.exports = {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     // allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id);
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, aakashData._id);
-                } else {
+                } else if(contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, '');
                 }
                 //if (contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
