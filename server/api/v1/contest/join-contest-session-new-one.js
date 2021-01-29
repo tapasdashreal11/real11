@@ -394,7 +394,7 @@ module.exports = async (req, res) => {
                                                                         is_dimond_user : authUser && authUser.is_dimond_user ? authUser.is_dimond_user : 0,
                                                                         is_beginner_user : 0
                                                                     };
-                                                                    redis.setRedisForUserAnaysis(redisKeyForUserCategory,userCatObj); 
+                                                                    redis.setRedisForUserCategory(redisKeyForUserCategory,userCatObj); 
                                                                   }
                                                              } catch(errrrrr){}
 

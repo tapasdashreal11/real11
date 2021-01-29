@@ -198,6 +198,11 @@ config.user_category = {
   super_cat:'600a7dfaa3d2553aa779eae8',
   dimond_cat:'600c0d4ba3d2553aa779f03c'
 }
+config.user_category_prod = {
+  beginner_cat: '6013ab6f53fe1866314c58ec',
+  super_cat:'6013aba953fe1866314c58ed',
+  dimond_cat:'6013abf553fe1866314c58ee'
+}
 
 config.admin_percentage = 10.00;
 config.contest_commission = 10.00;

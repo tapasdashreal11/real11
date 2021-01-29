@@ -153,7 +153,6 @@ module.exports = async (req, res) => {
           
           try {
             if(insertId){
-              console.log('insertId***',insertId);
               let redisKeyForUserCategory = 'user-category-' + insertId;
               let userCatObj = {
                   is_super_user : 0,

@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
                 myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : 0;
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
                  userCategory = mcResult && mcResult.length > 3 && mcResult[3] && !_.isEmpty(mcResult[3]) ? JSON.parse(mcResult[3])  : userCategory;
-                console.log('userCategory*****',userCategory);
+                //console.log('userCategory*****',userCategory);
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
 
@@ -67,7 +67,7 @@ module.exports = async (req, res) => {
                 await redis.getRedisFavouriteContest(redisKeyForFavouriteContest, async (err, favData) => {
                     if (favData) {
                         userFavouriteContest = favData;
-                        console.log('data redis favData****',favData,'match',match_id);
+                        //console.log('data redis favData****',favData,'match',match_id);
                         if(userFavouriteContest && userFavouriteContest._id && userFavouriteContest.contest_data && userFavouriteContest.contest_data.length){
                             for (const cData of userFavouriteContest.contest_data) {
                                 cData.contest_id = ObjectId(cData.contest_id)
@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
                          newMatchContestData = _.reject(newMatchContestData, function(e) {
                             
                             userCategory = _.has(userCategory, "is_super_user") && _.has(userCategory, "is_dimond_user") && _.has(userCategory, "is_beginner_user")?userCategory :{is_super_user : 0,is_dimond_user : 0,is_beginner_user :0};
-                            if(userCategory)console.log('e*********',e.category_id,userCategory.is_beginner_user,userCategory.is_super_user);
+                           // if(userCategory)console.log('e*********',e.category_id,userCategory.is_beginner_user,userCategory.is_super_user);
                             return (ObjectId(e.category_id).equals(ObjectId(config.user_category.beginner_cat)) && userCategory && userCategory.is_beginner_user == 0 ) ||
                             (ObjectId(e.category_id).equals(ObjectId(config.user_category.super_cat)) && userCategory && userCategory.is_super_user == 0 ) ||
                             (ObjectId(e.category_id).equals(ObjectId(config.user_category.dimond_cat)) && userCategory && userCategory.is_dimond_user == 0 )
@@ -125,7 +125,7 @@ module.exports = async (req, res) => {
                         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
                             if (data) {
                                 resObj['user_rentation_bonous'] = data;
-                                console.log('data redis****',data,'match',match_id);
+                                //console.log('data redis****',data,'match',match_id);
                             } else {
                                 let fileds = { match_name: 1, match_id: 1, user_id: 1, series_id: 1, is_offer_type: 1, contest_ids: 1, sport: 1, offer_amount: 1, offer_percent: 1 };
                                 let userAnalysisData = await UserAnalysis.findOne({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }, fileds);
