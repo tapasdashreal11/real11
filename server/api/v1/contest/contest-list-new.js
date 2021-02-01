@@ -14,7 +14,6 @@ const config = require('./../../../config');
 module.exports = async (req, res) => {
     try {
         const { match_id, sport,series_id } = req.params;
-        return res.send(ApiUtility.failed('Please Update your app with latest version !!'));
         const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 1;
         let match_series_id = series_id ? parseInt(series_id) : 1;
