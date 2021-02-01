@@ -28,7 +28,8 @@ module.exports = {
             data1.message = 'Test Message';
             data1.server_time = moment(new Date()).format(config.DateFormat.datetime);
             // data1.apk_url = `http://13.232.51.228:3005/img/Real11.apk`;
-            data1.apk_url = `http://real11.com/Real11.apk`;
+            // data1.apk_url = `http://real11.com/Real11.apk`;
+            data1.apk_url = `https://app-update-real11.s3.ap-south-1.amazonaws.com/Real11_V_51.apk`;
 
             var successObj = ApiUtility.success(data1);
             redis.setRedis('match-list', successObj)

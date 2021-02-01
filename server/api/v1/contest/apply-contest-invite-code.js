@@ -9,6 +9,7 @@ const moment = require('moment');
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const mqtt = require('../../../../lib/mqtt');
+const { toLower } = require('lodash');
 
 
 module.exports = {
@@ -23,36 +24,43 @@ module.exports = {
                 invite_code: invite_code,
             }
             if (decoded) {
+                // console.log(decoded['invite_code'],toLower(decoded['invite_code']));return false
                 if (decoded['invite_code'] && decoded['user_id']) {
-                    var regCode = new RegExp(["^", decoded['invite_code'], "$"].join(""), "i");
-                    let contestMatch = await MatchContest.aggregate([
-                        {
-                            $match: { 'invite_code': regCode }
-                        },
-                        {
-                            $lookup: {
-                                from: 'series_squad',
-                                let: { matchId: "$match_id", sport: "$sport" },
-                                pipeline: [{
-                                    $match: {
-                                        $expr: {
-                                            $and: [
-                                                { $eq: ["$match_id", "$$matchId"] },
-                                                { $eq: ["$sport", "$$sport"] }
-                                            ]
+                    let contestMatch =   await getRedisContestCodeData(toLower(decoded['invite_code']));
+                    // console.log(contestMatch);
+                    if(!contestMatch || contestMatch == false) {
+                        var regCode = new RegExp(["^", decoded['invite_code'], "$"].join(""), "i");
+                        contestMatch = await MatchContest.aggregate([
+                            {
+                                $match: { 'invite_code': regCode,is_full:{$ne:1} }
+                            },
+                            {
+                                $lookup: {
+                                    from: 'series_squad',
+                                    let: { matchId: "$match_id", sport: "$sport" },
+                                    pipeline: [{
+                                        $match: {
+                                            $expr: {
+                                                $and: [
+                                                    { $eq: ["$match_id", "$$matchId"] },
+                                                    { $eq: ["$sport", "$$sport"] }
+                                                ]
+                                            }
                                         }
-                                    }
-                                }],
-                                as: 'series_squad'
-                            }
-                        },
-                        {
-                            $unwind: "$series_squad"
-                        },
-                        { $limit: 1 }
-                    ])
+                                    }],
+                                    as: 'series_squad'
+                                }
+                            },
+                            {
+                                $unwind: "$series_squad"
+                            },
+                            { $limit: 1 }
+                        ])
+                    }
+                    
                     // console.log(contestMatch);return false;
                     if (contestMatch && contestMatch.length === 1) {
+                        redis.setRedis("contest-invite-conde-"+ toLower(decoded['invite_code']), contestMatch);
                         contestMatch = contestMatch[0]
                         let authUser = await User.findOne({ '_id': decoded['user_id'] });
                         if (authUser) {
@@ -69,9 +77,9 @@ module.exports = {
                                 
                                 let sdateTime = moment(seriesSquad.time).utc();
                                 let cdateTime = moment(new Date()).utc();
-                                console.log('seriesSquad',seriesSquad);
+                                // console.log('seriesSquad',seriesSquad);
                                 var isAfter = moment(sdateTime).isBefore(cdateTime);
-                                console.log('isAfter',isAfter);
+                                // console.log('isAfter',isAfter);
                                 if (isAfter) {
                                     return res.send(ApiUtility.failed('Match has been started.'));
                                 }
@@ -89,7 +97,7 @@ module.exports = {
                                 matchData['star_time'] = finalTime;
                                 matchData['total_contest'] = totalContest ? totalContest : 0;
                                 matchData['sport'] = contestMatch.sport;
-                                console.log("contestMatch",contestMatch);
+                                // console.log("contestMatch",contestMatch);
                                 if (contestMatch.contest) {
                                     matchData['contest_id'] = contestMatch.contest_id;
                                     matchData['category_id'] = contestMatch.category_id;
@@ -104,6 +112,7 @@ module.exports = {
                                     matchData['is_joined'] = (teamsJoined && teamsJoined.length > 0) ? true : false;
                                     matchData['my_teams_count'] = 0;
                                     matchData['my_team_ids'] = myTeamIds;
+                                    
                                     return res.send(ApiUtility.success(matchData));
                                 } else {
                                     return res.send(ApiUtility.failed("Data not found"));
@@ -127,7 +136,25 @@ module.exports = {
         } catch (error) {
             return res.send(ApiUtility.failed(error.message));
         }
-    }
-
+    },
 }
 
+
+async function getRedisContestCodeData(inviteCode) {
+    try {
+        // inviteCode =    inviteCode.toLower();
+        // console.log(inviteCode);return false;
+        return new Promise(async (resolve, reject) => {
+            let redisKey = 'contest-invite-conde-' + inviteCode;
+            await redis.getRedis(redisKey, function (err, contestData) {
+                if (contestData) {
+                    return resolve(contestData);
+                } else {
+                    return resolve(false);
+                }
+            })
+        });
+    } catch (error) {
+        console.log('redis contest invite code > ', error);
+    }
+}
