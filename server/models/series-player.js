@@ -54,6 +54,9 @@ var seriesPlayerSchema = new Schema({
   "player_credit": {
     "type":  Number
   },
+  "player_status": {
+    "type":  Number
+  }
 });
 
 module.exports = mongoose.model('series_player', seriesPlayerSchema, 'series_players');

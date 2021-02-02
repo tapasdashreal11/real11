@@ -291,6 +291,7 @@ class PlayerTeamService {
                                 $expr: {
                                     $and: [
                                         { $eq: [ "$series_id", "$$seriesId" ] },
+                                        { $eq: [ "$player_status", 1 ] },
                                         { $in: [ "$team_id", ["$$localteamId", "$$visitorteamId"], ] }
                                     ]
                                 }

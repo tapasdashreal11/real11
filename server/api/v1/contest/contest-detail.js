@@ -344,11 +344,15 @@ module.exports = {
 
             if (mergedTeam && mergedTeam.length == 0) {
                 let allTeams = [];
+                allTeams = await getRedisLeaderboard(match_id, contest_id);
+                let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                    // allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id);
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, aakashData._id);
-                } else if (contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
+                } else if(contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, '');
+                }
+                if(allTeams && allTeams.length == 100) {
+                    await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                 }
                 //if (contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
                     // allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport);
@@ -527,7 +531,7 @@ module.exports = {
                             } else {
                                 allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id,sport, '');
                             }
-                            if((reviewMatch.time >= Date.now() && joinedTeams >= 50) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
+                            if((reviewMatch.time >= Date.now() && joinedTeams == 100) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
                                 await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                             }
                             //await redis.setRedisLeaderboard(leaderboardKey, allTeams);
