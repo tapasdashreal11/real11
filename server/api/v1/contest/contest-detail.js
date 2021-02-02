@@ -145,8 +145,8 @@ module.exports = {
                             player_ids.push(row.player_id);
                         }
 
-                        //let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
-                        let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
+                       // let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                      let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam.user) {
                             let teamUserDetail = userTeam.user;
                             teamData[teamCount] = {};
@@ -300,7 +300,7 @@ module.exports = {
                     infinite_breakup: finiteBreakupDetail,
                     is_aakash_team: aakashLeague,
                     maximum_team_size:multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
-                    contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,
+                    contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,	
                     category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:''
                 }
                 if (reviewMatch == "In Progress") {
@@ -347,7 +347,7 @@ module.exports = {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     // allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id);
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, aakashData._id);
-                } else if(contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
+                } else if (contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, '');
                 }
                 //if (contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
@@ -460,7 +460,6 @@ module.exports = {
             }
             if (!contestData) {
                 let contestDetail = await Contest.findOne({ _id: contest_id });
-                let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
                 contestDetail = JSON.parse(JSON.stringify(contestDetail));
                 let prizeMoney = 0;
                 let totalTeams = 0;
@@ -513,18 +512,15 @@ module.exports = {
                         mergedTeam = [...myTeams, ...allTeams];
                     }
                 }
-                console.log('********',mergedTeam.length,joinedTeams);
-
-                if (mergedTeam && mergedTeam.length == 0 || (joinedTeams && joinedTeams <= 100 && joinedTeams > mergedTeam.length) ) {
+                // console.log(mergedTeam);
+                if (mergedTeam && mergedTeam.length == 0) {
                     myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id,sport);
-                    // console.log("hello one step  ****");
+                    
                     let allTeams = [];
-                    if ((reviewMatch.time >= Date.now() && joinedTeams <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
-                        // console.log("hello test ****");
+                    if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
                         allTeams = await getRedisLeaderboard(match_id, contest_id);
-                        // console.log("data in befor if redis*****",joinedTeams);
-                        if (_.isEmpty(allTeams) || (allTeams && allTeams.length && joinedTeams > allTeams.length)) {
-                            // console.log("data in if redis",joinedTeams);
+                        
+                        if (_.isEmpty(allTeams)) {
                             let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                                 allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id,sport, aakashData._id);
@@ -534,6 +530,7 @@ module.exports = {
                             if((reviewMatch.time >= Date.now() && joinedTeams >= 50) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
                                 await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                             }
+                            //await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                         }
                     }
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && !_.isEmpty(aakashTeams)) {
@@ -569,8 +566,8 @@ module.exports = {
                                 userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1, "image": 1 });
                             }
                         }
-                        //let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
-                        let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
+                       // let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                      let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam.user) {
                             let teamUserDetail = userTeam.user;
                             teamData[teamCount] = {};
@@ -641,7 +638,7 @@ module.exports = {
                 multipleTeam = (contestDetail.multiple_team && contestDetail.multiple_team == 'yes') ? true : false;
                 gadgetLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'gadget') ? true : false;
                 aakashLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'aakash') ? true : false;
-                
+                let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
                 let is_joined = (myTeamIds.length > 0) ? true : false;
 
                 let bonusAmount = 0; //config.admin_percentage;

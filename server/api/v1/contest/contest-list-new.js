@@ -12,7 +12,8 @@ const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
 const config = require('./../../../config');
 module.exports = async (req, res) => {
-    try {
+ 
+try {
         const { match_id, sport,series_id } = req.params;
         const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 1;
@@ -25,7 +26,7 @@ module.exports = async (req, res) => {
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0
         };
         let queryArray = [
-            (new ModelService(Category)).getMatchContestLatest({ status: 1 }, filter, 5)
+            (new ModelService(Category)).getMatchContestLatestNew({ status: 1 }, filter, 5)
         ];
         if (user_id) {
             let redisKeyForUserCategory = 'user-category-' + user_id;

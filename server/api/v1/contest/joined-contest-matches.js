@@ -60,46 +60,6 @@ function getMatchRedisData(skip, decoded, filter, sort, sport, cb) {
     }
 }
 
-function deleteMyContestRedis(matchId, seriesId) {
-    try {
-        var response =  {};
-        let leaderboardRediskey =   '*leaderboard-' + matchId + "-*";
-        // console.log(leaderboardRediskey);
-        return new Promise(async (resv, rej) => {
-            redis.getBulkKeyRedisLeaderboard(leaderboardRediskey, (err, categories) =>{
-                // console.log("categories", categories)
-                if(categories && categories.length > 0){
-                    _.forEach(categories, function(i,k){
-                        redis.leaderboardRedisObj.del(i);
-                        if(k === (categories.length - 1)){
-                            redis.setRedis('leaderboard-redis-'+matchId,1);
-                            resv(true);
-                        }
-                    });
-                } else {
-                    resv(false);
-                }
-            })
-            resv(true);
-        })
-    } catch (error) {
-        console.log("error", error)
-    }
-}
-
-const getLeaderboardRedis = async (matchId) => {
-    let leaderboardRedis = 'leaderboard-redis-' + matchId
-
-    return new Promise(async (resv, rej) => {
-        await redis.getRedis(leaderboardRedis, function (err, reply) {
-            if (!err) {
-                resv(reply);
-            } else {
-                resv(false);
-            }
-        })
-    })
-}
 
 module.exports = {
     joinedContestMatches: async (req, res) => {
@@ -168,17 +128,11 @@ module.exports = {
                                 var contestDataUp = newLiveArray.upcoming_match.length;
                                 if (contestDataUp > 0) {
                                     let key = 0;
-                                    _.forEach(newLiveArray.upcoming_match, async function (i, k) {
+                                    _.forEach(newLiveArray.upcoming_match, function (i, k) {
                                         if (i && moment(i.sort_time).toDate() < serverTimeForalc) {
                                             i["match_status"] = 'In Progress';
                                             newLiveArray.live_match.unshift(i);
                                             newLiveArray.upcoming_match.splice(k, 1)
-
-                                            let matchRedis = await getLeaderboardRedis(i.match_id);
-                                            if(_.isEmpty(matchRedis) || _.isUndefined(matchRedis)) {
-                                                let deleted =   deleteMyContestRedis(i.match_id);
-                                                console.log(deleted);
-                                            }
                                         }
                                         key++;
                                     })

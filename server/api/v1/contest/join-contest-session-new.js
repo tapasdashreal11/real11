@@ -5,31 +5,25 @@ const SeriesSquad = require('../../../models/series-squad');
 const MatchContest = require('../../../models/match-contest');
 const PlayerTeam = require('../../../models/player-team');
 const PlayerTeamContest = require('../../../models/player-team-contest');
-const Category = require('../../../models/category');
-const PointSystem = require('../../../models/point-system');
-const UserContestBreakup = require('../../../models/user-contest-breakup');
-const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const MyContestModel = require('../../../models/my-contest-model');
 const ApiUtility = require('../../api.utility');
 const Transaction = require('../../../models/transaction');
-const PaymentOffers = require('../../../models/payment-offers');
 
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
-const UserCouponCodes = require('../../../models/user-coupon-codes');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 const ModelService = require("../../ModelService");
 const asyncp = require("async");
 const _ = require("lodash");
-const AWS = require('aws-sdk');
 const redis = require('../../../../lib/redis');
 const mqtt = require('../../../../lib/mqtt');
-const Helper = require('./../common/helper');
 const db = require('../../../db');
 const { startSession } = require('mongoose');
+const UserAnalysis = require("../../../models/user-analysis");
 
 module.exports = async (req, res) => {
     try {
+        console.log("jon contest new file");
         let data1 = {};
         let startTime = Date.now();
         const user_id = req.userId;
@@ -50,7 +44,7 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1 }),
+                User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1,"is_beginner_user":1,"is_super_user":1,"is_dimond_user":1 }),
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
                 PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
@@ -133,10 +127,10 @@ module.exports = async (req, res) => {
                                         try {
                                             const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, sessionOpts);
                                             if (doc) {
-                                                let incData = doc;
-                                                let joinedContest1 = incData.joined_users;
-                                                if (contestData && contestData.contest_size < joinedContest1 && infinteStatus) {
-                                                    console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContest1);
+                                                let joinedContestCount = doc.joined_users;
+                                                
+                                                if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
+                                                    console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
                                                     await session.abortTransaction();
                                                     session.endSession();
                                                     let response = {};
@@ -178,109 +172,166 @@ module.exports = async (req, res) => {
                                                         } else {
                                                             useableBonusPer = contestData.used_bonus || 0;
                                                         }
-
+                                                        let userOfferAmount = 0;
+                                                        let calEntryFees = entryFee;
+                                                        let retention_bonus_amount = 0;
+                                                        let userBounousData = {};
+                                                        let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id  + '-'+ match_sport;
                                                         if (contestType == 'Paid') {
-
-                                                            const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount);
-
-                                                            cashAmount = paymentCal.cashAmount;
-                                                            winAmount = paymentCal.winAmount;
-                                                            bonusAmount = paymentCal.bonusAmount;
-                                                            extraAmount = paymentCal.extraAmount;
-                                                            let saveData = paymentCal.saveData;
-                                                            let perdayExtraAmount = paymentCal.perdayExtraAmount;
-
-                                                            // console.log("******************* firstt *******************");return false;
-                                                            if (Object.keys(saveData).length > 0) {
-                                                                let date = new Date();
-                                                                let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
-                                                                userId = user_id;
-                                                                let txnId = joinContestTxnId;
-                                                                let status = TransactionTypes.JOIN_CONTEST;
-                                                                let txnAmount = entryFee;
-                                                                let withdrawId = 0;
-                                                                if (entryFee == (winAmount + cashAmount + bonusAmount + extraAmount)) {
-                                                                    // Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId, contest_id, match_id);
-
-                                                                    let cons_cash_balance = bonusAmount;
-                                                                    let cons_winning_balance = winAmount;
-                                                                    let cons_bonus_amount = cashAmount;
-                                                                    let refund_cash_balance = null;
-                                                                    let refund_winning_balance = null;
-                                                                    let refund_bonus_amount = null;
-                                                                    let extra_amount_date = indianDate;
-                                                                    let perday_extra_amount = saveData['perday_extra_amount'] ? saveData['perday_extra_amount'] : perdayExtraAmount;
-                                                                    let winning_balance = authUser['winning_balance'] - winAmount;
-                                                                    let cash_balance = authUser['cash_balance'] - cashAmount;
-                                                                    let bonus_balance = authUser['bonus_amount'] - bonusAmount;
-                                                                    let extra_amount = authUser['extra_amount'] - extraAmount;
-                                                                    let total_balance = winning_balance + cash_balance + bonus_balance + extra_amount;
-
-                                                                    try {
-                                                                        let updateUserData = {
-                                                                            cons_winning_balance: cons_winning_balance,
-                                                                            cons_cash_balance: cons_cash_balance,
-                                                                            cons_bonus_amount: cons_bonus_amount,
-                                                                            refund_winning_balance: refund_winning_balance,
-                                                                            refund_cash_balance: refund_cash_balance,
-                                                                            refund_bonus_amount: refund_bonus_amount,
-                                                                            total_balance: total_balance,
-                                                                            extra_amount_date: extra_amount_date,
-                                                                            perday_extra_amount: perday_extra_amount
-                                                                        }
-
-                                                                        let entity = {
-                                                                            user_id: userId,
-                                                                            contest_id: contest_id,
-                                                                            match_id: match_id,
-                                                                            sport:match_sport,
-                                                                            txn_amount: txnAmount,
-                                                                            currency: "INR",
-                                                                            txn_date: Date.now(),
-                                                                            local_txn_id: txnId,
-                                                                            added_type: parseInt(status)
-                                                                        };
-
-                                                                        let walletRes = await User.update({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
-
-                                                                        if (walletRes && walletRes.nModified > 0) {
-                                                                            await Transaction.create(entity);
-                                                                            userWalletStatus = true;
-                                                                        } else {
-                                                                            userWalletStatus = false;
+                                                            // work for user rentation and cal amount for data
+                                                            
+                                                            let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1};
+                                                            let rdata = await UserAnalysis.findOne({ user_id: user_id,match_id:decoded['match_id'],sport:match_sport},fileds);
+                                                            if(rdata && rdata._id && entryFee>0){
+                                                                userBounousData = rdata;
+                                                                userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
+                                                                let pContestId = ObjectId(contest_id);
+                                                                let offerContests = rdata && rdata.contest_ids && (rdata.contest_ids).length>0 ? rdata.contest_ids.map(itm => {
+                                                                    return ObjectId(itm)
+                                                                }):[];
+                                                                
+                                                               let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id):pContestId;
+                                                                if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 &&  offerContests.length > 0  && rdata.is_offer_type == 2 && ( _.find(offerContests,pContestId) ||  _.find(offerContests,prContestId)) )){
+                                                                    
+                                                                    userOfferAmount = userOfferAmount.toFixed(2);
+                                                                    calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
+                                                                    retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                                                    
+                                                                 }
+                                                                 
+                                                             }
+                                                            if(calEntryFees>0){
+                                                                const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount,retention_bonus_amount);
+                                                                cashAmount = paymentCal.cashAmount;
+                                                                winAmount = paymentCal.winAmount;
+                                                                bonusAmount = paymentCal.bonusAmount;
+                                                                extraAmount = paymentCal.extraAmount;
+                                                                let saveData = paymentCal.saveData;
+                                                                let perdayExtraAmount = paymentCal.perdayExtraAmount;
+                                                                
+                                                                if (Object.keys(saveData).length > 0) {
+                                                                    let date = new Date();
+                                                                    let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
+                                                                    userId = user_id;
+                                                                    let txnId = joinContestTxnId;
+                                                                    let status = TransactionTypes.JOIN_CONTEST;
+                                                                    let txnAmount = entryFee;
+                                                                    let withdrawId = 0;
+                                                                   
+                                                                    if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
+                                                                        // Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId, contest_id, match_id);
+    
+                                                                        let cons_cash_balance = bonusAmount;
+                                                                        let cons_winning_balance = winAmount;
+                                                                        let cons_bonus_amount = cashAmount;
+                                                                        let refund_cash_balance = null;
+                                                                        let refund_winning_balance = null;
+                                                                        let refund_bonus_amount = null;
+                                                                        let extra_amount_date = indianDate;
+                                                                        let perday_extra_amount = saveData['perday_extra_amount'] ? saveData['perday_extra_amount'] : perdayExtraAmount;
+                                                                        let winning_balance = authUser['winning_balance'] - winAmount;
+                                                                        let cash_balance = authUser['cash_balance'] - cashAmount;
+                                                                        let bonus_balance = authUser['bonus_amount'] - bonusAmount;
+                                                                        let extra_amount = authUser['extra_amount'] - extraAmount;
+                                                                        let total_balance = winning_balance + cash_balance + bonus_balance + extra_amount;
+    
+                                                                        try {
+                                                                            let updateUserData = {
+                                                                                cons_winning_balance: cons_winning_balance,
+                                                                                cons_cash_balance: cons_cash_balance,
+                                                                                cons_bonus_amount: cons_bonus_amount,
+                                                                                refund_winning_balance: refund_winning_balance,
+                                                                                refund_cash_balance: refund_cash_balance,
+                                                                                refund_bonus_amount: refund_bonus_amount,
+                                                                                total_balance: total_balance,
+                                                                                extra_amount_date: extra_amount_date,
+                                                                                perday_extra_amount: perday_extra_amount
+                                                                            }
+    
+                                                                            let entity = {
+                                                                                user_id: userId,
+                                                                                contest_id: contest_id,
+                                                                                match_id: match_id,
+                                                                                sport:match_sport,
+                                                                                txn_amount: txnAmount,
+                                                                                retantion_amount:retention_bonus_amount,
+                                                                                currency: "INR",
+                                                                                txn_date: Date.now(),
+                                                                                local_txn_id: txnId,
+                                                                                added_type: parseInt(status)
+                                                                            };
+                                                                             
+                                                                            let walletRes = await User.update({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
+    
+                                                                            if (walletRes && walletRes.nModified > 0) {
+                                                                                await Transaction.create([entity],{ session: session });
+                                                                                userWalletStatus = true;
+                                                                            } else {
+                                                                                userWalletStatus = false;
+                                                                                await session.abortTransaction();
+                                                                                session.endSession();
+                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again."));
+                                                                            }
+    
+                                                                        } catch (error) {
+                                                                            
                                                                             await session.abortTransaction();
                                                                             session.endSession();
+                                                                            let userWalletData = await User.findOne({ _id: user_id }, { "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1 });
+                                                                            if (userWalletData) {
+                                                                                userWalletData.winning_balance = (_.isNaN(userWalletData.winning_balance) || _.isNull(userWalletData.winning_balance)) ? 0 : userWalletData.winning_balance;
+                                                                                userWalletData.cash_balance = (_.isNaN(userWalletData.cash_balance) || _.isNull(userWalletData.cash_balance)) ? 0 : userWalletData.cash_balance;
+                                                                                userWalletData.bonus_amount = (_.isNaN(userWalletData.bonus_amount) || _.isNull(userWalletData.bonus_amount)) ? 0 : userWalletData.bonus_amount;
+                                                                                userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
+                                                                                await User.updateOne({ _id: user_id }, { $set: userWalletData });
+                                                                            }
                                                                             return res.send(ApiUtility.failed("Something went wrong, Please try again."));
                                                                         }
-
-                                                                    } catch (error) {
-                                                                        console.log('join contest amount deduct and transaction > ', error);
+                                                                    } else {
                                                                         await session.abortTransaction();
                                                                         session.endSession();
-                                                                        let userWalletData = await User.findOne({ _id: user_id }, { "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1 });
-                                                                        if (userWalletData) {
-                                                                            userWalletData.winning_balance = (_.isNaN(userWalletData.winning_balance) || _.isNull(userWalletData.winning_balance)) ? 0 : userWalletData.winning_balance;
-                                                                            userWalletData.cash_balance = (_.isNaN(userWalletData.cash_balance) || _.isNull(userWalletData.cash_balance)) ? 0 : userWalletData.cash_balance;
-                                                                            userWalletData.bonus_amount = (_.isNaN(userWalletData.bonus_amount) || _.isNull(userWalletData.bonus_amount)) ? 0 : userWalletData.bonus_amount;
-                                                                            userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
-                                                                            await User.updateOne({ _id: user_id }, { $set: userWalletData });
-                                                                        }
-                                                                        return res.send(ApiUtility.failed("Something went wrong, Please try again."));
+                                                                        return res.send(ApiUtility.failed('Insufficient Balance!!'));
                                                                     }
                                                                 } else {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
-                                                                    return res.send(ApiUtility.failed('Insufficient Balance!!'));
+                                                                    return res.send(ApiUtility.failed('something went wrong!!'));
+    
                                                                 }
+                                                            }else if(calEntryFees == 0 && retention_bonus_amount >0){
+                                                                
+                                                                    let date = new Date();
+                                                                    let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
+                                                                    userId = user_id;
+                                                                    let txnId = joinContestTxnId;
+                                                                    let status = TransactionTypes.JOIN_CONTEST;
+                                                                    let txnAmount = entryFee;
+
+                                                                let entity = {
+                                                                    user_id: userId,
+                                                                    contest_id: contest_id,
+                                                                    match_id: match_id,
+                                                                    sport:match_sport,
+                                                                    txn_amount: txnAmount,
+                                                                    retantion_amount:retention_bonus_amount,
+                                                                    currency: "INR",
+                                                                    txn_date: Date.now(),
+                                                                    local_txn_id: txnId,
+                                                                    added_type: parseInt(status)
+                                                                };
+                                                                
+                                                                await Transaction.create([entity],{ session: session });
+                                                                userWalletStatus = true;
                                                             } else {
                                                                 await session.abortTransaction();
                                                                 session.endSession();
                                                                 return res.send(ApiUtility.failed('something went wrong!!'));
 
                                                             }
+                                                           
                                                         }
                                                         let totalEntryAmount = cashAmount + winAmount + bonusAmount + extraAmount;
-                                                        if (contestType == "Free" || (contestType == "Paid" && totalEntryAmount > 0 && totalEntryAmount == entryFee && userWalletStatus)) {
+                                                        if (contestType == "Free" || (contestType == "Paid" && totalEntryAmount > 0 && calEntryFees > 0 && totalEntryAmount == calEntryFees && userWalletStatus) || (calEntryFees == 0 && retention_bonus_amount >0 && userWalletStatus)) {
                                                             try {
                                                                 contest.bonus_amount = bonusAmount;
                                                                 contest.sport = match_sport;
@@ -290,13 +341,31 @@ module.exports = async (req, res) => {
                                                                 if(_.isUndefined(contest.player_team_id) || _.isNull(contest.player_team_id) || _.isEmpty(contest.player_team_id)) {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
-                                                                    console.log('join contest > Player team id not found.');
+                                                                    
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
-                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch);
+                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch,joinedContestCount);
                                                                 }
-                                                                if (contestType == "Paid" && totalEntryAmount == entryFee) {
-                                                                    await Contest.saveJoinContestDetail(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount,match_sport);
+                                                                if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount >0 && contestType == "Paid")) {
+                                                                    await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount,match_sport,retention_bonus_amount);
+                                                                    if(retention_bonus_amount>0 && userBounousData && userBounousData._id){
+                                                                        
+                                                                        if(userBounousData.is_offer_type == 1){
+                                                                            await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_amount": -retention_bonus_amount } });
+                                                                            userBounousData.offer_amount = ((userBounousData.offer_amount) - retention_bonus_amount); 
+                                                                            redis.setRedisForUserAnaysis(redisKeyForRentation,userBounousData); 
+                                                                        } else if (userBounousData.is_offer_type == 2) {
+                                                                            let percent = userBounousData.offer_percent ? parseFloat(userBounousData.offer_percent):0;
+                                                                            await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
+                                                                            
+                                                                            //redis.userAnalysisRedisObj.del(redisKeyForRentation);
+                                                                            userBounousData.offer_percent = 0;
+                                                                            redis.setRedisForUserAnaysis(redisKeyForRentation,userBounousData);
+                                                                             
+                                                                        }
+                                                                        
+                                                                     }
+
                                                                 }
                                                                 var mcCountResNew = await MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'contest_id': contest_id });
                                                                 if (mcCountResNew && contestData.contest_size === mcCountResNew.joined_users) {
@@ -305,9 +374,25 @@ module.exports = async (req, res) => {
                                                             } catch (error) {
                                                                 await session.abortTransaction();
                                                                 session.endSession();
-                                                                console.log('save join contest > player_team_contest > ', error);
+                                                                
                                                                 return res.send(ApiUtility.failed(error.message));
                                                             }
+
+                                                            try {
+                                                                  if(contestData && contestData.entry_fee && contestData.entry_fee > 0){
+                                                                    if(authUser && authUser.is_beginner_user && authUser.is_beginner_user ==1){
+                                                                        await User.findOneAndUpdate({ '_id': ObjectId(user_id)}, { $set: { is_beginner_user: 0 } });
+                                                                    }
+                                                                    let redisKeyForUserCategory = 'user-category-' + user_id;
+                                                                    let userCatObj = {
+                                                                        is_super_user : authUser && authUser.is_super_user ? authUser.is_super_user : 0,
+                                                                        is_dimond_user : authUser && authUser.is_dimond_user ? authUser.is_dimond_user : 0,
+                                                                        is_beginner_user : 0
+                                                                    };
+                                                                    redis.setRedisForUserCategory(redisKeyForUserCategory,userCatObj); 
+                                                                  }
+                                                             } catch(errrrrr){}
+
                                                             // TODO: Save Contest
                                                             let playerContest = {};
                                                             playerContest.id = newContestId;
@@ -343,7 +428,7 @@ module.exports = async (req, res) => {
 
                                                                     let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${user_id}`;
                                                                     redis.redisObj.del(joinedContestKey); //force user to get data from db
-                                                                    console.log("************ Set my matches in redis ************")
+                                                                    //console.log("************ Set my matches in redis ************")
                                                                     // console.log('**********************',totalContestKey, '****************');
                                                                     try {
                                                                         //console.log("user_id", user_id, decoded['match_id'])
@@ -355,49 +440,59 @@ module.exports = async (req, res) => {
                                                                         };
                                                                         let sortm = { createdAt: -1 }
                                                                         let serverTimeu = moment(Date.now()).format(config.DateFormat.datetime);
-                                                                        redis.getRedis(matchContestUserKey, function (err, contestData) { // Get Redis
+                                                                       await redis.getRedis(matchContestUserKey, function (err, contestData) { // Get Redis
                                                                             if (!contestData) {
                                                                                 getMatchRedisData(0, { "user_id": user_id, "pagesize": 25 }, {}, sortm, match_sport, function (results) {
                                                                                     results['server_time'] = serverTimeu;
+                                                                                    //console.log("Join contest data in redis when data is empty****",results);
                                                                                     redis.setRedis(matchContestUserKey, results);
                                                                                 })
                                                                             } else {
-                                                                                SeriesSquad.findOne({ 'match_id': parseInt(match_id), 'sport': match_sport, 'series_id': parseInt(series_id) }).then(function (data) {
+                                                                                SeriesSquad.findOne({ 'match_id': parseInt(match_id), 'sport': match_sport, 'series_id': parseInt(series_id) }).then(async function (data) {
                                                                                     let conIndex = _.findIndex(contestData.upcoming_match, { "match_id": decoded['match_id'] });
                                                                                     if (conIndex < 0) {
-                                                                                        var newLiveArray = {
-                                                                                            "_id": mycontId || 0,
-                                                                                            "match_id": parseInt(match_id),
-                                                                                            "series_id": parseInt(series_id),
-                                                                                            "match_status": "Not Started",
-                                                                                            "local_team_id": parseInt(data.localteam_id),
-                                                                                            "local_team_name": data.localteam_short_name || data.localteam,
-                                                                                            // "local_team_flag": config.imageBaseUrl + data.local_flag || "",
-                                                                                            "visitor_team_id": parseInt(data.visitorteam_id),
-                                                                                            "visitor_team_name": data.visitorteam_short_name || data.visitorteam,
-                                                                                            // "visitor_team_flag": config.imageBaseUrl + data.local_flag || "",
-                                                                                            "local_team_flag": data.local_flag ? config.imageBaseUrl + '/' + data.local_flag : "",
-                                                                                            "visitor_team_flag": data.visitor_flag ? config.imageBaseUrl + '/' + data.visitor_flag : "",
-                                                                                            "series_name": data.series_name,
-                                                                                            "star_date": moment(data.time).format("YYYY-MM-DD"),
-                                                                                            "star_time": moment(data.time).format("HH:mm"),
-                                                                                            "server_time": serverTimeu,
-                                                                                            "sort_time": data.time,
-                                                                                            // "total_contest": totalContestKey
-                                                                                        };
-
-                                                                                        if (totalContestKey > 0) {
-                                                                                            newLiveArray['total_contest'] = totalContestKey;
+                                                                                        const mData = await MyContestModel.findOne({ match_id: parseInt(match_id),sport: match_sport, user_id: user_id },{_id:1});
+                                                                                        if(mData && mData._id){
+                                                                                            //console.log("after join this is seires squad data*****");
+                                                                                            mycontId = mData._id
+                                                                                            var newLiveArray = {
+                                                                                                "_id": mycontId,
+                                                                                                "match_id": parseInt(match_id),
+                                                                                                "series_id": parseInt(series_id),
+                                                                                                "match_status": "Not Started",
+                                                                                                "local_team_id": parseInt(data.localteam_id),
+                                                                                                "local_team_name": data.localteam_short_name || data.localteam,
+                                                                                                // "local_team_flag": config.imageBaseUrl + data.local_flag || "",
+                                                                                                "visitor_team_id": parseInt(data.visitorteam_id),
+                                                                                                "visitor_team_name": data.visitorteam_short_name || data.visitorteam,
+                                                                                                // "visitor_team_flag": config.imageBaseUrl + data.local_flag || "",
+                                                                                                "local_team_flag": data.local_flag ? config.imageBaseUrl + '/' + data.local_flag : "",
+                                                                                                "visitor_team_flag": data.visitor_flag ? config.imageBaseUrl + '/' + data.visitor_flag : "",
+                                                                                                "series_name": data.series_name,
+                                                                                                "star_date": moment(data.time).format("YYYY-MM-DD"),
+                                                                                                "star_time": moment(data.time).format("HH:mm"),
+                                                                                                "server_time": serverTimeu,
+                                                                                                "sort_time": data.time,
+                                                                                                // "total_contest": totalContestKey
+                                                                                            };
+    
+                                                                                            if (totalContestKey > 0) {
+                                                                                                newLiveArray['total_contest'] = totalContestKey;
+                                                                                            }
+    
+                                                                                            contestData.upcoming_match.push(newLiveArray);
+    
+                                                                                            var newContDataSort = _.sortBy(contestData.upcoming_match, ['sort_time', 'desc']);
+    
+                                                                                            contestData.upcoming_match = newContDataSort;
+                                                                                            contestData['server_time'] = serverTimeu;
+    
+                                                                                            redis.setRedis(matchContestUserKey, contestData);
+                                                                                        } else {
+                                                                                            //console.log("My Match contest id not found for after join *****",match_id);
+                                                                                            redis.redisObj.del(matchContestUserKey);
                                                                                         }
-
-                                                                                        contestData.upcoming_match.push(newLiveArray);
-
-                                                                                        var newContDataSort = _.sortBy(contestData.upcoming_match, ['sort_time', 'desc']);
-
-                                                                                        contestData.upcoming_match = newContDataSort;
-                                                                                        contestData['server_time'] = serverTimeu;
-
-                                                                                        redis.setRedis(matchContestUserKey, contestData);
+                                                                                        
 
                                                                                     } else {
                                                                                         if (totalContestKey > 0) {
@@ -421,7 +516,7 @@ module.exports = async (req, res) => {
                                                                     return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                                 }
                                                             } else {
-                                                                return res.send(ApiUtility.failed("Some error."));
+                                                                return res.send(ApiUtility.failed("Something went wrong!!"));
                                                             }
                                                         } else {
                                                             console.log("check balance error. ");
@@ -454,12 +549,22 @@ module.exports = async (req, res) => {
                                                     }
                                                 }
 
+                                            } else {
+                                                await session.abortTransaction();
+                                                     session.endSession();
+                                                    // console.log('Error in else *****');
+                                                    let response = {};
+                                                    response.status = false;
+                                                    response.message = "This contest is full, please join other contest.";
+                                                    response.error_code = null;
+                                                    return res.json(response);
                                             }
 
                                         } catch (errorr) {
                                             let response = {};
                                             await session.abortTransaction();
                                             session.endSession();
+                                           // console.log("error in catch***",errorr);
                                             var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
                                             if (MatchContestData) {
                                                 response.status = false;
@@ -473,7 +578,7 @@ module.exports = async (req, res) => {
                                                 response.error_code = null;
                                                 return res.json(response);
                                             }
-                                        } finally {
+                                         } finally {
                                             // ending the session
                                             session.endSession();
                                         }
@@ -516,33 +621,32 @@ module.exports = async (req, res) => {
  * @param {*} parentContestId 
  * @param {*} session 
  */
-async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch) {
+async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch,joinedContestCount) {
     try {
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
 
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
 
-                // console.log("new ptc data is --------", newPTC);
-                // console.log('contestData************** contestData',contestData);
-
-                // console.log("new ptc data is --------", newPTC)
-
-                await session.commitTransaction();
-                session.endSession();
-
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
-                    var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
-                    console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", mcCountRes);
-                    if (mcCountRes == contestData.contest_size) {
+                   // var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
+                    console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", joinedContestCount);
+                    //var ddCount = mcCountRes + 1 ;
+                    if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
-                        const autores = await Promise.all([
-                            contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId,match_sport,liveMatch),
-                            MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } }),
-                        ]);
+                        contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId,match_sport,liveMatch,session);
+                        await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
+                    } else {
+                        await session.commitTransaction();
+                        session.endSession();
                     }
+                } else {
+                    await session.commitTransaction();
+                    session.endSession();
                 }
+
+               
                 let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
                 redis.getRedis(redisKey, (err, data) => {
                     ////console.log("contest_id", contest_id, data)
@@ -573,6 +677,8 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
 
                     totalContestKey = uniqueContestIds.length
 
+                    
+                    //const sessionOpts = { session, new: true };
                     MyContestModel.findOneAndUpdate({ match_id: match_id,sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true }).then((MyContestModel) => {
                         mycontId = MyContestModel._id || 0;
                     });
@@ -598,7 +704,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
  * @param {*} parentContestId 
  */
 
-async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId,match_sport,liveMatch) {
+async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId,match_sport,liveMatch,session) {
     try {
 
         let catID = contestData.category_id;
@@ -627,7 +733,12 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         }
         entity.is_auto_create = 2;
         // console.log('cResult************** before');
-        const cResult = await Contest.create(entity);
+        const newDataC = await Contest.create([entity],{ session: session });
+
+
+        var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+
+       // console.log('cResult************** after contest create in auto',cResult);
 
         if (cResult && cResult._id) {
             let newContestId = cResult._id;
@@ -671,8 +782,10 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             };
 
 
-            const dd = await MatchContest.create(entityM);
-
+            const dd = await MatchContest.create([entityM],{ session: session });
+            //console.log("dara at MatchContest in auto***",dd);
+            await session.commitTransaction();
+                    session.endSession();
 
             try {
                 let matchContestKey = RedisKeys.MATCH_CONTEST_LIST + match_id;
@@ -707,6 +820,8 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         }
 
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         console.log('sometjhing went wrong in autocreate***************************wrong in auto error');
         return {}
     }
@@ -724,25 +839,27 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
  * @param {*} bonusAmount 
  * @param {*} extraAmount 
  */
-async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount) {
+async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount,retention_bonus_amount) {
     let useAmount = (useableBonusPer / 100) * entryFee;
     let saveData = {};
+    let remainingFee = 0;
     let indianDate = Date.now();
     indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
 
-    if (authUser.bonus_amount && authUser.bonus_amount > 0) {
+    if (entryFee > 0 && authUser.bonus_amount && authUser.bonus_amount > 0 && retention_bonus_amount == 0) {
         if (useAmount <= authUser.bonus_amount) {
-            remainingFee = entryFee - useAmount;
-            saveData['bonus_amount'] = authUser.bonus_amount - useAmount;
-            bonusAmount = useAmount;
+            remainingFee =retention_bonus_amount > 0 ? entryFee : entryFee - useAmount;
+            saveData['bonus_amount'] = retention_bonus_amount > 0 ? 0 : authUser.bonus_amount - useAmount;
+            bonusAmount = retention_bonus_amount > 0 ? 0 : useAmount;
         } else {
-            remainingFee = entryFee - authUser.bonus_amount;
+            remainingFee = retention_bonus_amount > 0 ? entryFee : entryFee - authUser.bonus_amount;
             saveData['bonus_amount'] = 0;
-            bonusAmount = authUser.bonus_amount;
+            bonusAmount = retention_bonus_amount > 0 ? 0 : authUser.bonus_amount;
         }
     } else {
         remainingFee = entryFee;
     }
+    if(retention_bonus_amount>0) bonusAmount = 0;
 
     let perdayExtraAmount = 0;
     if (remainingFee) {

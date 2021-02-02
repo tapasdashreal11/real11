@@ -184,7 +184,7 @@ module.exports = {
                                             customPrice[key]['price'] = customBreakup.price_each ? customBreakup.price_each.toFixed(2) : customBreakup.price.toFixed(2);
                                         }
 
-                                        customPrice[key]['image'] = (customBreakup.image) ? customBreakup.image : '';
+                                        customPrice[key]['image'] = (customBreakup.image) ? config.imageBaseUrl + 'contest_image/'.customBreakup.image : '';
                                         key++;
                                     }
                                 }

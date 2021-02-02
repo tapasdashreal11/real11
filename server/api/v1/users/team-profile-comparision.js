@@ -13,7 +13,7 @@ const config = require('../../../config');
 
 module.exports = {
 
-  teamProfileComparision: async (req, res) => {
+teamProfileComparision: async (req, res) => {
     try {
       var response = { status: false, message: "Invalid Request", data: {} };
       let params = req.body;
@@ -32,7 +32,7 @@ module.exports = {
       
       try {
         let userProData =  await UserProfile.findOne({user_id : ObjectId(params.friend_user_id)});
-
+	     //console.log("data coming on profile is ----------------------------------------------------", params.friend_user_id, userProData)
         let userData =  await Users.findOne({_id : new ObjectId(params.friend_user_id), status : 1});
         if(userData) {
           
@@ -50,24 +50,79 @@ module.exports = {
           }
           data  = {}
           data.team_name  = userData.team_name || '';
+          data.image  = '', //userData.image ? `${config.imageBaseUrl}/users/${userData.image}` : '';
+          data.contest_level  = level || '';
+          data.contest_finished  = userProData && userProData.contest_finished ? userProData.contest_finished : 0;
+          data.total_match  = userProData && userProData.total_match ? userProData.total_match : 0;
+          data.total_series  = userProData && userProData.total_series ? userProData.total_series : 0;
+          data.series_wins  =  userProData && userProData.series_wins ? userProData.series_wins : 0;
+
+          response['message'] = "Profile Comparison";
+          response['data'] = data;
+          response['status'] = true;
+         console.log("data is --------------------------------------------", response) 
+          return res.json(response);
+        } else {
+          response["message"] = "It seems that your Friend has been deactivated his/her profile!";
+          return res.json(response);
+        }
+      } catch (err) {
+        response["message"] = err.message;
+        return res.json(response);
+      }
+    } catch (error) {
+      logger.error("LOGIN_ERROR", error.message);
+      res.send(ApiUtility.failed(error.message));
+    }
+  },
+
+  teamProfileComparision_18_12_2020: async (req, res) => {
+    try {
+      var response = { status: false, message: "Invalid Request", data: {} };
+      let params = req.body;
+      let constraints = {
+        user_id: "required",
+        friend_user_id: "required"
+      };
+
+      let validator = new Validator(params, constraints);
+      let matched = await validator.check();
+      if (!matched) {
+        response["message"] = "Required fields are Empty.";
+        response["errors"] = validator.errors;
+        return res.json(response);
+      }
+      
+      try {
+
+        let userData =  await Users.findOne({_id : new ObjectId(params.friend_user_id), status : 1});
+        if(userData) {
+
+          let sport = 1;
+          const contestCount = 0;
+          const paidContests = 0;
+          const totalMatches = 0;
+          const totalSeries = 0;
+          const totalMatchWin = 0;
+
+          let level	= 1;
+          let totalPaidContest = 0; //paidContests["0"] ? paidContests["0"].player_team_id : 0;
+          if(totalPaidContest >= 0) {
+            let ratio		=	totalPaidContest / 20;
+            let ratioPlus	=	parseInt(ratio) + 1;
+            if(parseInt(ratio) < ratioPlus) {
+              level	=	ratioPlus;
+            }
+          }
+          data  = {}
+          data.team_name  = userData.team_name || '';
           data.image  = userData.image ? `${config.imageBaseUrl}/users/${userData.image}` : '';
           data.contest_level  = level || '';
-          
-          if(userData.user_type== 7 ||userData.user_type== 55 ){
+          data.contest_finished  = 0; //contestCount["0"] ? contestCount["0"].player_team_id : 0;
+          data.total_match  = 0; //totalMatches["0"] ? totalMatches["0"].player_team_id : 0;
+          data.total_series  = 0; //totalSeries["0"] ? totalSeries["0"].player_team_id : 0;
+          data.series_wins  = 0; //totalMatchWin["0"] ? totalMatchWin["0"].player_team_id : 0;
 
-            data.contest_finished  = userProData && userProData.contest_finished ? (userProData.contest_finished >5 ?(parseInt(userProData.contest_finished/5)):(userProData.contest_finished)) : 0;
-            data.total_match  = userProData && userProData.total_match ? (userProData.total_match>5?(parseInt(userProData.total_match/5)):(userProData.total_match)) : 0;
-            data.total_series  = userProData && userProData.total_series ? (userProData.total_series>5?(parseInt(userProData.total_series/5)):(userProData.total_series)) : 0;
-            data.series_wins  =  userProData && userProData.series_wins ? (userProData.series_wins>5?(parseInt(userProData.series_wins/5)):(userProData.series_wins)) : 0;
-  
-          }else{
-            data.contest_finished  = userProData && userProData.contest_finished ? userProData.contest_finished : 0;
-            data.total_match  = userProData && userProData.total_match ? userProData.total_match : 0;
-            data.total_series  = userProData && userProData.total_series ? userProData.total_series : 0;
-            data.series_wins  =  userProData && userProData.series_wins ? userProData.series_wins : 0;
-  
-          }
-          
           response['message'] = "Profile Comparison";
           response['data'] = data;
           response['status'] = true;

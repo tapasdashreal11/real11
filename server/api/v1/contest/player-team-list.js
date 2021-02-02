@@ -103,7 +103,6 @@ module.exports = {
 }
 
 async function cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
-    // console.log(liveMatch);return false;
     try {
         let data    =   [];
         let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
@@ -144,9 +143,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                     
                     // Get players Points 
                     let pointsArray = await PlayerRecord.getPlayerPointPreview(series_id, match_id, player_list, captain, viceCaptain, liveMatch.type, sport);
-                    
-                    // console.log(pointsArray,'adassd');
-                    // return false;
+    
                     for (let teamValue of playerTeamDetails) {
                         teamValue = playerData[teamValue];
                         if (teamValue) {
@@ -156,11 +153,13 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                             }
     
                             let point = 0;
-                            point =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]['point'] ?  pointsArray[teamValue.player_id]['point'] : 0;
-                            let playerRole =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["player_role"] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.playing_role;
+                            //point =  pointsArray[teamValue.player_id] ?  pointsArray[teamValue.player_id] : 0
                             // await PlayerRecord.getPlayerPoint(series_id, match_id, teamValue.player_id, captain, viceCaptain);
-                            // console.log(point);
+                            point =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["point"] ? pointsArray[teamValue.player_id]["point"] : 0;
+                            let playerRole =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["player_role"] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.playing_role;
+                            
                             let dreamPlayers = {}
+    
                             islocalTeam = (localPlayers.indexOf(teamValue.player_id) > -1) ? true : false;
                             playerDetail[teamKey] = {};
                             playerDetail[teamKey]['name'] = teamValue.player_name;
@@ -172,6 +171,15 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                             playerDetail[teamKey]['is_local_team'] = islocalTeam;
                             playerDetail[teamKey]['in_dream_team'] = (dreamPlayers.length > 0) ? true : false;
     
+                            /*if (teamValue.playing_role.indexOf('Wicketkeeper') > -1) {
+                                totalWicketkeeper += 1;
+                            } else if (teamValue.playing_role.indexOf('Bowler') > -1) {
+                                totalBowler += 1;
+                            } else if (teamValue.playing_role.indexOf('Batsman') > -1) {
+                                totalBatsman += 1;
+                            } else if (teamValue.playing_role.indexOf('Allrounder') > -1) {
+                                totalAllrounder += 1;
+                            }*/
                             if (playerRole.indexOf('Wicketkeeper') > -1) {
                                 totalWicketkeeper += 1;
                             } else if (playerRole.indexOf('Bowler') > -1) {
@@ -219,7 +227,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
 async function footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
     try {
         let data    =   [];
-        let playerRecord = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport });
+        let playerRecord = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list },team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport });
         if (playerRecord && playerRecord.length == 11) {
             let playerData = {};
             for (const value of playerRecord) {
@@ -267,6 +275,7 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                             }
 
                             let point = 0;
+                            //point =  pointsArray[teamValue.player_id] ? pointsArray[teamValue.player_id] : 0
                             point =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["point"] ? pointsArray[teamValue.player_id]["point"] : 0;
                             let playerRole =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["player_role"] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.player_role;
                             
@@ -283,6 +292,15 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                             playerDetail[teamKey]['is_local_team'] = islocalTeam;
                             playerDetail[teamKey]['in_dream_team'] = (dreamPlayers.length > 0) ? true : false;
 
+                            /*if (teamValue.player_role.indexOf('Defender') > -1) {
+                                totalDefender += 1;
+                            } else if (teamValue.player_role.indexOf('Forward') > -1) {
+                                totalForward += 1;
+                            } else if (teamValue.player_role.indexOf('Goalkeeper') > -1) {
+                                totalGoalkeeper += 1;
+                            } else if (teamValue.player_role.indexOf('Midfielder') > -1) {
+                                totalMidfielder += 1;
+                            }*/
                             if (playerRole.indexOf('Defender') > -1) {
                                 totalDefender += 1;
                             } else if (playerRole.indexOf('Forward') > -1) {

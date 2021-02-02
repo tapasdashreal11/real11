@@ -5,31 +5,24 @@ const SeriesSquad = require('../../../models/series-squad');
 const MatchContest = require('../../../models/match-contest');
 const PlayerTeam = require('../../../models/player-team');
 const PlayerTeamContest = require('../../../models/player-team-contest');
-const Category = require('../../../models/category');
-const PointSystem = require('../../../models/point-system');
-const UserContestBreakup = require('../../../models/user-contest-breakup');
-const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const MyContestModel = require('../../../models/my-contest-model');
 const ApiUtility = require('../../api.utility');
 const Transaction = require('../../../models/transaction');
-const PaymentOffers = require('../../../models/payment-offers');
 
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
-const UserCouponCodes = require('../../../models/user-coupon-codes');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 const ModelService = require("../../ModelService");
 const asyncp = require("async");
 const _ = require("lodash");
-const AWS = require('aws-sdk');
 const redis = require('../../../../lib/redis');
 const mqtt = require('../../../../lib/mqtt');
-const Helper = require('./../common/helper');
 const db = require('../../../db');
 const { startSession } = require('mongoose');
 
 module.exports = async (req, res) => {
     try {
+        console.log("hello **** jon contest session");
         let data1 = {};
         let startTime = Date.now();
         const user_id = req.userId;
@@ -133,10 +126,10 @@ module.exports = async (req, res) => {
                                         try {
                                             const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, sessionOpts);
                                             if (doc) {
-                                                let incData = doc;
-                                                let joinedContest1 = incData.joined_users;
-                                                if (contestData && contestData.contest_size < joinedContest1 && infinteStatus) {
-                                                    console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContest1);
+                                                let joinedContestCount = doc.joined_users;
+                                                
+                                                if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
+                                                    console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
                                                     await session.abortTransaction();
                                                     session.endSession();
                                                     let response = {};
@@ -244,7 +237,7 @@ module.exports = async (req, res) => {
                                                                         let walletRes = await User.update({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
 
                                                                         if (walletRes && walletRes.nModified > 0) {
-                                                                            await Transaction.create(entity);
+                                                                            await Transaction.create([entity],{ session: session });
                                                                             userWalletStatus = true;
                                                                         } else {
                                                                             userWalletStatus = false;
@@ -293,7 +286,7 @@ module.exports = async (req, res) => {
                                                                     console.log('join contest > Player team id not found.');
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
-                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch);
+                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch,joinedContestCount);
                                                                 }
                                                                 if (contestType == "Paid" && totalEntryAmount == entryFee) {
                                                                     await Contest.saveJoinContestDetail(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount,match_sport);
@@ -454,12 +447,22 @@ module.exports = async (req, res) => {
                                                     }
                                                 }
 
+                                            } else {
+                                                await session.abortTransaction();
+                                                     session.endSession();
+                                                    // console.log('Error in else *****');
+                                                    let response = {};
+                                                    response.status = false;
+                                                    response.message = "This contest is full, please join other contest.";
+                                                    response.error_code = null;
+                                                    return res.json(response);
                                             }
 
                                         } catch (errorr) {
                                             let response = {};
                                             await session.abortTransaction();
                                             session.endSession();
+                                           // console.log("error in catch***",errorr);
                                             var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
                                             if (MatchContestData) {
                                                 response.status = false;
@@ -473,7 +476,7 @@ module.exports = async (req, res) => {
                                                 response.error_code = null;
                                                 return res.json(response);
                                             }
-                                        } finally {
+                                         } finally {
                                             // ending the session
                                             session.endSession();
                                         }
@@ -516,33 +519,32 @@ module.exports = async (req, res) => {
  * @param {*} parentContestId 
  * @param {*} session 
  */
-async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch) {
+async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session,match_sport,liveMatch,joinedContestCount) {
     try {
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
 
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
 
-                // console.log("new ptc data is --------", newPTC);
-                // console.log('contestData************** contestData',contestData);
-
-                // console.log("new ptc data is --------", newPTC)
-
-                await session.commitTransaction();
-                session.endSession();
-
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
-                    var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
-                    console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", mcCountRes);
-                    if (mcCountRes == contestData.contest_size) {
+                   // var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
+                    console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", joinedContestCount);
+                    //var ddCount = mcCountRes + 1 ;
+                    if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
-                        const autores = await Promise.all([
-                            contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId,match_sport,liveMatch),
-                            MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } }),
-                        ]);
+                        contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId,match_sport,liveMatch,session);
+                        await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
+                    } else {
+                        await session.commitTransaction();
+                        session.endSession();
                     }
+                } else {
+                    await session.commitTransaction();
+                    session.endSession();
                 }
+
+               
                 let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
                 redis.getRedis(redisKey, (err, data) => {
                     ////console.log("contest_id", contest_id, data)
@@ -573,6 +575,8 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
 
                     totalContestKey = uniqueContestIds.length
 
+                    
+                    //const sessionOpts = { session, new: true };
                     MyContestModel.findOneAndUpdate({ match_id: match_id,sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true }).then((MyContestModel) => {
                         mycontId = MyContestModel._id || 0;
                     });
@@ -598,7 +602,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
  * @param {*} parentContestId 
  */
 
-async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId,match_sport,liveMatch) {
+async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId,match_sport,liveMatch,session) {
     try {
 
         let catID = contestData.category_id;
@@ -627,7 +631,12 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         }
         entity.is_auto_create = 2;
         // console.log('cResult************** before');
-        const cResult = await Contest.create(entity);
+        const newDataC = await Contest.create([entity],{ session: session });
+
+
+        var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+
+       // console.log('cResult************** after contest create in auto',cResult);
 
         if (cResult && cResult._id) {
             let newContestId = cResult._id;
@@ -671,8 +680,10 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             };
 
 
-            const dd = await MatchContest.create(entityM);
-
+            const dd = await MatchContest.create([entityM],{ session: session });
+            //console.log("dara at MatchContest in auto***",dd);
+            await session.commitTransaction();
+                    session.endSession();
 
             try {
                 let matchContestKey = RedisKeys.MATCH_CONTEST_LIST + match_id;
@@ -707,6 +718,8 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         }
 
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         console.log('sometjhing went wrong in autocreate***************************wrong in auto error');
         return {}
     }
