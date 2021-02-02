@@ -300,7 +300,8 @@ module.exports = {
                     infinite_breakup: finiteBreakupDetail,
                     is_aakash_team: aakashLeague,
                     maximum_team_size:multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
-                    contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0
+                    contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,
+                    category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:''
                 }
                 if (reviewMatch == "In Progress") {
                     redis.setRedis(contestDataAPIKey, contestData)
