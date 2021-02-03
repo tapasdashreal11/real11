@@ -158,7 +158,7 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
   let mType = type;
   let rePnt = {};
 
-  // let record = await LiveScore.find({ 'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport }, { 'point': 1, 'match_type': 1, 'player_name': 1 , "player_id": 1}).sort({ _id: -1 });
+  //let record = await LiveScore.find({ 'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport }, { 'point': 1, 'match_type': 1, 'player_name': 1 , "player_id": 1}).sort({ _id: -1 });
   let record = await LiveScore.aggregate([
     {
       $match: {'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport}
@@ -192,6 +192,7 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
 
       recordItem = JSON.parse(JSON.stringify(record[i]));
       point = (recordItem['point']) ? parseFloat(recordItem['point']) : 0;
+
       if (rePnt) {
         let captainPoint = rePnt.othersCaptain;
         let viceCaptainPoint = rePnt.othersViceCaptain;
@@ -202,6 +203,8 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
           point = point * viceCaptainPoint;
         }
       }
+
+      //teamDataArray[recordItem.player_id] = point;
       teamDataArray[recordItem.player_id] = [];
       teamDataArray[recordItem.player_id]["point"]  =  point;
       teamDataArray[recordItem.player_id]["player_role"]  = recordItem['player_role'] ? recordItem['player_role'] : '';

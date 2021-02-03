@@ -281,11 +281,11 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
         },
         data: payload,
     };
+    // console.log(message);return false;
     const fcm = new FCM(config.fcmKey);
-    
     try{
-     //   let send = fcm.send(message);
-        fcm.send(message, function(err, response){
+       // let send = fcm.send(message);
+       fcm.send(message, function(err, response){
           if (err) {
               console.log("Something has gone wrong with fcm",err);
           } else {
@@ -306,7 +306,7 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
         
     }
   } catch(error) {
-    console.log("fsfsfsfsf errorrr",error);
+    console.log(error);
   }
 };
 

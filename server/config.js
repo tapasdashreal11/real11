@@ -27,8 +27,8 @@ config.system = {
 config.dbConnection = {
   dbName: process.env.MONGO_DB || 'real11Node',
   string: process.env.DB_PR || 'mongodb://real11:real11dev#123@ip-172-31-40-1.ap-south-1.compute.internal:27027,ip-172-31-37-102.ap-south-1.compute.internal:27027,ip-172-31-36-75.ap-south-1.compute.internal:27027/real11?authSource=admin&replicaSet=real11-mongo-rs1',
-  mongoURI: process.env.DB_PR, 
-  mongoURIFORANALYSIS: process.env.DB_PR_ANALYSIS, 
+  mongoURI: process.env.DB_PR,
+ mongoURIFORANALYSIS: process.env.DB_PR_ANALYSIS,  
   mysql: {
     host: process.env.DB_HOST || 'localhost',
     user: process.env.SQLDB_USER,
@@ -80,7 +80,7 @@ config.smtp = {
   port: "587",
   username: 'marketinglyg7r0',
   password: 'marketinglyg7r0_070e6285170a1f31595e0e7f7b3e8db7',
-  fromEmail: "info@mail.real11.com", //'info@real11.com',
+  fromEmail: "info@real11.com", //'info@real11.com',
   host: "smtp.pepipost.com"
 }
 

@@ -11,10 +11,9 @@ const logger = require("../../../../utils/logger")(module);
 const { currentDateTimeFormat, createUserReferal, generateTransactionId, createTeamName } = require("../common/helper");
 const config = require('../../../config');
 const _ = require('lodash');
-const redis = require('../../../../lib/redis');
 const moment = require('moment');
+const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
-const { cat } = require('shelljs');
 
 // @params
 // {

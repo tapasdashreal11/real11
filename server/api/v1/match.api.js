@@ -47,9 +47,17 @@ module.exports = {
             let match_sport = sport ? parseInt(sport) : 1;
             if (decoded) {
                 if (decoded['user_id'] && decoded['series_id'] && decoded['match_id'] && decoded['contest_id']) {
+
+                    /* let pdf_name = match_id + '_' + contest_id;
+                    let fileUrl = config.express.staticFilesPath+"/leaderboard/"+pdf_name+'.pdf';
+                    if(fs.existsSync(fileUrl)){
+                        data1	=	{'url':fileUrl};
+                        //return res.send(ApiUtility.success(data1));
+                    } */
+
                     let authUser = await User.findOne({ '_id': decoded['user_id'] });
                     if (authUser) {
-                        let details = await MatchContest.findOne({ match_id: match_id, sport: match_sport,'contest_id': contest_id })
+                        let details = await MatchContest.findOne({ match_id: match_id, sport: match_sport, 'contest_id': contest_id })
                         if (!details) {
                             return res.send(ApiUtility.failed("Match Contest Not found"));
                         }

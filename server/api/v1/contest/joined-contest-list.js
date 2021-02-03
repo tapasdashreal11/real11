@@ -132,8 +132,8 @@ module.exports = {
                                 for (const joined of teamsJoined) {
                                     myTeamIds.push({ "player_team_id": joined.player_team_id });
                                     myTeamNo.push((joined.player_team) ? joined.player_team.team_count : 0);
-                                    //winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
-                                    winningAmt.push((joined && joined.price_win) ? parseFloat(joined.price_win) : 0);
+                                   // winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
+                                  winningAmt.push((joined && joined.price_win) ? parseFloat(joined.price_win) : 0);
                                 }
                             }
 
@@ -227,8 +227,6 @@ module.exports = {
                             let totalWinningAmount = winningAmt.reduce(function (a, b) {
                                 return a + b;
                             }, 0);
-
-                            console.log('***totalWinningAmount',totalWinningAmount);
 
                             contest[contestKey] = {};
                             contest[contestKey]['confirm_winning'] = winComfimed.toString();

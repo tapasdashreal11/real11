@@ -215,6 +215,7 @@ class PlayerTeamService {
                 }
             },
         ]).toArray((error, results) => {
+            // console.log(results);return false;
             if (error) {
                 console.error("PlayerTeam.getDbPlayerList catch error", error)
                 return cb(error);
@@ -243,7 +244,6 @@ class PlayerTeamService {
                             } else {
                                 playerData.is_xfactor = 0
                             }
-
                             if (playerStats && playerStats[playerData.player_id]) {
 
                                 playerData.selected_by = (playerStats[playerData.player_id]["selectedBy"] && playerStats[playerData.player_id]["selectedBy"] != "NaN") ? `${playerStats[playerData.player_id]["selectedBy"]}%` : "0%";

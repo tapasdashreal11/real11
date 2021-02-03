@@ -252,6 +252,66 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
+    contestList_24_nov_2020: async (req, res) => {
+        try {
+            const { match_id } = req.params;
+            const user_id = req.userId;
+            let filter = {
+                "match_id": parseInt(match_id),
+                is_full: { $ne: 1 }
+            };
+            // console.log("***start*****", req.params);return false;
+            const match_contest_data = await (new ModelService(Category)).getMatchContest({ status: 1 }, filter, user_id, 5);
+            let myTeamsCount = 0;
+            let myContestCount = 0;
+
+            if (user_id) {
+                myTeamsCount = await PlayerTeam.find({ user_id: user_id, match_id: match_id }).countDocuments();
+                    myContestCount = await PlayerTeamContest.aggregate([{
+                        $match: { user_id: user_id, match_id: parseInt(match_id) }
+                    },
+                    {
+                        $group: { _id: "$contest_id", count: { $sum: 1 } }
+                    }
+                ]);
+                redis.redisObj.set('user-teams-count-' + match_id + '-' + user_id, myTeamsCount);
+                redis.redisObj.set('user-contest-count-' + match_id + '-' + user_id, myContestCount.length);
+            }
+
+            let userTeamIds = {};
+            let joinedContestIds = [];
+            let joinedTeamsCount = {};
+            for (const matchContests of match_contest_data) {
+                for (const contest of matchContests.contests) {
+                    joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
+                    if (contest.my_team_ids && contest.my_team_ids.length > 0) {
+                        userTeamIds[contest.contest_id] = contest.my_team_ids;
+                    }
+                }
+            }
+
+            joinedContestIds = _.map(myContestCount, '_id');
+            
+            redis.redisObj.set(`${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`, JSON.stringify(joinedTeamsCount));
+            redis.redisObj.set('user-contest-teamIds-' + user_id + '-' + req.params.match_id, JSON.stringify(Helper.parseUserTeams(userTeamIds)));
+            
+            redis.redisObj.set('user-contest-joinedContestIds-' + user_id + '-' + req.params.match_id, JSON.stringify(joinedContestIds));
+            redis.setRedis(RedisKeys.MATCH_CONTEST_LIST + req.params.match_id, match_contest_data);
+            // console.log("joined_teams_count1111111", joinedContestIds)
+            var finalResult = ApiUtility.success({
+                match_contest: match_contest_data,
+                my_teams: myTeamsCount,
+                my_contests: myContestCount.length,
+                joined_contest_ids: joinedContestIds,
+                user_team_ids: Helper.parseUserTeams(userTeamIds),
+                joined_teams_count: Helper.parseContestTeamsJoined(joinedTeamsCount)
+            });
+            res.send(finalResult);
+        } catch (error) {
+            // consolelog("error", error)
+            res.send(ApiUtility.failed(error.message));
+        }
+    },
     contestDetailNew: async (req, res) => {
         try {
             const { match_id, contest_id } = req.params;
@@ -978,7 +1038,7 @@ module.exports = {
             let data1 = {};
             //let sport = 1;
             let setting = config;
-            let matchContestData = {};
+            let matchContestData = {}; 
             const { contest_id, entry_fee, match_id , series_id,sport } = req.body;
             let decoded = {
                 user_id: req.userId,
@@ -1083,7 +1143,6 @@ module.exports = {
                         data['calculated_entry_fee'] = (calEntryFees && _.isNumber(calEntryFees)) ? parseFloat(calEntryFees.toFixed(2)) : 0;
                         data['usable_bonus_percent'] = 0; //adminPer;
                         data1 = data;
-                        console.log('data*****',data)
                         res.send(ApiUtility.success(data1)); 
                     });
                 } catch (err) {
@@ -1095,6 +1154,97 @@ module.exports = {
                 return res.send(ApiUtility.failed("User not found."));
             }
         } catch (error) {
+            res.send(ApiUtility.failed(error.message));
+        }
+    },
+    joinContestWalletAmount_old_dec25: async (req, res) => {
+        try {
+            let data = {};
+            let data1 = {};
+            let sport = 1;
+            let setting = config;
+            const { contest_id, entry_fee, match_id } = req.body;
+            let decoded = {
+                user_id: req.userId,
+                contest_id: contest_id || '',
+                entry_fee: entry_fee,
+                match_id: match_id,
+            }
+            // //////console.log(req.userId);
+            let userdata = await User.findOne({ _id: decoded['user_id'] })
+            if (userdata) {
+                adminPer = 0; //(setting.admin_percentage) ? setting.admin_percentage : 0;
+                let useableBonusPer = adminPer;
+                let entryFee = 0;
+                if (decoded['contest_id']) {
+                    let contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
+                    let matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'], match_id: match_id });
+                    entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
+                    if (matchContestData && matchContestData.usable_bonus_time) {
+                        //////console.log("matchInviteCode", matchContest, moment().isBefore(matchContest.usable_bonus_time))
+                        if (moment().isBefore(matchContestData.usable_bonus_time)) {
+                            useableBonusPer = matchContestData.before_time_bonus;
+                        } else {
+                            useableBonusPer = matchContestData.after_time_bonus;
+                        }
+                    } else {
+                        useableBonusPer = (contestData && contestData.used_bonus) ? contestData.used_bonus : 0;
+                    }
+
+                    if (useableBonusPer == '') {
+                        useableBonusPer = adminPer;
+                    }
+                } else {
+                    entryFee = decoded['entry_fee'];
+                }
+                // ////////console.log(useableBonusPer);
+                let useAmount = eval((useableBonusPer / 100) * entryFee);
+                // ////////console.log(useAmount);
+                let usableAmt = 0;
+                let extraAmount = 0;
+                let cashBalance = 0;
+                let winningBalance = 0;
+                if (userdata) {
+                    if (decoded['contest_id']) {
+                        if (useAmount > userdata.bonus_amount) {
+                            usableAmt = userdata.bonus_amount;
+                        } else {
+                            usableAmt = useAmount;
+                        }
+                        let extraBalance = userdata.extra_amount || 0;
+                        let remainingFee = entryFee - usableAmt;
+
+                        let indianDate = Date.now();
+                        indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
+                        if (extraBalance) {
+                            let perDayExtraAmt = 0;
+                            let perDayLimit = config.extra_bonus_perday_limit;
+
+                            if (String(userdata.extra_amount_date) == String(indianDate)) {
+                                perDayExtraAmt = userdata.perday_extra_amount;
+                            }
+                            if (perDayExtraAmt < perDayLimit) {
+                                extraAmount = (extraBalance > remainingFee) ? remainingFee : extraBalance;
+                                extraAmount = ((perDayExtraAmt + extraAmount) > perDayLimit) ? (perDayLimit - perDayExtraAmt) : extraAmount
+                            }
+                        }
+                    }
+                    cashBalance = userdata.cash_balance;
+                    winningBalance = userdata.winning_balance;
+                }
+                data['cash_balance'] = (cashBalance) ? cashBalance : 0;
+                data['winning_balance'] = (winningBalance) ? winningBalance : 0;
+                data['usable_bonus'] = usableAmt ? parseFloat(usableAmt.toFixed(2)) : 0;
+                data['extra_amount'] = extraAmount ? parseFloat(extraAmount.toFixed(2)) : 0;
+                data['entry_fee'] = (entryFee) ? parseInt(entryFee) : 0;
+                data['usable_bonus_percent'] = 0; //adminPer;
+                data1 = data;
+                res.send(ApiUtility.success(data1));
+            } else {
+                return res.send(ApiUtility.failed("User not found."));
+            }
+        } catch (error) {
+            //////////consolelog(error);
             res.send(ApiUtility.failed(error.message));
         }
     },

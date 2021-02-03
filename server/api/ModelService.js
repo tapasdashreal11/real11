@@ -15,143 +15,8 @@ class ModelService {
     constructor(collection) {
         this.collection = collection;
     }
-    getMatchContestLatest(categories,filter,limit,is_all){
-        is_all = false;
-        return new Promise((resolve, reject) => {
-            try{
-                var is_joined = false;
-                this.collection.aggregate([
-                    {
-                        $match: {status:1}
-                    },                                       
-                    {
-                        $lookup: {
-                            from: 'match_contest',
-                            let: { catId: "$_id" },
-                            pipeline: [
-                                {
-                                    $match: {  
-                                        $expr:{ 
-                                            $and: [ 
-                                                { $eq: [ "$category_id", "$$catId" ]},
-                                                { $eq: [ "$match_id",  filter.match_id ]},
-                                                { $eq: [ "$sport",  filter.sport ]},
-                                                { $ne: [ "$is_full", 1 ]},
-                                                { $ne: [ "$is_private", 1 ]},
-                                            ]  
-                                        }
-                                    }
-                                },
-                                //{$limit : limit},
-                                { $sort: {"created": -1}},                           
-                                { $project: { joined_users:1, contest:1,localteam: 1, visitorteam_id:1, series_id: 1, status:1, category_id:1, parent_contest_id:1,contest_id:1, invite_code : 1, match_id:1, before_time_bonus :1, after_time_bonus :1, usable_bonus_time:1 } }
-                            ],
-                            as: 'matchContest',
-                        }
-                    },
-                    {
-                        $unwind: {
-                            path: "$matchContest",
-                            preserveNullAndEmptyArrays: false
-                        }
-                    },   
-                    {
-                        $group : {
-                            _id : "$_id",
-                            category_name : {$first : "$category_name"},
-                            description : {$first : "$description"},
-                            image : {$first: "$categories.image"},
-                            status : {$first : "$status"},
-                            sequence : {$first : "$sequence"},
-                            match_id : {$first : "$matchContest.match_id"},
-                            match_contest_id : {$first : "$matchContest._id"},
-                            contests : {$push : "$matchContest"}
-                        }
-                    },
-                    {
-                        $project: {
-                            _id:"$_id",
-                            match_id: "$match_id",
-                            category_id:"$_id",
-                            "category_title": "$category_name",
-                            "sequence": "$sequence",
-                            "category_desc": "$description",
-                            category_image: "$image",
-                            "contests": {
-                                $map: {
-                                    "input": "$contests",
-                                    as: "sec",
-                                    in: {
-                                        "contest_id": "$$sec.contest_id",
-                                        "parent_contest_id":"$$sec.parent_contest_id",
-                                        "entry_fee": "$$sec.contest.entry_fee",
-                                        "prize_money": "$$sec.contest.winning_amount",
-                                        "is_full": "$$sec.contest.is_full",
-                                        "confirm_winning": {$cond: { if: { $eq: [ "$$sec.contest.confirmed_winning", "yes" ] }, then: "yes", else: 'no' }},
-                                        "is_gadget": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "gadget" ] }, then: true, else: false }},
-                                        "category_id": "$$sec.contest.category_id",
-                                        "is_auto_create": "$$sec.contest.is_auto_create",                                       
-                                        "multiple_team": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: true, else: false }},
-                                        "invite_code": "$$sec.invite_code",
-                                        "breakup_detail": { 
-                                            $map: {
-                                                "input": "$$sec.contest.breakup",
-                                                as: "break",
-                                                in: {
-                                                    "rank": {$cond: { if: { $eq: [ "$$break.startRank", "$$break.endRank" ] }, then: { $concat: [ "Rank ", {$toString: "$$break.startRank" } ] }, else:  "$$break.name" }},
-                                                    "gadget_name": {$cond: { if: { $ne: [ "$$break.gadget_name", "" ] }, then: "$$break.gadget_name", else: "" }},
-                                                    "image": {$cond: { if: { $ne: [ "$$break.image", "" ] }, then: { $concat: [ imageurl, "/", "$$break.image" ] }, else: "" }},
-                                                    "price": {$cond: { if: { $gt: [ "$$break.price_each", 0 ] }, then: {$trunc : ["$$break.price_each", 2]}, else: {$trunc : ["$$break.price", 2]} }},
-                                                }
-                                            }
-                                        },
-                                        "after_time_bonus":  "$$sec.after_time_bonus",
-                                        "before_time_bonus": "$$sec.before_time_bonus",
-                                        "current_date": new Date(),
-                                        "usable_bonus_time":'$$sec.usable_bonus_time',
-                                        "use_bonus": {$cond: { if: { $ifNull: [ "$$sec.usable_bonus_time", false ] }, then: { $cond: { if: { $gt: [new Date(),'$$sec.usable_bonus_time'] },then: {$toString: "$$sec.before_time_bonus"},else: {$toString: "$$sec.after_time_bonus"} } }, else: {$toString: "$$sec.contest.used_bonus"} }},
-                                        "is_infinite": {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: true, else: false }},
-                                        "teams_joined": "$$sec.joined_users",
-                                        "total_teams": "$$sec.contest.contest_size",
-                                        "total_winners": { $arrayElemAt: [ "$$sec.contest.breakup", -1 ] },
-                                        "is_joined": is_joined, 
-                                        "infinite_breakup" : {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: {"winner_percent": "$$sec.contest.winner_percent", "winner_amount": "$$sec.contest.winning_amount_times"}, else: {} }},
-                                        "is_aakash_team": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "aakash" ] }, then: true, else: false }},
-                                        "is_favourite":false,
-                                        "maximum_team_size": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: { $cond: { if: { $ifNull: ["$$sec.contest.maximum_team_size",false] },then: "$$sec.contest.maximum_team_size",else: 9 } }, else: 1 }},
-                                        "contest_shareable": {$cond: { if: { $ifNull: [ "$$sec.contest.contest_shareable", false ] }, then: "$$sec.contest.contest_shareable", else: 0 }} 
-                                    }
-                                }
-                            },
-                        }
-                    },
-                    {$sort : {sequence : 1}}
-                ], (err, data) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    if (!err) {
-                        if(is_all && data && data.length > 0){
-                            var conArry = [];
-                            var dlength = data.length;
-                            _.forEach(data, function(k, i){
-                                conArry.push(k.contests)
-                                if(i === (dlength - 1)){
-                                    var newArray = Array.prototype.concat.apply([], conArry);
-                                    resolve([{"contests": newArray}]);
-                                }
-                            })
-                        }else{
-                            resolve(data);
-                        }
-                    }
-                });
-            }catch(err){
-                reject(err);
-            } 
-        });
-    }
-    getMatchContestLatestNew(categories,filter,limit,is_all){
+
+  getMatchContestLatestNew(categories,filter,limit,is_all){
         is_all = false;
         return new Promise((resolve, reject) => {
             try{
@@ -287,6 +152,143 @@ class ModelService {
             } 
         });
     }
+    getMatchContestLatest(categories,filter,limit,is_all){
+        is_all = false;
+        return new Promise((resolve, reject) => {
+            try{
+                var is_joined = false;
+                this.collection.aggregate([
+                    {
+                        $match: {status:1}
+                    },                                       
+                    {
+                        $lookup: {
+                            from: 'match_contest',
+                            let: { catId: "$_id" },
+                            pipeline: [
+                                {
+                                    $match: {  
+                                        $expr:{ 
+                                            $and: [ 
+                                                { $eq: [ "$category_id", "$$catId" ]},
+                                                { $eq: [ "$match_id",  filter.match_id ]},
+                                                { $eq: [ "$sport",  filter.sport ]},
+                                                { $ne: [ "$is_full", 1 ]},
+                                                { $ne: [ "$is_private", 1 ]},
+                                                //{ $ne: [ "$admin_create", 1 ]},
+                                            ]  
+                                        }
+                                    }
+                                },
+                               // {$limit : limit},
+                                { $sort: {"created": -1}},                           
+                                { $project: { joined_users:1, contest:1,localteam: 1, visitorteam_id:1, series_id: 1, status:1, category_id:1,parent_contest_id:1, contest_id:1, invite_code : 1, match_id:1, before_time_bonus :1, after_time_bonus :1, usable_bonus_time:1 } }
+                            ],
+                            as: 'matchContest',
+                        }
+                    },
+                    {
+                        $unwind: {
+                            path: "$matchContest",
+                            preserveNullAndEmptyArrays: false
+                        }
+                    },   
+                    {
+                        $group : {
+                            _id : "$_id",
+                            category_name : {$first : "$category_name"},
+                            description : {$first : "$description"},
+                            image : {$first: "$categories.image"},
+                            status : {$first : "$status"},
+                            sequence : {$first : "$sequence"},
+                            match_id : {$first : "$matchContest.match_id"},
+                            match_contest_id : {$first : "$matchContest._id"},
+                            contests : {$push : "$matchContest"}
+                        }
+                    },
+                    {
+                        $project: {
+                            _id:"$_id",
+                            match_id: "$match_id",
+                            category_id:"$_id",
+                            "category_title": "$category_name",
+                            "sequence": "$sequence",
+                            "category_desc": "$description",
+                            category_image: "$image",
+                            "contests": {
+                                $map: {
+                                    "input": "$contests",
+                                    as: "sec",
+                                    in: {
+                                        "contest_id": "$$sec.contest_id",
+                                        "parent_contest_id":"$$sec.parent_contest_id",
+                                        "entry_fee": "$$sec.contest.entry_fee",
+                                        "prize_money": "$$sec.contest.winning_amount",
+                                        "is_full": "$$sec.contest.is_full",
+                                        "confirm_winning": {$cond: { if: { $eq: [ "$$sec.contest.confirmed_winning", "yes" ] }, then: "yes", else: 'no' }},
+                                        "is_gadget": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "gadget" ] }, then: true, else: false }},
+                                        "category_id": "$$sec.contest.category_id",
+                                        "is_auto_create": "$$sec.contest.is_auto_create",                                       
+                                        "multiple_team": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: true, else: false }},
+                                        "invite_code": "$$sec.invite_code",
+                                        "breakup_detail": { 
+                                            $map: {
+                                                "input": "$$sec.contest.breakup",
+                                                as: "break",
+                                                in: {
+                                                    "rank": {$cond: { if: { $eq: [ "$$break.startRank", "$$break.endRank" ] }, then: { $concat: [ "Rank ", {$toString: "$$break.startRank" } ] }, else:  "$$break.name" }},
+                                                    "gadget_name": {$cond: { if: { $ne: [ "$$break.gadget_name", "" ] }, then: "$$break.gadget_name", else: "" }},
+                                                    "image": {$cond: { if: { $ne: [ "$$break.image", "" ] }, then: { $concat: [ imageurl, "/", "$$break.image" ] }, else: "" }},
+                                                    "price": {$cond: { if: { $gt: [ "$$break.price_each", 0 ] }, then: {$trunc : ["$$break.price_each", 2]}, else: {$trunc : ["$$break.price", 2]} }},
+                                                }
+                                            }
+                                        },
+                                        "after_time_bonus":  "$$sec.after_time_bonus",
+                                        "before_time_bonus": "$$sec.before_time_bonus",
+                                        "current_date": new Date(),
+                                        "usable_bonus_time":'$$sec.usable_bonus_time',
+                                        "use_bonus": {$cond: { if: { $ifNull: [ "$$sec.usable_bonus_time", false ] }, then: { $cond: { if: { $gt: [new Date(),'$$sec.usable_bonus_time'] },then: {$toString: "$$sec.before_time_bonus"},else: {$toString: "$$sec.after_time_bonus"} } }, else: {$toString: "$$sec.contest.used_bonus"} }},
+                                        "is_infinite": {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: true, else: false }},
+                                        "teams_joined": "$$sec.joined_users",
+                                        "total_teams": "$$sec.contest.contest_size",
+                                        "total_winners": { $arrayElemAt: [ "$$sec.contest.breakup", -1 ] },
+                                        "is_joined": is_joined, 
+                                        "infinite_breakup" : {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: {"winner_percent": "$$sec.contest.winner_percent", "winner_amount": "$$sec.contest.winning_amount_times"}, else: {} }},
+                                        "is_aakash_team": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "aakash" ] }, then: true, else: false }},
+                                        "is_favourite":false,
+                                        "maximum_team_size": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: { $cond: { if: { $ifNull: ["$$sec.contest.maximum_team_size",false] },then: "$$sec.contest.maximum_team_size",else: 9 } }, else: 1 }},
+                                        "contest_shareable": {$cond: { if: { $ifNull: [ "$$sec.contest.contest_shareable", false ] }, then: "$$sec.contest.contest_shareable", else: 0 }} 
+                                    }
+                                }
+                            },
+                        }
+                    },
+                    {$sort : {sequence : 1}}
+                ], (err, data) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    if (!err) {
+                        if(is_all && data && data.length > 0){
+                            var conArry = [];
+                            var dlength = data.length;
+                            _.forEach(data, function(k, i){
+                                conArry.push(k.contests)
+                                if(i === (dlength - 1)){
+                                    var newArray = Array.prototype.concat.apply([], conArry);
+                                    resolve([{"contests": newArray}]);
+                                }
+                            })
+                        }else{
+                            resolve(data);
+                        }
+                    }
+                });
+            }catch(err){
+                reject(err);
+            } 
+        });
+    }
 
     getMatchContest(caty, filter, uid, limit, is_all) {
         return new Promise((resolve, reject) => {
@@ -309,6 +311,7 @@ class ModelService {
                                                 { $eq: [ "$match_id",  filter.match_id ]},
                                                 { $eq: [ "$sport",  filter.sport ]},
                                                 { $ne: [ "$is_full", 1 ]},
+                                                //{ $ne: [ "$admin_create", 1 ]},
                                             ]  
                                         }
                                     }

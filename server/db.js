@@ -10,8 +10,8 @@ const semver = require('semver');
 const dbConf = require('./config').dbConnection;
 const logger = require('../utils/logger')(module);
 
+//const { mongoURI } = dbConf;
 const { mongoURI,mongoURIFORANALYSIS } = dbConf;
-
 /**
  * Creates the default mongoose connection
  *
@@ -80,8 +80,6 @@ const ready = Promise.all([
   initMongoDB(),
 ]);
 
-
-
 module.exports = {
   ready,
   /**
@@ -98,5 +96,4 @@ module.exports = {
   getMongo: () => mongoose.connection.db,
 
   getAnalysisDb:() =>  mongoose.createConnection(mongoURIFORANALYSIS,{ useNewUrlParser: true}),
-
 };
