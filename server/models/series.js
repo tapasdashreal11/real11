@@ -54,6 +54,12 @@ var seriesSchema = new Schema({
 	is_elite: {
 		type: Number
 	},
+	series_weeks: {
+		type: Array,default:[]
+	  },
+    week_leaderboard: {
+		type: Number,default:0
+	  },
 	start_date: {
 		type: Date
 	},
