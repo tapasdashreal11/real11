@@ -38,6 +38,7 @@ module.exports = {
                 //var wData = await WeekLeaderboard.find({series_id:s_id,week_count:w_count,user_id:ObjectId(auth_user_id)});
                 redis.getRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, async (err, data) => {
                     if (data) {
+                        console.log('data from redis****');
                         response["data"] = data;
                         response["message"] = "";
                         response["status"] = true;
@@ -84,6 +85,7 @@ module.exports = {
                             }
                             if (!err) {
                                 if(data && data.length>0){
+                                    console.log('data from db****');
                                     redis.setRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, data);
                                     response["data"] = data;
                                     response["message"] = "";
