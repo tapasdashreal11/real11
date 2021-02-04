@@ -29,6 +29,7 @@ module.exports = {
         let {s_id,w_count} = req.params;
         const user_id = "5f306f588ca80a108031c7d0"; //req.userId;
         let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count;
+        console.log(s_id,w_count);
         try { 
             if(user_id){
                 //var wData = await WeekLeaderboard.find({series_id:s_id,week_count:w_count,user_id:ObjectId(auth_user_id)});
@@ -40,9 +41,9 @@ module.exports = {
                         return res.json(response);
                     } else {
 
-                        WeekLeaderboard.aggregate([
+                       await WeekLeaderboard.aggregate([
                             {
-                                $match: {series_id:s_id,week_count:w_count}
+                                $match: {series_id:parseInt(s_id),week_count:parseInt(w_count)}
                             },
                             {
                                 $lookup: {
@@ -68,14 +69,15 @@ module.exports = {
                                     "series_id" : "$series_id"
                                 }
                             }
-                        ], (err, wData) => {
+                        ], (err, data) => {
                             if (err) {
                                 
                             }
                             if (!err) {
-                                if(wData && wData.length>0){
-                                    redis.setRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, wData);
-                                    response["data"] = wData;
+                                console.log(data);
+                                if(data && data.length>0){
+                                    redis.setRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, data);
+                                    response["data"] = data;
                                     response["message"] = "";
                                     response["status"] = true;
                                     return res.json(response);
