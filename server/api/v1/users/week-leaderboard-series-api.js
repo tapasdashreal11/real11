@@ -33,13 +33,27 @@ module.exports = {
         const user_id = "5f306f588ca80a108031c7d0"; //req.userId;
         let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count+'-'+v_page;
         console.log(redisKeyForWeekLeaderBorad,'**v_skip**',v_skip);
+       let myTeamData = {
+            "user_id" : user_id,
+            "team_name" : "My Team",
+            "total_points" : 0,
+            "pre_rank" :0,
+            "current_rank" : 0,
+            "series_id" : s_id
+        }
         try { 
             if(user_id){
-                //var wData = await WeekLeaderboard.find({series_id:s_id,week_count:w_count,user_id:ObjectId(auth_user_id)});
+                var myWData = await WeekLeaderboard.findOne({series_id:s_id,week_count:w_count,user_id:ObjectId(user_id)});
+                if(myWData && myWData._id){
+                    myTeamData['total_points'] = myWData.total_points;
+                    myTeamData['pre_rank'] = myWData.pre_rank;
+                    myTeamData['current_rank'] = myWData.current_rank;
+                }
                 redis.getRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, async (err, data) => {
                     if (data) {
+                        let finalData = mergedTeam = [...[myTeamData], ...data];
                         console.log('data from redis****');
-                        response["data"] = data;
+                        response["data"] = finalData;
                         response["message"] = "";
                         response["status"] = true;
                         return res.json(response);
@@ -87,7 +101,8 @@ module.exports = {
                                 if(data && data.length>0){
                                     console.log('data from db****');
                                     redis.setRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, data);
-                                    response["data"] = data;
+                                    let finalData = mergedTeam = [...[myTeamData], ...data];
+                                    response["data"] = finalData;
                                     response["message"] = "";
                                     response["status"] = true;
                                     return res.json(response);
