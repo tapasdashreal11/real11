@@ -54,7 +54,7 @@ module.exports = {
                        await WeekLeaderboard.aggregate([
                             {
                                 $match: {series_id:parseInt(s_id),week_count:parseInt(w_count)}
-                            },{$sort: {current_rank: -1}},
+                            },{$sort: {current_rank: 1}},
                             {
                                 $skip: v_skip
                             },
