@@ -26,10 +26,13 @@ module.exports = {
     },
     weekLeaderBoardSeriesWeeksData: async (req, res) => {
         var response = { status: false, message: "Invalid Request", data: {} };
-        let {s_id,w_count} = req.params;
+        let {s_id,w_count,page} = req.params;
+        let v_page = page ? parseInt(page): 0;
+        let v_skip = v_page ?  v_page*500: 0;
+        let v_limit = 500;
         const user_id = "5f306f588ca80a108031c7d0"; //req.userId;
-        let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count;
-        console.log(s_id,w_count);
+        let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count+'-'+v_page;
+        console.log(redisKeyForWeekLeaderBorad,'**v_skip**',v_skip);
         try { 
             if(user_id){
                 //var wData = await WeekLeaderboard.find({series_id:s_id,week_count:w_count,user_id:ObjectId(auth_user_id)});
@@ -44,6 +47,12 @@ module.exports = {
                        await WeekLeaderboard.aggregate([
                             {
                                 $match: {series_id:parseInt(s_id),week_count:parseInt(w_count)}
+                            },
+                            {
+                                $skip: v_skip
+                            },
+                            {
+                                $limit: v_limit
                             },
                             {
                                 $lookup: {
