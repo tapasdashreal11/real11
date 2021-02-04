@@ -30,7 +30,7 @@ module.exports = {
         let v_page = page ? parseInt(page): 0;
         let v_skip = v_page ?  v_page*500: 0;
         let v_limit = 500;
-        const user_id = "5f306f588ca80a108031c7d0"; //req.userId;
+        const user_id = req.userId;
         let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count+'-'+v_page;
         console.log(redisKeyForWeekLeaderBorad,'**v_skip**',v_skip);
        let myTeamData = {
@@ -42,7 +42,7 @@ module.exports = {
             "series_id" : s_id
         }
         try { 
-            if(user_id){
+            if(user_id && s_id && w_count){
                 var myWData = await WeekLeaderboard.findOne({series_id:s_id,week_count:w_count,user_id:ObjectId(user_id)});
                 if(myWData && myWData._id){
                     myTeamData['total_points'] = myWData.total_points;

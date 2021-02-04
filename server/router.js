@@ -257,8 +257,8 @@ router.post('/api/v1/team-profile-comparision', auth.authenticate.jwtLogin, team
 router.post('/api/v1/team-profile-paging', teamProfilePaging);
 router.post('/api/v1/favouite-create', favouriteContestCreate); 
 router.post('/api/v1/retention-bonous-create', retentionBonousCreate);
-router.get('/api/v1/week-leaderboard-series', weekLeaderBoardSeriesApi);
-router.get('/api/v1/week-leaderboard-series-data/:s_id/:w_count/:page', weekLeaderBoardSeriesWeeksData);
+router.get('/api/v1/week-leaderboard-series',auth.authenticate.jwtLogin, weekLeaderBoardSeriesApi);
+router.get('/api/v1/week-leaderboard-series-data/:s_id/:w_count/:page',auth.authenticate.jwtLogin, weekLeaderBoardSeriesWeeksData);
 
 
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
