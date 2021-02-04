@@ -33,14 +33,12 @@ module.exports = {
         const user_id = req.userId;
         let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count+'-'+v_page;
         console.log(redisKeyForWeekLeaderBorad,'**v_skip**',v_skip);
-        let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"pre_rank" :0,"current_rank" : 0,"series_id" : s_id
-         }
+        let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0}
         try { 
             if(user_id && s_id && w_count){
                 var myWData = await WeekLeaderboard.findOne({series_id:s_id,week_count:w_count,user_id:ObjectId(user_id)});
                 if(myWData && myWData._id){
                     myTeamData['total_points'] = myWData.total_points;
-                    myTeamData['pre_rank'] = myWData.pre_rank;
                     myTeamData['current_rank'] = myWData.current_rank;
                 }
                 redis.getRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, async (err, data) => {
@@ -82,9 +80,7 @@ module.exports = {
                                     "user_id" : "$user_detail._id",
                                     "team_name" : "$user_detail.team_name",
                                     "total_points" : "$total_points",
-                                    "pre_rank" : "$pre_rank",
                                     "current_rank" : "$current_rank",
-                                    "series_id" : "$series_id"
                                 }
                             }
                         ], (err, data) => {
