@@ -33,14 +33,8 @@ module.exports = {
         const user_id = req.userId;
         let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count+'-'+v_page;
         console.log(redisKeyForWeekLeaderBorad,'**v_skip**',v_skip);
-       let myTeamData = {
-            "user_id" : user_id,
-            "team_name" : "My Team",
-            "total_points" : 0,
-            "pre_rank" :0,
-            "current_rank" : 0,
-            "series_id" : s_id
-        }
+        let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"pre_rank" :0,"current_rank" : 0,"series_id" : s_id
+         }
         try { 
             if(user_id && s_id && w_count){
                 var myWData = await WeekLeaderboard.findOne({series_id:s_id,week_count:w_count,user_id:ObjectId(user_id)});
