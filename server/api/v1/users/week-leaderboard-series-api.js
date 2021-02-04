@@ -83,7 +83,6 @@ module.exports = {
                                 
                             }
                             if (!err) {
-                                console.log(data);
                                 if(data && data.length>0){
                                     redis.setRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, data);
                                     response["data"] = data;
