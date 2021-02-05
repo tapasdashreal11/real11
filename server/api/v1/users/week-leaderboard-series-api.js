@@ -36,7 +36,7 @@ module.exports = {
         let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0}
         try { 
             if(user_id && s_id && w_count){
-                var myWData = await WeekLeaderboard.findOne({series_id:s_id,week_count:w_count,user_id:ObjectId(user_id)});
+                var myWData = await WeekLeaderboard.findOne({series_id:parseInt(s_id),week_count:parseInt(w_count),user_id:ObjectId(user_id)});
                 if(myWData && myWData._id){
                     myTeamData['total_points'] = myWData.total_points;
                     myTeamData['current_rank'] = myWData.current_rank;
