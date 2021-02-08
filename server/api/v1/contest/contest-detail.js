@@ -448,7 +448,7 @@ module.exports = {
             }
             sport   =   parseInt(sport) || 1;
             let reviewMatch = await SeriesSquad.findOne({ 'match_id': match_id, "sport": sport });
-
+            let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
             let reviewStatus = '';
             if (reviewMatch) {
                 if (reviewMatch.match_status == 'Finished' && reviewMatch.win_flag == 0) {
@@ -493,7 +493,7 @@ module.exports = {
                 
                 let mergedTeam = [];
                 let redisTeams = await getRedisLeaderboard(match_id, contest_id);
-
+                
                 let myTeams = [];
                 let aakashTeams = [];
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
@@ -642,13 +642,12 @@ module.exports = {
                 multipleTeam = (contestDetail.multiple_team && contestDetail.multiple_team == 'yes') ? true : false;
                 gadgetLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'gadget') ? true : false;
                 aakashLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'aakash') ? true : false;
-                let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
+                
                 let is_joined = (myTeamIds.length > 0) ? true : false;
 
                 let bonusAmount = 0; //config.admin_percentage;
                 let useBonus = 0;
                 if (matchInviteCode && matchInviteCode.usable_bonus_time) {
-                    //console.log("matchInviteCode", matchInviteCode, moment().isBefore(matchInviteCode.usable_bonus_time))
                     if (moment().isBefore(matchInviteCode.usable_bonus_time)) {
                         useBonus = matchInviteCode.before_time_bonus;
                     } else {
@@ -693,7 +692,6 @@ module.exports = {
                             }
 
                             customPrice[key]['price'] = customBreakup.price_each ? (customBreakup.price_each).toFixed(2) : (customBreakup.price).toFixed(2);
-                            // customPrice[key]['price']	=	customBreakup.price;
                             if (customBreakup.endRank) {
                                 toalWinner = customBreakup.endRank;
                             } else {
