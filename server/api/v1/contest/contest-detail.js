@@ -322,6 +322,7 @@ module.exports = {
                 contest_id: contest_id,
                 user_id: user_id,
             }
+            
             sport   =   parseInt(sport) || 1;
             let reviewMatch = await SeriesSquad.findOne({ 'match_id': match_id, sport: sport });
             let contestDetail = await Contest.findOne({ _id: contest_id });
@@ -341,25 +342,25 @@ module.exports = {
                     mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
                 }
             }
-
             if (mergedTeam && mergedTeam.length == 0) {
                 let allTeams = [];
                 allTeams = await getRedisLeaderboard(match_id, contest_id);
                 let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, aakashData._id);
-                } else if(contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
+                } else {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, '');
                 }
                 if(allTeams && allTeams.length == 100) {
                     await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                 }
+                // contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50
                 //if (contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) {
                     // allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport);
                 //}
                 mergedTeam = allTeams;
             }
-
+            
             let teamCount = 0;
             let teamData = [];
 
@@ -405,7 +406,7 @@ module.exports = {
             if (teamData) {
                 key = 0;
                 for (const teamss of teamData) {
-                    if (teamss && teamss['user_id'] == decoded['user_id']) {
+                    if (teamss && _.isEqual(ObjectId(teamss['user_id']), ObjectId(decoded['user_id'])) ) {
                         MyUser.push(teamss);
                         delete teamData[key];
                     } else {
@@ -599,7 +600,7 @@ module.exports = {
                 if (teamData) {
                     key = 0;
                     for (const teamss of teamData) {
-                        if (teamss && teamss['user_id'] == decoded['user_id']) {
+                        if (teamss && _.isEqual(ObjectId(teamss['user_id']), ObjectId(decoded['user_id'])) ) {
                             MyUser.push(teamss);
                             delete teamData[key];
                         } else {
