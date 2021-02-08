@@ -115,7 +115,8 @@ playerTeamContestSchema.statics.getAllTeamsByMatchId = function(match_id, contes
           match_id:parseInt(match_id),
           sport: sport,
           contest_id:ObjectId(contest_id),
-          user_id:{$nin:[ObjectId(user_id),ObjectId(aakashId)]}
+          // user_id:{$nin:[ObjectId(user_id),ObjectId(aakashId)]}
+          user_id:{$ne:ObjectId(user_id)}
         },
       },
       {
@@ -143,7 +144,7 @@ playerTeamContestSchema.statics.getAllTeamsByMatchId = function(match_id, contes
           match_id:parseInt(match_id),
           sport: sport,
           contest_id:ObjectId(contest_id),
-          user_id:{$ne:ObjectId(user_id)}
+          // user_id:{$ne:ObjectId(user_id)}
         },
       },
       {
