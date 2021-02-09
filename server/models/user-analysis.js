@@ -35,6 +35,9 @@ var userAnalysis = new Schema({
     series_id: {
         type: Number
     },
+    is_offer_repeat: {
+        type: Number,default:2  // 2 means not repeat or 1 means repeat the offer
+    },
     created: {
         type: Date, default: Date.now()
     }

@@ -182,7 +182,7 @@ module.exports = async (req, res) => {
                                                         if (contestType == 'Paid') {
                                                             // work for user rentation and cal amount for data
                                                             
-                                                            let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1};
+                                                            let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1,is_offer_repeat:1};
                                                             let rdata = await UserAnalysis.findOne({ user_id: user_id,match_id:decoded['match_id'],sport:match_sport},fileds);
                                                             if(rdata && rdata._id && entryFee>0){
                                                                 userBounousData = rdata;
@@ -358,10 +358,10 @@ module.exports = async (req, res) => {
                                                                             await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_amount": -retention_bonus_amount } });
                                                                             userBounousData.offer_amount = ((userBounousData.offer_amount) - retention_bonus_amount); 
                                                                             redis.setRedisForUserAnaysis(redisKeyForRentation,userBounousData); 
-                                                                        } else if (userBounousData.is_offer_type == 2) {
+                                                                        } else if (userBounousData.is_offer_type == 2 && userBounousData.is_offer_repeat && userBounousData.is_offer_repeat == 2) {
                                                                             let percent = userBounousData.offer_percent ? parseFloat(userBounousData.offer_percent):0;
                                                                             await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
-                                                                            
+                                                    
                                                                             //redis.userAnalysisRedisObj.del(redisKeyForRentation);
                                                                             userBounousData.offer_percent = 0;
                                                                             redis.setRedisForUserAnaysis(redisKeyForRentation,userBounousData);
