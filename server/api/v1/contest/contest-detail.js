@@ -344,13 +344,14 @@ module.exports = {
             }
             if (mergedTeam && mergedTeam.length == 0) {
                 let allTeams = [];
-                allTeams = await getRedisLeaderboard(match_id, contest_id);
+                // allTeams = await getRedisLeaderboard(match_id, contest_id);
                 let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, aakashData._id);
                 } else {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, '');
                 }
+                // console.log(allTeams.length, match_id, contest_id);
                 if(allTeams && allTeams.length == 100) {
                     await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                 }
@@ -551,46 +552,43 @@ module.exports = {
                     
                     if (_.find(player_team_id_filter, userTeam.player_team_id)){
                         continue
-                    }
-                    else{
-                    let player_ids = [];
-                    // let playerTeam = await PlayerTeam.findById(userTeam.player_team_id);
-                    let playerTeam = '';
-                    if (!userTeam.player_team) {
-                        playerTeam = await PlayerTeam.findById(userTeam.player_team_id, { team_count: 1 });
-                    } else {
-                        playerTeam = userTeam.player_team;
-                    }
-                    player_team_id_filter.push(userTeam.player_team_id);
+                    } else{
+                        let player_ids = [];
+                        // let playerTeam = await PlayerTeam.findById(userTeam.player_team_id);
+                        let playerTeam = '';
+                        if (!userTeam.player_team) {
+                            playerTeam = await PlayerTeam.findById(userTeam.player_team_id, { team_count: 1 });
+                        } else {
+                            playerTeam = userTeam.player_team;
+                        }
+                        player_team_id_filter.push(userTeam.player_team_id);
 
-                    if (playerTeam) {
-                        if (!userTeam.user) {
-                            if (MyUserData && user_id == userTeam.user_id) {
-                                userTeam.user = MyUserData;
-                            } else {
-                                userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1, "image": 1 });
+                        if (playerTeam) {
+                            if (!userTeam.user) {
+                                if (MyUserData && user_id == userTeam.user_id) {
+                                    userTeam.user = MyUserData;
+                                } else {
+                                    userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1, "image": 1 });
+                                }
+                            }
+                        // let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                        let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
+                            if (userTeam.user) {
+                                let teamUserDetail = userTeam.user;
+                                teamData[teamCount] = {};
+                                teamData[teamCount]['user_id'] = userTeam.user_id;
+                                teamData[teamCount]['team_name'] = teamUserDetail.team_name;
+                                teamData[teamCount]['user_image'] = ''; //(teamUserDetail.image) ? config.imageBaseUrl + '/avetars/' + teamUserDetail.image : "";
+                                teamData[teamCount]['team_no'] = (playerTeam) ? playerTeam.team_count : 0;
+                                teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
+                                teamData[teamCount]['previous_rank'] = userTeam.previous_rank || 0;
+                                teamData[teamCount]['point'] = userTeam.points || 0;
+                                teamData[teamCount]['winning_amount'] = winAmount;
+                                teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(teamUserDetail._id), ObjectId(aakashData._id)) ? true : false;
                             }
                         }
-                       // let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
-                      let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
-                        if (userTeam.user) {
-                            let teamUserDetail = userTeam.user;
-                            teamData[teamCount] = {};
-                            teamData[teamCount]['user_id'] = userTeam.user_id;
-                            teamData[teamCount]['team_name'] = teamUserDetail.team_name;
-                            teamData[teamCount]['user_image'] = ''; //(teamUserDetail.image) ? config.imageBaseUrl + '/avetars/' + teamUserDetail.image : "";
-                            teamData[teamCount]['team_no'] = (playerTeam) ? playerTeam.team_count : 0;
-                            teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
-                            teamData[teamCount]['previous_rank'] = userTeam.previous_rank || 0;
-                            teamData[teamCount]['point'] = userTeam.points || 0;
-                            teamData[teamCount]['winning_amount'] = winAmount;
-                            teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(teamUserDetail._id), ObjectId(aakashData._id)) ? true : false;
-                        }
+                        teamCount++;
                     }
-
-                    teamCount++;
-
-                }
                 }
 
                 let ranArr = [];
