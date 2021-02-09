@@ -15,7 +15,7 @@ module.exports = {
            } else {
             response["data"] = [];
             response["message"] = "";
-            response["status"] = true;
+            response["status"] = false;
            }
             
            return res.json(response);
@@ -99,7 +99,7 @@ module.exports = {
                                 } else {
                                     response["data"] = [];
                                     response["message"] = "No data found!!";
-                                    response["status"] = true;
+                                    response["status"] = false;
                                     return res.json(response);
                                 }
                             }
