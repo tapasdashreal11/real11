@@ -342,6 +342,7 @@ module.exports = {
                     mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
                 }
             }
+            
             if (mergedTeam && mergedTeam.length == 0) {
                 let allTeams = [];
                 // allTeams = await getRedisLeaderboard(match_id, contest_id);
@@ -351,7 +352,6 @@ module.exports = {
                 } else {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, '');
                 }
-                // console.log(allTeams.length, match_id, contest_id);
                 if(allTeams && allTeams.length == 100) {
                     await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                 }
@@ -361,7 +361,6 @@ module.exports = {
                 //}
                 mergedTeam = allTeams;
             }
-            
             let teamCount = 0;
             let teamData = [];
 
@@ -518,7 +517,7 @@ module.exports = {
                         mergedTeam = [...myTeams, ...allTeams];
                     }
                 }
-                // console.log(mergedTeam);
+                
                 if (mergedTeam && mergedTeam.length == 0) {
                     myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id,sport);
                     
