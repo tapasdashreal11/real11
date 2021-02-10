@@ -98,7 +98,8 @@ var transactionSchema = new Schema({
     type: ObjectId
   },
   status: {
-    type: Boolean, index: true
+    type: Boolean,
+    default:true
   },
   coupon_type: {
     type: String
