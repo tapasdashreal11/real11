@@ -1049,6 +1049,7 @@ module.exports = {
             }
             let match_sport = sport ? parseInt(sport) : 1;
             let match_series_id = series_id ? parseInt(series_id) : 1;
+            let youtuber_code = 0;
             // //////console.log(req.userId);
             let userdata = await User.findOne({ _id: decoded['user_id'] })
             if (userdata) {
@@ -1073,6 +1074,8 @@ module.exports = {
                     if (useableBonusPer == '') {
                         useableBonusPer = adminPer;
                     }
+                    youtuber_code = matchContestData && matchContestData.youtuber_code ? matchContestData.youtuber_code: 0;
+                    data['youtuber_code'] = youtuber_code;
                     data['contest_shareable'] = contestData && contestData.contest_shareable ? contestData.contest_shareable : 0;
                 } else {
                     entryFee = decoded['entry_fee'];
