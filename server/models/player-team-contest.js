@@ -78,6 +78,7 @@ playerTeamContestSchema.statics.getIdsByMatchId = function(match_id, user_id, co
 }
 
 playerTeamContestSchema.statics.getUserTeamByMatchId = function(match_id, contest_id, user_id, sport){
+  
   return this.aggregate([
     {
       $match: {
@@ -102,9 +103,11 @@ playerTeamContestSchema.statics.getUserTeamByMatchId = function(match_id, contes
       $sort : {"rank": 1}
     },
     {
-      $limit:9,
+      $limit:15,
     },
   ]);
+  
+  
 }
 
 playerTeamContestSchema.statics.getAllTeamsByMatchId = function(match_id, contest_id, user_id, sport, aakashId) {
