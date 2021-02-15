@@ -274,7 +274,7 @@ module.exports = {
                         }
                     }
                 }
-                
+               let myTeamsCount = PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: sport }).countDocuments()
                 let contestData = {
                     match_status: (reviewMatch) ? reviewMatch.status : '',
                     prize_money: prizeMoney,
@@ -301,7 +301,8 @@ module.exports = {
                     is_aakash_team: aakashLeague,
                     maximum_team_size:multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
                     contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,	
-                    category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:''
+                    category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:'',
+                    my_teams: myTeamsCount || 0
                 }
                 if (reviewMatch == "In Progress") {
                     redis.setRedis(contestDataAPIKey, contestData)
