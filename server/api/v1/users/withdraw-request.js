@@ -11,14 +11,22 @@ const { TransactionTypes } = require('../../../constants/app');
 const https = require('https');
 const { parse } = require('url');
 
-const subwalletGuid = process.env.WALLET_SUBWALLET_GUID;
-const MERCHANT_KEY = process.env.WALLET_MERCHANT_KEY;
-const MID = process.env.WALLET_MID;
+// const subwalletGuid = process.env.WALLET_SUBWALLET_GUID;
+// const MERCHANT_KEY = process.env.WALLET_MERCHANT_KEY;
+// const MID = process.env.WALLET_MID;
+// let hostname  = 'dashboard.paytm.com';
+
+// const bank_subwalletGuid = process.env.BANK_SUBWALLET_GUID;
+// const BANK_MERCHANT_KEY = process.env.WALLET_MERCHANT_KEY;
+// const BANK_MID = process.env.BANK_MID;
+const subwalletGuid = "4b471086-28fc-4e4c-8a9a-b52e487db3b7";
+const MERCHANT_KEY = "8OB28Uj@GhBMAcjh";
+const MID = "Real1164880585275836";
 let hostname  = 'dashboard.paytm.com';
 
-const bank_subwalletGuid = process.env.BANK_SUBWALLET_GUID;
-const BANK_MERCHANT_KEY = process.env.WALLET_MERCHANT_KEY;
-const BANK_MID = process.env.BANK_MID;
+const bank_subwalletGuid = "c640c6ac-4f25-4cc8-b569-a3a266fdd98d";
+const BANK_MERCHANT_KEY = "aPZqprXHI0yRuBBs";
+const BANK_MID = "FANTRE57342726781895";
 
 module.exports = async (req, res) => {
   	try {
@@ -218,8 +226,8 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 						} else {
 							path = '/bpay/api/v1/disburse/order/wallet/gratification';
 						}
-						var x_mid = mid;
-						var x_checksum = checksum;
+						// var x_mid = mid;
+						// var x_checksum = checksum;
 
 						var options = {
 							hostname: hostname,
@@ -228,8 +236,8 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 							method: 'POST',
 							headers: {
 								'Content-Type': 'application/json',
-								'x-mid': x_mid,
-								'x-checksum': x_checksum,
+								'x-mid': mid,
+								'x-checksum': checksum,
 								'Content-Length': post_data.length
 							}
 						};
