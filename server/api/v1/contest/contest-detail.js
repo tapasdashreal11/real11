@@ -274,7 +274,7 @@ module.exports = {
                         }
                     }
                 }
-               let myTeamsCount = PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: sport }).countDocuments()
+                let myTeamsCount = await PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: sport }).countDocuments()
                 let contestData = {
                     match_status: (reviewMatch) ? reviewMatch.status : '',
                     prize_money: prizeMoney,
