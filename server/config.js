@@ -244,3 +244,5 @@ config.aws_remote_config= {
   secretAccessKey: process.env.AWSSecretKey || 'ze3vqs6mDDgMgokFbmziR6SZRB3u9NeOpziurvlf',
   region: 'ap-south-1',
 }
+
+config.withdraw_commission = 10

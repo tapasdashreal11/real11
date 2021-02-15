@@ -8,6 +8,7 @@ const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 var PaytmChecksum = require("../../../../lib/PaytmChecksum");
 const { TransactionTypes } = require('../../../constants/app');
+const config = require('../../../config.js');
 const { sendSMTPMail, sendNotificationFCM } = require("../common/helper.js");
 const https = require('https');
 const { parse } = require('url');
@@ -101,9 +102,9 @@ module.exports = async (req, res) => {
 						updatedData.wallet_type = '';
 						updatedData.is_instant = isInstant;
 						if(params.instant_withdraw && params.instant_withdraw == "1") {
-							updatedData.instant_withdraw_comm = 10;
+							updatedData.instant_withdraw_comm = config.withdraw_commission;
 						}
-						console.log(updatedData);
+						// console.log(updatedData);
 						// return false;
 						
 						// let result =  await Users.update({_id: userId}, {$set : {winning_balance : remainingAmount}});
@@ -164,17 +165,13 @@ module.exports = async (req, res) => {
 
 
 async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) {
-	// console.log(orderId, type, userId, userData);
-	// console.log(orderId, withdrawData);
-	// return false
 	try {
-		let withdraw_request = withdrawData; //await WithdrawRequest.findOne({ _id: orderId })
+		let withdraw_request = withdrawData;
 		let orderId	=	withdrawData._id;
 		if (withdraw_request) {
 			var paytmParams = {};
-			let userDetail = userData; //await Users.findOne({_id:new ObjectId(params.user_id)});
+			let userDetail = userData;
 
-			// let userId = params.user_id;
 			const deviceType = userDetail.device_type;
 			const deviceToken = userDetail.device_id;
 			// console.log(userDetail);return false;
@@ -188,14 +185,14 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 				paytmParams["orderId"]			=	orderId;
 				paytmParams["beneficiaryAccount"]=	bankDetail.account_number;
 				paytmParams["beneficiaryIFSC"]	=	bankDetail.ifsc_code;
-				paytmParams["amount"]			=	withdraw_request.refund_amount- 10;
+				paytmParams["amount"]			=	withdraw_request.refund_amount- config.withdraw_commission;;
 				paytmParams["purpose"]			=	"REIMBURSEMENT";
 				paytmParams["date"]				=	txnDate.getFullYear() + "-" + month + "-" + date;
 			} else {
 				paytmParams["subwalletGuid"]	=	subwalletGuid;
 				paytmParams["orderId"]			=	orderId;
 				paytmParams["beneficiaryPhoneNo"]=	userDetail.phone;
-				paytmParams["amount"]			=	withdraw_request.refund_amount- 10;
+				paytmParams["amount"]			=	withdraw_request.refund_amount- config.withdraw_commission;;
 			}
 			var post_data	=	JSON.stringify(paytmParams);
 
@@ -219,8 +216,6 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 						} else {
 							path = '/bpay/api/v1/disburse/order/wallet/gratification';
 						}
-						// var x_mid = mid;
-						// var x_checksum = checksum;
 
 						var options = {
 							hostname: hostname,
@@ -239,11 +234,9 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 						var post_req = https.request(options, function (post_res) {
 							post_res.on('data', function (chunk) {
 								response += chunk;
-								// console.log(chunk);
 							});
 
 							post_res.on('end', async function () {
-								// console.log(response); //return false
 								let txnAmount	=	withdraw_request.refund_amount;
 								let withdrawId	=	withdrawData._id;
 
@@ -252,13 +245,13 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 									try {
 										withdrawStatus(orderId, merchant_key, mid, async function (res1) {
 											if (res1 && res1.status === 200) {
-												console.log("enter to success state with status");
+												// console.log("enter to success state with status");
 												// request status 1 => confirmed request and money sent to users wallet or bank
 												let approveDate = new Date();
 												const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 1, approve_date: approveDate, message: res1.message } });
 												if (successRes) {
 													let status = TransactionTypes.TRANSACTION_CONFIRM;
-													await Transaction.saveWithdrawTransaction(userId, txnId, status, txnAmount, withdrawId, res1.data.paytmOrderId, params.type, approveDate);
+													await Transaction.saveWithdrawTransaction(userId, txnId, status, txnAmount, withdrawId, res1.data.paytmOrderId, params.type, approveDate, withdrawData.instant_withdraw_comm);
 
 													// await Transaction.findOneAndUpdate({ withdraw_id: new ObjectId(orderId) }, { $set: { added_type: TransactionTypes.TRANSACTION_CONFIRM, order_id: res1.data.paytmOrderId, gateway_name: params.type, approve_withdraw: approveDate } })
 													// send mail on withdraw Start

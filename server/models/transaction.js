@@ -138,7 +138,7 @@ transactionSchema.statics.saveTransaction = function(userId = null, txnId=null, 
   }
   
 
-transactionSchema.statics.saveWithdrawTransaction = function(userId = null, txnId=null, status = false, txnAmount = 0, withdrawId=null, orderId= "", gatewayName= "", approveDate=null) {
+transactionSchema.statics.saveWithdrawTransaction = function(userId = null, txnId=null, status = false, txnAmount = 0, withdrawId=null, orderId= "", gatewayName= "", approveDate=null, instantWithdrawComm) {
 
   let entity				=	{};
   entity.user_id		=	userId;
@@ -157,7 +157,7 @@ transactionSchema.statics.saveWithdrawTransaction = function(userId = null, txnI
     entity.order_id	=	orderId || '';
     entity.gateway_name	=	gatewayName || '';
     entity.approve_withdraw	=	approveDate || '';
-    entity.withdraw_commission	=	10;
+    entity.withdraw_commission	=	instantWithdrawComm;
   }
 
   let result = this.create(entity);
