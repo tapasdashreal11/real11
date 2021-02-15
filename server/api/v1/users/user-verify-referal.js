@@ -12,6 +12,7 @@ module.exports = async (req, res) => {
 	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
         let {invite_code,match_id,series_id,contest_id,sport} = req.params;
+        
         const auth_user_id = req.userId;
         let decoded = {
             match_id: parseInt(match_id),
@@ -26,7 +27,7 @@ module.exports = async (req, res) => {
                    let ytuberCodeItem = _.find(ytuberCode, {code: invite_code });
                    console.log(ytuberCodeItem,invite_code);
                    if(ytuberCodeItem && ytuberCodeItem.code){
-                   let ytuberUserData  = await YoutuberUser.findOne({user_id:ObjectId(auth_user_id),'sport':sport});
+                   let ytuberUserData  = await YoutuberUser.findOne({user_id:ObjectId(auth_user_id),'sport':parseInt(sport)});
                         if(ytuberUserData){
                             response["message"] = "You have already applied this code.";
                             response["status"] = false;
@@ -38,7 +39,7 @@ module.exports = async (req, res) => {
                                 "match_id": decoded['match_id'],
                                 "series_id": decoded['series_id'],
                                 "is_offer_type": 3,
-                                "sport": sport,
+                                "sport": parseInt(sport),
                                 "offer_amount": 0,
                                 "offer_percent": 0,
                                 "match_name": "Admin Added Bonous",
