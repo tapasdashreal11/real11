@@ -103,7 +103,14 @@ var transactionSchema = new Schema({
   },
   coupon_type: {
     type: String
-  }
+  },
+  approve_withdraw: {
+    type: Date,
+    default: null 
+  },
+  withdraw_commission: {
+    type: Number,default:0
+  },
 });
 
 
@@ -128,6 +135,34 @@ transactionSchema.statics.saveTransaction = function(userId = null, txnId=null, 
 		let result = this.create(entity);
 
 		return trs_id = result._id;
-	}
+  }
+  
+
+transactionSchema.statics.saveWithdrawTransaction = function(userId = null, txnId=null, status = false, txnAmount = 0, withdrawId=null, orderId= "", gatewayName= "", approveDate=null) {
+
+  let entity				=	{};
+  entity.user_id		=	userId;
+  if(contest_id) {
+    entity.contest_id		=	contest_id;
+  }
+  entity.match_id		=	match_id;
+  entity.txn_amount	=	txnAmount;
+  entity.currency		=	"INR";
+  entity.txn_date		=	Date.now();
+  entity.local_txn_id	=	txnId;
+  entity.added_type		=	parseInt(status);
+  //entity.withdraw_id	=	(withdrawId) ? withdrawId : 0;
+  if(withdrawId) {
+    entity.withdraw_id	=	(withdrawId) ? withdrawId : '';
+    entity.order_id	=	orderId || '';
+    entity.gateway_name	=	gatewayName || '';
+    entity.approve_withdraw	=	approveDate || '';
+    entity.withdraw_commission	=	10;
+  }
+
+  let result = this.create(entity);
+
+  return trs_id = result._id;
+}
 
 module.exports = mongoose.model('transaction', transactionSchema, 'transaction');
