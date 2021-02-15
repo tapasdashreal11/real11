@@ -210,8 +210,9 @@ config.youtuber_bcode = [
 ]
 
 config.contest_bonous = [
-  {'contest_id':'6023ef36754359302dcf005b','bonus_amount':20},
-  {'contest_id':'5f306f878ca80a108035d6c9','bonus_amount':10}
+  {'contest_id':'5f306f878ca80a1080367da7','bonus_amount':2.0},
+  {'contest_id':'60267717754359302dcf03e3','bonus_amount':2.5}, {'contest_id':'6026765e754359302dcf03e0','bonus_amount':3},
+  {'contest_id':'6026203f754359302dcf03d9','bonus_amount':3.2}, {'contest_id':'6023ef36754359302dcf005b','bonus_amount':2}
 ]
 
 config.admin_percentage = 10.00;
