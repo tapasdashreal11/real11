@@ -1050,6 +1050,7 @@ module.exports = {
             let match_sport = sport ? parseInt(sport) : 1;
             let match_series_id = series_id ? parseInt(series_id) : 1;
             let youtuber_code = 0;
+            let is_offer_applied = false;
             // //////console.log(req.userId);
             let userdata = await User.findOne({ _id: decoded['user_id'] })
             if (userdata) {
@@ -1114,6 +1115,7 @@ module.exports = {
                                 userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
                                 calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                 retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                is_offer_applied = true;
                              }    
                         }
                         if (userdata) {
@@ -1156,7 +1158,8 @@ module.exports = {
                         data['entry_fee'] = (entryFee) ? parseInt(entryFee) : 0;
                         data['user_offer_amount'] = (retention_bonus_amount) ? parseFloat(retention_bonus_amount.toFixed(2)) : 0;
                         data['calculated_entry_fee'] = (calEntryFees && _.isNumber(calEntryFees)) ? parseFloat(calEntryFees.toFixed(2)) : 0;
-                        data['usable_bonus_percent'] = 0; //adminPer;
+                        data['usable_bonus_percent'] = 0; //is_offer_applied;
+                        data['is_offer_applied'] = is_offer_applied;
                         data1 = data;
                         res.send(ApiUtility.success(data1)); 
                     });
