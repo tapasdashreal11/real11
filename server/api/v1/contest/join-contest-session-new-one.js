@@ -671,7 +671,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                                    uAnalysisData.offer_percent = 100; 
                                    redis.setRedisForUserAnaysis(redisKeyForRentation,uAnalysisData); 
                                 } else {
-                                    let offerObj = {"match_id":match_id,"series_id":series_id,"is_offer_type":2,"sport":match_sport,"offer_amount":0,"offer_percent":100,"match_name":"Offer Message","contest_ids":[ObjectId(contest_id)],"user_id":ObjectId(refer_by_user)};
+                                    let offerObj = {"match_id":match_id,"series_id":series_id,"is_offer_type":2,"sport":match_sport,"offer_amount":0,"offer_percent":100,"match_name":"Shareable Offer Message","contest_ids":[ObjectId(contest_id)],"user_id":ObjectId(refer_by_user)};
                                     UserAnalysis.insertMany([offerObj])
                                     .then(function(mongooseDocuments) {
                                        for (const resItem of mongooseDocuments) {
