@@ -38,6 +38,9 @@ var userAnalysis = new Schema({
     is_offer_repeat: {
         type: Number,default:2  // 2 means not repeat or 1 means repeat the offer
     },
+    contest_bonous: {
+        type: Array,default:[]  // offer type 3 is contest wise bounous with different amount
+    },
     created: {
         type: Date, default: Date.now()
     }

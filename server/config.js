@@ -204,6 +204,16 @@ config.user_category_prod = {
   dimond_cat:'6013abf553fe1866314c58ee'
 }
 
+config.youtuber_bcode = [
+  {'code':'345600','name':'shashi'},
+  {'code':'345601','name':'Nidhi'}
+]
+
+config.contest_bonous = [
+  {'contest_id':'6023ef36754359302dcf005b','bonus_amount':20},
+  {'contest_id':'5f306f878ca80a108035d6c9','bonus_amount':10}
+]
+
 config.admin_percentage = 10.00;
 config.contest_commission = 10.00;
 config.referral_bouns_amount = 50.00;
