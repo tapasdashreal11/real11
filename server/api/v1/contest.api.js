@@ -1103,7 +1103,7 @@ module.exports = {
                             if(rdata.is_offer_type == 3){
                                 cBonusItem =  cBonus.find(function(el){
                                     if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))){
-                                        return e1
+                                        return el
                                     }
                                  });
                             }
