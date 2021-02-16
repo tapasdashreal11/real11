@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
                    if(ytuberCodeItem && ytuberCodeItem.code){
                    let ytuberUserData  = await YoutuberUser.findOne({user_id:ObjectId(auth_user_id),'sport':parseInt(sport)});
                         if(ytuberUserData){
-                            response["message"] = "You have already applied this code.";
+                            response["message"] = "You have already applied the code.";
                             response["status"] = false;
                             return res.json(response);
                         } else {
