@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
                             response["status"] = false;
                             return res.json(response);
                         } else {
-                            let yUserIData = {user_id:auth_user_id,youtuber_code:parseInt(invite_code)};
+                            let yUserIData = {user_id:auth_user_id,youtuber_code:parseInt(invite_code.substring(2))};
                             let cBonus = config && config.contest_bonous ? config.contest_bonous:[];
                             let bulkdata =   {
                                 "match_id": decoded['match_id'],

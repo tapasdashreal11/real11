@@ -205,8 +205,8 @@ config.user_category_prod = {
 }
 
 config.youtuber_bcode = [
-  {'code':'345600','name':'shashi'},
-  {'code':'345601','name':'Nidhi'}
+  {'code':'SS345600','name':'shashi'},
+  {'code':'NM345601','name':'Nidhi'}
 ]
 
 config.contest_bonous = [
