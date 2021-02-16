@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
                             await YoutuberUser.create(yUserIData);
                             const uData = await UserAnalysis.findOne({match_id:decoded['match_id'],user_id:auth_user_id,sport:parseInt(sport)});
                            if(uData && uData._id){
-                            response["message"] = "Offer is going on for you in this match.Please try this code in another match";
+                            response["message"] = "You can now use the existing offer code in another match.Offer is already going on this match";
                             response["status"] = false;
                             return res.json(response);
                             } else {
