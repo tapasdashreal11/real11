@@ -419,7 +419,7 @@ async function withdrawStatus(orderId, merchant_key, mid, cb) {
 				});
 				post_req.write(post_data);
 				post_req.end();
-			},2000)
+			},10000)
 		});
 	} catch (error) {
 		logger.error("ERROR", error.message);
