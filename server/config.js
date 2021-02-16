@@ -214,7 +214,17 @@ config.youtuber_bcode = [
   {'code':'WL64','name':'Fantasy Tadka'},
   {'code':'DK65','name':'Prediction cricket'},
   {'code':'SR66','name':'Team 11 prediction'},
-  {'code':'SD67','name':'dream 11 tadka'}
+  {'code':'SD67','name':'dream 11 tadka'},
+  {'code':'BS29','name':'Bindass Sikhye'},
+  {'code':'DP44','name':'fantasy with chauhan Prediction'},
+  {'code':'HD46','name':'Fantasy Money'},
+  {'code':'EJ47','name':'Enjoy Your Life'},
+  {'code':'VK71','name':'TAlent Fantasy Talent Hub Dream11'},
+  {'code':'AH72','name':'AR Dream Predictor'},
+  {'code':'FT73','name':'Fantasy 100'},
+  {'code':'FG74','name':'FCG youtuber'},
+  {'code':'FS75','name':'FCS youtuber '},
+  {'code':'PC76','name':'Dream 11 tips and tricks '},
 ]
 
 config.contest_bonous = [
