@@ -23,9 +23,9 @@ module.exports = async (req, res) => {
             if(auth_user_id){
                 if(invite_code && !_.isEmpty(invite_code)){
                    let ytuberCode = config && config.youtuber_bcode ? config.youtuber_bcode:[];
-                   console.log(ytuberCode)
+                   //console.log(ytuberCode)
                    let ytuberCodeItem = _.find(ytuberCode, {code: invite_code });
-                   console.log(ytuberCodeItem,invite_code);
+                   //console.log(ytuberCodeItem,invite_code);
                    if(ytuberCodeItem && ytuberCodeItem.code){
                    let ytuberUserData  = await YoutuberUser.findOne({user_id:ObjectId(auth_user_id),'sport':parseInt(sport)});
                         if(ytuberUserData){
