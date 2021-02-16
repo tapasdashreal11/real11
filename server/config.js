@@ -205,14 +205,38 @@ config.user_category_prod = {
 }
 
 config.youtuber_bcode = [
-  {'code':'SS345600','name':'shashi'},
-  {'code':'NM345601','name':'Nidhi'}
+  {'code':'SS333','name':'shashi'},
+  {'code':'NM444','name':'Nidhi'},
+  {'code':'GT18','name':'Fantasy Buzz'},
+  {'code':'RL31','name':'Sports Fantasy'},
+  {'code':'ZD40','name':'Technical Prediction'},
+  {'code':'ID49','name':'Fantasy Hitesh'},
+  {'code':'WL64','name':'Fantasy Tadka'},
+  {'code':'DK65','name':'Prediction cricket'},
+  {'code':'SR66','name':'Team 11 prediction'},
+  {'code':'SD67','name':'dream 11 tadka'}
 ]
 
 config.contest_bonous = [
-  {'contest_id':'5f306f878ca80a1080367da7','bonus_amount':2.0},
-  {'contest_id':'60267717754359302dcf03e3','bonus_amount':2.5}, {'contest_id':'6026765e754359302dcf03e0','bonus_amount':3},
-  {'contest_id':'6026203f754359302dcf03d9','bonus_amount':3.2}, {'contest_id':'6023ef36754359302dcf005b','bonus_amount':2}
+  {'contest_id':'5f306f878ca80a108035d6fb','bonus_amount':241.0},
+  {'contest_id':'5f306f888ca80a10803c063f','bonus_amount':378}, 
+  {'contest_id':'5f306f878ca80a108035d6f5','bonus_amount':175},
+  {'contest_id':'5f306f878ca80a108035d6f9','bonus_amount':162}, 
+  {'contest_id':'5f306f878ca80a108035d6f3','bonus_amount':50},
+  {'contest_id':'5f306f878ca80a108035d6e9','bonus_amount':71},
+  {'contest_id':'5f7a31328d4c9c0ac0d9e725','bonus_amount':101},
+  {'contest_id':'5f306f8e8ca80a108075128b','bonus_amount':44},
+  {'contest_id':'5f306f8e8ca80a108075119b','bonus_amount':55},
+  {'contest_id':'5f306f878ca80a108035d6df','bonus_amount':28},
+  {'contest_id':'5f306f878ca80a108035e25f','bonus_amount':24},
+  {'contest_id':'5fc65886fec9f41e8fd9f7bf','bonus_amount':1000},
+  {'contest_id':'5f306f878ca80a108036133b','bonus_amount':200},
+  {'contest_id':'5f306f878ca80a108035d60b','bonus_amount':151},
+  {'contest_id':'5f306f878ca80a108035da89','bonus_amount':200},
+  {'contest_id':'5f306f878ca80a10803612bd','bonus_amount':96},
+  {'contest_id':'5f306f878ca80a10803612d7','bonus_amount':91},
+  {'contest_id':'5f306f908ca80a1080930daf','bonus_amount':51},
+  {'contest_id':'5f7726136163d95afe487360','bonus_amount':45}
 ]
 
 config.admin_percentage = 10.00;
