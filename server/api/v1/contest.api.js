@@ -1111,6 +1111,7 @@ module.exports = {
                             if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) || _.includes(offerContests,prContestId)))){
                                 calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                 retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                
                              } else if(rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id ){
                                 userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
                                 calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );

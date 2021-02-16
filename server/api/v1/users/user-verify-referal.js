@@ -49,17 +49,25 @@ module.exports = async (req, res) => {
                               }
                             
                             await YoutuberUser.create(yUserIData);
-                            UserAnalysis.insertMany([bulkdata])
-                            .then(function(mongooseDocuments) {
-                                for (const resItem of mongooseDocuments) {
-                                    let redisKeyForUserAnalysis = 'app-analysis-' + auth_user_id + '-' + decoded['match_id'] +  '-' + sport;
-                                    redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, resItem);
-                                }
-                                response["message"] = "Referal Code Verified Successfully.";
-                                response["status"] = true;
-                                response["data"] = {refresh:true};
-                                return res.json(response);
-                            })
+                            const uData = await UserAnalysis.findOne({match_id:decoded['match_id'],user_id:auth_user_id,sport:parseInt(sport)});
+                           if(uData && uData._id){
+                            response["message"] = "Offer is going on for you in this match.Please try this code in another match";
+                            response["status"] = false;
+                            return res.json(response);
+                            } else {
+                                UserAnalysis.insertMany([bulkdata])
+                                .then(function(mongooseDocuments) {
+                                    for (const resItem of mongooseDocuments) {
+                                        let redisKeyForUserAnalysis = 'app-analysis-' + auth_user_id + '-' + decoded['match_id'] +  '-' + sport;
+                                        redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, resItem);
+                                    }
+                                    response["message"] = "Referal Code Verified Successfully.";
+                                    response["status"] = true;
+                                    response["data"] = {refresh:true};
+                                    return res.json(response);
+                                })
+                           }
+                            
                         }
                     } else {
                         var regCode = new RegExp(["^", invite_code, "$"].join(""), "i");
