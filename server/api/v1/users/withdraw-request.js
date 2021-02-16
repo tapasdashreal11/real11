@@ -192,14 +192,14 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 				paytmParams["orderId"]			=	orderId;
 				paytmParams["beneficiaryAccount"]=	bankDetail.account_number;
 				paytmParams["beneficiaryIFSC"]	=	bankDetail.ifsc_code;
-				paytmParams["amount"]			=	withdraw_request.refund_amount - withdrawData.instant_withdraw_comm;
+				paytmParams["amount"]			=	withdraw_request.refund_amount - withdraw_request.instant_withdraw_comm;
 				paytmParams["purpose"]			=	"REIMBURSEMENT";
 				paytmParams["date"]				=	txnDate.getFullYear() + "-" + month + "-" + date;
 			} else {
 				paytmParams["subwalletGuid"]	=	subwalletGuid;
 				paytmParams["orderId"]			=	orderId;
 				paytmParams["beneficiaryPhoneNo"]=	userDetail.phone;
-				paytmParams["amount"]			=	withdraw_request.refund_amount - withdrawData.instant_withdraw_comm;
+				paytmParams["amount"]			=	withdraw_request.refund_amount - withdraw_request.instant_withdraw_comm;
 			}
 			var post_data	=	JSON.stringify(paytmParams);
 

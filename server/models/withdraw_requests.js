@@ -19,7 +19,7 @@ const AdminSchema = mongoose.Schema({
     message: { type: String, default: null },
     wallet_type: { type: String, default: false },
     is_instant: { type: Number, enum: [1,0], default: 0 },
-    instant_amount_deduct: {type: Number, default: 0},
+    instant_withdraw_comm: {type: Number, default: 0},
     // withdraw_confirm_type: {type: Number}
 }, {
     timestamps: { createdAt: 'created', updatedAt: 'modified' },
