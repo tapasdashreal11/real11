@@ -258,7 +258,7 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 												const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 1, approve_date: approveDate, message: res1.message } });
 												if (successRes) {
 													let status = TransactionTypes.TRANSACTION_CONFIRM;
-													await Transaction.saveWithdrawTransaction(userId, txnId, status, txnAmount, withdrawId, res1.data.paytmOrderId, params.type, approveDate, withdrawData.instant_withdraw_comm);
+													await Transaction.saveWithdrawTransaction(userId, txnId, status, txnAmount, withdrawId, res1.data.paytmOrderId, type, approveDate, withdrawData.instant_withdraw_comm);
 
 													// await Transaction.findOneAndUpdate({ withdraw_id: new ObjectId(orderId) }, { $set: { added_type: TransactionTypes.TRANSACTION_CONFIRM, order_id: res1.data.paytmOrderId, gateway_name: params.type, approve_withdraw: approveDate } })
 													// send mail on withdraw Start
@@ -420,7 +420,7 @@ async function withdrawStatus(orderId, merchant_key, mid, cb) {
 				});
 				post_req.write(post_data);
 				post_req.end();
-			},8000)
+			},2000)
 		});
 	} catch (error) {
 		logger.error("ERROR", error.message);
