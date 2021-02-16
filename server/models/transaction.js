@@ -143,7 +143,6 @@ transactionSchema.statics.saveWithdrawTransaction = function(userId = null, txnI
   let entity				=	{};
   entity.user_id		=	userId;
   
-  entity.match_id		=	match_id;
   entity.txn_amount	=	txnAmount;
   entity.currency		=	"INR";
   entity.txn_date		=	Date.now();
