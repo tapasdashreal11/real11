@@ -65,6 +65,7 @@ module.exports = async (req, res) => {
 						updatedData.email = user.email || '';
 						updatedData.wallet_type = params.wallet_type || '';
 						updatedData.is_instant = isInstant;
+						updatedData.withdraw_confirm_type = 2;
 						// console.log(remainingAmount);
 						
 						// let result =  await Users.update({_id: userId}, {$set : {affiliate_amount : remainingAmount}});
@@ -101,8 +102,10 @@ module.exports = async (req, res) => {
 						updatedData.email = user.email || '';
 						updatedData.wallet_type = '';
 						updatedData.is_instant = isInstant;
+						updatedData.withdraw_confirm_type = 2;
 						if(params.instant_withdraw && params.instant_withdraw == "1") {
 							updatedData.instant_withdraw_comm = config.withdraw_commission;
+							updatedData.withdraw_confirm_type = 1;
 						}
 						// console.log(updatedData);
 						// return false;
