@@ -23,13 +23,13 @@ module.exports = async (req, res) => {
             if(auth_user_id){
                 if(invite_code && !_.isEmpty(invite_code)){
                    let ytuberCode = config && config.youtuber_bcode ? config.youtuber_bcode:[];
-                   console.log(ytuberCode)
+                   //console.log(ytuberCode)
                    let ytuberCodeItem = _.find(ytuberCode, {code: invite_code });
-                   console.log(ytuberCodeItem,invite_code);
+                   //console.log(ytuberCodeItem,invite_code);
                    if(ytuberCodeItem && ytuberCodeItem.code){
                    let ytuberUserData  = await YoutuberUser.findOne({user_id:ObjectId(auth_user_id),'sport':parseInt(sport)});
                         if(ytuberUserData){
-                            response["message"] = "You have already applied this code.";
+                            response["message"] = "You have already applied the code.";
                             response["status"] = false;
                             return res.json(response);
                         } else {
@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
                             await YoutuberUser.create(yUserIData);
                             const uData = await UserAnalysis.findOne({match_id:decoded['match_id'],user_id:auth_user_id,sport:parseInt(sport)});
                            if(uData && uData._id){
-                            response["message"] = "You can now use the existing offer code in another match.Offer is already going on this match";
+                            response["message"] = "You can now use the existing offer code for this match to gain entry in another match.Offer is already going on this match";
                             response["status"] = false;
                             return res.json(response);
                             } else {

@@ -18,7 +18,7 @@ const SECRET = '';
 
 // The name of the bucket that you have created
 // const BUCKET_NAME = 'real11-images';
-const BUCKET_NAME = process.env.BUCKET_NAME || 'real11-images';
+const BUCKET_NAME = process.env.BUCKET_NAME || 'real11-prod-images';
 const FILE_PERMISSION = 'public-read'
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY || ID,
@@ -59,7 +59,6 @@ const { teamProfileComparision, teamProfilePaging } = require('./api/v1/users/te
 const withdrawHistory = require('./api/v1/users/withdraw-history');
 const { joinedContestList } = require('./api/v1/contest/joined-contest-list');
 const askToAakash = require('./api/v1/users/ask-to-aakash-api');
-
 const { favouriteContestCreate,retentionBonousCreate } = require('./api/v1/users/retantion-data-scrip');
 
 const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
@@ -193,6 +192,9 @@ if (config.express.isOnProduction || https_port) {
     });
 }
 
+router.get('/',function(req,res){
+	return res.send("Welcome")
+})
 //API ROUTES//
 router.get('/api/v1/add_bulk_contest_match', addBulkContestMatch);
 router.post('/api/v1/email-login', loginWithEmail);
@@ -212,6 +214,7 @@ router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authentica
 router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
+router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
 router.post('/api/v1/create-contest', auth.authenticate.jwtLogin, createContest);
 
@@ -241,8 +244,8 @@ router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.
 router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
-router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne);
 router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
+router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
@@ -281,9 +284,10 @@ router.post('/api/v1/reset-password', resetPassword);
 router.get('/api/v1/reset-password-view/:verify_string', resetPasswordView);
 router.get('/api/v1/view-add-cash-coupon',auth.authenticate.jwtLogin,redis.cacheMiddle, couponForAddCash);
 
+
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
 router.post('/api/v1/update_personal_details', auth.authenticate.jwtLogin, usersUpdateDetails);
-router.post('/api/v1/friend-referal-detail', auth.authenticate.jwtLogin, usersFriendReferral); 
+router.post('/api/v1/friend-referal-detail', auth.authenticate.jwtLogin, usersFriendReferral);
 router.post('/api/v1/friend-referral-list/:page?/:pagesize?', auth.authenticate.jwtLogin, usersReferralList);
 router.post('/api/v1/logout', auth.authenticate.jwtLogin, usersLogout);
 router.get('/api/v1/notification-list', auth.authenticate.jwtLogin, notificationList);
