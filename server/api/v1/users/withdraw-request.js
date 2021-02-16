@@ -398,8 +398,7 @@ async function withdrawStatus(orderId, merchant_key, mid, cb) {
 			};
 			// console.log('enter');return false;
 			var response = "";
-			setTimeout(function(){
-				// matchesObj.paytmCall(db, widthdata, cb);
+			// setTimeout(function(){
 				var post_req = https.request(options, function (post_res) {
 					post_res.on('data', function (chunk) {
 						response += chunk;
@@ -420,7 +419,7 @@ async function withdrawStatus(orderId, merchant_key, mid, cb) {
 				});
 				post_req.write(post_data);
 				post_req.end();
-			},4000)
+			// },4000)
 		});
 	} catch (error) {
 		logger.error("ERROR", error.message);
