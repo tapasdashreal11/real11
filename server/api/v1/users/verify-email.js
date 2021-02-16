@@ -102,5 +102,23 @@ module.exports = {
       res.render('alert-msg', opts);
       return false;
     }
+  },
+  updateUserFCMToken: async (req, res) => {
+    var response = { status: false, message: "", data: {} };
+    let params = req.body;
+    try {
+      let userId = req.userId || null;
+       if(userId && params && params.device_id){
+        await Users.findOneAndUpdate({ _id: ObjectId(userId) }, { $set: {device_id: params.device_id} });
+        response["status"] = true;
+        response["message"] = "";
+        return res.json(response);
+      } else {
+        response["message"] = "";
+        return res.json(response);
+       }
+    } catch (err) {
+        return res.json(response);
+    }
   }
 }

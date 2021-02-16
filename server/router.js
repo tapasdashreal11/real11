@@ -124,7 +124,7 @@ const withdrawCash = require('./api/v1/users/withdraw-cash');
 const verifyBankDetails = require('./api/v1/users/verify-bank');
 const verifyPanDetails = require('./api/v1/users/verify-pan');
 const addWithdrawRequest = require('./api/v1/users/withdraw-request');
-const { verifyEmail, verifyAccountEmail } = require('./api/v1/users/verify-email');
+const { verifyEmail, verifyAccountEmail ,updateUserFCMToken} = require('./api/v1/users/verify-email');
 // const { newLeaderboard } = require('./api/v1/leaderboard');
 const paytmController = require('./controllers/paytm-controller');
 
@@ -271,6 +271,7 @@ router.post('/api/v1/user-account-datail', auth.authenticate.jwtLogin, usersProf
 router.post('/api/v1/verify-email', auth.authenticate.jwtLogin, verifyEmail);
 router.get('/api/v1/verify-account-email/:verify_string', verifyAccountEmail);
 router.get('/api/v1/get_affiliate_amount', auth.authenticate.jwtLogin, getAffiliateAmount);
+router.post('/api/v1/update-fcm-token', auth.authenticate.jwtLogin, updateUserFCMToken);
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
 router.post('/api/v1/update-transactions', auth.authenticate.jwtLogin, updateTransaction);
