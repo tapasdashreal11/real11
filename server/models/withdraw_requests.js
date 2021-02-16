@@ -20,7 +20,7 @@ const AdminSchema = mongoose.Schema({
     wallet_type: { type: String, default: false },
     is_instant: { type: Number, enum: [1,0], default: 0 },
     instant_amount_deduct: {type: Number, default: 0},
-    withdraw_confirm_type: {type: Number}
+    // withdraw_confirm_type: {type: Number}
 }, {
     timestamps: { createdAt: 'created', updatedAt: 'modified' },
     toObject: { getters: true, setters: true },
@@ -28,5 +28,4 @@ const AdminSchema = mongoose.Schema({
 }
 );
 
-// AdminSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('withdraw_request', AdminSchema);

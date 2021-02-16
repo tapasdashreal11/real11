@@ -65,7 +65,6 @@ module.exports = async (req, res) => {
 						updatedData.email = user.email || '';
 						updatedData.wallet_type = params.wallet_type || '';
 						updatedData.is_instant = isInstant;
-						updatedData.withdraw_confirm_type = 2;
 						// console.log(remainingAmount);
 						
 						// let result =  await Users.update({_id: userId}, {$set : {affiliate_amount : remainingAmount}});
@@ -102,10 +101,15 @@ module.exports = async (req, res) => {
 						updatedData.email = user.email || '';
 						updatedData.wallet_type = '';
 						updatedData.is_instant = isInstant;
-						updatedData.withdraw_confirm_type = 2;
 						if(params.instant_withdraw && params.instant_withdraw == "1") {
-							updatedData.instant_withdraw_comm = config.withdraw_commission;
-							updatedData.withdraw_confirm_type = 1;
+							let instantComm	=	0;
+							if(params.type == "bank") {
+								instantComm	=	config.withdraw_commission;
+							} else {
+								let commAmt	=	1/100 * parseFloat(params.withdraw_amount);
+								instantComm	=	commAmt;
+							}
+							updatedData.instant_withdraw_comm = instantComm;
 						}
 						// console.log(updatedData);
 						// return false;
@@ -188,14 +192,14 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 				paytmParams["orderId"]			=	orderId;
 				paytmParams["beneficiaryAccount"]=	bankDetail.account_number;
 				paytmParams["beneficiaryIFSC"]	=	bankDetail.ifsc_code;
-				paytmParams["amount"]			=	withdraw_request.refund_amount- config.withdraw_commission;;
+				paytmParams["amount"]			=	withdraw_request.refund_amount - withdrawData.instant_withdraw_comm;
 				paytmParams["purpose"]			=	"REIMBURSEMENT";
 				paytmParams["date"]				=	txnDate.getFullYear() + "-" + month + "-" + date;
 			} else {
 				paytmParams["subwalletGuid"]	=	subwalletGuid;
 				paytmParams["orderId"]			=	orderId;
 				paytmParams["beneficiaryPhoneNo"]=	userDetail.phone;
-				paytmParams["amount"]			=	withdraw_request.refund_amount- config.withdraw_commission;;
+				paytmParams["amount"]			=	withdraw_request.refund_amount - withdrawData.instant_withdraw_comm;
 			}
 			var post_data	=	JSON.stringify(paytmParams);
 

@@ -157,7 +157,7 @@ transactionSchema.statics.saveWithdrawTransaction = function(userId = null, txnI
     entity.order_id	=	orderId || '';
     entity.gateway_name	=	gatewayName || '';
     entity.approve_withdraw	=	approveDate || '';
-    entity.withdraw_commission	=	instantWithdrawComm;
+    entity.withdraw_commission	=	instantWithdrawComm || 0;
   }
 
   let result = this.create(entity);
