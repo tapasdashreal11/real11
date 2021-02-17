@@ -787,7 +787,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         entity.invite_code = contestData.invite_code;
         entity.breakup = contestData.breakup;
         entity.created = new Date();
-        entity.maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 1;
+        entity.maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1);
         if (parentContestId) {
             entity.parent_id = parentContestId;
         } else {
@@ -841,7 +841,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
                 used_bonus: contestData.used_bonus,
                 winner_percent: contestData.winner_percent,
                 breakup: contestData.breakup,
-                maximum_team_size : contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 1
+                maximum_team_size : contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
             };
 
 
