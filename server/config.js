@@ -207,11 +207,11 @@ config.user_category_prod = {
 config.youtuber_bcode = [
   {'code':'SS333','name':'shashi'},
   {'code':'NM444','name':'Nidhi'},
-  {'code':'AK49','name':'Akash'},
+  {'code':'AK49','name':'Akash chopra'},
   {'code':'GT18','name':'Fantasy Buzz'},
   {'code':'RL31','name':'Sports Fantasy'},
   {'code':'ZD40','name':'Technical Prediction'},
-  {'code':'ID49','name':'Fantasy Hitesh'},
+  {'code':'ID77','name':'Fantasy Hitesh'},
   {'code':'WL64','name':'Fantasy Tadka'},
   {'code':'DK65','name':'Prediction cricket'},
   {'code':'SR66','name':'Team 11 prediction'},
