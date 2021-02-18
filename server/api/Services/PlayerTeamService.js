@@ -209,7 +209,7 @@ class PlayerTeamService {
                     "captain_selected": '0%',
                     "vice_captain_selected": '0%',
                     "player_record": "$playerRecord",
-                    "is_last_played": {$cond: {if: {$ne:["$seriesScore", null]}, then: 0, else: 0}},
+                    "is_last_played": { $cond: { if: { $ne: ["$seriesScore", ''] }, then: {$cond: {if: {$gt:["$seriesScore.player_points", null]}, then: 0, else: 1}}, else: 0 } },     //,
                     "playing_11": 1,
                     "xfactors": 1,
                 }
