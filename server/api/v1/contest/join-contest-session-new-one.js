@@ -193,7 +193,7 @@ module.exports = async (req, res) => {
                                                                 }):[];
                                                                let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id):pContestId;
                                                                 
-                                                               let cBonus = config && config.contest_bonous ? config.contest_bonous:[];
+                                                               let cBonus =  rdata && rdata.contest_bonous?rdata.contest_bonous:[]; //config && config.contest_bonous ? config.contest_bonous:[];
                                                                 let cBonusItem = {};
                                                                 if(rdata.is_offer_type == 3){
                                                                     cBonusItem =  cBonus.find(function(el){

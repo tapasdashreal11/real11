@@ -1099,7 +1099,7 @@ module.exports = {
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
                             let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
-                            let cBonus = config && config.contest_bonous ? config.contest_bonous:[];
+                            let cBonus =  rdata && rdata.contest_bonous?rdata.contest_bonous:[];  //config && config.contest_bonous ? config.contest_bonous:[];
                             let cBonusItem = {};
                             if(rdata.is_offer_type == 3){
                                 cBonusItem =  cBonus.find(function(el){
