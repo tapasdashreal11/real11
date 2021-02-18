@@ -56,6 +56,9 @@ var seriesPlayerSchema = new Schema({
   },
   "player_status": {
     "type":  Number
+  },
+  "is_lastplayed": {
+    "type":  Number,default:0
   }
 });
 

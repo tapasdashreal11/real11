@@ -209,7 +209,7 @@ class PlayerTeamService {
                     "captain_selected": '0%',
                     "vice_captain_selected": '0%',
                     "player_record": "$playerRecord",
-                    "is_last_played": { $cond: { if: { $ne: ["$seriesScore", ''] }, then: {$cond: {if: {$gt:["$seriesScore.player_points", null]}, then: 0, else: 1}}, else: 0 } },     //,
+                    "is_last_played": "$seriesplayers.is_lastplayed",     //,
                     "playing_11": 1,
                     "xfactors": 1,
                 }
@@ -221,9 +221,10 @@ class PlayerTeamService {
                 return cb(error);
             }
             if (results && results.length > 0) {
-                getRedis(redisKeys.getMatchPlayerStatsKey(match_id, sport), (redisErr, playerStats) => {
+                getRedis(redisKeys.getMatchPlayerStatsKey(match_id, sport),async (redisErr, playerStats) => {
                     let i = 0;
                     let resultNew = [];
+                    let playerIds = [];
                     for (let playerData of results) {
                         // console.log(playerData.player_id,i,playerData.match_type,playerData.t20);
 
@@ -235,6 +236,9 @@ class PlayerTeamService {
                             if (playerData.playing_11 && playerData.playing_11.length > 0) {
                                 playerData.is_playing_show = 1
                                 playerData.is_playing = (playerData.playing_11.indexOf(playerData.player_id) > -1) ? 1 : 0;
+                               if(playerData.playing_11.indexOf(playerData.player_id) > -1) {
+                                playerIds.push(playerData.player_id);
+                               }
                             } else {
                                 playerData.is_playing_show = 0
                                 playerData.is_playing = 0
@@ -254,7 +258,11 @@ class PlayerTeamService {
                         }
                         i++;
                     }
-                    // console.log(results.length);
+                     console.log("last playerIds******",playerIds);
+                    if(playerIds && playerIds.length>=11){
+                        await SeriesPlayer.updateMany({series_id:series_id,player_id:{$in:playerIds}},{$set:{is_lastplayed:1}});
+                    }
+                   
                     if (setCache) {
                         const mpKey = redisKeys.getMatchPlayerListKey(match_id, sport)
                         setRedis(mpKey, resultNew);
