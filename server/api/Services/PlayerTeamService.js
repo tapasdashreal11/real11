@@ -258,7 +258,7 @@ class PlayerTeamService {
                         }
                         i++;
                     }
-                     console.log("last playerIds******",playerIds);
+                    //  console.log("last playerIds******",playerIds);
                     if(playerIds && playerIds.length>=11){
                         await SeriesPlayer.updateMany({series_id:series_id,player_id:{$in:playerIds}},{$set:{is_lastplayed:1}});
                     }
@@ -421,7 +421,7 @@ class PlayerTeamService {
                         "id": "$seriesplayers._id"
                     },
                     "playing_11": 1,
-                    "is_last_played": {$cond: {if: {$ne:["$seriesScore", null]}, then: 1, else: 0}},
+                    "is_last_played": {$cond: {if: {$ne:["$seriesScore", null]}, then: 0, else: 0}},
                 }
             },
         ]).toArray((error, results) => {
