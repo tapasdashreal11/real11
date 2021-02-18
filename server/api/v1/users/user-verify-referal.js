@@ -35,6 +35,38 @@ module.exports = async (req, res) => {
                         } else {
                             let yUserIData = {user_id:auth_user_id,youtuber_code:parseInt(invite_code.substring(2))};
                             let cBonus = config && config.contest_bonous ? config.contest_bonous:[];
+                            if(ytuberCodeItem.code == 'AK49'){
+                                console.log('akash bonous **********');
+                                  cBonus = [
+                                    {'contest_id':'5f306f878ca80a108035b2d1','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a108035ecd5','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a108036395b','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a108035e62b','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a108036e5a5','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a1080368a3d','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a108037118f','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a108036dfb1','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a1080373fe5','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a1080367799','bonus_amount':14},
+                                    {'contest_id':'5f306f878ca80a108036980d','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a108037e7d9','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a1080383915','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a108038b301','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a108038d80b','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a10803ac9ff','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a10803a4d17','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a10803bc43f','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a10803c40fb','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a10803c9103','bonus_amount':14},
+                                    {'contest_id':'5f306f888ca80a10803c95cf','bonus_amount':14},
+                                    {'contest_id':'5f306fff8ca80a10809aa967','bonus_amount':14},
+                                    {'contest_id':'5f306f8f8ca80a10807e8713','bonus_amount':14},
+                                    {'contest_id':'5f306f8f8ca80a10807f3e45','bonus_amount':14},
+                                  ];
+                            } else {
+                                console.log('normal bonous **********');
+                                 cBonus = config && config.contest_bonous ? config.contest_bonous:[];
+                            }
                             let bulkdata =   {
                                 "match_id": decoded['match_id'],
                                 "series_id": decoded['series_id'],

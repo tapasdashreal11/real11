@@ -207,6 +207,7 @@ config.user_category_prod = {
 config.youtuber_bcode = [
   {'code':'SS333','name':'shashi'},
   {'code':'NM444','name':'Nidhi'},
+  {'code':'AK49','name':'Akash'},
   {'code':'GT18','name':'Fantasy Buzz'},
   {'code':'RL31','name':'Sports Fantasy'},
   {'code':'ZD40','name':'Technical Prediction'},
