@@ -209,7 +209,7 @@ config.youtuber_bcode = [
   {'code':'NM444','name':'Nidhi','applied':true},
   {'code':'AK49','name':'Akash chopra','applied':true},
   {'code':'GT18','name':'Fantasy Buzz','applied':true},
-  {'code':'RL31','name':'Sports Fantasy','applied':true},
+  {'code':'RL11','name':'Sports Fantasy','applied':true},
   {'code':'ZD40','name':'Technical Prediction','applied':true},
   {'code':'ID77','name':'Fantasy Hitesh','applied':true},
   {'code':'WL64','name':'Fantasy Tadka','applied':true},
@@ -217,22 +217,23 @@ config.youtuber_bcode = [
   {'code':'SR66','name':'Team 11 prediction','applied':true},
   {'code':'SD67','name':'dream 11 tadka','applied':true},
   {'code':'BS29','name':'Bindass Sikhye','applied':true},
-  {'code':'DP44','name':'fantasy with chauhan Prediction','applied':true},
+  {'code':'DP66','name':'fantasy with chauhan Prediction','applied':true},
   {'code':'HD46','name':'Fantasy Money','applied':true},
-  {'code':'EJ47','name':'Enjoy Your Life','applied':true},
-  {'code':'VK71','name':'TAlent Fantasy Talent Hub Dream11','applied':true},
+  {'code':'EJ123','name':'Enjoy Your Life','applied':true},
+  {'code':'VK09','name':'TAlent Fantasy Talent Hub Dream11','applied':true},
   {'code':'AH72','name':'AR Dream Predictor','applied':true},
   {'code':'FT73','name':'Fantasy 100','applied':true},
-  {'code':'FG74','name':'FCG youtuber','applied':true},
+  {'code':'FG86','name':'FCG youtuber','applied':true},
   {'code':'FS75','name':'FCS youtuber ','applied':true},
   {'code':'PC76','name':'Dream 11 tips and tricks ','applied':true},
+  {'code':'OS78','name':'Fantasy Predication point ','applied':true}
 ]
 
 config.contest_bonous = [
   {'contest_id':'5f306f878ca80a108035d6fb','bonus_amount':241.0},
   {'contest_id':'5f306f888ca80a10803c063f','bonus_amount':378}, 
   {'contest_id':'5f306f878ca80a108035d6f5','bonus_amount':175},
-  {'contest_id':'5f306f878ca80a108035d6f9','bonus_amount':162}, 
+  {'contest_id':'5f306f878ca80a108035d6f9','bonus_amount':157}, 
   {'contest_id':'5f306f878ca80a108035d6f3','bonus_amount':50},
   {'contest_id':'5f306f878ca80a108035d6e9','bonus_amount':71},
   {'contest_id':'5f7a31328d4c9c0ac0d9e725','bonus_amount':101},
@@ -240,14 +241,15 @@ config.contest_bonous = [
   {'contest_id':'5f306f8e8ca80a108075119b','bonus_amount':55},
   {'contest_id':'5f306f878ca80a108035d6df','bonus_amount':28},
   {'contest_id':'5f306f878ca80a108035e25f','bonus_amount':24},
-  {'contest_id':'5fc65886fec9f41e8fd9f7bf','bonus_amount':1000},
+  {'contest_id':'5fc65886fec9f41e8fd9f7bf','bonus_amount':600},
   {'contest_id':'5f306f878ca80a108036133b','bonus_amount':200},
   {'contest_id':'5f306f878ca80a108035d60b','bonus_amount':151},
   {'contest_id':'5f306f878ca80a108035da89','bonus_amount':200},
   {'contest_id':'5f306f878ca80a10803612bd','bonus_amount':96},
   {'contest_id':'5f306f878ca80a10803612d7','bonus_amount':91},
   {'contest_id':'5f306f908ca80a1080930daf','bonus_amount':51},
-  {'contest_id':'5f7726136163d95afe487360','bonus_amount':45}
+  {'contest_id':'5f306f878ca80a108035d5f9','bonus_amount':15},
+  {'contest_id':'5f306f878ca80a108035e237','bonus_amount':15}
 ]
 
 config.admin_percentage = 10.00;
