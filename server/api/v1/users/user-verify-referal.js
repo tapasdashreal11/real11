@@ -22,8 +22,7 @@ module.exports = async (req, res) => {
 		try {
             if(auth_user_id){
                 if(invite_code && !_.isEmpty(invite_code)){
-                    invite_code = invite_code.toUpperCase()
-                    console.log('invite_code*****',invite_code);
+                   invite_code = invite_code.toUpperCase();
                    let ytuberCode = config && config.youtuber_bcode ? config.youtuber_bcode:[];
                    //console.log(ytuberCode)
                    let ytuberCodeItem = _.find(ytuberCode, {code: invite_code });
