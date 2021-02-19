@@ -22,6 +22,8 @@ module.exports = async (req, res) => {
 		try {
             if(auth_user_id){
                 if(invite_code && !_.isEmpty(invite_code)){
+                    invite_code = invite_code.toUpperCase()
+                    console.log('invite_code*****',invite_code);
                    let ytuberCode = config && config.youtuber_bcode ? config.youtuber_bcode:[];
                    //console.log(ytuberCode)
                    let ytuberCodeItem = _.find(ytuberCode, {code: invite_code });
@@ -64,7 +66,7 @@ module.exports = async (req, res) => {
                                     {'contest_id':'5f306f8f8ca80a10807f3e45','bonus_amount':14},
                                   ];
                             } else {
-                                console.log('normal bonous **********');
+                                 console.log('normal bonous **********');
                                  cBonus = config && config.contest_bonous ? config.contest_bonous:[];
                             }
                             let bulkdata =   {
