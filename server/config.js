@@ -205,7 +205,7 @@ config.user_category_prod = {
 }
 
 config.youtuber_bcode = [
-  {'code':'SS333','name':'shashi','applied':false},
+  {'code':'SS333','name':'shashi','applied':true},
   {'code':'NM444','name':'Nidhi','applied':true},
   {'code':'AK49','name':'Akash chopra','applied':true},
   {'code':'GT18','name':'Fantasy Buzz','applied':true},
