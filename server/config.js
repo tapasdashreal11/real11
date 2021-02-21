@@ -226,7 +226,11 @@ config.youtuber_bcode = [
   {'code':'FG86','name':'FCG youtuber','applied':true},
   {'code':'FS75','name':'FCS youtuber ','applied':true},
   {'code':'PC76','name':'Dream 11 tips and tricks ','applied':true},
-  {'code':'OS78','name':'Fantasy Predication point ','applied':true}
+  {'code':'OS78','name':'Fantasy Predication point ','applied':true},
+  {'code':'RJ13','name':'Rajat Walia ','applied':true},
+  {'code':'DK42','name':'Deepak ','applied':true},
+  {'code':'SR33','name':'Saurabh ','applied':true},
+  {'code':'IN77','name':'Hitesh ','applied':true}
 ]
 
 config.contest_bonous = [
