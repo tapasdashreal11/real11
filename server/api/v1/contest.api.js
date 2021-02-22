@@ -42,7 +42,6 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
 async function switchTeamFn(id, team_id) {
     try {
         if(!_.isNull(team_id) && !_.isNull(id)){
-            console.log("id",id,"team_id",team_id);
             await PlayerTeamContest.findByIdAndUpdate(ObjectId(id), { "player_team_id": team_id }, { new: true });
         }
         
@@ -1787,7 +1786,6 @@ module.exports = {
                             }
 
                             var pleasrTeamData = await PlayerTeamContest.find(filter);
-                            console.log("pleasrTeamData", pleasrTeamData)
                             _.forEach(pleasrTeamData, function (i, k) {
                                 switchTeamFn(i._id, decoded['team_id'][k]);
                                 if (k === (decoded['team_id'].length - 1)) {
