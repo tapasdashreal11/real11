@@ -41,7 +41,10 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
 
 async function switchTeamFn(id, team_id) {
     try {
-        await PlayerTeamContest.findByIdAndUpdate(ObjectId(id), { "player_team_id": team_id }, { new: true });
+        if(!_.isNull(team_id) && !_.isNull(id)){
+            await PlayerTeamContest.findByIdAndUpdate(ObjectId(id), { "player_team_id": team_id }, { new: true });
+        }
+        
     } catch (error) {
 
     }
