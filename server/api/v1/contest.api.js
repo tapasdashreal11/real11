@@ -1787,7 +1787,7 @@ module.exports = {
                             }
 
                             var pleasrTeamData = await PlayerTeamContest.find(filter);
-                            consolelog("pleasrTeamData", pleasrTeamData)
+                            console.log("pleasrTeamData", pleasrTeamData)
                             _.forEach(pleasrTeamData, function (i, k) {
                                 switchTeamFn(i._id, decoded['team_id'][k]);
                                 if (k === (decoded['team_id'].length - 1)) {
