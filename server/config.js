@@ -230,7 +230,8 @@ config.youtuber_bcode = [
   {'code':'RJ13','name':'Rajat Walia ','applied':true},
   {'code':'DK42','name':'Deepak ','applied':true},
   {'code':'SR33','name':'Saurabh ','applied':true},
-  {'code':'IN77','name':'Hitesh ','applied':true}
+  {'code':'IN77','name':'Hitesh ','applied':true},
+  {'code':'AD143','name':'Anurag ','applied':true}
 ]
 
 config.contest_bonous = [
