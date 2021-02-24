@@ -112,26 +112,8 @@ async function cricketPreview(decoded, liveScore, cb) {
             // console.log("user_id:", req.userId, "players:", row.player_id, 'series_id:', series_id, 'match_id:', match_id)
             let isInContest = await PlayerTeam.aggregate([
                 { $match: { user_id: userId, "players": row.player_id, 'series_id': decoded["series_id"], 'match_id': decoded["match_id"], sport: sport } },
-                // {
-                //     $lookup: {
-                //         from: 'player_team_contest',
-                //         as: 'player_team_contest',
-                //         let: { player_team_id: '$_id' },
-                //         pipeline: [
-                //             {
-                //                 $match: {
-                //                     $expr: {
-                //                         $and: [
-                //                             { $eq: ['$player_team_id', '$$player_team_id'] },
-                //                         ]
-                //                     }
-                //                 }
-                //             },
-                //         ]
-                //     }
-                // },
             ]);
-            // console.log(isInContest.length, "player", row.player_id)
+            
             if (isInContest.length > 0) {
                 for (const rows of isInContest) {
                     teamNo.push(rows.team_count);
@@ -165,6 +147,8 @@ async function cricketPreview(decoded, liveScore, cb) {
                             'duck_out_point': { $sum: 1 },
                             'wickets': { $sum: 1 },
                             'wickets_point': { $sum: 1 },
+                            'LBW_bowled_bonus': { $sum: 1 },
+                            'LBW_bowled_bonus_point': { $sum: 1 },
                             'maiden_over': { $sum: 1 },
                             'maiden_over_point': { $sum: 1 },
                             'economy_rate': { $sum: 1 },
@@ -177,6 +161,8 @@ async function cricketPreview(decoded, liveScore, cb) {
                             'run_outStumping_point': { $sum: 1 },
                             'run_out': { $sum: 1 },
                             'run_out_point': { $sum: 1 },
+                            'catch_bonus': { $sum: 1 },
+                            'catch_bonus_point': { $sum: 1 },
                             'total_point': { $sum: 1 },
                         }
                     }
@@ -215,10 +201,19 @@ async function cricketPreview(decoded, liveScore, cb) {
                         'actual': value.century_halfCentury,
                         'points': value.century_halfCentury_point
                     };
+                    playerRecord['LBW_bowled_bonus'] = {
+                        'actual': value.LBW_bowled_bonus,
+                        'points': value.LBW_bowled_bonus_point
+                    };
 
                     playerRecord['duck'] = {
                         'actual': value.duck_out,
                         'points': value.duck_out_point
+                    };
+
+                    playerRecord['wickets'] = {
+                        'actual': value.wickets,
+                        'points': value.wickets_point
                     };
 
                     playerRecord['wickets'] = {
@@ -244,6 +239,11 @@ async function cricketPreview(decoded, liveScore, cb) {
                     playerRecord['catch'] = {
                         'actual': value.catch,
                         'points': value.catch_point
+                    };
+
+                    playerRecord['catch_bonus'] = {
+                        'actual': value.catch_bonus,
+                        'points': value.catch_bonus_point
                     };
 
                     let actual = value.run_outStumping + value.run_out;

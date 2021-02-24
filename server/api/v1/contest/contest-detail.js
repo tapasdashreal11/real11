@@ -299,9 +299,10 @@ module.exports = {
                     is_infinite: (contestDetail.infinite_contest_size == 1) ? true : false,
                     infinite_breakup: finiteBreakupDetail,
                     is_aakash_team: aakashLeague,
-                    maximum_team_size:multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
+                    maximum_team_size: multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
                     contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,	
                     category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:'',
+                    category_id:contestDetail && contestDetail.category_name ?contestDetail.category_name:'',
                     my_teams: myTeamsCount || 0
                 }
                 if (reviewMatch == "In Progress") {

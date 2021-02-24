@@ -215,6 +215,18 @@ var pointsBreakupSchema = new Schema({
   clearance_point: {
     type: Number
   },
+  LBW_bowled_bonus: {
+    type: Number
+  },
+  LBW_bowled_bonus_point: {
+    type: Number
+  },
+  catch_bonus: {
+    type: Number
+  },
+  catch_bonus_point: {
+    type: Number
+  },
   selected_by: {
     type: String
   },
