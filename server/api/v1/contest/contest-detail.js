@@ -4,6 +4,7 @@ const Contest = require('../../../models/contest');
 const SeriesSquad = require('../../../models/series-squad');
 const MatchContest = require('../../../models/match-contest');
 const PlayerTeam = require('../../../models/player-team');
+const Category = require('../../../models/category');
 const PlayerTeamContest = require('../../../models/player-team-contest');
 const ApiUtility = require('../../api.utility');
 
@@ -16,6 +17,7 @@ const redis = require('../../../../lib/redis');
 const mqtt = require('../../../../lib/mqtt');
 const Helper = require('./../common/helper');
 const db = require('../../../db');
+const { setRedis } = require('../../../../lib/redis');
 
 async function getRedisLeaderboard(matchId, contestId) {
     try {
@@ -59,6 +61,21 @@ const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId
     })
 }
 
+ async function getCategoryRedis(category_id) {
+    let categoryRedis = 'category-data-' + category_id
+
+    return new Promise(async (resv, rej) => {
+        redis.getRedis(categoryRedis, function (err, reply) {
+            if (!err) {
+                resv(reply)
+            } else {
+                resv([])
+            }
+        })
+        
+    })
+}
+
 module.exports = {
     contestDetailNew: async (req, res) => {
         try {
@@ -88,6 +105,12 @@ module.exports = {
             }
             if (!contestData) {
                 let contestDetail = await Contest.findOne({ _id: contest_id });
+                let CategoryData = await getCategoryRedis(contestDetail.category_id);
+                if(_.isEmpty()) {
+                    CategoryData   =   await Category.findOne({ _id: contestDetail.category_id })
+                    let categoryRedis = 'category-data-' + contestDetail.category_id;
+                    setRedis(categoryRedis, CategoryData);
+                }
                 contestDetail = JSON.parse(JSON.stringify(contestDetail));
                 let prizeMoney = 0;
                 let totalTeams = 0;
@@ -302,7 +325,7 @@ module.exports = {
                     maximum_team_size: multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
                     contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,	
                     category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:'',
-                    category_name:contestDetail && contestDetail.category_name ?contestDetail.category_name:'',
+                    category_name:CategoryData && CategoryData.category_name ?CategoryData.category_name:'',
                     my_teams: myTeamsCount || 0
                 }
                 if (reviewMatch == "In Progress") {
