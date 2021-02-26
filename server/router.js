@@ -147,7 +147,7 @@ const storage = multer.diskStorage({
 
 });
 
-const uploadFile = (uploadFile, fileName) => {
+const uploadFile = (uploadFile, fileName, mimetype="image/png") => {
     try {
         // Read content from the file
         const fileContent = fs.readFileSync(uploadFile);
@@ -157,7 +157,8 @@ const uploadFile = (uploadFile, fileName) => {
             Bucket: BUCKET_NAME,
             Key: fileName, // File name you want to save as in S3
             Body: fileContent,
-            ACL: FILE_PERMISSION
+            ACL: FILE_PERMISSION,
+            ContentType: mimetype
         };
 
         // Uploading files to the bucket
