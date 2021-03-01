@@ -39,7 +39,7 @@ const usersLogout = require('./api/v1/users/users-logout');
 const usersUpdateDetails = require('./api/v1/users/users-update-details');
 const changePassword = require('./api/v1/users/users-change-password');
 const forgotPassword = require('./api/v1/users/forgot-password');
-const {userCouponPurchase} = require('./api/v1/users/user-coupon-sale');
+const {userCouponPurchase,userCouponList,userCouponWalletAmount} = require('./api/v1/users/user-coupon-sale');
 const {
     resetPasswordView,
     resetPassword
@@ -207,6 +207,9 @@ router.post('/api/v1/profile', auth.authenticate.jwtLogin, profile);
 router.get('/api/v1/withdraw-history', auth.authenticate.jwtLogin, withdrawHistory);
 
 router.post('/api/v1/user-coupon-purchase', userCouponPurchase);
+router.post('/api/v1/user-coupon-wallet', userCouponWalletAmount);
+router.post('/api/v1/user-coupon-list', userCouponList);
+
 router.post('/api/v1/ask-to-aakash',auth.authenticate.jwtLogin, askToAakash);
 router.post('/api/v1/edit-user-team-name', auth.authenticate.jwtLogin, editUserTeamName);
 router.post('/api/v1/login', usersLogin);

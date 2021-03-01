@@ -17,12 +17,12 @@ module.exports = {
                 my_coupons:[] 
             };
             try {
-                const cData = await Coupon.findOne({status: 1 }).limit(20).sort({_id:-1});
-                const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 }).sort({_id:-1});
+                const cData = await Coupon.find({status: 1 }).limit(20).sort({_id:-1});
+                const cSaleData = await CouponSale.find({user_id:ObjectId(user_id),status: 1 }).sort({_id:-1});
                 
                 result.coupon_list = cData;
                 result.my_coupons = cSaleData; 
-                
+
                 response["data"] = result;
                 response["status"] = true;
                 response["message"] = "";
