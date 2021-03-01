@@ -29,7 +29,8 @@ const TransactionTypesByValues =  [
   "Team clash bonus",
   "Extra Deposite",
   "First Deposite Bonus",
-  "Coupon Purchase"
+  "Coupon Purchase",
+  "Weekly Leaderboard Reward"
 ];
 
 module.exports = {

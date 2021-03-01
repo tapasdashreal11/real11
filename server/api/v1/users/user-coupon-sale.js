@@ -8,6 +8,37 @@ const redis = require('../../../../lib/redis');
 const { TransactionTypes } = require('../../../constants/app');
 const { startSession } = require('mongoose');
 module.exports = {
+    userCouponList: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let { coupon_id, user_id } = req.body;
+            let result = {
+                coupon_list:[],
+                my_coupons:[] 
+            };
+            try {
+                const cData = await Coupon.findOne({status: 1 }).limit(20).sort({_id:-1});
+                const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 }).sort({_id:-1});
+                
+                result.coupon_list = cData;
+                result.my_coupons = cSaleData; 
+                
+                response["data"] = result;
+                response["status"] = true;
+                response["message"] = "";
+                return res.json(response);
+                
+             } catch (err) {
+                response["data"] = result;
+                response["message"] = err.message;
+                return res.json(response);
+             } 
+        } catch (error) {
+            response["data"] = result;
+            response["message"] = error.message;
+            return res.json(response);
+        }
+    },
     userCouponPurchase: async (req, res) => {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
@@ -20,8 +51,17 @@ module.exports = {
                 const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1 });
                 console.log("cData******",cData);
                 if (uData && uData._id && cData && cData._id ) {
-                    if (uData.cash_balance >= cData.coupon_amount) {
-                        let csaleObj= {user_id: uData._id,coupon_id: cData._id,coupon_credit: cData.coupon_credit};
+                  const cSaleData  = await CouponSale.findOne({coupon_id:ObjectId(coupon_id),user_id:ObjectId(user_id),status:1});
+                  if(cSaleData && cSaleData._id){
+
+                    await session.abortTransaction();
+                    session.endSession();
+                    response["message"] = "You have already purchased this coupon!!";
+                    return res.json(response);
+                   } else {
+                     // coupon is not purchased by this user_id now can purchase coupon
+                     if (uData.cash_balance >= cData.coupon_amount) {
+                        let csaleObj= {user_id: uData._id,coupon_id: cData._id,coupon_credit: cData.coupon_credit,expiry_date:cData.expiry_date};
                         await CouponSale.create([csaleObj],{ session: session });
                         await Users.update({ _id: user_id }, {$inc: { cash_balance: -cData.coupon_amount} },sessionOpts);
                         await Coupon.update({ _id: cData._id }, {$inc: { coupon_sale_count: +1} },sessionOpts);
@@ -45,9 +85,11 @@ module.exports = {
                     } else {
                         await session.abortTransaction();
                         session.endSession();
-                        response["message"] = "You have low case balance in your wallet.Please add money to purchase this coupon!!";
+                        response["message"] = "You have low case balance in your case  wallet.Please add money to purchase the coupon!!";
                         return res.json(response);
                     }
+                  }
+                    
                 } else {
                     await session.abortTransaction();
                     session.endSession();
@@ -63,6 +105,49 @@ module.exports = {
             } finally {
                 // ending the session
                 session.endSession();
+            }
+        } catch (error) {
+            response["message"] = error.message;
+            return res.json(response);
+        }
+    },
+    userCouponWalletAmount: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let { coupon_id, user_id } = req.body;
+            try {
+                const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
+                const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1 });
+                console.log("cData******",cData);
+                if (uData && uData._id && cData && cData._id ) {
+                  const cSaleData  = await CouponSale.findOne({coupon_id:ObjectId(coupon_id),user_id:ObjectId(user_id),status:1});
+                  if(cSaleData && cSaleData._id){
+                    response["message"] = "You have already purchased this coupon!!";
+                    return res.json(response);
+                   } else {
+                     // coupon is not purchased by this user_id now can purchase coupon
+                     var data = {
+                        "coupon_amount":cData.coupon_amount,
+                        "case_balance":cData.cash_balance,
+                    }
+                    response["status"] = true;
+                    response["data"] = data;
+                    if (uData.cash_balance >= cData.coupon_amount) {
+                        response["message"] = "";
+                    } else {
+                        response["status"] = false;
+                        response["message"] = "You have low case balance to purchase the coupon.Please add sufficient amount to purchase the coupon!";
+                    }
+                    return res.json(response);
+                  }
+                    
+                } else {
+                    response["message"] = "Something went wrong!!";
+                    return res.json(response);
+                }
+            } catch (err) {
+                response["message"] = err.message;
+                return res.json(response);
             }
         } catch (error) {
             response["message"] = error.message;
