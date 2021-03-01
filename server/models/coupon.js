@@ -1,8 +1,10 @@
-const mongoose = require('mongoose');
-var _ = require('lodash');
-
-
-const AdminSchema = mongoose.Schema({
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
+var couponSaleSchema = new Schema({
+    id: {
+        type: String
+    },
     coupon_name: { type: String, default: '' },
     coupon_amount: { type: Number, default:  0},
     per_user_limit: { type: String, default:  1},
@@ -14,17 +16,9 @@ const AdminSchema = mongoose.Schema({
     coupon_sale_count: { type: Number, default: 0 },
     coupon_img: { type: String, default: '' },
     coupon_contest_ids: { type: Array, default: [] },
-    description: { type: String, default: '' }
-    
-}, {
-        timestamps: { createdAt: 'created', updatedAt: 'modified' },
-        toObject: { getters: true, setters: true },
-        toJSON: { getters: true, setters: true }
+    description: { type: String, default: '' },
+    createAt: {
+        type: Date, default: Date.now()
     }
-);
-
-
-AdminSchema.statics.getTotalCount = function(cond){
-    return this.find(cond).count().exec();
-},
-module.exports = mongoose.model('coupon', AdminSchema);
+});
+module.exports = mongoose.model('coupon', couponSaleSchema, 'coupon');

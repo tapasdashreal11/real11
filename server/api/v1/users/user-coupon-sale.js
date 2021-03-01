@@ -5,9 +5,10 @@ const Users = require("../../../models/user");
 const CouponSale = require("../../../models/coupon-sale");
 const Transaction = require("../../../models/transaction");
 const redis = require('../../../../lib/redis');
+const { TransactionTypes } = require('../../../constants/app');
 const { startSession } = require('mongoose');
 module.exports = {
-    userCouponSale: async (req, res) => {
+    userCouponPurchase: async (req, res) => {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
             let { coupon_id, user_id } = req.body;
@@ -16,10 +17,10 @@ module.exports = {
             const sessionOpts = { session, new: true };
             try {
                 const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
-                const uData = await Users.findOne({ _id: ObjectId(coupuser_idon_id) }, { cash_balance: 1 });
-                if (uData && uData._id) {
+                const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1 });
+                console.log("cData******",cData);
+                if (uData && uData._id && cData && cData._id ) {
                     if (uData.cash_balance >= cData.coupon_amount) {
-                       
                         let csaleObj= {user_id: uData._id,coupon_id: cData._id,coupon_credit: cData.coupon_credit};
                         await CouponSale.create([csaleObj],{ session: session });
                         await Users.update({ _id: user_id }, {$inc: { cash_balance: -cData.coupon_amount} },sessionOpts);
@@ -31,7 +32,7 @@ module.exports = {
                         txnEntity.txn_date = Date.now();
                         txnEntity.created = Date.now();
                         let date = new Date();
-                        txnEntity.local_txn_id = 'DD' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
+                        txnEntity.local_txn_id = 'DD' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
                         txnEntity.added_type = TransactionTypes.COUPON_PURCHASE_TXN; // Coupon purchase txn
                         txnEntity.status = 1; // status
                         await Transaction.create([txnEntity],{ session: session });
@@ -56,6 +57,7 @@ module.exports = {
             } catch (err) {
                 await session.abortTransaction();
                 session.endSession();
+                console.log("*****err.message",err.message);
                 response["message"] = err.message;
                 return res.json(response);
             } finally {
