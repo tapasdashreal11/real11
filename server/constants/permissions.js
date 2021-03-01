@@ -28,7 +28,8 @@ const TransactionTypesByValues =  [
   "Extra Amount",
   "Team clash bonus",
   "Extra Deposite",
-  "First Deposite Bonus"
+  "First Deposite Bonus",
+  "Coupon Purchase"
 ];
 
 module.exports = {

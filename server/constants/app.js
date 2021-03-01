@@ -23,7 +23,8 @@ module.exports = {
         EXTRA_BONUS: 19,
         BONUS_WIN: 20,
         EXTRA_DEPOSITE: 21,
-        FIRST_DEPOSITE_BONUS: 22
+        FIRST_DEPOSITE_BONUS: 22,
+        COUPON_PURCHASE_TXN: 23
     },
     MatchStatus:{
         IN_REVIEW: 'Under Review',
