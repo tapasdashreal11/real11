@@ -11,18 +11,14 @@ module.exports = {
     userCouponList: async (req, res) => {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
-            let { coupon_id, user_id } = req.body;
-            let result = {
-                coupon_list:[],
-                my_coupons:[] 
-            };
+            let { user_id } = req.body;
+            let result = { coupon_list:[], my_coupons:[] };
             try {
                 const cData = await Coupon.find({status: 1 }).limit(20).sort({_id:-1});
                 const cSaleData = await CouponSale.find({user_id:ObjectId(user_id),status: 1 }).sort({_id:-1});
-                
                 result.coupon_list = cData;
                 result.my_coupons = cSaleData; 
-
+                redis.redisObj.set('my-coupons-'+ user_id, cSaleData);
                 response["data"] = result;
                 response["status"] = true;
                 response["message"] = "";
