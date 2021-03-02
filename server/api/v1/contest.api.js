@@ -1064,7 +1064,8 @@ module.exports = {
                 let entryFee = 0;
                 if (decoded['contest_id']) {
                     let contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
-                    const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1 }).sort({_id:-1});
+                    const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1 });
+                    console.log("cSaleData***",cSaleData);
                      matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                      entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                      if(cSaleData && cSaleData._id){
