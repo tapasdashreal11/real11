@@ -1103,7 +1103,7 @@ module.exports = {
                 let calEntryFees = entryFee;
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
-                        console.log('couponSaleData****',couponSaleData);
+                        console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
                         if(couponSaleData && couponSaleData.length>0){
                             let  constestIdsData  =  _.find(couponSaleData,{category_id:matchContestData.category_id});
                              if(constestIdsData && constestIdsData.category_id){
