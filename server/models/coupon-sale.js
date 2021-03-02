@@ -17,6 +17,9 @@ var couponSaleSchema = new Schema({
     coupon_used: {
         type: Number, default: 0
     },
+    coupon_contest_data:{
+        type: Array, default: []
+    },
     status: {
         type: Number, default: 1
     },
