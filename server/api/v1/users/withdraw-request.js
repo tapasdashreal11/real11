@@ -195,6 +195,7 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 				paytmParams["amount"]			=	withdraw_request.refund_amount - withdraw_request.instant_withdraw_comm;
 				paytmParams["purpose"]			=	"REIMBURSEMENT";
 				paytmParams["date"]				=	txnDate.getFullYear() + "-" + month + "-" + date;
+				paytmParams["comments"]			=	userDetail.phone;
 			} else {
 				paytmParams["subwalletGuid"]	=	subwalletGuid;
 				paytmParams["orderId"]			=	orderId;

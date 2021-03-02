@@ -798,22 +798,6 @@ class ModelService {
                     },
                     { $sort : {sort: -1, time : 1} },
                     { $limit : 100 },
-                    // {
-                    //     $lookup: {
-                    //         from: 'mst_teams',
-                    //         localField: 'localteam_id',
-                    //         foreignField: 'team_id',
-                    //         as: 'localTeam'
-                    //     }
-                    // },       
-                    // {
-                    //     $lookup: {
-                    //         from: 'mst_teams',
-                    //         localField: 'visitorteam_id',
-                    //         foreignField: 'team_id',
-                    //         as: 'visitorTeam'
-                    //     }
-                    // },
                     {
                         $lookup: {
                             from: 'series',
@@ -838,23 +822,6 @@ class ModelService {
                         $unwind: {
                             path: "$series",
                             preserveNullAndEmptyArrays: false // optional
-                        }
-                    },                    
-                    {
-                        $lookup: {
-                            from: 'match_contest',
-                            let: { matchId: "$match_id" },
-                            pipeline: [
-                                {
-                                    $match: {  
-                                        $expr:{ 
-                                            $eq: [ "$match_id", "$$matchId" ]
-                                        }
-                                    }
-                                },     
-                                { $project: { _id:1} },                                
-                            ],
-                            as: 'match_contest_count',
                         }
                     },
                     {
