@@ -1103,12 +1103,15 @@ module.exports = {
                 let calEntryFees = entryFee;
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
+                        console.log('couponSaleData****',couponSaleData);
                         if(couponSaleData && couponSaleData.length>0){
                             let  constestIdsData  =  _.find(couponSaleData,{category_id:matchContestData.category_id});
                              if(constestIdsData && constestIdsData.category_id){
                                let offDataArray = constestIdsData.offer_data;
+                               console.log('constestIdsData****',constestIdsData);
                                let offDataItem = _.find(offDataArray,{amount:entryFee});
                                   if(offDataItem){
+                                    console.log('offDataItem****',offDataItem);
                                    userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                    calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                    retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
