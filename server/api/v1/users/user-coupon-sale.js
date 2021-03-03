@@ -69,7 +69,7 @@ module.exports = {
             const sessionOpts = { session, new: true };
             try {
                 const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
-                const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1 });
+                const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1,winning_balance: 1  });
                 console.log("cData******", cData);
                 if (uData && uData._id && cData && cData._id) {
                     const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 });
@@ -81,11 +81,14 @@ module.exports = {
                         return res.json(response);
                     } else {
                         // coupon is not purchased by this user_id now can purchase coupon
-                        if (uData.cash_balance >= cData.coupon_amount) {
+                        const paymentCal = await calCualteFee(cData.coupon_amount,uData.cash_balance,uData.winning_balance);
+                        let cashAmount = paymentCal.cashAmount;
+                        let winAmount = paymentCal.winAmount;
+                        if (cData.coupon_amount = (winAmount + cashAmount)) {
                             let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.expiry_date };
                             await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true,session: session });
                             //await CouponSale.create([csaleObj], sessionOpts);
-                            await Users.update({ _id: user_id }, { $inc: { cash_balance: -cData.coupon_amount } }, sessionOpts);
+                            await Users.update({ _id: user_id }, { $inc: { cash_balance: -cashAmount,winning_balance: -winAmount } }, sessionOpts);
                             await Coupon.update({ _id: cData._id }, { $inc: { coupon_sale_count: +1 } }, sessionOpts);
                             let txnEntity = {};
                             txnEntity.user_id = user_id;
@@ -149,14 +152,18 @@ module.exports = {
                         return res.json(response);
                     } else {
                         // coupon is not purchased by this user_id now can purchase coupon
+                        const paymentCal = await calCualteFee(cData.coupon_amount,uData.cash_balance,uData.winning_balance);
+                        let cashAmount = paymentCal.cashAmount;
+                        let winAmount = paymentCal.winAmount;
                         var data = {
                             "coupon_amount": cData.coupon_amount,
                             "cash_balance": uData.cash_balance || 0,
                             "winning_balance": uData.winning_balance || 0,
+                            "payment_cal":paymentCal
                         }
                         response["status"] = true;
                         response["data"] = data;
-                        if (uData.cash_balance >= cData.coupon_amount) {
+                        if (cData.coupon_amount = (winAmount + cashAmount)) {
                             response["message"] = "";
                         } else {
                             response["status"] = false;
@@ -192,4 +199,24 @@ async function getPromiseForCouponData(key, defaultValue) {
             resolve(JSON.parse(data))
         })
     })
+}
+async function calCualteFee(entryFee,cash_balance,winnging_balance){
+    let remainingFee = entryFee;
+    let dedCashAmount = 0;
+    let dedWinngingBalance = 0;
+    if(remainingFee){
+        if (cash_balance && cash_balance > 0) {
+            dedCashAmount = (cash_balance > remainingFee) ? remainingFee : cash_balance;
+            remainingFee = (cash_balance < remainingFee) ? remainingFee - cash_balance : 0;
+        }
+    }
+    if(remainingFee){
+        if (dedWinngingBalance && dedWinngingBalance > 0) {
+            dedWinngingBalance = (winnging_balance > remainingFee) ? remainingFee : winnging_balance;
+            remainingFee = (winnging_balance < remainingFee) ? remainingFee - winnging_balance : 0;
+        }
+    }
+
+    return {cash_amount:dedCashAmount,winnging_amount:dedWinngingBalance}
+    
 }
