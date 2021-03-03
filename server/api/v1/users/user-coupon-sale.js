@@ -11,39 +11,42 @@ module.exports = {
     userCouponList: async (req, res) => {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
-            let { user_id } = req.body;
+            const user_id = req.userId;
             let result = { coupon_list:[], my_coupons:{} };
             let redisKeyForVipCouponsList = 'vip-coupons-'+ user_id;
             let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
             try {
-
-                let couponList = await getPromiseForVipCouponsList(redisKeyForVipCouponsList,"[]");
-                if(couponList && couponList.length>0){
-                    let mycouponList = await getPromiseForVipCouponsList(redisKeyForUserMyCoupons,"{}");
-                     if(mycouponList){
-                        result.my_coupons = mycouponList; 
-                     } else {
-                        const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 });
+                if(user_id){
+                    let couponList = await getPromiseForVipCouponsList(redisKeyForVipCouponsList,"[]");
+                    if(couponList && couponList.length>0){
+                        let mycouponList = await getPromiseForVipCouponsList(redisKeyForUserMyCoupons,"{}");
+                         if(mycouponList){
+                            result.my_coupons = mycouponList; 
+                         } else {
+                            const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 });
+                            result.my_coupons = cSaleData; 
+                            redis.redisObj.set('my-coupons-'+ user_id, JSON.stringify(cSaleData));
+                         }
+    
+                         result.coupon_list = couponList;
+                         response["data"] = result;
+                         response["status"] = true;
+                         response["message"] = "";
+                         return res.json(response);
+                    } else {
+                        const cData = await Coupon.find({status: 1 }).limit(20).sort({_id:-1});
+                        const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 }).sort({_id:-1});
+                        result.coupon_list = cData;
                         result.my_coupons = cSaleData; 
+                        redis.redisObj.set('vip-coupons-'+ user_id, JSON.stringify(cData));
                         redis.redisObj.set('my-coupons-'+ user_id, JSON.stringify(cSaleData));
-                     }
-
-                     result.coupon_list = couponList;
-                     response["data"] = result;
-                     response["status"] = true;
-                     response["message"] = "";
-                     return res.json(response);
-                } else {
-                    const cData = await Coupon.find({status: 1 }).limit(20).sort({_id:-1});
-                    const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 }).sort({_id:-1});
-                    result.coupon_list = cData;
-                    result.my_coupons = cSaleData; 
-                    redis.redisObj.set('vip-coupons-'+ user_id, JSON.stringify(cData));
-                    redis.redisObj.set('my-coupons-'+ user_id, JSON.stringify(cSaleData));
-                    response["data"] = result;
-                    response["status"] = true;
-                    response["message"] = "";
-                    return res.json(response);
+                        response["data"] = result;
+                        response["status"] = true;
+                        response["message"] = "";
+                        return res.json(response);
+                    }
+                }else{
+                return res.json(response);
                 }
              } catch (err) {
                 response["data"] = result;
@@ -59,7 +62,8 @@ module.exports = {
     userCouponPurchase: async (req, res) => {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
-            let { coupon_id, user_id } = req.body;
+            let { coupon_id } = req.body;
+            const user_id = req.userId;
             const session = await startSession()
             session.startTransaction();
             const sessionOpts = { session, new: true };
@@ -131,7 +135,8 @@ module.exports = {
     userCouponWalletAmount: async (req, res) => {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
-            let { coupon_id, user_id } = req.body;
+            let { coupon_id } = req.body;
+            const user_id = req.userId;
             try {
                 const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
                 const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1 });
