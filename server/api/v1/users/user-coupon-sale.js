@@ -84,7 +84,7 @@ module.exports = {
                         const paymentCal = await calCualteFee(cData.coupon_amount,uData.cash_balance,uData.winning_balance);
                         let cashAmount = paymentCal.cashAmount;
                         let winAmount = paymentCal.winAmount;
-                        if (cData.coupon_amount = (winAmount + cashAmount)) {
+                        if (cData.coupon_amount == (winAmount + cashAmount)) {
                             let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.expiry_date };
                             await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true,session: session });
                             //await CouponSale.create([csaleObj], sessionOpts);
@@ -163,7 +163,7 @@ module.exports = {
                         }
                         response["status"] = true;
                         response["data"] = data;
-                        if (cData.coupon_amount = (winAmount + cashAmount)) {
+                        if (cData.coupon_amount == (winAmount + cashAmount)) {
                             response["message"] = "";
                         } else {
                             response["status"] = false;
