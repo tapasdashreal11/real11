@@ -143,7 +143,7 @@ module.exports = {
                 const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1 });
                 console.log("cData******", cData);
                 if (uData && uData._id && cData && cData._id) {
-                    const cSaleData = await CouponSale.findOne({ coupon_id: ObjectId(coupon_id), user_id: ObjectId(user_id), status: 1 });
+                    const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id), status: 1 });
                     if (cSaleData && cSaleData._id) {
                         response["message"] = "You have already purchased the coupon!!";
                         return res.json(response);

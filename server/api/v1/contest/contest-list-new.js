@@ -38,7 +38,7 @@ try {
                 PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }).countDocuments(),
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec(),
                 getPromiseForAnalysis(redisKeyForUserCategory, "{}"),
-                getPromiseForUserCoupons(redisKeyForUserMyCoupons, "[]",user_id)
+                getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}",user_id)
             )
         }
         const mcResult = await Promise.all(queryArray);
@@ -57,8 +57,8 @@ try {
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
                  userCategory = mcResult && mcResult.length > 3 && mcResult[3] && !_.isEmpty(mcResult[3]) ? JSON.parse(mcResult[3])  : userCategory;
                 //console.log('userCategory*****',userCategory);
-                userCoupons = mcResult && mcResult.length > 4 && mcResult[4] && !_.isEmpty(mcResult[4]) ? JSON.parse(mcResult[4])  : [];
-
+                userCoupons = mcResult && mcResult.length == 5 && mcResult[4] && !_.isEmpty(mcResult[4]) ? JSON.parse(mcResult[4])  : {};
+               console.log("userCoupons**** in list",userCoupons);
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
 
@@ -126,7 +126,7 @@ try {
                         user_team_ids: Helper.parseUserTeams(userTeamIds),
                         joined_teams_count: Helper.parseContestTeamsJoined(joinedTeamsCount),
                         user_rentation_bonous: {},
-                        user_coupons: userCoupons || [],
+                        user_coupons: userCoupons || {},
                         user_favourite_contest: userFavouriteContest || {}
                     };
                     let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id +  '-' + match_sport;
