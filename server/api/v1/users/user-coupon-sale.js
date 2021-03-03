@@ -151,7 +151,7 @@ module.exports = {
                         // coupon is not purchased by this user_id now can purchase coupon
                         var data = {
                             "coupon_amount": cData.coupon_amount,
-                            "case_balance": cData.cash_balance,
+                            "case_balance": uData.cash_balance,
                         }
                         response["status"] = true;
                         response["data"] = data;
