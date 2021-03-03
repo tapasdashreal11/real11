@@ -1107,7 +1107,7 @@ module.exports = {
                         let catid = matchContestData.category_id;
                         if(couponSaleData && couponSaleData.length>0){
                             let  constestIdsData  =  _.find(couponSaleData,{category_id:catid.toString()});
-                             if(constestIdsData && constestIdsData.category_id){
+                            if(constestIdsData && constestIdsData.category_id){
                                let offDataArray = constestIdsData.offer_data;
                                console.log('constestIdsData****',constestIdsData);
                                let offDataItem = _.find(offDataArray,{amount:entryFee});
@@ -1119,34 +1119,33 @@ module.exports = {
                                   }
                                    
                              }
-                           } else {
-                                if (rdata && entryFee>0) {
-                                    console.log('popup redis before join contest *********');
-                                    userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
-                                    let pContestId = contest_id; //ObjectId(contest_id);
-                                    let offerContests = rdata.contest_ids || [];
-                                    let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
-                                    let cBonus =  rdata && rdata.contest_bonous?rdata.contest_bonous:[];  //config && config.contest_bonous ? config.contest_bonous:[];
-                                    let cBonusItem = {};
-                                    if(rdata.is_offer_type == 3){
-                                        cBonusItem =  cBonus.find(function(el){
-                                            if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))){
-                                                return el
-                                            }
-                                        });
+                           } 
+                           if (rdata && entryFee>0 && userOfferAmount ==0) {
+                            console.log('popup redis before join contest *********');
+                            userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
+                            let pContestId = contest_id; //ObjectId(contest_id);
+                            let offerContests = rdata.contest_ids || [];
+                            let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
+                            let cBonus =  rdata && rdata.contest_bonous?rdata.contest_bonous:[];  //config && config.contest_bonous ? config.contest_bonous:[];
+                            let cBonusItem = {};
+                            if(rdata.is_offer_type == 3){
+                                cBonusItem =  cBonus.find(function(el){
+                                    if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))){
+                                        return el
                                     }
-                                    if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) || _.includes(offerContests,prContestId)))){
-                                        calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
-                                        retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
-                                        
-                                    } else if(rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id ){
-                                        userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
-                                        calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
-                                        retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
-                                        is_offer_applied = true;
-                                    }    
-                                }
-                           }
+                                });
+                            }
+                            if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) || _.includes(offerContests,prContestId)))){
+                                calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
+                                retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                
+                            } else if(rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id ){
+                                userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
+                                calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
+                                retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                is_offer_applied = true;
+                            }    
+                        }
                         
                          
                         if (userdata) {

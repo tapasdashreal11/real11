@@ -140,7 +140,7 @@ module.exports = {
             const user_id = req.userId;
             try {
                 const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
-                const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1 });
+                const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1,winning_balance: 1  });
                 console.log("cData******", cData);
                 if (uData && uData._id && cData && cData._id) {
                     const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id), status: 1 });
@@ -151,7 +151,8 @@ module.exports = {
                         // coupon is not purchased by this user_id now can purchase coupon
                         var data = {
                             "coupon_amount": cData.coupon_amount,
-                            "case_balance": uData.cash_balance,
+                            "cash_balance": uData.cash_balance || 0,
+                            "winning_balance": uData.winning_balance || 0,
                         }
                         response["status"] = true;
                         response["data"] = data;

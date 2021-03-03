@@ -208,39 +208,39 @@ module.exports = async (req, res) => {
                                                                     }
 
                                                                 }
-                                                            } else {
-                                                                if (rdata && rdata._id && entryFee > 0) {
-                                                                    userBounousData = rdata;
-                                                                    userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount : eval((rdata.offer_percent / 100) * entryFee);
-                                                                    let pContestId = ObjectId(contest_id);
-                                                                    let offerContests = rdata && rdata.contest_ids && (rdata.contest_ids).length > 0 ? rdata.contest_ids.map(itm => {
-                                                                        return ObjectId(itm)
-                                                                    }) : [];
-                                                                    let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id) : pContestId;
+                                                             }
+                                                             
+                                                             if (rdata && rdata._id && entryFee > 0 && userOfferAmount == 0) {
+                                                                userBounousData = rdata;
+                                                                userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount : eval((rdata.offer_percent / 100) * entryFee);
+                                                                let pContestId = ObjectId(contest_id);
+                                                                let offerContests = rdata && rdata.contest_ids && (rdata.contest_ids).length > 0 ? rdata.contest_ids.map(itm => {
+                                                                    return ObjectId(itm)
+                                                                }) : [];
+                                                                let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id) : pContestId;
 
-                                                                    let cBonus = rdata && rdata.contest_bonous ? rdata.contest_bonous : []; //config && config.contest_bonous ? config.contest_bonous:[];
-                                                                    let cBonusItem = {};
-                                                                    if (rdata.is_offer_type == 3) {
-                                                                        cBonusItem = cBonus.find(function (el) {
-                                                                            if (ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))) {
-                                                                                return el
-                                                                            }
-                                                                        });
-                                                                    }
-
-                                                                    if ((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && offerContests.length > 0 && rdata.is_offer_type == 2 && (_.find(offerContests, pContestId) || _.find(offerContests, prContestId)))) {
-
-                                                                        userOfferAmount = userOfferAmount.toFixed(2);
-                                                                        calEntryFees = userOfferAmount > entryFee ? 0 : (entryFee - userOfferAmount);
-                                                                        retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
-
-                                                                    } else if (rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id) {
-                                                                        userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
-                                                                        calEntryFees = userOfferAmount > entryFee ? 0 : (entryFee - userOfferAmount);
-                                                                        retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
-                                                                    }
-
+                                                                let cBonus = rdata && rdata.contest_bonous ? rdata.contest_bonous : []; //config && config.contest_bonous ? config.contest_bonous:[];
+                                                                let cBonusItem = {};
+                                                                if (rdata.is_offer_type == 3) {
+                                                                    cBonusItem = cBonus.find(function (el) {
+                                                                        if (ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))) {
+                                                                            return el
+                                                                        }
+                                                                    });
                                                                 }
+
+                                                                if ((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && offerContests.length > 0 && rdata.is_offer_type == 2 && (_.find(offerContests, pContestId) || _.find(offerContests, prContestId)))) {
+
+                                                                    userOfferAmount = userOfferAmount.toFixed(2);
+                                                                    calEntryFees = userOfferAmount > entryFee ? 0 : (entryFee - userOfferAmount);
+                                                                    retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
+
+                                                                } else if (rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id) {
+                                                                    userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
+                                                                    calEntryFees = userOfferAmount > entryFee ? 0 : (entryFee - userOfferAmount);
+                                                                    retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
+                                                                }
+
                                                             }
 
 

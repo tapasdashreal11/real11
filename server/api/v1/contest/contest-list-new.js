@@ -58,7 +58,7 @@ try {
                  userCategory = mcResult && mcResult.length > 3 && mcResult[3] && !_.isEmpty(mcResult[3]) ? JSON.parse(mcResult[3])  : userCategory;
                 //console.log('userCategory*****',userCategory);
                 userCoupons = mcResult && mcResult.length == 5 && mcResult[4] && !_.isEmpty(mcResult[4]) ? JSON.parse(mcResult[4])  : {};
-               console.log("userCoupons**** in list",userCoupons);
+                
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
 
