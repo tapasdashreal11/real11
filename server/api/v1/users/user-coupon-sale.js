@@ -172,7 +172,7 @@ module.exports = {
                         if (entryFee == (winAmount + cashAmount)) {
                             response["message"] = "";
                         } else {
-                            //response["status"] = false;
+                            response["status"] = true;
                             response["message"] = "You have low case balance to purchase the coupon.Please add sufficient amount to purchase the coupon!";
                         }
                         return res.json(response);
