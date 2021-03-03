@@ -206,8 +206,8 @@ router.get('/api/v1/transation-history-new', auth.authenticate.jwtLogin, transac
 router.post('/api/v1/profile', auth.authenticate.jwtLogin, profile);
 router.get('/api/v1/withdraw-history', auth.authenticate.jwtLogin, withdrawHistory);
 
-router.post('/api/v1/user-coupon-purchase',auth.authenticate.jwtLogin, userCouponPurchase);
-router.post('/api/v1/user-coupon-wallet',auth.authenticate.jwtLogin, userCouponWalletAmount);
+router.get('/api/v1/user-coupon-purchase/:coupon_id',auth.authenticate.jwtLogin, userCouponPurchase);
+router.get('/api/v1/user-coupon-wallet/:coupon_id',auth.authenticate.jwtLogin, userCouponWalletAmount);
 router.get('/api/v1/user-coupon-list', auth.authenticate.jwtLogin,userCouponList);
 
 router.post('/api/v1/ask-to-aakash',auth.authenticate.jwtLogin, askToAakash);
