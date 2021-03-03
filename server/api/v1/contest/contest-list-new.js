@@ -11,6 +11,8 @@ const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
 const config = require('./../../../config');
+const CouponSale = require("../../../models/coupon-sale");
+
 module.exports = async (req, res) => {
  
 try {
@@ -36,7 +38,7 @@ try {
                 PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }).countDocuments(),
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec(),
                 getPromiseForAnalysis(redisKeyForUserCategory, "{}"),
-                getPromiseForUserCoupons(redisKeyForUserMyCoupons, "[]")
+                getPromiseForUserCoupons(redisKeyForUserMyCoupons, "[]",user_id)
             )
         }
         const mcResult = await Promise.all(queryArray);
@@ -185,14 +187,22 @@ async function getPromiseForAnalysis(key, defaultValue){
     })
 }
 
-async function getPromiseForUserCoupons(key, defaultValue){
+async function getPromiseForUserCoupons(key, defaultValue,user_id){
     return new Promise((resolve, reject) => {
-        redis.redisObj.get(key, (err, data) => {
+        redis.redisObj.get(key, async (err, data) => {
             if (err) { 
                 reject(defaultValue);
             }
             if (data == null) {
-                data = defaultValue
+                const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 });
+                console.log('cSaleData from list *****',cSaleData);
+                if(cSaleData && cSaleData._id){
+                    redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify(cSaleData));
+                    data = JSON.stringify(cSaleData);
+                } else {
+                    data = defaultValue;
+                }
+                
             }
             resolve(data)
         })

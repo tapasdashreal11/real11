@@ -15,7 +15,7 @@ var couponSaleSchema = new Schema({
     coupon_offer: { type: Number, default: 0 },
     coupon_sale_count: { type: Number, default: 0 },
     coupon_img: { type: String, default: '' },
-    coupon_contest_ids: { type: Array, default: [] },
+    coupon_contest_data: { type: Array, default: [] },
     description: { type: String, default: '' },
     createAt: {
         type: Date, default: Date.now()
