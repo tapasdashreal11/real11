@@ -163,7 +163,8 @@ module.exports = {
                         }
                         response["status"] = true;
                         response["data"] = data;
-                        if (cData.coupon_amount == (winAmount + cashAmount)) {
+                        let entryFee = cData.coupon_amount;
+                        if (entryFee == (winAmount + cashAmount)) {
                             response["message"] = "";
                         } else {
                             response["status"] = false;
