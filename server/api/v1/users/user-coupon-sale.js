@@ -13,17 +13,38 @@ module.exports = {
             var response = { status: false, message: "Invalid Request", data: {} };
             let { user_id } = req.body;
             let result = { coupon_list:[], my_coupons:{} };
+            let redisKeyForVipCouponsList = 'vip-coupons-'+ user_id;
+            let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
             try {
-                const cData = await Coupon.find({status: 1 }).limit(20).sort({_id:-1});
-                const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 }).sort({_id:-1});
-                result.coupon_list = cData;
-                result.my_coupons = cSaleData; 
-                redis.redisObj.set('my-coupons-'+ user_id, cSaleData);
-                response["data"] = result;
-                response["status"] = true;
-                response["message"] = "";
-                return res.json(response);
-                
+
+                let couponList = await getPromiseForVipCouponsList(redisKeyForVipCouponsList,"[]");
+                if(couponList && couponList.length>0){
+                    let mycouponList = await getPromiseForVipCouponsList(redisKeyForUserMyCoupons,"{}");
+                     if(mycouponList){
+                        result.my_coupons = mycouponList; 
+                     } else {
+                        const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 });
+                        result.my_coupons = cSaleData; 
+                        redis.redisObj.set('my-coupons-'+ user_id, JSON.stringify(cSaleData));
+                     }
+
+                     result.coupon_list = couponList;
+                     response["data"] = result;
+                     response["status"] = true;
+                     response["message"] = "";
+                     return res.json(response);
+                } else {
+                    const cData = await Coupon.find({status: 1 }).limit(20).sort({_id:-1});
+                    const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 }).sort({_id:-1});
+                    result.coupon_list = cData;
+                    result.my_coupons = cSaleData; 
+                    redis.redisObj.set('vip-coupons-'+ user_id, JSON.stringify(cData));
+                    redis.redisObj.set('my-coupons-'+ user_id, JSON.stringify(cSaleData));
+                    response["data"] = result;
+                    response["status"] = true;
+                    response["message"] = "";
+                    return res.json(response);
+                }
              } catch (err) {
                 response["data"] = result;
                 response["message"] = err.message;
@@ -47,18 +68,18 @@ module.exports = {
                 const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1 });
                 console.log("cData******",cData);
                 if (uData && uData._id && cData && cData._id ) {
-                  const cSaleData  = await CouponSale.findOne({coupon_id:ObjectId(coupon_id),user_id:ObjectId(user_id),status:1});
+                  const cSaleData  = await CouponSale.findOne({user_id:ObjectId(user_id),status:1});
                   if(cSaleData && cSaleData._id){
 
                     await session.abortTransaction();
                     session.endSession();
-                    response["message"] = "You have already purchased this coupon!!";
+                    response["message"] = "You have already purchased the coupon!!";
                     return res.json(response);
                    } else {
                      // coupon is not purchased by this user_id now can purchase coupon
                      if (uData.cash_balance >= cData.coupon_amount) {
-                        let csaleObj= {user_id: uData._id,coupon_id: cData._id,coupon_credit: cData.coupon_credit,expiry_date:cData.expiry_date};
-                        await CouponSale.create([csaleObj],{ session: session });
+                        let csaleObj= {coupon_contest_data:cData.coupon_contest_data,status:1, user_id: uData._id,coupon_id: cData._id,coupon_used:0,coupon_credit: cData.coupon_credit,expiry_date:cData.expiry_date};
+                        await CouponSale.findOneAndUpdate({user_id:ObjectId(user_id)},csaleObj,{upsert: true, new: true},sessionOpts);
                         await Users.update({ _id: user_id }, {$inc: { cash_balance: -cData.coupon_amount} },sessionOpts);
                         await Coupon.update({ _id: cData._id }, {$inc: { coupon_sale_count: +1} },sessionOpts);
                         let txnEntity = {};
@@ -118,7 +139,7 @@ module.exports = {
                 if (uData && uData._id && cData && cData._id ) {
                   const cSaleData  = await CouponSale.findOne({coupon_id:ObjectId(coupon_id),user_id:ObjectId(user_id),status:1});
                   if(cSaleData && cSaleData._id){
-                    response["message"] = "You have already purchased this coupon!!";
+                    response["message"] = "You have already purchased the coupon!!";
                     return res.json(response);
                    } else {
                      // coupon is not purchased by this user_id now can purchase coupon
@@ -151,3 +172,17 @@ module.exports = {
         }
     }
 };
+
+async function getPromiseForVipCouponsList(key, defaultValue){
+    return new Promise((resolve, reject) => {
+        redis.redisObj.get(key, async (err, data) => {
+            if (err) { 
+                reject(defaultValue);
+            }
+            if (data == null) {
+                data = defaultValue;
+            }
+            resolve(JSON.parse(data))
+        })
+    })
+}
