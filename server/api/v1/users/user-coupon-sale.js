@@ -89,7 +89,7 @@ module.exports = {
                             let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.expiry_date };
                             await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true,session: session });
                             //await CouponSale.create([csaleObj], sessionOpts);
-                            await Users.update({ _id: user_id }, { $inc: { cash_balance: -cashAmount,winning_balance: -winAmount } }, sessionOpts);
+                           
                             await Coupon.update({ _id: cData._id }, { $inc: { coupon_sale_count: +1 } }, sessionOpts);
                             let txnEntity = {};
                             txnEntity.user_id = user_id;
@@ -101,6 +101,7 @@ module.exports = {
                             txnEntity.local_txn_id = 'DD' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
                             txnEntity.added_type = TransactionTypes.COUPON_PURCHASE_TXN; // Coupon purchase txn
                             txnEntity.status = 1; // status
+                            await Users.update({ _id: user_id }, { $inc: { cash_balance: -cashAmount,winning_balance: -winAmount } }, sessionOpts);
                             await Transaction.create([txnEntity], { session: session });
                             await session.commitTransaction();
                             session.endSession();
@@ -149,8 +150,9 @@ module.exports = {
                 let cashAmount = 0;
                 let winAmount = 0;
                 if (uData && uData._id && cData && cData._id) {
-                    const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id), status: 1 });
-                    if (cSaleData && cSaleData._id) {
+                    const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id)});
+                    if (cSaleData && cSaleData._id && cSaleData.status && cSaleData.status == 1) {
+
                         response["message"] = "You have already purchased the coupon!!";
                         return res.json(response);
                     } else {
@@ -208,6 +210,7 @@ async function calCualteFee(entryFee,cash_balance,winnging_balance){
     let remainingFee = entryFee;
     let dedCashAmount = 0;
     let dedWinngingBalance = 0;
+    console.log('cash_balance***',cash_balance,'winnging_balance***',winnging_balance);
     if(remainingFee){
         if (cash_balance && cash_balance > 0) {
             dedCashAmount = (cash_balance > remainingFee) ? remainingFee : cash_balance;
@@ -215,7 +218,8 @@ async function calCualteFee(entryFee,cash_balance,winnging_balance){
         }
     }
     if(remainingFee){
-        if (dedWinngingBalance && dedWinngingBalance > 0) {
+        console.log('remainingFee***',remainingFee);
+        if (winnging_balance && winnging_balance > 0) {
             dedWinngingBalance = (winnging_balance > remainingFee) ? remainingFee : winnging_balance;
             remainingFee = (winnging_balance < remainingFee) ? remainingFee - winnging_balance : 0;
         }
