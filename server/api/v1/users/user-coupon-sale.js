@@ -82,9 +82,10 @@ module.exports = {
                     } else {
                         // coupon is not purchased by this user_id now can purchase coupon
                         const paymentCal = await calCualteFee(cData.coupon_amount,uData.cash_balance,uData.winning_balance);
-                        let cashAmount = paymentCal.cashAmount;
-                        let winAmount = paymentCal.winAmount;
-                        if (cData.coupon_amount == (winAmount + cashAmount)) {
+                        let cashAmount = paymentCal.cash_amount;
+                        let winAmount = paymentCal.winnging_amount;
+                        let entryFee = cData.coupon_amount;
+                        if (entryFee == (winAmount + cashAmount)) {
                             let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.expiry_date };
                             await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true,session: session });
                             //await CouponSale.create([csaleObj], sessionOpts);
@@ -145,6 +146,8 @@ module.exports = {
                 const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
                 const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1,winning_balance: 1  });
                 console.log("cData******", cData);
+                let cashAmount = 0;
+                let winAmount = 0;
                 if (uData && uData._id && cData && cData._id) {
                     const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id), status: 1 });
                     if (cSaleData && cSaleData._id) {
@@ -153,8 +156,8 @@ module.exports = {
                     } else {
                         // coupon is not purchased by this user_id now can purchase coupon
                         const paymentCal = await calCualteFee(cData.coupon_amount,uData.cash_balance,uData.winning_balance);
-                        let cashAmount = paymentCal.cashAmount;
-                        let winAmount = paymentCal.winAmount;
+                         cashAmount = paymentCal.cash_amount;
+                         winAmount = paymentCal.winnging_amount;
                         var data = {
                             "coupon_amount": cData.coupon_amount,
                             "cash_balance": uData.cash_balance || 0,
