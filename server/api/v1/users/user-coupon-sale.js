@@ -113,7 +113,7 @@ module.exports = {
                             response["status"] = true;
                             response["message"] = "Coupon Purchase Successfully!!";
                             return res.json(response);
-                        } else {
+                        } else { 
                             await session.abortTransaction();
                             session.endSession();
                             response["message"] = "You have low case balance in your case  wallet.Please add money to purchase the coupon!!";
