@@ -185,9 +185,9 @@ module.exports = async (req, res) => {
 
                                                             //let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1,is_offer_repeat:1};
                                                             let rdata = await UserAnalysis.findOne({ user_id: user_id, match_id: decoded['match_id'], sport: match_sport });
-                                                            let cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1,expiry_date:{$gte:new Date()} });
+                                                            let cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1, expiry_date: { $gte: new Date() } });
                                                             let couponSaleData = [];
-                                                        
+
                                                             if (cSaleData && cSaleData._id && cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0) {
                                                                 let catid = matchContest.category_id;
                                                                 couponSaleData = cSaleData.coupon_contest_data;
@@ -201,16 +201,16 @@ module.exports = async (req, res) => {
                                                                         userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                                                         calEntryFees = userOfferAmount > entryFee ? 0 : (entryFee - userOfferAmount);
                                                                         retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
-                                                                        let diff = cSaleData.coupon_credit  && cSaleData.coupon_used ? cSaleData.coupon_credit - cSaleData.coupon_used : 0;
-                                                                        let status_value = diff && diff == 1 ? 0:1; 
+                                                                        let diff = cSaleData.coupon_credit && cSaleData.coupon_used ? cSaleData.coupon_credit - cSaleData.coupon_used : 0;
+                                                                        let status_value = diff && diff == 1 ? 0 : 1;
 
-                                                                        await CouponSale.update({ user_id: ObjectId(user_id) }, { $set: {status:status_value}, $inc: { coupon_used: +1 } }, sessionOpts);
+                                                                        await CouponSale.update({ user_id: ObjectId(user_id) }, { $set: { status: status_value }, $inc: { coupon_used: +1 } }, sessionOpts);
                                                                     }
 
                                                                 }
-                                                             }
-                                                             
-                                                             if (rdata && rdata._id && entryFee > 0 && userOfferAmount == 0) {
+                                                            }
+
+                                                            if (rdata && rdata._id && entryFee > 0 && userOfferAmount == 0) {
                                                                 userBounousData = rdata;
                                                                 userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount : eval((rdata.offer_percent / 100) * entryFee);
                                                                 let pContestId = ObjectId(contest_id);
