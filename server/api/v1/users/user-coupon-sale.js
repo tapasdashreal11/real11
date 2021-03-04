@@ -76,8 +76,8 @@ module.exports = {
                 const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1,winning_balance: 1  });
                 console.log("cData******", cData);
                 if (uData && uData._id && cData && cData._id) {
-                    const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 });
-                    if (cSaleData && cSaleData._id) {
+                    const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id),expiry_date:{$gte:new Date()} });
+                    if (cSaleData && cSaleData._id && cSaleData.status == 1) {
                         await session.abortTransaction();
                         session.endSession();
                         response["message"] = "You have already purchased the coupon!!";
@@ -131,9 +131,7 @@ module.exports = {
                                 response["status"] = true;
                                 response["message"] = "Coupon Purchase Successfully!!";
                                 return res.json(response);
-                        }
-
-                        
+                        }     
                     }
 
                 } else {
@@ -169,7 +167,7 @@ module.exports = {
                 let cashAmount = 0;
                 let winAmount = 0;
                 if (uData && uData._id && cData && cData._id) {
-                    const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id)});
+                    const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id),expiry_date:{$gte:new Date()}});
                     if (cSaleData && cSaleData._id && cSaleData.status && cSaleData.status == 1) {
 
                         response["message"] = "You have already purchased the coupon!!";
