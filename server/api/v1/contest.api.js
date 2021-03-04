@@ -1106,7 +1106,13 @@ module.exports = {
                         console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
                         let catid = matchContestData.category_id;
                         if(couponSaleData && couponSaleData.length>0){
-                            let  constestIdsData  =  _.find(couponSaleData,{category_id:catid.toString()});
+                            couponSaleData = couponSaleData.map(item => {
+                                let container = {};
+                                container.category_id = ObjectId(item.category_id);
+                                container.offer_data = item.offer_data;
+                                return container;
+                            });
+                            let  constestIdsData  =  _.find(couponSaleData,{category_id:ObjectId(catid)});
                             if(constestIdsData && constestIdsData.category_id){
                                let offDataArray = constestIdsData.offer_data;
                                console.log('constestIdsData****',constestIdsData);

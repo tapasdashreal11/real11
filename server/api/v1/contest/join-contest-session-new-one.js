@@ -191,7 +191,13 @@ module.exports = async (req, res) => {
                                                             if (cSaleData && cSaleData._id && cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0) {
                                                                 let catid = matchContest.category_id;
                                                                 couponSaleData = cSaleData.coupon_contest_data;
-                                                                let constestIdsData = _.find(couponSaleData, { category_id: catid.toString() });
+                                                                couponSaleData = couponSaleData.map(item => {
+                                                                    let container = {};
+                                                                    container.category_id = ObjectId(item.category_id);
+                                                                    container.offer_data = item.offer_data;
+                                                                    return container;
+                                                                });
+                                                                let constestIdsData = _.find(couponSaleData, { category_id: ObjectId(catid) });
                                                                 if (constestIdsData && constestIdsData.category_id) {
                                                                     let offDataArray = constestIdsData.offer_data;
                                                                     console.log('constestIdsData****', constestIdsData);
