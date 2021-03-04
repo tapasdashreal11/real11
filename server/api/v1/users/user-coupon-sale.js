@@ -40,7 +40,7 @@ module.exports = {
                         const cData = await Coupon.find({ status: 1 },proObj).limit(20).sort({ _id: -1 });
                         let saleObj = {'coupon_credit':1,'coupon_used':1,'status':1,'user_id':1,'coupon_id':1,'coupon_contest_data':1};
                         const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 },saleObj).sort({ _id: -1 });
-                        result.coupon_list = cData || [];
+                        result.coupon_list = cData || []; 
                         result.my_coupons = cSaleData || {};
                         console.log('cSaleData***',cSaleData);
                         redis.redisObj.set('vip-coupons-' + user_id, JSON.stringify(cData || []));
