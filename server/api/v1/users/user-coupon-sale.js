@@ -109,7 +109,7 @@ module.exports = {
                             await Transaction.create([txnEntity], { session: session });
                             await session.commitTransaction();
                             session.endSession();
-
+                            redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(csaleObj || {}));
                             response["status"] = true;
                             response["message"] = "Coupon Purchase Successfully!!";
                             return res.json(response);
