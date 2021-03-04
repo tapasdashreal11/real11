@@ -25,6 +25,7 @@ module.exports = {
                         } else {
                             let saleObj = {'coupon_credit':1,'coupon_used':1,'status':1,'user_id':1,'coupon_id':1,'coupon_contest_data':1};
                             const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 },saleObj);
+                            console.log('cSaleData***********',cSaleData);
                             result.my_coupons = cSaleData || {};
                             redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
                         }
@@ -41,6 +42,7 @@ module.exports = {
                         const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 },saleObj).sort({ _id: -1 });
                         result.coupon_list = cData || [];
                         result.my_coupons = cSaleData || {};
+                        console.log('cSaleData***',cSaleData);
                         redis.redisObj.set('vip-coupons-' + user_id, JSON.stringify(cData || []));
                         redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData || {}));
                         response["data"] = result;
@@ -194,7 +196,7 @@ module.exports = {
             return res.json(response);
         }
     },
-    userCouponResume: async (req, res) => {
+    userCouponRevoke: async (req, res) => {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
             let { coupon_id } = req.params;
