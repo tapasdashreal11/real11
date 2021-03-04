@@ -17,6 +17,7 @@ var couponSaleSchema = new Schema({
     coupon_img: { type: String, default: '' },
     coupon_contest_data: { type: Array, default: [] },
     description: { type: String, default: '' },
+    coupon_expiry :{ type: Date},
     createAt: {
         type: Date, default: Date.now()
     }

@@ -23,7 +23,7 @@ var couponSaleSchema = new Schema({
     status: {
         type: Number, default: 1
     },
-    expiry_date: { type: String, default: '' },
+    expiry_date: { type: Date},
     create_date: {
         type: Date, default: Date.now()
     }

@@ -90,7 +90,7 @@ module.exports = {
                         let winAmount = paymentCal.winnging_amount;
                         let entryFee = cData.coupon_amount;
                         if (entryFee == (winAmount + cashAmount)) {
-                            let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.expiry_date };
+                            let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.coupon_expiry };
                             await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true,session: session });
                             //await CouponSale.create([csaleObj], sessionOpts);
                            
