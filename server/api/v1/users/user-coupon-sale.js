@@ -23,8 +23,9 @@ module.exports = {
                         if (mycouponList) {
                             result.my_coupons = mycouponList;
                         } else {
-                            const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 });
-                            result.my_coupons = cSaleData;
+                            let saleObj = {'coupon_credit':1,'coupon_used':1,'status':1,'user_id':1,'coupon_id':1,'coupon_contest_data':1};
+                            const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 },saleObj);
+                            result.my_coupons = cSaleData || {};
                             redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
                         }
 
@@ -34,12 +35,14 @@ module.exports = {
                         response["message"] = "";
                         return res.json(response);
                     } else {
-                        const cData = await Coupon.find({ status: 1 }).limit(20).sort({ _id: -1 });
-                        const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 }).sort({ _id: -1 });
-                        result.coupon_list = cData;
-                        result.my_coupons = cSaleData;
-                        redis.redisObj.set('vip-coupons-' + user_id, JSON.stringify(cData));
-                        redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
+                        let proObj = {'user_id':1,'coupon_name':1,'coupon_amount':1,'expiry_date':1,'coupon_credit':1,'coupon_sale_count':1,'coupon_img':1,'coupon_contest_data':1,'description':1,'coupon_img':1};
+                        const cData = await Coupon.find({ status: 1 },proObj).limit(20).sort({ _id: -1 });
+                        let saleObj = {'coupon_credit':1,'coupon_used':1,'status':1,'user_id':1,'coupon_id':1,'coupon_contest_data':1};
+                        const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 },saleObj).sort({ _id: -1 });
+                        result.coupon_list = cData || [];
+                        result.my_coupons = cSaleData || {};
+                        redis.redisObj.set('vip-coupons-' + user_id, JSON.stringify(cData || []));
+                        redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData || {}));
                         response["data"] = result;
                         response["status"] = true;
                         response["message"] = "";
@@ -127,7 +130,7 @@ module.exports = {
                 await session.abortTransaction();
                 session.endSession();
                 console.log("*****err.message", err.message);
-                response["message"] = err.message;
+                response["message"] = 'Something went wrong!!';
                 return res.json(response);
             } finally {
                 // ending the session
@@ -173,7 +176,7 @@ module.exports = {
                             response["message"] = "";
                         } else {
                             response["status"] = true;
-                            response["message"] = "You have low case balance to purchase the coupon.Please add sufficient amount to purchase the coupon!";
+                            response["message"] = "You have low case balance to purchase the coupon. Please add sufficient amount to purchase the coupon!!";
                         }
                         return res.json(response);
                     }
@@ -206,6 +209,7 @@ async function getPromiseForCouponData(key, defaultValue) {
         })
     })
 }
+
 async function calCualteFee(entryFee,cash_balance,winnging_balance){
     let remainingFee = entryFee;
     let dedCashAmount = 0;
