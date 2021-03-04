@@ -209,7 +209,7 @@ router.get('/api/v1/withdraw-history', auth.authenticate.jwtLogin, withdrawHisto
 router.get('/api/v1/user-coupon-purchase/:coupon_id',auth.authenticate.jwtLogin, userCouponPurchase);
 router.get('/api/v1/user-coupon-wallet/:coupon_id',auth.authenticate.jwtLogin, userCouponWalletAmount);
 router.get('/api/v1/user-coupon-list', auth.authenticate.jwtLogin,userCouponList); //
-router.get('/api/v1/user-coupon-revoke', auth.authenticate.jwtLogin,userCouponRevoke); 
+router.get('/api/v1/user-coupon-revoke/:coupon_id', auth.authenticate.jwtLogin,userCouponRevoke); 
 
 router.post('/api/v1/ask-to-aakash',auth.authenticate.jwtLogin, askToAakash);
 router.post('/api/v1/edit-user-team-name', auth.authenticate.jwtLogin, editUserTeamName);
