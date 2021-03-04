@@ -193,6 +193,37 @@ module.exports = {
             response["message"] = error.message;
             return res.json(response);
         }
+    },
+    userCouponResume: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let { coupon_id } = req.params;
+            const user_id = req.userId;
+            try {
+                if (coupon_id && user_id) {
+                    const cSaleData = await CouponSale.findOneAndUpdate({user_id: ObjectId(user_id),coupon_id: ObjectId(coupon_id)},{$set:{status:0}});
+                    if(cSaleData){
+                         response["status"] = true;
+                         response["message"] = "";
+                         return res.json(response);
+                    } else {
+                        response["message"] = "Something went wrong!!";
+                        response["status"] = false;
+                         return res.json(response);
+                    }
+                    
+                } else {
+                    response["message"] = "Something went wrong!!";
+                    return res.json(response);
+                }
+            } catch (err) {
+                response["message"] = err.message;
+                return res.json(response);
+            }
+        } catch (error) {
+            response["message"] = error.message;
+            return res.json(response);
+        }
     }
 };
 
