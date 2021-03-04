@@ -23,11 +23,10 @@ module.exports = {
                         if (mycouponList) {
                             result.my_coupons = mycouponList;
                         } else {
-                            let saleObj = {'coupon_credit':1,'coupon_used':1,'status':1,'user_id':1,'coupon_id':1,'coupon_contest_data':1};
-                            const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 },saleObj);
+                            const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id) });
                             console.log('cSaleData***********',cSaleData);
                             result.my_coupons = cSaleData || {};
-                            redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
+                            redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData|| {}));
                         }
 
                         result.coupon_list = couponList;
