@@ -9,8 +9,8 @@ const { TransactionTypes } = require('../../../constants/app');
 const { startSession } = require('mongoose');
 module.exports = {
     userCouponList: async (req, res) => {
+        var response = { status: false, message: "Invalid Request", data: {} };
         try {
-            var response = { status: false, message: "Invalid Request", data: {} };
             const user_id = req.userId;
             let result = { coupon_list: [], my_coupons: {} };
             let redisKeyForVipCouponsList = 'vip-coupons-' + user_id;
@@ -64,8 +64,8 @@ module.exports = {
         }
     },
     userCouponPurchase: async (req, res) => {
+        var response = { status: false, message: "Invalid Request", data: {} };
         try {
-            var response = { status: false, message: "Invalid Request", data: {} };
             let { coupon_id } = req.params;
             const user_id = req.userId;
             const session = await startSession()
@@ -156,8 +156,8 @@ module.exports = {
         }
     },
     userCouponWalletAmount: async (req, res) => {
+        var response = { status: false, message: "Invalid Request", data: {} };
         try {
-            var response = { status: false, message: "Invalid Request", data: {} };
             let { coupon_id } = req.params;
             const user_id = req.userId;
             try {
@@ -209,8 +209,8 @@ module.exports = {
         }
     },
     userCouponRevoke: async (req, res) => {
+        var response = { status: false, message: "Invalid Request", data: {} };
         try {
-            var response = { status: false, message: "Invalid Request", data: {} };
             let { coupon_id } = req.params;
             const user_id = req.userId;
             try {
