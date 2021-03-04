@@ -20,7 +20,7 @@ module.exports = {
                     let couponList = await getPromiseForCouponData(redisKeyForVipCouponsList, "[]");
                     if (couponList && couponList.length > 0) {
                         let mycouponList = await getPromiseForCouponData(redisKeyForUserMyCoupons, "{}");
-                        if (mycouponList) {
+                        if (mycouponList && mycouponList.user_id) {
                             result.my_coupons = mycouponList;
                         } else {
                             const cSaleData = await CouponSale.findOne({user_id: ObjectId(user_id) });
