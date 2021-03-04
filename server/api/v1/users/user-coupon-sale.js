@@ -85,40 +85,56 @@ module.exports = {
                         return res.json(response);
                     } else {
                         // coupon is not purchased by this user_id now can purchase coupon
-                        const paymentCal = await calCualteFee(cData.coupon_amount,uData.cash_balance,uData.winning_balance);
-                        let cashAmount = paymentCal.cash_amount;
-                        let winAmount = paymentCal.winnging_amount;
                         let entryFee = cData.coupon_amount;
-                        if (entryFee == (winAmount + cashAmount)) {
-                            let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.coupon_expiry };
-                            await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true,session: session });
-                            //await CouponSale.create([csaleObj], sessionOpts);
-                           
-                            await Coupon.update({ _id: cData._id }, { $inc: { coupon_sale_count: +1 } }, sessionOpts);
-                            let txnEntity = {};
-                            txnEntity.user_id = user_id;
-                            txnEntity.txn_amount = cData.coupon_amount;
-                            txnEntity.currency = 'INR';
-                            txnEntity.txn_date = Date.now();
-                            txnEntity.created = Date.now();
-                            let date = new Date();
-                            txnEntity.local_txn_id = 'DD' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
-                            txnEntity.added_type = TransactionTypes.COUPON_PURCHASE_TXN; // Coupon purchase txn
-                            txnEntity.status = 1; // status
-                            await Users.update({ _id: user_id }, { $inc: { cash_balance: -cashAmount,winning_balance: -winAmount } }, sessionOpts);
-                            await Transaction.create([txnEntity], { session: session });
-                            await session.commitTransaction();
-                            session.endSession();
-                            redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(csaleObj || {}));
-                            response["status"] = true;
-                            response["message"] = "Coupon Purchase Successfully!!";
-                            return res.json(response);
-                        } else { 
-                            await session.abortTransaction();
-                            session.endSession();
-                            response["message"] = "You have low case balance in your case  wallet.Please add money to purchase the coupon!!";
-                            return res.json(response);
+                        if(entryFee>0){
+                            const paymentCal = await calCualteFee(cData.coupon_amount,uData.cash_balance,uData.winning_balance);
+                            let cashAmount = paymentCal.cash_amount;
+                            let winAmount = paymentCal.winnging_amount;
+                            if (entryFee == (winAmount + cashAmount)) {
+                                let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.coupon_expiry };
+                                await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true,session: session });
+                                //await CouponSale.create([csaleObj], sessionOpts);
+                               
+                                await Coupon.update({ _id: cData._id }, { $inc: { coupon_sale_count: +1 } }, sessionOpts);
+                                let txnEntity = {};
+                                txnEntity.user_id = user_id;
+                                txnEntity.txn_amount = cData.coupon_amount;
+                                txnEntity.currency = 'INR';
+                                txnEntity.txn_date = Date.now();
+                                txnEntity.created = Date.now();
+                                let date = new Date();
+                                txnEntity.local_txn_id = 'DD' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
+                                txnEntity.added_type = TransactionTypes.COUPON_PURCHASE_TXN; // Coupon purchase txn
+                                txnEntity.status = 1; // status
+                                await Users.update({ _id: user_id }, { $inc: { cash_balance: -cashAmount,winning_balance: -winAmount } }, sessionOpts);
+                                await Transaction.create([txnEntity], { session: session });
+                                await session.commitTransaction();
+                                session.endSession();
+                                redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(csaleObj || {}));
+                                response["status"] = true;
+                                response["message"] = "Coupon Purchase Successfully!!";
+                                return res.json(response);
+                            } else { 
+                                await session.abortTransaction();
+                                session.endSession();
+                                response["message"] = "You have low case balance in your wallet. Please add money to purchase the coupon!!";
+                                return res.json(response);
+                            }
+                        } else if(entryFee==0){
+                                let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.coupon_expiry };
+                                await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true,session: session });
+                                //await CouponSale.create([csaleObj], sessionOpts);
+                               
+                                await Coupon.update({ _id: cData._id }, { $inc: { coupon_sale_count: +1 } }, sessionOpts);
+                                await session.commitTransaction();
+                                session.endSession();
+                                redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(csaleObj || {}));
+                                response["status"] = true;
+                                response["message"] = "Coupon Purchase Successfully!!";
+                                return res.json(response);
                         }
+
+                        
                     }
 
                 } else {
