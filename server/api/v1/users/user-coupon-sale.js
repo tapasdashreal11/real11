@@ -78,7 +78,6 @@ module.exports = {
                 if (uData && uData._id && cData && cData._id) {
                     const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 });
                     if (cSaleData && cSaleData._id) {
-
                         await session.abortTransaction();
                         session.endSession();
                         response["message"] = "You have already purchased the coupon!!";
