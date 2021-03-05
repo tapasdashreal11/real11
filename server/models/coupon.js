@@ -19,6 +19,7 @@ var couponSaleSchema = new Schema({
     description: { type: String, default: '' },
     coupon_expiry :{ type: Date},
     coupon_limit :{type: Number},
+    coupon_duration :{type: Number},
     createAt: {
         type: Date, default: Date.now()
     }

@@ -7,6 +7,7 @@ const Transaction = require("../../../models/transaction");
 const redis = require('../../../../lib/redis');
 const { TransactionTypes } = require('../../../constants/app');
 const { startSession } = require('mongoose');
+const moment = require('moment');
 module.exports = {
     userCouponList: async (req, res) => {
         var response = { status: false, message: "Invalid Request", data: {} };
@@ -104,8 +105,10 @@ module.exports = {
                                         response.error_code = null;
                                         return res.json(response);
                                     }
+                                    const couponDuration = cData.coupon_duration ? cData.coupon_duration:1;
+                                    let couponExpireDateUp =  moment().utc().add(couponDuration,'days').toDate();
+                                    let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: couponExpireDateUp };
 
-                                    let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.coupon_expiry };
                                     await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true, session: session });
                                     let txnEntity = {};
                                     txnEntity.user_id = user_id;
