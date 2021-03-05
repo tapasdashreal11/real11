@@ -209,7 +209,7 @@ module.exports = async (req, res) => {
                                                                         retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
                                                                         let diff = cSaleData.coupon_credit && cSaleData.coupon_used ? cSaleData.coupon_credit - cSaleData.coupon_used : 0;
                                                                         let status_value = diff && diff == 1 ? 0 : 1;
-
+                                                                        redis.redisObj.del('my-coupons-' + user_id) //force user to get data from db
                                                                         await CouponSale.update({ user_id: ObjectId(user_id) }, { $set: { status: status_value }, $inc: { coupon_used: +1 } }, sessionOpts);
                                                                     }
 
