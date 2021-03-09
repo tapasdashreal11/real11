@@ -14,7 +14,7 @@ module.exports = {
         try {
             const user_id = req.userId;
             let result = { coupon_list: [], my_coupons: {} };
-            let redisKeyForVipCouponsList = 'vip-coupons-' + user_id;
+            let redisKeyForVipCouponsList = 'vip-coupons-list';
             let redisKeyForUserMyCoupons = 'my-coupons-' + user_id;
             try {
                 if (user_id) {
@@ -43,7 +43,7 @@ module.exports = {
                         result.coupon_list = cData || [];
                         result.my_coupons = cSaleData || {};
                         console.log('cSaleData***', cSaleData);
-                        redis.redisObj.set('vip-coupons-' + user_id, JSON.stringify(cData || []));
+                        redis.redisObj.set(redisKeyForVipCouponsList, JSON.stringify(cData || []));
                         redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData || {}));
                         response["data"] = result;
                         response["status"] = true;
