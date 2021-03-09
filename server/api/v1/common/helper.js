@@ -257,7 +257,7 @@ const sendSMTPMail = (to, subject, message) => {
       if (error) {
         console.log(error);
       } else {
-        console.log(info);
+        console.log("mail sent on:", info.accepted);
       }
     });
   }catch(error) {
