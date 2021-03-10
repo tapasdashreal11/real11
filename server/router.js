@@ -132,6 +132,9 @@ const { imageFilter } = require("./api/v1/common/helper");
 /** update player image */
 const playerImageDirPath = path.resolve('server', 'public', 'images');
 
+// live fantasy api section 
+const { liveFantasyMatchList } = require('./api/v1/live-fantasy/lf-match-list');
+
 const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
@@ -333,6 +336,9 @@ router.post('/cron/bizwebhook', function(req, res) {
     }
     return res.send({ status: 'success' });
 });
+
+// live fantasy api section 
+ router.get('/api/v1/lf-match-list/:pmatch_id/:sport', liveFantasyMatchList);
 
 /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
