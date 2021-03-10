@@ -39,7 +39,7 @@ module.exports = {
                         let proObj = { 'user_id': 1, 'coupon_name': 1, 'coupon_amount': 1, 'expiry_date': 1, 'coupon_credit': 1, 'coupon_sale_count': 1, 'coupon_img': 1, 'coupon_contest_data': 1, 'description': 1, 'coupon_img': 1 };
                         const cData = await Coupon.find({ status: 1 }).limit(20).sort({ _id: -1 });
                        // let saleObj = { 'coupon_credit': 1, 'coupon_used': 1, 'status': 1, 'user_id': 1, 'coupon_id': 1, 'coupon_contest_data': 1 };
-                        const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 }, saleObj).sort({ _id: -1 });
+                        const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 }).sort({ _id: -1 });
                         result.coupon_list = cData || [];
                         result.my_coupons = cSaleData || {};
                         console.log('cSaleData***', cSaleData);
