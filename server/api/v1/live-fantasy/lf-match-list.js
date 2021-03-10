@@ -37,6 +37,13 @@ module.exports = {
     liveFantasyMatchContestList: async (req, res) => {
         try {
             const { match_id, sport,series_id } = req.params;
+            const user_id = req.userId;
+            let resObj = {
+                match_contest: [],
+                my_contests: 0,
+                joined_contest_ids:[],
+                user_coupons: {},
+            };
             if(match_id && sport){
                 let filter = {
                     "match_id": parseInt(match_id),
@@ -44,14 +51,16 @@ module.exports = {
                     is_full: { $ne: 1 }
                 };
                 let contestList  = await getLfMatchContest(filter,false);
+                if(user_id){
+                    let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
+                    let userCoupons = await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}",user_id);
+                    resObj['user_coupons'] = userCoupons || {};
+                }
+                resObj['match_contest'] = contestList || [];
+
                 if(contestList && contestList.length>0){
                     redis.setRedisForLf('lf-match-contest-list-'+ match_id + '-' + sport, contestList);
                 }
-                let resObj = {
-                    match_contest: contestList,
-                    my_contests: 0,
-                    joined_contest_ids:[],
-                };
                 
                 var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);
