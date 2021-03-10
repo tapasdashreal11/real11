@@ -38,7 +38,7 @@ module.exports = {
                     } else {
                         let proObj = { 'user_id': 1, 'coupon_name': 1, 'coupon_amount': 1, 'expiry_date': 1, 'coupon_credit': 1, 'coupon_sale_count': 1, 'coupon_img': 1, 'coupon_contest_data': 1, 'description': 1, 'coupon_img': 1 };
                         const cData = await Coupon.find({ status: 1 }).limit(20).sort({ _id: -1 });
-                        let saleObj = { 'coupon_credit': 1, 'coupon_used': 1, 'status': 1, 'user_id': 1, 'coupon_id': 1, 'coupon_contest_data': 1 };
+                       // let saleObj = { 'coupon_credit': 1, 'coupon_used': 1, 'status': 1, 'user_id': 1, 'coupon_id': 1, 'coupon_contest_data': 1 };
                         const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 }, saleObj).sort({ _id: -1 });
                         result.coupon_list = cData || [];
                         result.my_coupons = cSaleData || {};
@@ -107,7 +107,7 @@ module.exports = {
                                     }
                                     const couponDuration = cData.coupon_duration ? cData.coupon_duration:1;
                                     let couponExpireDateUp =  moment().utc().add(couponDuration,'days').toDate();
-                                    let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: couponExpireDateUp };
+                                    let csaleObj = {coupon_name: cData.coupon_name, description:cData.description,coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: couponExpireDateUp };
 
                                     await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true, session: session });
                                     let txnEntity = {};
@@ -162,8 +162,8 @@ module.exports = {
                                     return res.json(response);
                                 }
 
-                                let csaleObj = { coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.coupon_expiry };
-                                await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true, session: session });
+                                let csaleObj = {coupon_name: cData.coupon_name, description:cData.description, coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.coupon_expiry };
+                                await CouponSale.findOneAndUpdate({  user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true, session: session });
 
                                 await session.commitTransaction();
                                 session.endSession();

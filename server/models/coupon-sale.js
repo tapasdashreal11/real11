@@ -11,6 +11,8 @@ var couponSaleSchema = new Schema({
     coupon_id: {
         type: ObjectId
     },
+    coupon_name: { type: String, default: '' },
+    description: { type: String, default: '' },
     coupon_credit: {
         type: Number, default: 0
     },
