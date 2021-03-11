@@ -54,7 +54,7 @@ module.exports = {
                 if(user_id){
                     let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
                     let userCoupons = await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}",user_id);
-                    resObj['user_coupons'] = userCoupons || {};
+                    resObj['user_coupons'] = !_.isEmpty(userCoupons) ? JSON.parse(userCoupons)  : {};
                 }
                 resObj['match_contest'] = contestList || [];
 
