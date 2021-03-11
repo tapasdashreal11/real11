@@ -133,7 +133,7 @@ const { imageFilter } = require("./api/v1/common/helper");
 const playerImageDirPath = path.resolve('server', 'public', 'images');
 
 // live fantasy api section 
-const { liveFantasyMatchList,liveFantasyMatchContestList } = require('./api/v1/live-fantasy/lf-match-list');
+const { liveFantasyMatchList,liveFantasyMatchContestList,liveFantasyMatchContestWallet } = require('./api/v1/live-fantasy/lf-match-list');
 
 const storage = multer.diskStorage({
 
@@ -340,6 +340,7 @@ router.post('/cron/bizwebhook', function(req, res) {
 // live fantasy api section 
  router.get('/api/v1/lf-match-list/:pmatch_id/:sport', liveFantasyMatchList); 
  router.get('/api/v1/lf-contest-list/:match_id/:sport',auth.authenticate.jwtLogin,liveFantasyMatchContestList);
+ router.post('/api/v1/lf-contest-wallet',auth.authenticate.jwtLogin,liveFantasyMatchContestWallet);
 /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
   if(req.query.STATUS && req.query.STATUS == "TXN_SUCCESS"){
