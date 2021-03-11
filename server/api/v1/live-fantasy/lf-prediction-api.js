@@ -65,5 +65,31 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
+    predictionList: async (req, res) => {
+        let {
+            series_id, match_id, sport
+        } = req.params;
+        let user_id = req.userId;
+        sport = parseInt(sport) || 1;
+        try {
+            if (!series_id || !match_id || !sport) {
+                return res.send(ApiUtility.failed('Please send proper data'));
+            }
+           let pList = await Prediction.find({
+                user_id: user_id,
+                match_id: match_id,
+                series_id: series_id,
+                sport: sport
+            });
+           let respons = {}
+            respons.message = '';
+            respons.prediction = pList || [];
+            return res.send(ApiUtility.success(respons));
+            
+        } catch (error) {
+            console.log("Create predction****", error)
+            return res.send(ApiUtility.failed(error.message));
+        }
+    }
 }
 
