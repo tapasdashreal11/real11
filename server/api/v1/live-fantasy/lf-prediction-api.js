@@ -41,7 +41,7 @@ module.exports = {
                             series_id: series_id,
                             team_count: team_count,
                             sport: sport,
-                            prediction:prediction,
+                            prediction: prediction,
                             created: new Date()
                         };
                         let teamId = new ObjectId()
