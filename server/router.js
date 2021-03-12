@@ -345,7 +345,7 @@ router.post('/cron/bizwebhook', function(req, res) {
  router.post('/api/v1/lf-contest-wallet',auth.authenticate.jwtLogin,liveFantasyMatchContestWallet); //
  router.post('/api/v1/lf-prediction-add',auth.authenticate.jwtLogin,createPrediction); //
  router.get('/api/v1/lf-prediction-list/:series_id/:match_id/:sport',auth.authenticate.jwtLogin,predictionList); //
- router.post('/api/v1/lf-prediction-add',auth.authenticate.jwtLogin,lfJoinContest); 
+ router.post('/api/v1/lf-joincontest',auth.authenticate.jwtLogin,lfJoinContest); 
 
  /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)

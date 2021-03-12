@@ -1,35 +1,35 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
 	ObjectId = Schema.ObjectId;
-
 var playerTeamContestSchema = new Schema({
-	// player_team_id: { type: mongoose.Schema.Types.ObjectId, ref: 'player_team', index: true },
-	parent_match_id: { type: Number, default: 0 },
-	match_id: { type: Number, default: 0 },
+	prediction_id: { type: mongoose.Schema.Types.ObjectId},
+	parent_match_id: { type: Number },
+	match_id: { type: Number },
 	series_id: { type: Number },
 	sport: { type: Number },
 	contest_id: { type: mongoose.Schema.Types.ObjectId },
 	user_id: { type: mongoose.Schema.Types.ObjectId},
 	rank: { type: Number,default:0 },
-	counter: { type: Number },
-	previous_rank: { type: Number },
-	winning_amount: { type: Number },
+	counter: { type: Number,default:0 },
+	previous_rank: { type: Number,default:0 },
+	winning_amount: { type: Number,default:0 },
 	winning_amount_distributed: { type: Number, enum: [1, 0], default: 0 },
 	// match_start_notification: { type: Number, enum: [1,0], default: 0 },
 	match_end_notification: { type: Boolean },
-	winning_amount_notification: { type: Number },
-	points: { type: Number },
-	commision: { type: Number },
+	winning_amount_notification: { type: Number,default:0 },
+	points: { type: Number ,default:0},
+	commision: { type: Number,default:0 },
 	is_cancelled: { type: Number, default: 0 },
 	is_deleted: { type: Number, default: 0 },
-	prediction: { type:Object},
+	prediction: { type: Object },
 	join_contest_detail: {
-		bonus_amount: {type: Number},
-		winning_amount: {type: Number},
-		deposit_cash: {type: Number},
-		extra_amount: {type: Number},
-		total_amount: {type: Number},
-		admin_comission: {type: Number},
+		deduct_bonus_amount: {type: Number,default:0},
+		deduct_winning_amount: {type: Number,default:0},
+		deduct_deposit_cash: {type: Number,default:0},
+		deduct_extra_amount: {type: Number,default:0},
+		total_amount: {type: Number,default:0},
+		admin_comission: {type: Number,default:0},
+		retention_bonus:{type: Number,default:0}
 	}
 });
 module.exports = mongoose.model('lf_joined_contest', playerTeamContestSchema, 'lf_joined_contest');
