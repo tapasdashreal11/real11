@@ -89,7 +89,7 @@ module.exports = {
           data.is_youtuber= (user.is_youtuber == 1) ? true : false;
           data.pan_reject_reason = user.pan_reject_reason || null;
           data.bank_reject_reason = user.bank_reject_reason || null;
-          data.withdraw_message  = "Currently, withdrawal requests are not processing due to banking partner's service problems, Apologies for the inconvenience caused to you!";
+          data.withdraw_message  = "";
           data.deposite_message  = "Rupay cardholders, please use paytm payment gateway for better success rate.";
           data.change_bank_req = user && user.change_bank_req ? user.change_bank_req: false ;
           
