@@ -94,6 +94,7 @@ module.exports = async (req, res) => {
                                                 contest.contest_id = contest_id;
                                                 contest.user_id = user_id;
                                                 contest.total_amount = contestData.entry_fee;
+                                                contest.parent_match_id = contestData && contestData.parent_match_id ? contestData.parent_match_id: parent_match_id;
                                                 let useableBonusPer = contestData.used_bonus || 0;
                                                 let contestType = contestData.contest_type;
                                                 let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
@@ -337,7 +338,7 @@ module.exports = async (req, res) => {
 
                                                                 return res.send(ApiUtility.failed("Player team id not found."));
                                                             } else {
-                                                                contest.parent_match_id = contestData && contestData.parent_match_id ? contestData.parent_match_id: parent_match_id;
+                                                               
                                                                 totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
                                                             }
                                                             
