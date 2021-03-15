@@ -104,6 +104,9 @@ module.exports = {
                     const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1,expiry_date:{$gte:new Date()} });
                     console.log("cSaleData***",cSaleData);
                      matchContestData = await LiveFantasyMatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
+                     if(matchContestData && !matchContestData._id){
+                        return res.send(ApiUtility.failed("Something went wrong in params!!"));
+                     }
                      entryFee = (matchContestData && matchContestData.entry_fee) ? matchContestData.entry_fee : 0;
                      if(cSaleData && cSaleData._id){
                         couponSaleData = cSaleData.coupon_contest_data; 
@@ -124,7 +127,7 @@ module.exports = {
                     }
                     youtuber_code = matchContestData && matchContestData.youtuber_code ? matchContestData.youtuber_code: 0;
                     data['youtuber_code'] = youtuber_code;
-                    data['contest_shareable'] = matchContestData && matchContestData.contest_shareable ? matchContestData.contest_shareable : 0;
+                    data['contest_shareable'] = 0;
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
@@ -140,7 +143,7 @@ module.exports = {
                 let calEntryFees = entryFee;
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
-                        console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
+                        //console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
                         let catid = matchContestData.category_id;
                         if(couponSaleData && couponSaleData.length>0){
                             couponSaleData = couponSaleData.map(item => {
