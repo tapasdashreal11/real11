@@ -494,6 +494,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
                 entityM.parent_contest_id = contestData._id;
             }
             entityM.match_id = match_id;
+            entityM.parent_match_id = contestData.parent_match_id 
             entityM.contest_id = newContestId;
             entityM.series_id = series_id;
             entityM.category_id = ObjectId(contestData.category_id);
