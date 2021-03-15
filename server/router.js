@@ -136,6 +136,7 @@ const playerImageDirPath = path.resolve('server', 'public', 'images');
 const { liveFantasyMatchList,liveFantasyMatchContestList,liveFantasyMatchContestWallet } = require('./api/v1/live-fantasy/lf-match-list');
 const { createPrediction,predictionList } = require('./api/v1/live-fantasy/lf-prediction-api');
 const lfJoinContest = require('./api/v1/live-fantasy/lf-join-contest');
+const lfTransactionHistory = require('./api/v1/live-fantasy/lf-transation-history');
 
 const storage = multer.diskStorage({
 
@@ -346,6 +347,7 @@ router.post('/cron/bizwebhook', function(req, res) {
  router.post('/api/v1/lf-prediction-add',auth.authenticate.jwtLogin,createPrediction); //
  router.get('/api/v1/lf-prediction-list/:series_id/:match_id/:sport',auth.authenticate.jwtLogin,predictionList); //
  router.post('/api/v1/lf-joincontest',auth.authenticate.jwtLogin,lfJoinContest); 
+ router.get('/api/v1/lf-transation-history', auth.authenticate.jwtLogin, lfTransactionHistory);
 
  /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
