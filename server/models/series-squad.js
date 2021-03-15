@@ -115,6 +115,7 @@ var seriesSquadSchema = new Schema({
 	event_name: { type: String, default:"" },
 	league_code: { type: String, default:"" },
 	end_date: { type: Date },
+	over_match: {type:Boolean, default: false},
 }, {
 	timestamps: true
 });

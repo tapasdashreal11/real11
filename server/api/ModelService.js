@@ -841,6 +841,7 @@ class ModelService {
                             "total_contest": {$cond: { if: { $ne: [ "$contest_count", 0 ] }, then: "$contest_count", else: 0 }},
                             // "total_contest": {$size : "$match_contest_count"},
                             "server_time": serverTime1,
+                            "over_match":"$over_match",
                             "playing_11": "$playing_11",
                             "sort": "$sort",
                             "xfactors":"$xfactors",
