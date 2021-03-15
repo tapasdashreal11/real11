@@ -1480,7 +1480,6 @@ class ModelService {
         });
     }
 
-                    let oneMonthDateUp =  moment().utc().add('30','days').toDate();
     getBannerList() {
         return new Promise((resolve, reject) => {
             try{
