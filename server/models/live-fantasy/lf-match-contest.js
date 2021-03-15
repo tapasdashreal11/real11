@@ -30,6 +30,7 @@ var matchContestSchema = new Schema({
 	before_time_bonus: { type: Number },
 	after_time_bonus: { type: Number },
 	usable_bonus_time: { type: Date },
+	parent_match_id: { type: Number },
 
 	// contest: { type: Object },
 	entry_fee: { type: Number },
