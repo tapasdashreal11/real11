@@ -247,6 +247,7 @@ module.exports = {
         } catch (error) {
             res.send(ApiUtility.failed(error.message));
         }
+                            if (contestValue.contest && contestValue.contest.breakup) {
     }
 }
 

@@ -98,6 +98,7 @@ module.exports = async (req, res) => {
                                                 let useableBonusPer = contestData.used_bonus || 0;
                                                 let contestType = contestData.contest_type;
                                                 let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
+                                                console.log('contest***',contest);
                                                 try {
                                                     let cashAmount = 0;
                                                     let winAmount = 0;
