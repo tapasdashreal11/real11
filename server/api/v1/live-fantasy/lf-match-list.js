@@ -1,6 +1,7 @@
 const { ObjectId } = require('mongodb');
 const LiveFantasyMatchList = require('../../../models/live-fantasy/lf-match-list-model');
 const LiveFantasyMatchContest = require('../../../models/live-fantasy/lf-match-contest');
+const LFPlayerTeamContest = require('../../../models/live-fantasy/lf_joined_contest');
 const CouponSale = require("../../../models/coupon-sale");
 const User = require('../../../models/user');
 const ApiUtility = require('../../api.utility');
@@ -247,7 +248,6 @@ module.exports = {
         } catch (error) {
             res.send(ApiUtility.failed(error.message));
         }
-                            if (contestValue.contest && contestValue.contest.breakup) {
     }
 }
 
