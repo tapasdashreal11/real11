@@ -44,7 +44,7 @@ var matchContestSchema = new Schema({
 	winning_amount_times: { type: Number },
 	winner_percent: { type: Number },
 	is_auto_create: { type: Number },
-	auto_create: { type: Number },
+	auto_create: { type: String },
 	used_bonus: { type: Number },
 	is_private: { type: Number, default: 0 },
 	maximum_team_size: { type: Number, default: 1 },

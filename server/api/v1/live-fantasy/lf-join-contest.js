@@ -5,6 +5,7 @@ const LFTransaction = require('../../../models/live-fantasy/lf_transaction');
 const LFPlayerTeamContest = require('../../../models/live-fantasy/lf_joined_contest');
 const LFMatchContest = require('../../../models/live-fantasy/lf-match-contest');
 const LFMatchList = require('../../../models/live-fantasy/lf-match-list-model');
+const LFMyContestModel = require('../../../models/live-fantasy/lf-my-contest-model');
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
@@ -16,6 +17,7 @@ const { startSession } = require('mongoose');
 const UserAnalysis = require("../../../models/user-analysis");
 const ContestInvite = require("../../../models/contest-invite");
 const CouponSale = require("../../../models/coupon-sale");
+const { ObjectID } = require('mongodb');
 
 
 module.exports = async (req, res) => {
@@ -55,8 +57,8 @@ module.exports = async (req, res) => {
                         } else {
                             let matchContest = results[1] ? results[1] : {};
                             let contestData = results[1] ? results[1] : '';
-
-                            var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id']}
+                            var parentContestId = (contestData && contestData.parent_contest_id) ? contestData.parent_contest_id : contestData.contest_id;
+                            var PlayerTeamContestFilter = { 'contest_id': contest_id,'prediction_id': ObjectId(prediction_id), 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id']}
                             let playerTeamRes = await LFPlayerTeamContest.findOne(PlayerTeamContestFilter);
                             if(playerTeamRes){
                                 return res.send(ApiUtility.failed("Already Joined Contest."));
@@ -175,13 +177,17 @@ module.exports = async (req, res) => {
                                                                 if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
                                                                     // Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId, contest_id, match_id);
                                                                     
-                                                                    contest.join_contest_detail.deduct_bonus_amount = bonusAmount;
-                                                                    contest.join_contest_detail.deduct_winning_amount = winAmount;
-                                                                    contest.join_contest_detail.deduct_deposit_cash = cashAmount;
-                                                                    contest.join_contest_detail.deduct_extra_amount = extraAmount;
-                                                                    contest.join_contest_detail.total_amount = entryFee;
-                                                                    contest.join_contest_detail.admin_comission = await calculateAdminComission(contestData);
-                                                                    contest.join_contest_detail.retention_bonus = retention_bonus_amount;
+                                                                    let jcd = {
+                                                                        deduct_bonus_amount : bonusAmount,
+                                                                        deduct_winning_amount : winAmount,
+                                                                        deduct_deposit_cash : cashAmount,
+                                                                        deduct_extra_amount : extraAmount,
+                                                                        total_amount : entryFee,
+                                                                        admin_comission : await calculateAdminComission(contestData),
+                                                                        retention_bonus : retention_bonus_amount,
+
+                                                                      }
+                                                                    contest.join_contest_detail = jcd; 
 
                                                                     let cons_cash_balance = bonusAmount;
                                                                     let cons_winning_balance = winAmount;
@@ -275,13 +281,17 @@ module.exports = async (req, res) => {
                                                             let status = TransactionTypes.JOIN_CONTEST;
                                                             let txnAmount = entryFee;
 
-                                                            contest.join_contest_detail.deduct_bonus_amount = bonusAmount;
-                                                            contest.join_contest_detail.deduct_winning_amount = winAmount;
-                                                            contest.join_contest_detail.deduct_deposit_cash = cashAmount;
-                                                            contest.join_contest_detail.deduct_extra_amount = extraAmount;
-                                                            contest.join_contest_detail.total_amount = entryFee;
-                                                            contest.join_contest_detail.admin_comission = await calculateAdminComission(contestData);
-                                                            contest.join_contest_detail.retention_bonus = retention_bonus_amount;
+                                                            let jcd = {
+                                                                deduct_bonus_amount : bonusAmount,
+                                                                deduct_winning_amount : winAmount,
+                                                                deduct_deposit_cash : cashAmount,
+                                                                deduct_extra_amount : extraAmount,
+                                                                total_amount : entryFee,
+                                                                admin_comission : await calculateAdminComission(contestData),
+                                                                retention_bonus : retention_bonus_amount,
+
+                                                              }
+                                                            contest.join_contest_detail = jcd; 
 
                                                             let entity = {
                                                                 user_id: userId,
@@ -415,7 +425,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
             await LFPlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
 
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
-
+                      console.log('contestData***',contestData);
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
                     // var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
@@ -423,8 +433,8 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     //var ddCount = mcCountRes + 1 ;
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
-                        //contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session);
-                        //await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
+                        contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session);
+                        await LFMatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     } else {
                         await session.commitTransaction();
                         session.endSession();
@@ -433,50 +443,29 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     await session.commitTransaction();
                     session.endSession();
                 }
+             
+                var newMyModelobj = {
+                    'match_id': match_id,
+                    "series_id": series_id,
+                    "user_id": user_id,
+                    "sport": match_sport,
+                    "player_team_contest_id": newPTC._id,
+                    "match_status": 'Not Started',
+                }
 
+                let totalContestKey = 1
+
+
+                //const sessionOpts = { session, new: true };
+                LFMyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, {$set:newMyModelobj ,$inc: { total_contest: 1 } }, { upsert: true, new: true }).then((MyContestModel) => {
+                    totalContestKey = MyContestModel.total_contest || 0;
+                });
+
+                return resolve(totalContestKey);
                 
 
 
-                let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
-                redis.getRedis(redisKey, (err, data) => {
-                    ////console.log("contest_id", contest_id, data)
-                    if (data) {
-                        let userContests = data;
-                        userContests.push(contest_id);
-                        data = userContests;
-                    } else {
-                        data = [contest_id];
-                    }
-                    var uniqueContestIds = data.filter((value, index, self) => {
-                        return self.indexOf(value) === index;
-                    });
-
-                    //////////console.log("uniqueContestIds", uniqueContestIds)
-
-                    var newMyModelobj = {
-                        'match_id': match_id,
-                        "series_id": series_id,
-                        "contest_id": contest_id,
-                        "user_id": user_id,
-                        "sport": match_sport,
-                        "player_team_contest_id": newPTC._id,
-                        "match_status": 'Not Started',
-                        "total_contest": uniqueContestIds.length
-                        //'$inc' : { "total_contest": 1 }
-                    }
-
-                    totalContestKey = uniqueContestIds.length
-
-
-                    //const sessionOpts = { session, new: true };
-                    /*MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true }).then((MyContestModel) => {
-                        mycontId = MyContestModel._id || 0;
-                    });
-                    mqtt.publishUserJoinedContestCounts(match_id, user_id, JSON.stringify({ contest_count: uniqueContestIds.length }))
-                    redis.setRedis(redisKey, data);*/
-
-                    return resolve(totalContestKey);
-                });
+                
                 // console.log("PlayerTeamContest000000000000000")
             });
         })
@@ -496,43 +485,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
 
 async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session) {
     try {
-
-        let catID = contestData.category_id;
-        let entity = {};
-        entity.category_id = catID;
-        entity.is_full = false;
-        entity.admin_comission = contestData.admin_comission;
-        entity.winning_amount = contestData.winning_amount;
-        entity.contest_size = contestData.contest_size;
-        entity.min_contest_size = contestData.min_contest_size;
-        entity.contest_type = contestData.contest_type;
-        entity.entry_fee = contestData.entry_fee;
-        entity.used_bonus = contestData.used_bonus;
-        entity.confirmed_winning = contestData.confirmed_winning;
-        entity.multiple_team = contestData.multiple_team;
-        entity.auto_create = contestData.auto_create;
-        entity.status = contestData.status;
-        entity.price_breakup = contestData.price_breakup;
-        entity.invite_code = contestData.invite_code;
-        entity.breakup = contestData.breakup;
-        entity.created = new Date();
-        entity.maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1);
-        if (parentContestId) {
-            entity.parent_id = parentContestId;
-        } else {
-            entity.parent_id = contestData._id;
-        }
-        entity.is_auto_create = 2;
-        // console.log('cResult************** before');
-        const newDataC = await Contest.create([entity], { session: session });
-
-
-        var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
-
-        // console.log('cResult************** after contest create in auto',cResult);
-
-        if (cResult && cResult._id) {
-            let newContestId = cResult._id;
+         let newContestId = new ObjectId();
             let entityM = {};
             if (parentContestId) {
                 entityM.parent_contest_id = parentContestId;
@@ -542,7 +495,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entityM.match_id = match_id;
             entityM.contest_id = newContestId;
             entityM.series_id = series_id;
-            entityM.category_id = ObjectId(catID);
+            entityM.category_id = ObjectId(contestData.category_id);
             entityM.invite_code = '1Q' + Math.random().toString(36).slice(-6);
             entityM.created = new Date();
             entityM.localteam = liveMatch.localteam || '';
@@ -553,73 +506,35 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entityM.admin_create = 0;
             entityM.joined_users = 0;
             entityM.sport = match_sport;
-            entityM.contest = {
-                entry_fee: contestData.entry_fee,
-                winning_amount: contestData.winning_amount,
-                contest_size: contestData.contest_size,
-                contest_type: contestData.contest_type,
-                confirmed_winning: contestData.confirmed_winning,
-                amount_gadget: contestData.amount_gadget,
-                category_id: contestData.category_id,
-                multiple_team: contestData.multiple_team,
-                contest_size: contestData.contest_size,
-                infinite_contest_size: contestData.infinite_contest_size,
-                winning_amount_times: contestData.winning_amount_times,
-                is_auto_create: contestData.is_auto_create,
-                auto_create: contestData.auto_create,
-                used_bonus: contestData.used_bonus,
-                winner_percent: contestData.winner_percent,
-                breakup: contestData.breakup,
-                maximum_team_size: contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
-            };
-
-
-            const dd = await MatchContest.create([entityM], { session: session });
+            entityM.entry_fee = contestData.entry_fee;
+            entityM.winning_amount = contestData.winning_amount;
+            entityM.contest_size = contestData.contest_size;
+            entityM.contest_type = contestData.contest_type;
+            entityM.confirmed_winning = contestData.confirmed_winning;
+            entityM.amount_gadget = contestData.amount_gadget;
+            entityM.category_id = contestData.category_id;
+            entityM.multiple_team = contestData.multiple_team;
+            entityM.contest_size = contestData.contest_size;
+            entityM.infinite_contest_size = contestData.infinite_contest_size;
+            entityM.winning_amount_times = contestData.winning_amount_times;
+            entityM.is_auto_create = contestData.is_auto_create;
+            entityM.auto_create = contestData.auto_create;
+            entityM.used_bonus = contestData.used_bonus;
+            entityM.winner_percent = contestData.winner_percent;
+            entityM.breakup = contestData.breakup;
+            entityM.maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
+            console.log('entityM****',entityM);
+            const dd = await LFMatchContest.create([entityM], { session: session });
             //console.log("dara at MatchContest in auto***",dd);
             await session.commitTransaction();
             session.endSession();
-
-            try {
-                let matchContestKey = RedisKeys.MATCH_CONTEST_LIST + match_id;
-                redis.getRedis(matchContestKey, (err, categories) => {
-                    let catId = contestData.category_id.toString();
-                    let catIndex = _.findIndex(categories, { "_id": catId });
-                    if (catIndex >= 0) {
-                        let contestIndex = _.findIndex(categories[catIndex].contests, { "contest_id": contest_id });
-                        if (contestIndex >= 0) {
-                            let newCOntestDeepObj = JSON.parse(JSON.stringify(categories[catIndex]['contests'][contestIndex]))
-                            categories[catIndex]['contests'].splice(contestIndex, 1);
-                            newCOntestDeepObj["contest_id"] = cResult._id;
-                            newCOntestDeepObj["parent_id"] = contest_id;
-                            if (categories[catIndex]['contests'].length === 0) {
-                                categories[catIndex].contests.push(newCOntestDeepObj);
-                            } else {
-                                categories[catIndex].contests.unshift(newCOntestDeepObj);
-                            }
-                            redis.setRedis(matchContestKey, categories);
-                        }
-                    }
-                });
-            } catch (errr) {
-                console.log('eorr in auto create redis***');
-            }
-
-
-            return cResult;
-        } else {
-            console.log('something went wrong autocreate***************************wrong in auto crete');
-            return {}
-        }
-
+            return entityM;
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
         console.log('sometjhing went wrong in autocreate***************************wrong in auto error');
         return {}
     }
-
-
-
 }
 /**
  * This is used to payment calculation before join paid contest

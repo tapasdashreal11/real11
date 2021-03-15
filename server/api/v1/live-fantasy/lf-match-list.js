@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb');
 const LiveFantasyMatchList = require('../../../models/live-fantasy/lf-match-list-model');
 const LiveFantasyMatchContest = require('../../../models/live-fantasy/lf-match-contest');
 const CouponSale = require("../../../models/coupon-sale");
+const User = require('../../../models/user');
 const ApiUtility = require('../../api.utility');
 const config = require('../../../config');
 const redis = require('../../../../lib/redis');
