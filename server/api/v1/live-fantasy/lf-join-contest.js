@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
         let data1 = {};
         let startTime = Date.now();
         const user_id = req.userId;
-        const { prediction_id,prediction, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        const { prediction_id,prediction,parent_match_id, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
@@ -337,6 +337,7 @@ module.exports = async (req, res) => {
 
                                                                 return res.send(ApiUtility.failed("Player team id not found."));
                                                             } else {
+                                                                contest.parent_match_id = parent_match_id
                                                                 totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
                                                             }
                                                             
