@@ -316,7 +316,7 @@ module.exports = {
 
                             let playerContestFilter = {
                                 'match_id': decoded['match_id'],
-                                'contest_id': contestValue.doc.contest._id,
+                                'contest_id': contestValue.doc.contest.contest_id,
                                 'user_id': decoded['user_id'],
                                 'sport':decoded['sport']
                             };
@@ -327,10 +327,11 @@ module.exports = {
                             let winningAmt = [];
 
                             let teamsJoined = await LFPlayerTeamContest.find(playerContestFilter);
-
+                            console.log(contestValue.doc.contest);
                             if (teamsJoined) {
                                 for (const joined of teamsJoined) {
-                                    myTeamIds.push({ "player_team_id": joined.player_team_id });
+                                    console.log(joined);
+                                    myTeamIds.push({ "player_team_id": joined.prediction_id });
                                     myTeamNo.push(1);
                                     winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
                                  
@@ -465,9 +466,9 @@ module.exports = {
                     data1.upcoming_match = upComingData;
                     data1.my_team_count = myTeams;
                     data1.my_teams = myTeams;
-                    data1.my_contests = teamsJoined.length || 0;
+                    data1.my_contests =  0;
                     data1.my_team_rank = myTeamRank;
-                   // data1.match_status = reviewStatus;
+                   
                 } else {
                     return res.send(ApiUtility.failed('User not found.'));
                 }

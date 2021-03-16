@@ -133,7 +133,7 @@ const { imageFilter } = require("./api/v1/common/helper");
 const playerImageDirPath = path.resolve('server', 'public', 'images');
 
 // live fantasy api section 
-const { liveFantasyMatchList,liveFantasyMatchContestList,liveFantasyMatchContestWallet } = require('./api/v1/live-fantasy/lf-match-list');
+const { liveFantasyMatchList,liveFantasyMatchContestList,liveFantasyMatchContestWallet,lfJoinedContestList } = require('./api/v1/live-fantasy/lf-match-list');
 const { createPrediction,predictionList } = require('./api/v1/live-fantasy/lf-prediction-api');
 const lfJoinContest = require('./api/v1/live-fantasy/lf-join-contest');
 const lfTransactionHistory = require('./api/v1/live-fantasy/lf-transation-history');
@@ -348,6 +348,7 @@ router.post('/cron/bizwebhook', function(req, res) {
  router.get('/api/v1/lf-prediction-list/:series_id/:match_id/:sport',auth.authenticate.jwtLogin,predictionList); //
  router.post('/api/v1/lf-joincontest',auth.authenticate.jwtLogin,lfJoinContest); 
  router.get('/api/v1/lf-transation-history', auth.authenticate.jwtLogin, lfTransactionHistory);
+ router.get('/api/v1/lf-joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, lfJoinedContestList);
 
  /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
