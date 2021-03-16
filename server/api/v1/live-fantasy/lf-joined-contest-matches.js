@@ -17,7 +17,6 @@ var imageurl = config.imageBaseUrl;
 
 async function getMyContestList(skip, pagesize, filter, type, sort, sport, callback) {
     try {
-        // console.log(sport);
         var data = await lfMyContestModel(skip, pagesize, sort, filter, sport, type);
         callback(null, data)
     } catch (error) {
@@ -57,7 +56,7 @@ function getMatchRedisData(skip, decoded, filter, sort, sport, cb) {
                 }
             });
     } catch (error) {
-        //console.log("error", error)
+        console.log("error in lF join-contest-matches-api", error)
     }
 }
 
@@ -87,12 +86,40 @@ module.exports = {
                     let sport = decoded.sport || 1;
                     var datsse = moment().subtract('30', 'days').toDate();
                     let filter = {};
-
-                    getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
-                        console.log(results);
-                        results['server_time'] = serverTime;                              
-                        return res.send(ApiUtility.success(results));
-                    })
+                    if (decoded.is_complete == 'true') {
+                        asyncp.parallel({
+                            upcoming_match: function (callback) {
+                                callback(null, []);
+                            },
+                            live_match: function (callback) {
+                                callback(null, []);
+                            },
+                            completed_match: function (callback) {
+                                filter = {
+                                    "$and": [
+                                        { "user_id": user_id },
+                                        { "sport": sport },
+                                    ]
+                                };
+                                getMyContestList(skip, decoded.pagesize, filter, 'completed_match', sort, sport, callback);
+                            }
+                        },
+                            function (err, results) {
+                                if (err) {
+                                    return res.send(ApiUtility.failed("Server error"));
+                                } else {
+                                    results['server_time'] = serverTime;
+                                    return res.send(ApiUtility.success(results));
+                                }
+                            });
+                    } else {
+                        getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
+                            console.log(results);
+                            results['server_time'] = serverTime;                              
+                            return res.send(ApiUtility.success(results));
+                        });
+                    }
+                    
 
                 } else {
                     return res.send(ApiUtility.failed('Invalid user id.'));
