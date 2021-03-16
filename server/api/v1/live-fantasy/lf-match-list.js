@@ -531,7 +531,7 @@ function getLfMatchContest(filter,is_all){
                                     "is_gadget": {$cond: { if: { $eq: [ "$$sec.amount_gadget", "gadget" ] }, then: true, else: false }},
                                     "category_id": "$$sec.category_id",
                                     "is_auto_create": "$$sec.is_auto_create",                                       
-                                    "multiple_team": {$cond: { if: { $in: [ "$$sec.multiple_team", ["yes",true] ] }, then: true, else: false }},
+                                    "multiple_team":false,
                                     "invite_code": "$$sec.invite_code",
                                     "breakup_detail": { 
                                         $map: {
@@ -557,7 +557,7 @@ function getLfMatchContest(filter,is_all){
                                     "is_joined": is_joined, 
                                     "infinite_breakup" : {$cond: { if: { $eq: [ "$$sec.infinite_contest_size", 1 ] }, then: {"winner_percent": "$$sec.winner_percent", "winner_amount": "$$sec.winning_amount_times"}, else: {} }},
                                     "is_aakash_team": {$cond: { if: { $eq: [ "$$sec.amount_gadget", "aakash" ] }, then: true, else: false }},
-                                    "maximum_team_size": {$cond: { if: { $in: [ "$$sec.multiple_team", ["yes",true] ] }, then: { $cond: { if: { $ifNull: ["$$sec.maximum_team_size",false] },then: "$$sec.maximum_team_size",else: 9 } }, else: 1 }},
+                                    "maximum_team_size": 1
                                     
                                 }
                             }
