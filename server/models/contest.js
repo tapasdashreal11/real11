@@ -229,7 +229,7 @@ contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmoun
   if(!contestData){
     let contestData = await this.findOne({'_id':decoded['contest_id']});
   }
-  let adminComission = contestData.admin_comission;
+  let adminComission = contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
   let winningAmount = contestData.winning_amount;
   let contestSize = contestData.contest_size;
   let comission = 0;
