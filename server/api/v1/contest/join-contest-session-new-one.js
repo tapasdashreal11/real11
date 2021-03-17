@@ -11,7 +11,7 @@ const Transaction = require('../../../models/transaction');
 
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
-const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
+const { TransactionTypes, RedisKeys } = require('../../../constants/app');
 const ModelService = require("../../ModelService");
 const asyncp = require("async");
 const _ = require("lodash");
@@ -119,7 +119,7 @@ module.exports = async (req, res) => {
                                 let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
 
                                 if (joinedContestWithTeamCounts < maxTeamSize) {
-                                    if (!playerTeamRes) {
+                                    // if (!playerTeamRes) {
                                         if ((!contestData.multiple_team && joinedContestWithTeamCounts >= 1) || ((contestData.multiple_team !== 'yes') && joinedContestWithTeamCounts >= 1)) {
                                             return res.send(ApiUtility.failed('Multiple Teams Not Allowed'));
                                         }
@@ -634,9 +634,9 @@ module.exports = async (req, res) => {
                                             // ending the session
                                             session.endSession();
                                         }
-                                    } else {
-                                        return res.send(ApiUtility.failed("Already Joined Contest."));
-                                    }
+                                    // } else {
+                                    //     return res.send(ApiUtility.failed("Already Joined Contest."));
+                                    // }
                                 } else {
                                     return res.send(ApiUtility.failed("You can not add more than " + maxTeamSize + " teams."));
                                 }
