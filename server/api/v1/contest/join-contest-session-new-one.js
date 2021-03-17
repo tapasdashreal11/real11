@@ -33,6 +33,7 @@ module.exports = async (req, res) => {
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
+        console.log('user_id*******',user_id);
 
         let decoded = {
             match_id: parseInt(match_id),
