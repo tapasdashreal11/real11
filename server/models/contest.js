@@ -257,7 +257,7 @@ contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmoun
   saveEntity.deposit_cash	=	cashAmount;
   saveEntity.extra_amount	=	surpriseAmount;
   saveEntity.total_amount   =	totalAmount;
-  saveEntity.admin_comission=	pareseFloat(comission);
+  saveEntity.admin_comission=	parseFloat(comission);
   saveEntity.player_team_contest_id=	playerTeamContestId;
   console.log("JoinContestDetail*************121221",saveEntity)
   JoinContestDetail.create(saveEntity);
