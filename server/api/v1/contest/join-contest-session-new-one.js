@@ -425,10 +425,9 @@ module.exports = async (req, res) => {
                                                                     await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
                                                                 }
                                                             } catch (error) {
-                                                                console.log('eorro******* at',error);
+                                                                console.log('error in JC at line 428******* at',error);
                                                                 await session.abortTransaction();
                                                                 session.endSession();
-
                                                                 return res.send(ApiUtility.failed(error.message));
                                                             }
                                                             // worked for user category set redis
@@ -582,10 +581,11 @@ module.exports = async (req, res) => {
                                                     } catch (error) {
                                                         await session.abortTransaction();
                                                         session.endSession();
-                                                        console.log("join contest condition true > ", error);
+                                                        console.log("join contest condition true > at line 584", error);
                                                         return res.send(ApiUtility.failed(error.message));
                                                     }
                                                 } else {
+                                                    console.log('JC Join Status is false',joinedContest);
                                                     let response = {};
                                                     await session.abortTransaction();
                                                     session.endSession();
@@ -607,7 +607,7 @@ module.exports = async (req, res) => {
                                             } else {
                                                 await session.abortTransaction();
                                                 session.endSession();
-                                                // console.log('Error in else *****');
+                                                console.log('JC session drop at 610 *****');
                                                 let response = {};
                                                 response.status = false;
                                                 response.message = "This contest is full, please join other contest.";
