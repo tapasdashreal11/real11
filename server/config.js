@@ -191,6 +191,21 @@ config.useranalysis_redis = {
   port: process.env.REDIS_PORT || 6379
 }
 
+config.login_redis = {
+  host: process.env.LOGIN_REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379
+}
+
+config.my_matches_redis = {
+  host: process.env.MY_MATCHES_REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379
+}
+
+config.my_teams_redis = {
+  host: process.env.MY_TEAAMS_REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379
+}
+
 config.mqtt = {
   host: process.env.MQTT_HOST || '13.235.132.140',
   port: process.env.MQTT_PORT || 1883,

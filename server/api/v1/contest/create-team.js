@@ -116,7 +116,7 @@ module.exports = {
                             data1.team_id = team_id;
                             message = "Team has been updated successfully."
                             data1.message = message;
-                            redis.redisObj.del(RedisKeys.USER_DATA + user_id);
+                            redis.redisnMyTeamsObj.del(RedisKeys.USER_DATA + user_id);
                             // PlayerTeamService.updateRedisUserPlayerTeamData(user_id, match_id, team, team_id, () => {
                                 return res.send(ApiUtility.success(data1));
                             // })
@@ -212,7 +212,7 @@ module.exports = {
                                 mqtt.publishUserJoinedTeamCounts(match_id, user_id, JSON.stringify({ team_count: count }))
                                 redis.redisObj.del('user-teams-count-' + match_id + '-' + sport + '-' + user_id) //force user to get data from db
                             });
-                            redis.redisObj.del(RedisKeys.USER_DATA + user_id);
+                            redis.redisnMyTeamsObj.del(RedisKeys.USER_DATA + user_id);
                             // PlayerTeamService.setRedisUserPlayerTeamData(user_id, match_id, team, () => {
                                 return res.send(ApiUtility.success(data1));
                             // });

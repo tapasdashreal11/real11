@@ -116,11 +116,11 @@ module.exports = {
                                 }
                             });
                     } else {
-                        redis.getRedis(matchContestKey, function (err, contestData) { // Get Redis 
+                        redis.getRedisMyMatches(matchContestKey, function (err, contestData) { // Get Redis 
                             if (!contestData) {
                                 getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
                                     results['server_time'] = serverTime;
-                                    redis.setRedis(matchContestKey, results); // Set Redis                                
+                                    redis.setRedisMyMatches(matchContestKey, results); // Set Redis                                
                                     return res.send(ApiUtility.success(results));
                                 })
                             } else {
@@ -139,7 +139,7 @@ module.exports = {
                                     if (key === contestDataUp) {
                                         newLiveArray['server_time'] = serverTime;
                                         //console.log("contestDataUp-af", newLiveArray.upcoming_match.length, newLiveArray.live_match.length)
-                                        redis.setRedis(matchContestKey, newLiveArray); // Set Redis
+                                        redis.getRedisMyMatches(matchContestKey, newLiveArray); // Set Redis
                                         return res.send(ApiUtility.success(newLiveArray));
                                     }
                                 } else {

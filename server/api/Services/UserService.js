@@ -1,5 +1,5 @@
 
-const { setRedis, getRedis } = require('../../../lib/redis');
+const { setRedis, getRedis, setRedisMyTeams, getRedisMyTeams } = require('../../../lib/redis');
 const redisKyes = require('../../constants/redis-keys');
 
 class UserService {
@@ -12,12 +12,12 @@ class UserService {
             } else {
                 data = {...data, ...obj};
             }
-            setRedis(redisKyes.getUserDataKey(user_id), data)
+            setRedisMyTeams(redisKyes.getUserDataKey(user_id), data)
         })
     }
 
     static getRedisUserData(user_id, callback, match_id, key="") {
-        getRedis(redisKyes.getUserDataKey(user_id), (err, data) => {
+        getRedisMyTeams(redisKyes.getUserDataKey(user_id), (err, data) => {
             if (data) {
                 if (match_id && data['match_data_'+match_id]) {
                     data = data['match_data_'+match_id]
