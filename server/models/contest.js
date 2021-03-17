@@ -271,9 +271,10 @@ contestSchema.statics.saveJoinContestDetailNew = async function (decoded,bonusAm
   let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
   // let totalAmount = bonusAmount+winAmount+cashAmount;
   if(!contestData){
-    let contestData = await this.findOne({'_id':decoded['contest_id']});
-  }
-  let adminComission = contestData.admin_comission;
+    contestData = await this.findOne({'_id':decoded['contest_id']});
+ }
+  console.log("22222***************",contestData);
+ let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
   let winningAmount = contestData.winning_amount;
   let contestSize = contestData.contest_size;
   let comission = 0;
@@ -300,7 +301,7 @@ contestSchema.statics.saveJoinContestDetailNew = async function (decoded,bonusAm
   saveEntity.deposit_cash	=	cashAmount;
   saveEntity.extra_amount	=	surpriseAmount;
   saveEntity.total_amount   =	totalAmount;
-  saveEntity.admin_comission=	comission;
+  saveEntity.admin_comission= comission ? parseFloat(comission):0;
   saveEntity.player_team_contest_id=	playerTeamContestId;
   saveEntity.retention_bonus = retention_bonus_amount|| 0;
   console.log("JoinContestDetail*************121221");

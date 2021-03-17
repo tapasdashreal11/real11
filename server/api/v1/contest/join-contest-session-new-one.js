@@ -399,7 +399,7 @@ module.exports = async (req, res) => {
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
                                                                     console.log('jon contest detail***1');
-                                                                    await Contest.saveJoinContestDetail(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                    await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
                                                                     console.log('jon contest detail***2');
                                                                     if (retention_bonus_amount > 0 && userBounousData && userBounousData._id) {
 
