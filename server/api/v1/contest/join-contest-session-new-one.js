@@ -398,7 +398,9 @@ module.exports = async (req, res) => {
                                                                     totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
+                                                                    console.log('jon contest detail***1');
                                                                     await Contest.saveJoinContestDetail(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                    console.log('jon contest detail***2');
                                                                     if (retention_bonus_amount > 0 && userBounousData && userBounousData._id) {
 
                                                                         if (userBounousData.is_offer_type == 1) {
@@ -423,6 +425,7 @@ module.exports = async (req, res) => {
                                                                     await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
                                                                 }
                                                             } catch (error) {
+                                                                console.log('eorro******* at',error);
                                                                 await session.abortTransaction();
                                                                 session.endSession();
 

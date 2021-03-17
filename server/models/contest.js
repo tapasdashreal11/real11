@@ -222,14 +222,15 @@ contestSchema.statics.createAutoContest = async function(contestData, series_id,
 }
 
 contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmount,winAmount,cashAmount,playerTeamContestId,contestData, extraAmount,match_sport) {
-  //console.log("22222***************")
+  console.log("22222***************");
   let surpriseAmount  = extraAmount || 0;
   let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
   // let totalAmount = bonusAmount+winAmount+cashAmount;
   if(!contestData){
-    let contestData = await this.findOne({'_id':decoded['contest_id']});
+     contestData = await this.findOne({'_id':decoded['contest_id']});
   }
-  let adminComission = contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
+  console.log("22222***************",contestData);
+  let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
   let winningAmount = contestData.winning_amount;
   let contestSize = contestData.contest_size;
   let comission = 0;
