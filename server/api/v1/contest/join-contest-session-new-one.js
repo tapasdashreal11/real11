@@ -496,7 +496,7 @@ module.exports = async (req, res) => {
                                                                             if (!contestData) {
                                                                                 getMatchRedisData(0, { "user_id": user_id, "pagesize": 25 }, {}, sortm, match_sport, function (results) {
                                                                                     results['server_time'] = serverTimeu;
-                                                                                    //console.log("Join contest data in redis when data is empty****",results);
+                                                                                    console.log("Join contest data in redis when data is empty****",results);
                                                                                     redis.setRedisMyMatches(matchContestUserKey, results);
                                                                                 })
                                                                             } else {
@@ -692,10 +692,12 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                         contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session);
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     } else {
+                        console.log("newPTC.user_id*****11 if");
                         await session.commitTransaction();
                         session.endSession();
                     }
                 } else {
+                    console.log("newPTC.user_id*****11 else");
                     await session.commitTransaction();
                     session.endSession();
                 }
@@ -750,6 +752,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
                 redis.getRedis(redisKey, (err, data) => {
                     ////console.log("contest_id", contest_id, data)
+                    console.log("newPTC.user_id*****11 reids error",err);
                     if (data) {
                         let userContests = data;
                         userContests.push(contest_id);
@@ -760,6 +763,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     var uniqueContestIds = data.filter((value, index, self) => {
                         return self.indexOf(value) === index;
                     });
+                    console.log("newPTC.user_id*****1122 reids error",err);
 
                     //////////console.log("uniqueContestIds", uniqueContestIds)
 
@@ -782,6 +786,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true }).then((MyContestModel) => {
                         mycontId = MyContestModel._id || 0;
                     });
+                    console.log("PlayerTeamContest000000000000000")
                     mqtt.publishUserJoinedContestCounts(match_id, user_id, JSON.stringify({ contest_count: uniqueContestIds.length }))
                     redis.setRedis(redisKey, data);
 
@@ -791,6 +796,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
             });
         })
     } catch (error) {
+        console.log("newPTC.user_id*****1122 catch erorr error",error);
         // console.log("error getContestCount", error)   
     }
 }
