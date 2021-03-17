@@ -139,7 +139,7 @@ module.exports = {
                                     if (key === contestDataUp) {
                                         newLiveArray['server_time'] = serverTime;
                                         //console.log("contestDataUp-af", newLiveArray.upcoming_match.length, newLiveArray.live_match.length)
-                                        redis.getRedisMyMatches(matchContestKey, newLiveArray); // Set Redis
+                                        redis.setRedisMyMatches(matchContestKey, newLiveArray); // Set Redis
                                         return res.send(ApiUtility.success(newLiveArray));
                                     }
                                 } else {
