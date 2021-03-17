@@ -85,7 +85,7 @@ module.exports = async (req, res) => {
 
 				//****************Set Toen In Redis**************** */
 				var newTokenObj = {user_id : user._id, token : token}
-				redis.getRedisLogin(RedisKeys.USER_AUTH_CHECK + user._id, newTokenObj);
+				redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + user._id, newTokenObj);
 				//******************************* */
 
 				Tokens.create(tokenInsertData);
