@@ -312,7 +312,7 @@ module.exports = async (req, res) => {
                                                                                 added_type: parseInt(status)
                                                                             };
 
-                                                                            let walletRes = await User.update({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
+                                                                            let walletRes = await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
 
                                                                             if (walletRes && walletRes.nModified > 0) {
                                                                                 await Transaction.create([entity], { session: session });
@@ -423,7 +423,7 @@ module.exports = async (req, res) => {
                                                                 }
                                                                 var mcCountResNew = await MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'contest_id': contest_id });
                                                                 if (mcCountResNew && contestData.contest_size === mcCountResNew.joined_users) {
-                                                                    await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
+                                                                     await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
                                                                 }
                                                             } catch (error) {
                                                                 console.log('error in JC at line 428******* at',error);
