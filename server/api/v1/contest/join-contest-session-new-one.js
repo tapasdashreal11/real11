@@ -33,8 +33,6 @@ module.exports = async (req, res) => {
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
-        console.log('user_id*******',user_id);
-
         let decoded = {
             match_id: parseInt(match_id),
             series_id: parseInt(series_id),
@@ -120,7 +118,7 @@ module.exports = async (req, res) => {
                                 let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
 
                                 if (joinedContestWithTeamCounts < maxTeamSize) {
-                                   // if (!playerTeamRes) {
+                                    if (!playerTeamRes) {
                                         if ((!contestData.multiple_team && joinedContestWithTeamCounts >= 1) || ((contestData.multiple_team !== 'yes') && joinedContestWithTeamCounts >= 1)) {
                                             return res.send(ApiUtility.failed('Multiple Teams Not Allowed'));
                                         }
@@ -201,10 +199,9 @@ module.exports = async (req, res) => {
                                                                 let constestIdsData = _.find(couponSaleData, { category_id: ObjectId(catid) });
                                                                 if (constestIdsData && constestIdsData.category_id) {
                                                                     let offDataArray = constestIdsData.offer_data;
-                                                                    console.log('constestIdsData****', constestIdsData);
                                                                     let offDataItem = _.find(offDataArray, { amount: entryFee });
                                                                     if (offDataItem) {
-                                                                        console.log('offDataItem****', offDataItem);
+                                                                        
                                                                         userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                                                         calEntryFees = userOfferAmount > entryFee ? 0 : (entryFee - userOfferAmount);
                                                                         retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
@@ -399,9 +396,9 @@ module.exports = async (req, res) => {
                                                                     totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
-                                                                    console.log('jon contest detail***1');
+                                                                   
                                                                     await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
-                                                                    console.log('jon contest detail***2');
+                                                                    
                                                                     if (retention_bonus_amount > 0 && userBounousData && userBounousData._id) {
 
                                                                         if (userBounousData.is_offer_type == 1) {
@@ -586,7 +583,7 @@ module.exports = async (req, res) => {
                                                         return res.send(ApiUtility.failed(error.message));
                                                     }
                                                 } else {
-                                                    console.log('JC Join Status is false',joinedContest);
+                                                    console.log('JC Join Status is false at line 586',joinedContest);
                                                     let response = {};
                                                     await session.abortTransaction();
                                                     session.endSession();
@@ -638,9 +635,9 @@ module.exports = async (req, res) => {
                                             // ending the session
                                             session.endSession();
                                         }
-                                   /* } else {
+                                    } else {
                                         return res.send(ApiUtility.failed("Already Joined Contest."));
-                                    }*/
+                                    }
                                 } else {
                                     return res.send(ApiUtility.failed("You can not add more than " + maxTeamSize + " teams."));
                                 }
@@ -689,19 +686,19 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
                     // var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
-                    console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", joinedContestCount);
+                    // console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", joinedContestCount);
                     //var ddCount = mcCountRes + 1 ;
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
                         contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session);
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     } else {
-                        console.log("newPTC.user_id*****11 if");
+                        
                         await session.commitTransaction();
                         session.endSession();
                     }
                 } else {
-                    console.log("newPTC.user_id*****11 else");
+                    
                     await session.commitTransaction();
                     session.endSession();
                 }
@@ -756,7 +753,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
                 redis.getRedis(redisKey, (err, data) => {
                     ////console.log("contest_id", contest_id, data)
-                    console.log("newPTC.user_id*****11 reids error",err);
+                    
                     if (data) {
                         let userContests = data;
                         userContests.push(contest_id);
@@ -767,7 +764,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     var uniqueContestIds = data.filter((value, index, self) => {
                         return self.indexOf(value) === index;
                     });
-                    console.log("newPTC.user_id*****1122 reids error",err);
+                    
 
                     //////////console.log("uniqueContestIds", uniqueContestIds)
 
@@ -790,18 +787,17 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true }).then((MyContestModel) => {
                         mycontId = MyContestModel._id || 0;
                     });
-                    console.log("PlayerTeamContest000000000000000")
+                    
                     mqtt.publishUserJoinedContestCounts(match_id, user_id, JSON.stringify({ contest_count: uniqueContestIds.length }))
                     redis.setRedis(redisKey, data);
 
                     return resolve(totalContestKey);
                 });
-                // console.log("PlayerTeamContest000000000000000")
+                
             });
         })
     } catch (error) {
-        console.log("newPTC.user_id*****1122 catch erorr error",error);
-        // console.log("error getContestCount", error)   
+        console.log("JC eroor in catch erorr error at 800",error);  
     }
 }
 
@@ -921,7 +917,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
                     }
                 });
             } catch (errr) {
-                console.log('eorr in auto create redis***');
+                console.log('JC eorr in auto create redis***');
             }
 
 
