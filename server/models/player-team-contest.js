@@ -64,6 +64,9 @@ var playerTeamContestSchema = new Schema({
   },
 	bonus_amount: {
     type: Number, default: 0
+  },
+	rank: {
+    type: Number, default: 0
   }
 },{
   timestamps:true

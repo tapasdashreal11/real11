@@ -38,7 +38,8 @@ var matchContestSchema = new Schema({
     type: Number
   },
   is_full: {
-    type: Number
+    type: Number,
+    default:0
   },
   contestStartDateTime: { type: Date },
 

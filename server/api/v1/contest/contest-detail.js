@@ -491,6 +491,7 @@ module.exports = {
             if (!contestData) {
                 let contestDetail = await Contest.findOne({ _id: contest_id });
                 contestDetail = JSON.parse(JSON.stringify(contestDetail));
+                // console.log(contestDetail.contest_size);return false
                 let prizeMoney = 0;
                 let totalTeams = 0;
                 let teamsJoined = [];
@@ -557,7 +558,7 @@ module.exports = {
                             } else {
                                 allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id,sport, '');
                             }
-                            if((reviewMatch.time >= Date.now() && joinedTeams == 100) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
+                            if((reviewMatch.time >= Date.now() && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
                                 await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                             }
                             //await redis.setRedisLeaderboard(leaderboardKey, allTeams);

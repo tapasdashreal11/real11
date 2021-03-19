@@ -870,6 +870,9 @@ module.exports = {
                             _.forEach(pleasrTeamData, function (i, k) {
                                 switchTeamFn(i._id, decoded['team_id'][k]);
                                 if (k === (decoded['team_id'].length - 1)) {
+                                    let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
+                                    // liveMatch
+                                    redis.leaderboardRedisObj.del(leaderboardKey);
                                     return res.send(ApiUtility.success({}, "Team switched successfuly."));
                                 }
                             });
