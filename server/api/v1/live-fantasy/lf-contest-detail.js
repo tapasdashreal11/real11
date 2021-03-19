@@ -83,7 +83,7 @@ module.exports = {
                     let predictions = [];
                     player_team_id_filter.push(userTeam.prediction_id);
                     predictions.push(userTeam.prediction);
-                    if (userTeam && userTeam.prediction) {
+                    if (userTeam && userTeam.prediction_id) {
                         let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
                        //let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                        teamData[teamCount] = {};
@@ -115,10 +115,6 @@ module.exports = {
                     }
                 }
 
-                teamData.filter((e) => {
-                    return e;
-                })
-
                 if (teamData) {
                     for (const teamss of teamData) {
                         if (teamss) {
@@ -128,7 +124,6 @@ module.exports = {
                 }
 
                 let teamRankData = MyUser.concat(teamData);
-                
                 if (!contestDetail.confirmed_winning || contestDetail.confirmed_winning == '' || contestDetail.confirmed_winning == '0' || contestDetail.confirmed_winning == 'no') {
                     winComfimed = 'no';
                 } else {
@@ -249,4 +244,5 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     }
+    
 }
