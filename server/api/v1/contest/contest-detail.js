@@ -392,6 +392,7 @@ module.exports = {
             let teamCount = 0;
             let teamData = [];
             for (const userTeam of mergedTeam) {
+                console.log('userTeam********',userTeam);
                 let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                 if (userTeam.user) {
                     let teamUserDetail = userTeam.user;
