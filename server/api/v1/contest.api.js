@@ -846,8 +846,6 @@ module.exports = {
                 team_id,
                 user_id
             };
-            console.log('req select',req);
-
             if (decoded['user_id'] && decoded['match_id'] && decoded['series_id'] && decoded['contest_id'] && decoded['team_id']) {
                 let authUser = await User.findOne({ '_id': decoded['user_id'] });
                 if (authUser) {
@@ -866,7 +864,8 @@ module.exports = {
                                 'contest_id': decoded['contest_id'],
                                 'user_id': decoded['user_id']
                             }
-                            var pT = await PlayerTeam.findOne({'_id':ObjectId(team_id)});
+                            console.log('team_id***',team_id);
+                            var pT = await PlayerTeam.findOne({'_id':team_id});
                             var count =  pT && pT.team_count ? pT.team_count:1;
                              console.log('switch count****',count);
                             var pleasrTeamData = await PlayerTeamContest.find(filter);
