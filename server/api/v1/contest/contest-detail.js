@@ -418,28 +418,22 @@ module.exports = {
                 key = 0;
                 for (const teamss of teamData) {
                     if (teamss && _.isEqual(ObjectId(teamss['user_id']), ObjectId(decoded['user_id'])) ) {
+                        console.log('same***',teamss);
                         MyUser.push(teamss);
                         delete teamData[key];
                     } else {
+                        console.log('diff',teamss);
                         newTeamData.push(teamss);
                     }
                     key++;
                 }
-
-                teamData.filter((e) => {
-                    return e;
-                })
-                if (teamData) {
-                    for (const teamss of teamData) {
-                        if (teamss) {
-                            ranArr.push(teamss['rank']);
-                        }
-                    }
-                }
-                let teamRankData = newTeamData;
                 let contestData = {
-                    joined_team_list: teamRankData,
+                    joined_team_list: newTeamData,
                 }
+                if(newTeamData && newTeamData.length>0){
+                    contestData['joined_team_list']= newTeamData;
+                }
+                
                 console.log('contestData****',contestData,teamData);
     
                 return res.send(ApiUtility.success(contestData));
