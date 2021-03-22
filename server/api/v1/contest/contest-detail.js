@@ -425,25 +425,36 @@ module.exports = {
                     }
                     key++;
                 }
-            }
 
-            teamData.filter((e) => {
-                return e;
-            })
-            if (teamData) {
-                for (const teamss of teamData) {
-                    if (teamss) {
-                        ranArr.push(teamss['rank']);
+                teamData.filter((e) => {
+                    return e;
+                })
+                if (teamData) {
+                    for (const teamss of teamData) {
+                        if (teamss) {
+                            ranArr.push(teamss['rank']);
+                        }
                     }
                 }
-            }
-            let teamRankData = newTeamData;
-            let contestData = {
-                joined_team_list: teamRankData,
-            }
-            console.log('contestData****',contestData);
+                let teamRankData = newTeamData;
+                let contestData = {
+                    joined_team_list: teamRankData,
+                }
+                console.log('contestData****',contestData,teamData);
+    
+                return res.send(ApiUtility.success(contestData));
 
-            return res.send(ApiUtility.success(contestData));
+            } else {
+                let teamRankData = [];
+                let contestData = {
+                    joined_team_list: teamRankData,
+                }
+                console.log('contestData****',contestData);
+    
+                return res.send(ApiUtility.success(contestData));
+            }
+
+            
         } catch (error) {
             return res.send(ApiUtility.failed(error.message));
         }
