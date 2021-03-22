@@ -89,16 +89,7 @@ module.exports = {
                 sport: parseInt(sport) || 1,
             }
             sport   =   parseInt(sport) || 1;
-            let reviewMatch = await SeriesSquad.findOne({ 'match_id': match_id, sport:sport });
-            
             let reviewStatus = '';
-            if (reviewMatch) {
-                if (reviewMatch.match_status == 'Finished' && reviewMatch.win_flag == 0) {
-                    reviewStatus = 'Under Review';
-                } else if (reviewMatch.match_status == 'Delayed') {
-                    reviewStatus = 'Delayed';
-                }
-            }
             let contestDataAPIKey = RedisKeys.getContestDetailAPIKey(match_id, contest_id);
             let contestData;
             if (reviewMatch == "In Progress") {
@@ -126,21 +117,17 @@ module.exports = {
                 if (matchInviteCode && matchInviteCode.invite_code) {
                     inviteCode = matchInviteCode.invite_code;
                 }
-
                 let finiteBreakupDetail = {};
-
                 if (contestDetail.infinite_contest_size == 1) {
                     finiteBreakupDetail.winner_percent = contestDetail.winner_percent;
                     finiteBreakupDetail.winner_amount = contestDetail.winning_amount_times;
                 }
-
                 let aakashData  =   {};
                 if(contestDetail.amount_gadget == 'aakash') {
                     aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1, "image": 1, "_id":1 });
                 }
                 let aakashTeams = [];
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                   // aakashTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, aakashData._id, sport);
                     aakashTeams =await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
                         sport:parseInt(sport),
@@ -148,8 +135,6 @@ module.exports = {
                         user_id:ObjectId(aakashData._id)
                       });
                 }
-
-                //let myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id, sport);
                 let myTeams = await PlayerTeamContest.find({
                     match_id:parseInt(match_id),
                     sport:parseInt(sport),
@@ -161,7 +146,6 @@ module.exports = {
                 } else {
                     mergedTeam = myTeams;
                 }
-                // let allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id);
                 let teamCount = 0;
 
                 let player_team_id_filter = []
@@ -171,7 +155,6 @@ module.exports = {
 
                     let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                     if (userTeam) {
-                        //let teamUserDetail = userTeam.user;
                         teamData[teamCount] = {};
                         teamData[teamCount]['user_id'] = userTeam.user_id;
                         teamData[teamCount]['team_name'] = userTeam.team_name;
