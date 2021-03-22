@@ -42,6 +42,7 @@ const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId
     return new Promise(async (resv, rej) => {
         await redis.getRedisLeaderboard(leaderboardRedis, function (err, reply) {
             if (!err) {
+                console.log('reply****',reply)
                 const result = reply.reduce((index, obj) => {
                     if(aakashId) {
                         if (obj.user_id != user_id && obj.user_id != aakashId && index.length < 100)
