@@ -53,8 +53,12 @@ module.exports = async (req, res) => {
                 MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }),
                 // redis.getRedis('match-contest-detail-' + decoded['match_id'] + '-' + contest_id)
             ];
-            if (!team_id || team_count_number == 0) {
+            if (!team_id) {
                 apiList.push(PlayerTeam.findOne({ 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
+
+            } else if (team_id && team_count_number == 0) {
+                apiList.push(PlayerTeam.findOne({'_id':ObjectId(team_id) ,'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
+                
             }
             var results = await Promise.all(apiList);
             if (results && results.length > 0) {
