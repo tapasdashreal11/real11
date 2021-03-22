@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
             contest_id: contest_id,
             user_id: user_id
         }
-        var team_count_number = team_count ? team_count : 0;
+        var team_count_number = team_count ? parseInt(team_count) : 0;
         var totalContestKey = 0;
         var mycontId = 0;
         if (match_id && series_id && contest_id && user_id) {
@@ -76,7 +76,7 @@ module.exports = async (req, res) => {
                             if(results && results.length > 5){
                              console.log('results[5]',results[5]);
                             }
-                            let teamCount = team_count_number !=0 ? team_count : (results[5] && results[5].team_count ? results[5].team_count : 1);
+                            let teamCount = team_count_number !=0 ? team_count_number : (results[5] && results[5].team_count ? results[5].team_count : 1);
                             console.log('team_count_number',team_count_number);
                             console.log('teamCount*****',teamCount);
                             if (teamId && teamId != null && teamId != '') {
