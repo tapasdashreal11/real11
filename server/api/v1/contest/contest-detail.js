@@ -377,7 +377,7 @@ module.exports = {
                 } else {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, '');
                 }
-                if(allTeams && allTeams.length == 100) {
+                if(allTeams && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) {
                     await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                 }
                 // contestDetail && reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50
