@@ -865,9 +865,9 @@ module.exports = {
                                 'contest_id': decoded['contest_id'],
                                 'user_id': decoded['user_id']
                             }
-                            var pT = PlayerTeam.findOne({'_id':ObjectId(team_id)});
+                            var pT = await PlayerTeam.findOne({'_id':ObjectId(team_id)});
                             var count =  pT && pT.team_count ? pT.team_count:1;
-
+                             console.log('switch count****',count);
                             var pleasrTeamData = await PlayerTeamContest.find(filter);
                             _.forEach(pleasrTeamData, function (i, k) {
                                 switchTeamFn(i._id, decoded['team_id'][k],count);
