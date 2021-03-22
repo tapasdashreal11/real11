@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
             contest_id: contest_id,
             user_id: user_id
         }
-
+        var team_count_number = team_count ? team_count : 0;
         var totalContestKey = 0;
         var mycontId = 0;
         if (match_id && series_id && contest_id && user_id) {
@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
                 MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }),
                 // redis.getRedis('match-contest-detail-' + decoded['match_id'] + '-' + contest_id)
             ];
-            if (!team_id || !team_count) {
+            if (!team_id || team_count_number == 0) {
                 apiList.push(PlayerTeam.findOne({ 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
             }
             var results = await Promise.all(apiList);
