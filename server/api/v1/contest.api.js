@@ -846,6 +846,7 @@ module.exports = {
                 team_id,
                 user_id
             };
+            console.log('req select',req);
 
             if (decoded['user_id'] && decoded['match_id'] && decoded['series_id'] && decoded['contest_id'] && decoded['team_id']) {
                 let authUser = await User.findOne({ '_id': decoded['user_id'] });
