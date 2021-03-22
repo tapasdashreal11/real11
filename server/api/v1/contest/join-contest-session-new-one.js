@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
         let startTime = Date.now();
         const user_id = req.userId;
         const { } = req.params;
-        const { team_id, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        const { team_id, team_count, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
@@ -46,14 +46,14 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1 }),
+                User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1 ,"team_name":1}),
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
                 PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
                 MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }),
                 // redis.getRedis('match-contest-detail-' + decoded['match_id'] + '-' + contest_id)
             ];
-            if (!team_id) {
+            if (!team_id || !team_count) {
                 apiList.push(PlayerTeam.findOne({ 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
             }
             var results = await Promise.all(apiList);
@@ -69,6 +69,7 @@ module.exports = async (req, res) => {
                             return res.send(ApiUtility.failed('Match has been started.'));
                         } else {
                             let teamId = team_id ? team_id : (results[5] && results[5]._id ? results[5]._id : '');
+                            let teamCount = team_count ? team_count : (results[5] && results[5].team_count ? results[5].team_count : 1);
                             if (teamId && teamId != null && teamId != '') {
                                 // console.log(teamId);return false;
                                 let matchContest = results[4] ? results[4] : {};
@@ -154,6 +155,8 @@ module.exports = async (req, res) => {
                                                     contest.contest_id = contest_id;
                                                     contest.user_id = user_id;
                                                     contest.total_amount = contestData.entry_fee;
+                                                    contest.team_count = teamCount;
+                                                    contest.team_name = authUser.team_name || '';
                                                     let useableBonusPer = contestData.used_bonus || 0;
                                                     let contestType = contestData.contest_type;
                                                     let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
