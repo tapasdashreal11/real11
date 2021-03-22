@@ -40,10 +40,10 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
     }
 }
 
-async function switchTeamFn(id, team_id) {
+async function switchTeamFn(id, team_id,count) {
     try {
         if(!_.isNull(team_id) && !_.isNull(id)){
-            await PlayerTeamContest.findByIdAndUpdate(ObjectId(id), { "player_team_id": team_id }, { new: true });
+            await PlayerTeamContest.findByIdAndUpdate(ObjectId(id), { "player_team_id": team_id,"team_count":count }, { new: true });
         }
         
     } catch (error) {
@@ -865,14 +865,13 @@ module.exports = {
                                 'contest_id': decoded['contest_id'],
                                 'user_id': decoded['user_id']
                             }
+                            var pT = PlayerTeam.findOne({'_id':ObjectId(team_id)});
+                            var count =  pT && pT.team_count ? pT.team_count:1;
 
                             var pleasrTeamData = await PlayerTeamContest.find(filter);
                             _.forEach(pleasrTeamData, function (i, k) {
-                                switchTeamFn(i._id, decoded['team_id'][k]);
+                                switchTeamFn(i._id, decoded['team_id'][k],count);
                                 if (k === (decoded['team_id'].length - 1)) {
-                                    // let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
-                                    // liveMatch
-                                    //redis.leaderboardRedisObj.del(leaderboardKey);
                                     return res.send(ApiUtility.success({}, "Team switched successfuly."));
                                 }
                             });

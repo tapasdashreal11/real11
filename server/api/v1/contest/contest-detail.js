@@ -392,7 +392,6 @@ module.exports = {
             let teamCount = 0;
             let teamData = [];
             for (const userTeam of mergedTeam) {
-                console.log('userTeam********',userTeam);
                 let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                 if (userTeam) {
                     teamData[teamCount] = {};
@@ -408,21 +407,15 @@ module.exports = {
                 }
                 teamCount++;
             }
-
-            let ranArr = [];
             let MyUser = [];
             let newTeamData = [];
-
             if (teamData && teamData.length>0) {
                 key = 0;
-                console.log('teamData****',teamData);
                 for (const teamss of teamData) {
                     if (teamss && _.isEqual(ObjectId(teamss['user_id']), ObjectId(decoded['user_id'])) ) {
-                        console.log('same***',teamss);
                         MyUser.push(teamss);
                         delete teamData[key];
                     } else {
-                        console.log('diff',teamss);
                         newTeamData.push(teamss);
                     }
                     key++;
@@ -433,9 +426,6 @@ module.exports = {
                 if(newTeamData && newTeamData.length>0){
                     contestData['joined_team_list']= newTeamData;
                 }
-                
-                console.log('contestData****',contestData,teamData);
-    
                 return res.send(ApiUtility.success(contestData));
 
             } else {
@@ -443,8 +433,6 @@ module.exports = {
                 let contestData = {
                     joined_team_list: teamRankData,
                 }
-                console.log('contestData****',contestData);
-    
                 return res.send(ApiUtility.success(contestData));
             }
 
