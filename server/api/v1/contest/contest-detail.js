@@ -441,6 +441,7 @@ module.exports = {
             let contestData = {
                 joined_team_list: teamRankData,
             }
+            console.log('contestData****',contestData);
 
             return res.send(ApiUtility.success(contestData));
         } catch (error) {
