@@ -70,6 +70,8 @@ module.exports = async (req, res) => {
                         } else {
                             let teamId = team_id ? team_id : (results[5] && results[5]._id ? results[5]._id : '');
                             let teamCount = team_count_number !=0 ? team_count : (results[5] && results[5].team_count ? results[5].team_count : 1);
+                            console.log('team_count_number',team_count_number);
+                            console.log('teamCount*****',teamCount);
                             if (teamId && teamId != null && teamId != '') {
                                 // console.log(teamId);return false;
                                 let matchContest = results[4] ? results[4] : {};
