@@ -92,6 +92,7 @@ module.exports = {
             let reviewStatus = '';
             let contestDataAPIKey = RedisKeys.getContestDetailAPIKey(match_id, contest_id);
             let contestData;
+            let reviewMatch = {};
             if (reviewMatch == "In Progress") {
                 contestData = await redis.getRedis(contestDataAPIKey);
             }
