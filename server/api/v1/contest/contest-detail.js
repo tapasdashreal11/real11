@@ -414,8 +414,9 @@ module.exports = {
             let MyUser = [];
             let newTeamData = [];
 
-            if (teamData) {
+            if (teamData && teamData.length>0) {
                 key = 0;
+                console.log('teamData****',teamData);
                 for (const teamss of teamData) {
                     if (teamss && _.isEqual(ObjectId(teamss['user_id']), ObjectId(decoded['user_id'])) ) {
                         console.log('same***',teamss);
