@@ -865,11 +865,10 @@ module.exports = {
                                 'user_id': decoded['user_id']
                             }
                             console.log('team_id***',team_id);
-                            var pT = await PlayerTeam.findOne({'_id':team_id});
-                            var count =  pT && pT.team_count ? pT.team_count:1;
-                             console.log('switch count****',count);
                             var pleasrTeamData = await PlayerTeamContest.find(filter);
-                            _.forEach(pleasrTeamData, function (i, k) {
+                            _.forEach(pleasrTeamData, async function (i, k) {
+                                var pT = await PlayerTeam.findOne({'_id':decoded['team_id'][k]});
+                                var count =  pT && pT.team_count ? pT.team_count:1;
                                 switchTeamFn(i._id, decoded['team_id'][k],count);
                                 if (k === (decoded['team_id'].length - 1)) {
                                     return res.send(ApiUtility.success({}, "Team switched successfuly."));
