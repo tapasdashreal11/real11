@@ -865,13 +865,24 @@ module.exports = {
                 let myTeams = [];
                 let aakashTeams = [];
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                    aakashTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, aakashData._id, sport);
+                    
+                    aakashTeams = await PlayerTeamContest.find({
+                        match_id:parseInt(match_id),
+                        sport:parseInt(sport),
+                        contest_id:ObjectId(contest_id),
+                        user_id:ObjectId(aakashData._id)
+                      }).limit(15).sort({"rank": 1});
                 }
                 // console.log(aakashTeams);
                 if (!_.isEmpty(redisTeams)) {
+                    console.log("Live leader board coming from redis*****");
                     MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
-
-                    myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id, sport);
+                    myTeams = await PlayerTeamContest.find({
+                        match_id:parseInt(match_id),
+                        sport:parseInt(sport),
+                        contest_id:ObjectId(contest_id),
+                        user_id:ObjectId(user_id)
+                      }).limit(15).sort({"rank": 1});
                     let allTeams = [];
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                         allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
@@ -886,13 +897,19 @@ module.exports = {
                 }
                 
                 if (mergedTeam && mergedTeam.length == 0) {
-                    myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id,sport);
+                    myTeams = await PlayerTeamContest.find({
+                        match_id:parseInt(match_id),
+                        sport:parseInt(sport),
+                        contest_id:ObjectId(contest_id),
+                        user_id:ObjectId(user_id)
+                      }).limit(15).sort({"rank": 1});
                     
                     let allTeams = [];
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
                         allTeams = await getRedisLeaderboard(match_id, contest_id);
                         
                         if (_.isEmpty(allTeams)) {
+                            console.log("Live leader board coming from DBBBBB*****");
                             let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                             
@@ -901,14 +918,14 @@ module.exports = {
                                     sport: sport,
                                     contest_id:ObjectId(contest_id),
                                     user_id:{$ne:ObjectId(user_id)}
-                                  }).limit(100).sort({_id:-1});
+                                  }).limit(100).sort({"rank": 1});
                             } else {
                                 
                                 allTeams = await PlayerTeamContest.find({
                                     match_id:parseInt(match_id),
                                     sport: sport,
                                     contest_id:ObjectId(contest_id)
-                                  }).limit(100).sort({_id:-1});
+                                  }).limit(100).sort({"rank": 1});
                             }
                             if((reviewMatch.time >= Date.now() && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
                                 await redis.setRedisLeaderboard(leaderboardKey, allTeams);
