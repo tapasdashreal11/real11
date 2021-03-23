@@ -41,6 +41,14 @@ var matchContestSchema = new Schema({
     type: Number,
     default:0
   },
+  is_private: {
+    type: Number,
+    default:0
+  },
+  category_name: { type: String, default: '' },
+  category_description: { type: String, default: '' },
+  category_seq: { type: Number },
+
   contestStartDateTime: { type: Date },
 
   localteam: { type: String, default: '' },

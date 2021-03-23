@@ -405,7 +405,7 @@ module.exports = async (req, res) => {
 
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
-                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
+                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
                                                                    
@@ -688,7 +688,7 @@ module.exports = async (req, res) => {
  * @param {*} parentContestId 
  * @param {*} session 
  */
-async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user) {
+async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest) {
     try {
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
@@ -702,7 +702,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     //var ddCount = mcCountRes + 1 ;
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
-                        contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session);
+                        contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session,matchContest);
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     } else {
                         
@@ -822,7 +822,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
  * @param {*} parentContestId 
  */
 
-async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session) {
+async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session,matchContest) {
     try {
 
         let catID = contestData.category_id;
@@ -881,6 +881,10 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entityM.admin_create = 0;
             entityM.joined_users = 0;
             entityM.sport = match_sport;
+
+            entityM.category_name = matchContest && matchContest.category_name ? matchContest.category_name : '' ;
+            entityM.category_description = matchContest && matchContest.category_description ? matchContest.category_description :"";
+            entityM.category_seq = matchContest && matchContest.category_seq ? matchContest.category_seq : 0 ;
             entityM.contest = {
                 entry_fee: contestData.entry_fee,
                 winning_amount: contestData.winning_amount,
