@@ -346,6 +346,14 @@ router.post('/cron/bizwebhook', function(req, res) {
     return res.send({ status: 'success' });
 });
 
+router.post('/phonePe/phonePewebhook', function(req, res) {
+    console.log("phonePe callback data", req.body)
+    // if (req.body.STATUS && req.body.STATUS == "TXN_SUCCESS") {
+    //     updateTransactionFromWebhook(req.body.ORDERID, 'PAYTM');
+    // }
+    return res.send({ status: 'success' });
+});
+
 // live fantasy api section 
  router.get('/api/v1/lf-match-list/:pmatch_id/:sport', liveFantasyMatchList); 
  router.get('/api/v1/lf-contest-list/:match_id/:sport',auth.authenticate.jwtLogin,liveFantasyMatchContestList);
