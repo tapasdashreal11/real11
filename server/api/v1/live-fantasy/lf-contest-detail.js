@@ -464,7 +464,7 @@ module.exports = {
                         allTeams = [] //await getRedisLeaderboard(match_id, contest_id);
                         
                         if (_.isEmpty(allTeams)) {
-                            console.log("Live leader board coming from DBBBBB*****");
+                            console.log("Live FN leader board coming from DBBBBB*****");
                             let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                             
