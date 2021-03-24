@@ -864,7 +864,7 @@ module.exports = {
                                 'contest_id': decoded['contest_id'],
                                 'user_id': decoded['user_id']
                             }
-                            console.log('team_id***',team_id);
+                            
                             var pleasrTeamData = await PlayerTeamContest.find(filter);
                             _.forEach(pleasrTeamData, async function (i, k) {
                                 var pT = await PlayerTeam.findOne({'_id':decoded['team_id'][k]});

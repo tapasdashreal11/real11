@@ -73,12 +73,8 @@ module.exports = async (req, res) => {
                             return res.send(ApiUtility.failed('Match has been started.'));
                         } else {
                             let teamId = team_id ? team_id : (results[5] && results[5]._id ? results[5]._id : '');
-                            if(results && results.length > 5){
-                             console.log('results[5]',results[5]);
-                            }
                             let teamCount = team_count_number !=0 ? team_count_number : (results[5] && results[5].team_count ? results[5].team_count : 1);
-                            console.log('team_count_number',team_count_number);
-                            console.log('teamCount*****',teamCount);
+                            
                             if (teamId && teamId != null && teamId != '') {
                                 // console.log(teamId);return false;
                                 let matchContest = results[4] ? results[4] : {};
@@ -508,7 +504,7 @@ module.exports = async (req, res) => {
                                                                             if (!contestData) {
                                                                                 getMatchRedisData(0, { "user_id": user_id, "pagesize": 25 }, {}, sortm, match_sport, function (results) {
                                                                                     results['server_time'] = serverTimeu;
-                                                                                    console.log("Join contest data in redis when data is empty****",results);
+                                                                                    console.log("Join contest data in redis when data is empty****");
                                                                                     redis.setRedisMyMatches(matchContestUserKey, results);
                                                                                 })
                                                                             } else {
@@ -595,7 +591,7 @@ module.exports = async (req, res) => {
                                                         return res.send(ApiUtility.failed(error.message));
                                                     }
                                                 } else {
-                                                    console.log('JC Join Status is false at line 586',joinedContest);
+                                                    console.log('JC Join Status is false at line 586');
                                                     let response = {};
                                                     await session.abortTransaction();
                                                     session.endSession();
