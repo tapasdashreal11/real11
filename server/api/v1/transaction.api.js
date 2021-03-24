@@ -365,8 +365,6 @@ module.exports = {
                 currency,
                 coupon_id,
                 discount_amount
-
-
             };
             if (decoded) {
                 if (decoded['gateway_name'] == 'PAYTM_ALL_IN_ONE') {
@@ -548,7 +546,6 @@ module.exports = {
                                 else {
                                     return res.send(ApiUtility.failed(response.body.resultInfo.resultMsg));
                                 }
-
                             });
                         });
 
@@ -560,8 +557,12 @@ module.exports = {
                 else {
                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                 }
-            }
-            else {
+                if (decoded['gateway_name'] == 'PHONEPE') {
+                    let response = await checkPhonePeStatus(txn_id);
+                    console.log(response);
+                    return false
+                }
+            } else {
                 return res.send(ApiUtility.failed("You are not authenticated user."));
             }
 
@@ -1017,21 +1018,9 @@ module.exports = {
     checkPhonePeTransactionStatus: async(req,res) => {
         try {
             let transactionId   =   req.body.transaction_id;
-            const url = process.env.PHONEPE_STATUS_URL + process.env.PHONEPE_ENDPOINT + process.env.PHONEPE_MURCHANT_ID+ '/'+ transactionId +'/status';
-            const verifyKey =   await generateXVerifyKey(transactionId);
-            const options = {
-                "method": 'GET',
-                "headers": {
-                    'Content-Type': 'application/json',
-                    'X-VERIFY': verifyKey
-                }
-            };
-            console.log(options,url);
-
-            fetch(url, options)
-                .then(res => res.json())
-                .then(json => console.log(json))
-                .catch(err => console.error('error:' + err));
+            let response = await checkPhonePeStatus(transactionId);
+            // console.log(response);
+            return res.send(response);
         } catch(error) {
             console.log(error);
             return res.send(ApiUtility.failed(error.message));
@@ -1040,9 +1029,31 @@ module.exports = {
 
 }
 
+async function checkPhonePeStatus(txnId) {
+    const url = process.env.PHONEPE_STATUS_URL + process.env.PHONEPE_ENDPOINT + process.env.PHONEPE_MURCHANT_ID+ '/'+ txnId +'/status';
+    const verifyKey =   await generateXVerifyKey(txnId);
+    const options = {
+        "method": 'GET',
+        "headers": {
+            'Content-Type': 'application/json',
+            'X-VERIFY': verifyKey
+        }
+    };
+    // console.log(options,url);
+
+    return fetch(url, options)
+        .then(res => res.json())
+        .then(json => json )
+        .catch(err => 'error:' + err);
+}
+
 async function generateXVerifyKey(transactionId) {
     const verfyKey    =   sha256(process.env.PHONEPE_ENDPOINT + process.env.PHONEPE_MURCHANT_ID + "/"+ transactionId +"/status" + process.env.PHONEPE_SALT_KEY) + "###" + process.env.PHONEPE_SALT_INDEX
     return verfyKey;
+}
+
+async function updateTransactionAllGetway(decoded) {
+
 }
 
 async function updateTransactionPaytmAllNew(decoded, transationStatus = false, cb) {
