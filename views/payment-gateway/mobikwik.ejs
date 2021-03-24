@@ -1,48 +1,48 @@
-<form action="https://test.mobikwik.com/wallet" method="post">
-    <input type="hidden" name="email" value="<%- mobikwikParams.email %>">
-    <input type="hidden" name="amount" value="<%- mobikwikParams.amount %>">
-    <input type="hidden" name="cell" value="<%- mobikwikParams.cell %>">
-    <input type="hidden" name="orderId" value="<%- mobikwikParams.orderId %>">
-    <input type="hidden" name="mid" value="<%- mobikwikParams.mid %>">
-    <input type="hidden" name="merchantname" value="<%- mobikwikParams.merchantname %>">
-    <input type="hidden" name="redirecturl" value="<%- mobikwikParams.redirecturl %>">
-    <input type="hidden" name="showmobile" value="<%- mobikwikParams.showmobile %>">
-    <!-- <input type="hidden" name="buyerCity" value=""> -->
-    <!-- <input type="hidden" name="buyerCountry" value=""> -->
-    <!-- <input type="hidden" name="buyerFirstName" value=""> -->
-    <!-- <input type="hidden" name="buyerLastName" value=""> -->
-    <!-- <input type="hidden" name="buyerPhoneNumber" value=""> -->
-    <!-- <input type="hidden" name="buyerPincode" value=""> -->
-    <!-- <input type="hidden" name="buyerState" value=""> -->
-    <!-- <input type="hidden" name="currency" value="<%- mobikwikParams.currency %>"> -->
-    <!-- <input type="hidden" name="merchantIdentifier" value="<%- mobikwikParams.merchantIdentifier %>"> -->
-    <!-- <input type="hidden" name="merchantIpAddress" value="<%- mobikwikParams.merchantIpAddress %>"> -->
-    <!-- <input type="hidden" name="mode" value="<%- mobikwikParams.mode %>"> -->
-    <!-- <input type="hidden" name="orderId" value="<%- mobikwikParams.orderId %>"> -->
-    <!-- <input type="hidden" name="product1Description" value=""> -->
-    <!-- <input type="hidden" name="product2Description" value=""> -->
-    <!-- <input type="hidden" name="product3Description" value=""> -->
-    <!-- <input type="hidden" name="product4Description" value=""> -->
-    <!-- <input type="hidden" name="productDescription" value=""> -->
-    <!-- <input type="hidden" name="purpose" value="<%- mobikwikParams.purpose %>"> -->
-    <!-- <input type="hidden" name="returnUrl" value="<%- mobikwikParams.returnUrl %>"> -->
-    <!-- <input type="hidden" name="shipToAddress" value=""> -->
-    <!-- <input type="hidden" name="shipToCity" value=""> -->
-    <!-- <input type="hidden" name="shipToCountry" value=""> -->
-    <!-- <input type="hidden" name="shipToFirstname" value=""> -->
-    <!-- <input type="hidden" name="shipToLastname" value=""> -->
-    <!-- <input type="hidden" name="shipToPhoneNumber" value=""> -->
-    <!-- <input type="hidden" name="shipToPincode" value=""> -->
-    <!-- <input type="hidden" name="shipToState" value=""> -->
-    <!-- <input type="hidden" name="showMobile" value=""> -->
-    <!-- <input type="hidden" name="txnDate" value="<%- mobikwikParams.txnDate %>"> -->
-    <!-- <input type="hidden" name="txnType" value="<%- mobikwikParams.txnType %>"> -->
-    <!-- <input type="hidden" name="paymentOptionTypes" value="14_15"> -->
-    <!-- <input type="hidden" name="zpPayOption" value="1"> -->
-    <input type="hidden" name="checksum" value="<%- checksum %>">
+<form action="https://zaakstaging.zaakpay.com/api/paymentTransact/V8" method="post">
+  <input type="hidden" name="email" value="<%- mobikwikParams.email %>">
+  <input type="hidden" name="amount" value="<%- mobikwikParams.amount %>">
+  <input type="hidden" name="cell" value="<%- mobikwikParams.cell %>">
+  <input type="hidden" name="orderId" value="<%- mobikwikParams.orderId %>">
+  <input type="hidden" name="mid" value="<%- mobikwikParams.mid %>">
+  <input type="hidden" name="merchantname" value="<%- mobikwikParams.merchantname %>">
+  <input type="hidden" name="redirecturl" value="<%- mobikwikParams.redirecturl %>">
+  <input type="hidden" name="showmobile" value="<%- mobikwikParams.showmobile %>">
+  <!-- <input type="hidden" name="buyerCity" value=""> -->
+  <!-- <input type="hidden" name="buyerCountry" value=""> -->
+  <!-- <input type="hidden" name="buyerFirstName" value=""> -->
+  <!-- <input type="hidden" name="buyerLastName" value=""> -->
+  <!-- <input type="hidden" name="buyerPhoneNumber" value=""> -->
+  <!-- <input type="hidden" name="buyerPincode" value=""> -->
+  <!-- <input type="hidden" name="buyerState" value=""> -->
+  <!-- <input type="hidden" name="currency" value="<%- mobikwikParams.currency %>"> -->
+  <!-- <input type="hidden" name="merchantIdentifier" value="<%- mobikwikParams.merchantIdentifier %>"> -->
+  <!-- <input type="hidden" name="merchantIpAddress" value="<%- mobikwikParams.merchantIpAddress %>"> -->
+  <!-- <input type="hidden" name="mode" value="<%- mobikwikParams.mode %>"> -->
+  <!-- <input type="hidden" name="orderId" value="<%- mobikwikParams.orderId %>"> -->
+  <!-- <input type="hidden" name="product1Description" value=""> -->
+  <!-- <input type="hidden" name="product2Description" value=""> -->
+  <!-- <input type="hidden" name="product3Description" value=""> -->
+  <!-- <input type="hidden" name="product4Description" value=""> -->
+  <!-- <input type="hidden" name="productDescription" value=""> -->
+  <!-- <input type="hidden" name="purpose" value="<%- mobikwikParams.purpose %>"> -->
+  <!-- <input type="hidden" name="returnUrl" value="<%- mobikwikParams.returnUrl %>"> -->
+  <!-- <input type="hidden" name="shipToAddress" value=""> -->
+  <!-- <input type="hidden" name="shipToCity" value=""> -->
+  <!-- <input type="hidden" name="shipToCountry" value=""> -->
+  <!-- <input type="hidden" name="shipToFirstname" value=""> -->
+  <!-- <input type="hidden" name="shipToLastname" value=""> -->
+  <!-- <input type="hidden" name="shipToPhoneNumber" value=""> -->
+  <!-- <input type="hidden" name="shipToPincode" value=""> -->
+  <!-- <input type="hidden" name="shipToState" value=""> -->
+  <!-- <input type="hidden" name="showMobile" value=""> -->
+  <!-- <input type="hidden" name="txnDate" value="<%- mobikwikParams.txnDate %>"> -->
+  <!-- <input type="hidden" name="txnType" value="<%- mobikwikParams.txnType %>"> -->
+  <!-- <input type="hidden" name="paymentOptionTypes" value="14_15"> -->
+  <!-- <input type="hidden" name="zpPayOption" value="1"> -->
+  <input type="hidden" name="checksum" value="<%- checksum %>">
 </form>
 <script>
-    window.addEventListener('load', (event) => {
-      document.forms[0].submit();
-    });
+  window.addEventListener('load', (event) => {
+    document.forms[0].submit();
+  });
 </script>
