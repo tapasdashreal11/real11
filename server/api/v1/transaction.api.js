@@ -553,14 +553,18 @@ module.exports = {
                         post_req.write(post_data);
                         post_req.end();
                     });
-                }
-                else {
-                    return res.send(ApiUtility.success({}, 'Amount added successfully'));
-                }
-                if (decoded['gateway_name'] == 'PHONEPE') {
+                } else if (decoded['gateway_name'] == 'PHONEPE') {
                     let response = await checkPhonePeStatus(txn_id);
-                    console.log(response);
-                    return false
+                    if(response && response.success == true && response.data && response.data.paymentState == "COMPLETED") {
+                        // console.log(response.data);
+                        await updateTransactionAllGetway(decoded, function(txn_res) {
+                            return res.send(txn_res);
+                        });
+                    } else {
+                        return res.send(ApiUtility.failed(response.message));
+                    }
+                } else {
+                    return res.send(ApiUtility.success({}, 'Amount added successfully'));
                 }
             } else {
                 return res.send(ApiUtility.failed("You are not authenticated user."));
@@ -1020,6 +1024,7 @@ module.exports = {
             let transactionId   =   req.body.transaction_id;
             let response = await checkPhonePeStatus(transactionId);
             // console.log(response);
+            response.status =   response.success;
             return res.send(response);
         } catch(error) {
             console.log(error);
@@ -1052,8 +1057,138 @@ async function generateXVerifyKey(transactionId) {
     return verfyKey;
 }
 
-async function updateTransactionAllGetway(decoded) {
+async function updateTransactionAllGetway(decoded, cb) {
+    if (decoded['user_id'] && decoded['gateway_name'] && decoded['order_id'] && decoded['txn_id'] && decoded['banktxn_id'] && decoded['txn_date'] && decoded['txn_amount'] && decoded['currency']) {
 
+        let authUser = await User.findOne({ '_id': decoded['user_id'] });
+        if (authUser) {
+
+            let txnEntity = {};
+            let isCouponUsed = 0;
+            let date = new Date();
+            txnEntity.user_id = decoded['user_id'];
+            txnEntity.order_id = decoded['order_id'];
+            txnEntity.txn_id = decoded['txn_id'];
+            txnEntity.banktxn_id = decoded['banktxn_id'];
+            if (decoded['coupon_id']) {
+                txnEntity.coupon_id = decoded['coupon_id'];
+            }
+            if (decoded['discount_amount']) {
+                txnEntity.discount_amount = decoded['discount_amount'];
+            }
+            txnEntity.txn_date = Date.now(); //decoded['txn_date'];
+            // txnEntity.txn_amount =   decoded['txn_amount'];
+            txnEntity.currency = decoded['currency'];
+            // txnEntity.gateway_name  =    decoded['gateway_name'];
+            txnEntity.gateway_name = (decoded['gateway_name'] == 'PAYUBIZZ') ? "PAYUBIZ" : decoded['gateway_name'];
+            txnEntity.checksum = decoded['checksum'];
+            txnEntity.local_txn_id = 'DD' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
+            txnEntity.added_type = TransactionTypes.CASH_DEPOSIT; // Deposit Cash status
+            txnEntity.status = true
+
+            // if txnEntity
+            if (txnEntity) {
+                let users = authUser
+
+                let txnData = {};
+                if (decoded['gateway_name'] !== 'PAYTM_ALL_IN_ONE') {
+                    txnData = await Transaction.findOne({ _id: decoded['txn_id'], status: false });
+                } else if (decoded['gateway_name'] === "PAYTM_ALL_IN_ONE") {
+                    txnData = await Transaction.findOne({ _id: decoded['order_id'], status: false });
+                }
+
+                // Manage tnxdata
+                if (txnData) {
+                    if (decoded['coupon_id'] && decoded['discount_amount'] > 0) {
+                        var start = new Date();
+                        start.setHours(0,0,0,0);
+                        let couponCode = await PaymentOffers.findOne({ '_id': decoded['coupon_id'],expiry_date:{$gte:start.toISOString()} });
+
+                        if (couponCode) {
+                            if (decoded['txn_amount'] >= couponCode.min_amount) {
+                                let appkiedCount = await UserCouponCodes.find({ 'coupon_code_id': decoded['coupon_id'], 'user_id': decoded['user_id'], 'status': 1 }).countDocuments();
+                                if (appkiedCount <= couponCode.per_user_limit) {
+                                    let r = 0;
+                                    if (couponCode.usage_limit != 0) {
+                                        let allAppkiedCount = await UserCouponCodes.find({ 'coupon_code_id': decoded['coupon_id'], 'status': 1 }).countDocuments();
+                                        if (allAppkiedCount > couponCode.usage_limit) {
+                                            r = 1;
+                                        }
+                                    }
+
+                                    if (r == 0) {
+
+                                        if (couponCode.max_cashback_percent > 0) {
+                                            discountPercent = couponCode.max_cashback_percent;
+                                            discountAmount = (discountPercent / 100) * decoded['txn_amount'];
+                                            if (discountAmount > couponCode.max_cashback_amount) {
+                                                discountAmount = couponCode.max_cashback_amount;
+                                            }
+                                        } else {
+                                            discountAmount = couponCode.max_cashback_amount;
+                                        }
+
+                                        discountAmount = parseFloat(discountAmount).toFixed(2);
+                                        decoded['discount_amount'] = parseFloat(decoded['discount_amount']).toFixed(2);
+                                        if (discountAmount <= decoded['discount_amount']) {
+
+                                            let updateCouponCode = await UserCouponCodes.updateOne({ 'coupon_code_id': decoded['coupon_id'], user_id: decoded['user_id'], status: 0 }, { $set: { status: 1 } });
+                                            if (updateCouponCode && updateCouponCode.nModified > 0) {
+                                                let txnType = '';
+                                                isCouponUsed = 1;
+                                                if (couponCode.coupon_type === 'extra') {
+                                                    users.extra_amount = parseFloat(users.extra_amount) + parseFloat(discountAmount);
+                                                    txnType = TransactionTypes.EXTRA_BONUS;
+                                                } else if(couponCode.coupon_type === 'extra_deposite') {
+                                                    users.cash_balance = parseFloat(users.cash_balance) + parseFloat(discountAmount);
+                                                    txnType = TransactionTypes.EXTRA_DEPOSITE;
+                                                } else {
+                                                    users.bonus_amount = parseFloat(users.bonus_amount) + parseFloat(discountAmount);
+                                                    txnType = TransactionTypes.COUPON_BONUS
+                                                }
+                                                let date = new Date();
+                                                let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
+                                                Transaction.saveTransaction(users.id, txnId, txnType, discountAmount);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                let txn_status = false;
+                if (txnData) {
+                    users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
+                    try{
+                        if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
+                            let amountAdded  = parseFloat(txnData.txn_amount);
+                            let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
+                            users.bonus_amount = parseFloat(users.bonus_amount)+ (finalAmount);
+                            let date = new Date();
+                            let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
+                            Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                          }
+                    }catch(errrrr){
+                        console.log('first time user is coming errrr*****',errrrr);
+                    }
+                    
+                    let res = await User.updateOne({ '_id': decoded['user_id'] }, { $set: { isFirstPaymentAdded:1,cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
+                    await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
+
+                    txn_status = true;
+                }
+                if (txn_status == true) {
+                    cb(ApiUtility.success({}, 'Amount added successfully'));
+                } else {
+                    cb(ApiUtility.success({}, 'Amount added successfully'));
+                }
+            }
+
+        }
+    } else {
+        cb(ApiUtility.failed('Please check all details are correct or not.'));
+    }
 }
 
 async function updateTransactionPaytmAllNew(decoded, transationStatus = false, cb) {
