@@ -63,8 +63,10 @@ config.payubiz = {
 }
 
 config.mobikwik = {
-  merchantIdentifier: 'b6415a6443604ec59644a70c8b25a0f6',
-  secret:'0678056d96914a8583fb518caf42828a'
+  mid: process.env.MOBIKWIK_MERCHANT_ID,
+  secret: process.env.MOBIKWIK_SECRET,
+  // merchantIdentifier: 'b6415a6443604ec59644a70c8b25a0f6',
+  // secret:'0678056d96914a8583fb518caf42828a'
 }
 
 // Sender Email Credentials and configurations

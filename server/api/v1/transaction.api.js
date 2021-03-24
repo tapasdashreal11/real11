@@ -1,8 +1,8 @@
 const ApiUtility = require('../api.utility');
 const { ObjectId } = require('mongodb');
-const moment = require('moment');
+// const moment = require('moment');
 const config = require('../../config');
-const fs = require('fs');
+// const fs = require('fs');
 const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
 const PaymentOffers = require('../../models/payment-offers');
@@ -11,12 +11,13 @@ const { TransactionTypes } = require('../../constants/app');
 var sha512 = require('js-sha512');
 const paytm = require('../../../lib/paytm/checksum');
 const paytmAllInOne = require('../../../lib/paytm/PaytmChecksum')
-const syncRequest = require('sync-request');
-const { sendSMTPMail } = require("./common/helper.js");
+// const syncRequest = require('sync-request');
+// const { sendSMTPMail } = require("./common/helper.js");
 const https = require('https');
-const { exception } = require('console');
 const _ = require('lodash');
 const redis = require('../../../lib/redis');
+var sha256 = require('sha256');
+const fetch = require('node-fetch');
 
 module.exports = {
 
@@ -349,7 +350,7 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-   updateTransaction: async (req, res) => {
+    updateTransaction: async (req, res) => {
         try {
             const user_id = req.userId;
             const { gateway_name, order_id, txn_id, banktxn_id, txn_date, txn_amount, currency, coupon_id, discount_amount } = req.body;
@@ -774,7 +775,7 @@ module.exports = {
         }
     },
  
-   updateTransactionFromWebhook: async (transactionId, gateway = null) => {
+    updateTransactionFromWebhook: async (transactionId, gateway = null) => {
         try {
             let txnData;
             // objectid.isValid('53fbf4615c3b9f41c381b6a3')
@@ -848,15 +849,7 @@ module.exports = {
                             }
                         }
                     }
-                    let extra_amount_status = false;
-                    /*  if(txnData.txn_amount >= 1) {
-                         updateExtraAmount(authUser._id, txnData.txn_amount, function(result){
-                             extra_amount_status =   true;
-                             authUser.extra_amount    +=   result;
-                             // console.log('result',result);
-                         });
-                     } */
- 
+                    
                     try{
                         if(authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 2 && isCouponUsed == 0){
                             let amountAdded  = parseFloat(txnData.txn_amount);
@@ -960,14 +953,7 @@ module.exports = {
                             }
                         }
                     }
-                    let extra_amount_status = false;
-                    /*  if(txnData.txn_amount >= 1) {
-                         updateExtraAmount(authUser._id, txnData.txn_amount, function(result){
-                             extra_amount_status =   true;
-                             authUser.extra_amount    +=   result;
-                             // console.log('result',result);
-                         });
-                     } */
+                    
                     authUser.cash_balance = parseFloat(authUser.cash_balance) + parseFloat(txnData.txn_amount);
                     User.updateOne({ '_id': ObjectId(authUser._id) }, { cash_balance: authUser.cash_balance, bonus_amount: authUser.bonus_amount, extra_amount: authUser.extra_amount }, { new: true }).then((data) => {
                         // console.log("MyContestModel-------", data);
@@ -987,7 +973,7 @@ module.exports = {
         }
     },
 
-  couponForAddCash:async (req,res)=>{
+    couponForAddCash:async (req,res)=>{
         try{
             let user_id = req.userId;
             var start = new Date();
@@ -1011,22 +997,53 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
 
+    },
+    generatePhonePeChecksum:async(req, res) => {
+        try {
+            let base64Body    =   req.body.base64_string || "";
+            if(base64Body) {
+                let checksum = sha256(base64Body + "/v4/debit" + process.env.PHONEPE_SALT_KEY) + "###" + process.env.PHONEPE_SALT_INDEX;
+                
+                return res.send(ApiUtility.success({"checksum": checksum},"Checksum genetated successfully."));
+            } else {
+                return res.send(ApiUtility.failed("Base64 String is empty."));
+            }
+        } catch(error) {
+            console.log(error);
+            return res.send(ApiUtility.failed(error.message));
+        }
+    },
+
+    checkPhonePeTransactionStatus: async(req,res) => {
+        try {
+            let transactionId   =   req.body.transaction_id;
+            const url = process.env.PHONEPE_STATUS_URL + process.env.PHONEPE_ENDPOINT + process.env.PHONEPE_MURCHANT_ID+ '/'+ transactionId +'/status';
+            const verifyKey =   await generateXVerifyKey(transactionId);
+            const options = {
+                "method": 'GET',
+                "headers": {
+                    'Content-Type': 'application/json',
+                    'X-VERIFY': verifyKey
+                }
+            };
+            console.log(options,url);
+
+            fetch(url, options)
+                .then(res => res.json())
+                .then(json => console.log(json))
+                .catch(err => console.error('error:' + err));
+        } catch(error) {
+            console.log(error);
+            return res.send(ApiUtility.failed(error.message));
+        }
     }
 
-
 }
 
-async function updateExtraAmount(userId, txnAmount, cb) {
-    // console.log(userId, txnAmount);
-    let amountPercent = config.extra_bonus_percent_amount;
-    let extraAmount = amountPercent / 100 * txnAmount;
-
-    let date = new Date();
-    let txnId = 'EB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId;
-    Transaction.saveTransaction(userId, txnId, TransactionTypes.EXTRA_BONUS, extraAmount);
-    cb(extraAmount);
+async function generateXVerifyKey(transactionId) {
+    const verfyKey    =   sha256(process.env.PHONEPE_ENDPOINT + process.env.PHONEPE_MURCHANT_ID + "/"+ transactionId +"/status" + process.env.PHONEPE_SALT_KEY) + "###" + process.env.PHONEPE_SALT_INDEX
+    return verfyKey;
 }
-
 
 async function updateTransactionPaytmAllNew(decoded, transationStatus = false, cb) {
 
