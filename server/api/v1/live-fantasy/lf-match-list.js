@@ -235,6 +235,7 @@ module.exports = {
                         data['calculated_entry_fee'] = (calEntryFees && _.isNumber(calEntryFees)) ? parseFloat(calEntryFees.toFixed(2)) : 0;
                         data['usable_bonus_percent'] = 0; //is_offer_applied;
                         data['is_offer_applied'] = is_offer_applied;
+                        data['match_type'] = "live-fantasy";
                         data1 = data;
                         res.send(ApiUtility.success(data1)); 
                     });
@@ -468,6 +469,7 @@ module.exports = {
                     data1.my_teams = myTeams;
                     data1.my_contests =  0;
                     data1.my_team_rank = myTeamRank;
+                    data1.match_type = "live-fantasy";
                    
                 } else {
                     return res.send(ApiUtility.failed('User not found.'));
