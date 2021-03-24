@@ -243,6 +243,123 @@ module.exports = {
         } catch (error) {
             return res.send(ApiUtility.failed(error.message));
         }
-    }
+    },
+    lfContestLeaderboard: async (req, res) => {
+        try {
+            let { match_id, contest_id, sport } = req.params;
+            const user_id = req.userId;
+            let decoded = {
+                match_id: parseInt(match_id),
+                contest_id: contest_id,
+                user_id: user_id,
+            }
+            
+            sport   =   parseInt(sport) || 1;
+            let contestDetail = await LFMatchContest.findOne({ contest_id: contest_id });
+    
+            let aakashData  =   {};
+            if(contestDetail.amount_gadget == 'aakash') {
+                aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1, "image": 1, "_id":1 });
+            }
+    
+            let mergedTeam = [];
+            //let redisTeams = await getRedisLeaderboard(match_id, contest_id);
+           /* let myTeams = [];
+            if (redisTeams) {
+                if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
+                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
+                } else {
+                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
+                }
+            }*/
+            
+            if (mergedTeam && mergedTeam.length == 0) {
+                let allTeams = [];
+                // allTeams = await getRedisLeaderboard(match_id, contest_id);
+                let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
+                if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
+                    allTeams = await LFJoinedContest.find({ 
+                        match_id:parseInt(match_id),
+                        sport: sport,
+                        contest_id:ObjectId(contest_id),
+                        user_id:{$ne:ObjectId(user_id)}
+                      }).limit(100).sort({_id:-1});
+                } else {
+                    allTeams = await LFJoinedContest.find({
+                        match_id:parseInt(match_id),
+                        sport: sport,
+                        contest_id:ObjectId(contest_id)
+                      }).limit(100).sort({_id:-1});
+                }
+                if(allTeams && allTeams.length == 100) {
+                   // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                }
+                
+                mergedTeam = allTeams;
+            }
+            let teamCount = 0;
+            let teamData = [];
+    
+            for (const userTeam of mergedTeam) {
+                 let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
+                //let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
+                if (userTeam) {
+                    teamData[teamCount] = {};
+                    teamData[teamCount]['user_id'] = userTeam.user_id;
+                    teamData[teamCount]['team_name'] = userTeam.team_name;
+                    teamData[teamCount]['user_image'] = '';
+                    teamData[teamCount]['team_no'] = userTeam.team_count || 0;
+                    teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
+                    teamData[teamCount]['previous_rank'] = userTeam.previous_rank || 0;
+                    teamData[teamCount]['point'] = userTeam.points || 0;
+                    teamData[teamCount]['winning_amount'] = winAmount;
+                    teamData[teamCount]['user_preview_point'] = userTeam.user_preview || {};
+                    teamData[teamCount]['prediction'] = userTeam.prediction || {};
+                    teamData[teamCount]['is_aakash_team'] = false;
+                }
+                teamCount++;
+            }
+    
+            let ranArr = [];
+            let MyUser = [];
+            let newTeamData = [];
+    
+            if (teamData) {
+                key = 0;
+                for (const teamss of teamData) {
+                    if (teamss && _.isEqual(ObjectId(teamss['user_id']), ObjectId(decoded['user_id'])) ) {
+                        MyUser.push(teamss);
+                        delete teamData[key];
+                    } else {
+                        newTeamData.push(teamss);
+                    }
+                    key++;
+                }
+            }
+    
+            teamData.filter((e) => {
+                return e;
+            })
+    
+            if (teamData) {
+                for (const teamss of teamData) {
+                    if (teamss) {
+                        ranArr.push(teamss['rank']);
+                    }
+                }
+            }
+    
+            let teamRankData = newTeamData;
+            let contestData = {
+                joined_team_list: teamRankData,
+            }
+    
+            return res.send(ApiUtility.success(contestData));
+        } catch (error) {
+            return res.send(ApiUtility.failed(error.message));
+        }
+    },
+    
+    
     
 }

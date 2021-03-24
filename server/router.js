@@ -140,6 +140,7 @@ const { createPrediction,predictionList } = require('./api/v1/live-fantasy/lf-pr
 const lfJoinContest = require('./api/v1/live-fantasy/lf-join-contest');
 const lfTransactionHistory = require('./api/v1/live-fantasy/lf-transation-history');
 const { lfJoinedContestMatches } = require('./api/v1/live-fantasy/lf-joined-contest-matches');
+const  { lfContestDetailNew,lfContestLeaderboard }  = require('./api/v1/live-fantasy/lf-contest-detail');
 
 const storage = multer.diskStorage({
 
@@ -355,6 +356,8 @@ router.post('/cron/bizwebhook', function(req, res) {
  router.get('/api/v1/lf-transation-history', auth.authenticate.jwtLogin, lfTransactionHistory);
  router.get('/api/v1/lf-joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, lfJoinedContestList);
  router.get('/api/v1/lf-joined-contest-matches/:is_complete?/:sport?', auth.authenticate.jwtLogin, lfJoinedContestMatches);
+ router.get('/api/v1/lf-contest-detail/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, lfContestDetailNew);
+ router.get('/api/v1/lf-contest-leaderboard/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, lfContestLeaderboard);
  /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
   if(req.query.STATUS && req.query.STATUS == "TXN_SUCCESS"){
