@@ -504,7 +504,7 @@ module.exports = async (req, res) => {
                                                                             if (!contestData) {
                                                                                 getMatchRedisData(0, { "user_id": user_id, "pagesize": 25 }, {}, sortm, match_sport, function (results) {
                                                                                     results['server_time'] = serverTimeu;
-                                                                                    console.log("Join contest data in redis when data is empty****",results);
+                                                                                    console.log("Join contest data in redis when data is empty****");
                                                                                     redis.setRedisMyMatches(matchContestUserKey, results);
                                                                                 })
                                                                             } else {
