@@ -16,7 +16,7 @@ module.exports = async (req, res, dbs) => {
 		let userId=  req.userId;
 		result    =  [];
 		try {
-			let userData = await User.findOne({ '_id': userId }).select("team_name");
+			// let userData = await User.findOne({ '_id': userId }).select("team_name");
 			var tzOffset = 5.5 * 1000 * 60 * 60;
 			var filter = { "user_id": userId,status: true }
 			let usersData = await LFTransactions.find(filter, {"txn_date":1, "added_type":1, "txn_amount":1, "local_txn_id":1, "txn_date":1,"retantion_amount":1, "withdraw_commission":1}).sort({"txn_date": -1 }).limit(50);
@@ -32,7 +32,7 @@ module.exports = async (req, res, dbs) => {
 						"retantion_amount":i.retantion_amount || 0,
 						"withdraw_commission":i.withdraw_commission || 0,
 						"txn_date": moment(i.txn_date).add('5.5', 'hours').format("YYYY-MM-DD,HH:mm:ss"),
-						"team_name": userData.team_name || "",
+						"team_name": "",
 						"date": moment(i.txn_date).format("YYYY-MM-DD"),
 					});
 
