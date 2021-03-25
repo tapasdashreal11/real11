@@ -11,6 +11,7 @@ const redis = require('../../../../lib/redis');
 const moment = require('moment');
 const _ = require("lodash");
 var imageurl = config.imageBaseUrl;
+const { MatchStatus } = require('../../../constants/app');
 const { sendMailToDeveloper } = require('./../common/helper');
 
 
@@ -251,7 +252,7 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
-    lfJoinedContestList: async (req, res) => {
+    lfJoinedContestList11: async (req, res) => {
         try {
            // let sport = 1;
             const user_id = req.userId;
@@ -481,6 +482,225 @@ module.exports = {
         } catch (error) {
             //////////consolelog(error);
             return res.send(ApiUtility.failed(error.message));
+        }
+    },
+    lfJoinedContestList: async (req, res) => {
+        try {
+            const user_id = req.userId;
+            const { match_id, series_id ,sport} = req.params;
+            let decoded = { match_id: parseInt(match_id), series_id: parseInt(series_id), user_id: ObjectId(user_id) }
+            if (match_id && series_id && user_id) {
+                let data1 = {};
+                let ptcData = await LFPlayerTeamContest.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'series_id': decoded['series_id'] }).exec()
+                if (ptcData && ptcData.length > 0) {
+                    let predictionIds = _.map(ptcData, 'prediction_id');
+                    let joinedContestIds = _.uniq(_.map(ptcData, 'contest_id'), _.isEqual);
+    
+                    let ptAndContestData = await Promise.all([
+                        LiveFantasyMatchContest.find({ match_id: decoded['match_id'], contest_id: { $in: joinedContestIds } }),
+                        LiveFantasyMatchList.findOne({ 'series_id': decoded['series_id'], 'match_id': decoded['match_id'] })
+                    ]);
+    
+                    if (ptAndContestData && ptAndContestData.length > 0) {
+                        const predictionList = []; // ptAndContestData && ptAndContestData[0] ? ptAndContestData[0] : [];
+                       // const contestList = ptAndContestData && ptAndContestData[1] ? ptAndContestData[1] : [];
+                        let reviewMatch = ptAndContestData && ptAndContestData[1] ? ptAndContestData[1] : {};
+                        const matchContestWithCodeList = ptAndContestData && ptAndContestData[0] ? ptAndContestData[0] : [];
+    
+                        let joinedTeams = [];
+                        for (const ptcDataItem of ptcData) {
+                            var joinObj = {};
+                            const ptObj = _.find(predictionList, { '_id': ptcDataItem.prediction_id });
+                            const contstObj = _.find(matchContestWithCodeList, { 'contest_id': ptcDataItem.contest_id });
+    
+                            joinObj._id = ptcDataItem.contest_id;
+                            joinObj.player_team = ptObj;
+                            joinObj.contest = contstObj;
+                            ptcDataItem.player_team = ptObj;
+                            ptcDataItem.contest = contstObj;
+                            joinObj.doc = ptcDataItem;
+                            joinedTeams.push(joinObj);
+                        }
+                        let pointsData = {};
+                        let contest = [];
+                        let upComingData = [];
+                        let myTeamRank = [];
+                        if (joinedTeams) {
+                            let contestKey = 0;
+                            for (const contestValue of joinedTeams) {
+                               
+                                if (!contestValue || !contestValue.contest) {
+                                    continue;
+                                }
+                                let mcObj = _.find(matchContestWithCodeList, { 'contest_id': contestValue.doc.contest_id });
+                                
+                                let inviteCode = mcObj && mcObj.invite_code ? mcObj.invite_code : '';
+                                myTeamRank.push((contestValue.doc.rank) ? contestValue.doc.rank : 0);
+    
+                                let customBreakup;
+                                if (contestValue.contest && contestValue.contest.breakup) {
+                                    customBreakup = contestValue.contest.breakup[contestValue.contest.breakup.length - 1];
+                                }
+                                toalWinner = customBreakup && customBreakup.endRank ? customBreakup.endRank : ((customBreakup) ? customBreakup.startRank : 0);
+                                let joinedTeamCount = mcObj && mcObj.joined_users ? mcObj.joined_users : 0;
+                                let myTeamIds = [];
+                                let myTeamNo = [];
+                                let winningAmt = [];
+                                let joinedTeamList = _.filter(ptcData, { 'contest_id': contestValue.doc.contest_id });
+                                let teamsJoined = joinedTeamList ? joinedTeamList : [];
+                                if (teamsJoined) {
+                                    for (const joined of teamsJoined) {
+                                        myTeamIds.push({ "player_team_id": joined.prediction_id });
+                                        myTeamNo.push((joined.team_count) ? joined.team_count : 1);
+                                        winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
+                                    }
+                                }
+                                let customPrice = [];
+                                let isWinner = false;
+                                let isGadget = false;
+                                let aakashLeague  = (contestValue && contestValue.doc && contestValue.doc.contest && contestValue.doc.contest.amount_gadget == 'aakash') ? true : false;
+                                if (contestValue && contestValue.contest && contestValue.contest.breakup) {
+                                    let key = 0;
+                                    if (contestValue.contest.amount_gadget == 'gadget') {
+                                        for (const customBreakup of contestValue.contest.breakup) {
+                                            if ((contestValue.rank >= customBreakup.startRank && contestValue.rank <= customBreakup.endRank) || contestValue.rank == customBreakup.end) {
+                                                isWinner = true;
+                                            }
+    
+                                            if (!customPrice[key]) {
+                                                customPrice[key] = {}
+                                            }
+                                            if (customBreakup.startRank == customBreakup.endRank) {
+                                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                                            } else {
+                                                customPrice[key]['rank'] = customBreakup.name;
+                                            }
+    
+                                            customPrice[key]['gadget_name'] = customBreakup.gadget_name ? (customBreakup.gadget_name) : "";
+                                            customPrice[key]['image'] = customBreakup.image ? config.imageBaseUrl + '/' + customBreakup.image : "";
+                                            key++;
+                                        }
+                                        isGadget = true;
+                                    } else {
+                                        for (const customBreakup of contestValue.contest.breakup) {
+                                            if ((contestValue.rank >= customBreakup.startRank && contestValue.rank <= customBreakup.endRank) || contestValue.rank == customBreakup.end) {
+                                                isWinner = true;
+                                            }
+    
+                                            if (!customPrice[key]) {
+                                                customPrice[key] = {};
+                                            }
+                                            if (customBreakup.startRank == customBreakup.endRank) {
+                                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                                            } else {
+                                                customPrice[key]['rank'] = customBreakup.name;
+                                            }
+    
+                                            if (!customBreakup.price) {
+                                                customPrice[key]['price'] = 0;
+                                            } else {
+                                                customPrice[key]['price'] = customBreakup.price_each ? customBreakup.price_each.toFixed(2) : customBreakup.price.toFixed(2);
+                                            }
+    
+                                            customPrice[key]['image'] = (customBreakup.image) ? config.imageBaseUrl + 'contest_image/'.customBreakup.image : '';
+                                            key++;
+                                        }
+                                    }
+                                } else if (contestValue && contestValue.contest && contestValue.contest.contest_type && contestValue.contest.contest_type.indexOf('free') > -1 && contestValue.doc.rank == 1) {
+                                    isWinner = true;
+                                }
+    
+                                let finiteBreakupDetail = {};
+    
+                                if (contestValue.contest.infinite_contest_size == 1) {
+                                    finiteBreakupDetail.winner_percent = contestValue.contest.winner_percent;
+                                    finiteBreakupDetail.winner_amount = contestValue.contest.winning_amount_times;
+                                }
+    
+                                let winComfimed;
+                                if (contestValue.contest.confirmed_winning == '' || contestValue.contest.confirmed_winning == '0') {
+                                    winComfimed = 'no';
+                                } else {
+                                    winComfimed = contestValue.contest.confirmed_winning;
+                                }
+                                let useBonus = 0;
+                                if (inviteCode && inviteCode.usable_bonus_time) {
+                                    if (moment().isBefore(inviteCode.usable_bonus_time)) {
+                                        useBonus = inviteCode.before_time_bonus;
+                                    } else {
+                                        useBonus = inviteCode.after_time_bonus;
+                                    }
+                                } else {
+                                    if (contestValue.contest.used_bonus != '') {
+                                        useBonus = contestValue.contest.used_bonus;
+                                    }
+                                }
+                                let totalWinningAmount = winningAmt.reduce(function (a, b) {
+                                    return a + b;
+                                }, 0);
+                                contest[contestKey] = {};
+                                contest[contestKey]['confirm_winning'] = winComfimed.toString();
+                                contest[contestKey]['is_gadget'] = isGadget;
+                                contest[contestKey]['entry_fee'] = contestValue.contest.entry_fee;
+                                contest[contestKey]['prize_money'] = contestValue.contest.winning_amount;
+                                contest[contestKey]['total_teams'] = contestValue.contest.contest_size;
+                                contest[contestKey]['category_id'] = contestValue.contest.category_id;
+                                contest[contestKey]['contest_id'] = contestValue.doc.contest_id;
+                                contest[contestKey]['total_winners'] = customBreakup, //(customBreakup && customBreakup.length) ? customBreakup.pop : {},//toalWinner;
+                                contest[contestKey]['teams_joined'] = joinedTeamCount;
+                                contest[contestKey]['is_joined'] = (teamsJoined) ? true : false;
+                                contest[contestKey]['multiple_team'] =  false;
+                                contest[contestKey]['invite_code'] = (inviteCode) ? inviteCode : '';
+                                contest[contestKey]['breakup_detail'] = customPrice;
+                                contest[contestKey]['my_team_ids'] = myTeamIds;
+                                contest[contestKey]['team_number'] = myTeamNo;
+                                contest[contestKey]['points_earned'] = (contestValue && contestValue.doc && contestValue.doc.points) ? contestValue.doc.points : 0;
+                                contest[contestKey]['my_rank'] =  (contestValue && contestValue.doc && contestValue.doc.rank) ? contestValue.doc.rank:0;
+                                contest[contestKey]['is_winner'] = isWinner;
+                                contest[contestKey]['winning_amount'] = totalWinningAmount;
+                                contest[contestKey]['use_bonus'] = useBonus;
+                                contest[contestKey]['is_infinite'] = (contestValue.contest.infinite_contest_size == 1) ? true : false;
+                                contest[contestKey]['infinite_breakup'] = finiteBreakupDetail;
+                                contest[contestKey]['is_aakash_team'] = aakashLeague;
+                                contest[contestKey]['maximum_team_size'] =  1;
+                                contestKey++;
+                            }
+                        }
+                        reviewStatus = '';
+                        if (reviewMatch) {
+                            if (reviewMatch.match_status == 'Finished' && reviewMatch.win_flag == 0) {
+                                reviewStatus = MatchStatus.IN_REVIEW;
+                            }
+    
+                            if (reviewMatch.match_status == MatchStatus.MATCH_DELAYED) {
+                                reviewStatus = MatchStatus.MATCH_DELAYED;
+                            }
+                        }
+                        let myTeams = await LFPrediction.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'],sport:1 }).countDocuments();
+                        data1.joined_contest = contest;
+                        data1.upcoming_match = upComingData;
+                        data1.my_team_count = myTeams;
+                        data1.my_teams = myTeams;
+                        data1.my_contests = joinedContestIds && joinedContestIds.length > 0 ? joinedContestIds.length:0;
+                        data1.my_team_rank = myTeamRank;
+                        data1.match_status = reviewStatus;
+                        data1.match_type = "live-fantasy";
+                    } else {
+                        // Something went wrong
+                        return res.send('Something went wrong!!');
+                    }
+                } else {
+                    // No contest joined yet for this match and series
+                    return res.send('Something went wrong!!');
+                }
+                return res.send(ApiUtility.success(data1));
+    
+            } else {
+                return res.send('Something went wrong!!');
+            }
+    
+        } catch (error) {
+            res.send(ApiUtility.failed(error.message));
         }
     }
 }

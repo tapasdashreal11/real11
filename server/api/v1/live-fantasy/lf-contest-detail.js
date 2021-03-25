@@ -663,8 +663,5 @@ module.exports = {
             console.log(error);
             return res.send(ApiUtility.failed(error.message));
         }
-    },
-    
-    
-    
+    }
 }
