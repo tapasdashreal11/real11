@@ -815,7 +815,7 @@ module.exports = {
             }
             sport   =   parseInt(sport) || 1;
             let reviewMatch = await SeriesSquad.findOne({ 'match_id': match_id, "sport": sport });
-            let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
+            let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, "sport": sport }).countDocuments();
             let reviewStatus = '';
             if (reviewMatch) {
                 if (reviewMatch.match_status == 'Finished' && reviewMatch.win_flag == 0) {
@@ -1116,7 +1116,7 @@ module.exports = {
             }
             sport   =   parseInt(sport) || 1;
             let reviewMatch = await SeriesSquad.findOne({ 'match_id': match_id, "sport": sport });
-            let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
+            let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, "sport":sport }).countDocuments();
             let reviewStatus = '';
             if (reviewMatch) {
                 if (reviewMatch.match_status == 'Finished' && reviewMatch.win_flag == 0) {
