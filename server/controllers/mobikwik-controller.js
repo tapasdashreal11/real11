@@ -10,19 +10,22 @@ module.exports.showForm = async function (req, res) {
     if(transaction){
         let user = await User.findById(transaction.user_id);
         if(user){
-            let date = new Date();
+            let txnDate = new Date();
+            let month = ("0" + (txnDate.getMonth() + 1)).slice(-2);
+            let date = ("0" + (txnDate.getDate())).slice(-2);
             let mobikwikParams = {
                 amount: transaction.txn_amount.toFixed(2) * 100,
                 buyerEmail: user.email,
                 currency: 'INR',
+                // debitorcredit: "netbanking",
                 merchantIdentifier: config.mobikwik.merchantIdentifier,
                 merchantIpAddress:'127.0.0.1',
                 mode:1,
                 orderId:transaction._id,
-                purpose:1,
+                purpose:0,
                 returnUrl:`${req.protocol}://${req.get('host')}/mobikwik/callback`,
-                txnDate: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
-                txnType:1,
+                txnDate: `${txnDate.getFullYear()}-${month}-${date}`,
+                txnType:12,
                 zpPayOption:1
             }
             let checksumString = "";
@@ -33,6 +36,7 @@ module.exports.showForm = async function (req, res) {
                 // }
             }
             let checksum = sha256.hmac(config.mobikwik.secret, checksumString);
+            console.log(checksum, mobikwikParams );
             return res.render('payment-gateway/mobikwik', {checksum:checksum,mobikwikParams:mobikwikParams});
         }
     }
@@ -43,7 +47,7 @@ module.exports.callback = async function(req, res){
     if(req.body && req.body.responseCode && req.body.responseCode == "100"){
         return res.redirect('/mobikwik/callback/success');
     } else {
-        return res.redirect('/mobikwik/callback/failure');
+        return res.send(apiUtility.failed('Transaction Failed..'));  // ('/mobikwik/callback/failure');
     }
     //return res.send(req.body);
 }
