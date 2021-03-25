@@ -90,6 +90,32 @@ module.exports = {
             console.log("Create predction****", error)
             return res.send(ApiUtility.failed(error.message));
         }
+    },
+    updatePrediction: async (req, res) => {
+        let {
+            series_id, match_id,record_id,prediction
+        } = req.body
+        let user_id = req.userId;
+        let data1 = {}, message = "";
+        try {
+            if (!series_id || !match_id || !record_id ||!prediction || !user_id) {
+                return res.send(ApiUtility.failed('Please send proper data'));
+            }
+            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id });
+            if (liveMatch && user_id) {
+                    await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":{prediction:prediction}}); 
+                    message = "Predication has been updated successfully.";
+                    data1.message = message;
+                    return res.send(ApiUtility.success(data1));
+
+            } else {
+                message = "Something went wrong!!"
+                return res.send(ApiUtility.failed(message));
+            }
+        } catch (error) {
+            console.log("update predction****", error)
+            return res.send(ApiUtility.failed(error.message));
+        }
     }
 }
 
