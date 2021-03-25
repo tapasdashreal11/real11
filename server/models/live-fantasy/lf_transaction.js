@@ -42,8 +42,8 @@ var transactionSchema = new Schema({
 	added_type: { type: Number },
 	sport: { type: Number },
 	status: {
-		type: Number,
-		default: 1
+		type: Boolean,
+		default: true
 	}
 });
 

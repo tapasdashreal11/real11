@@ -13,21 +13,15 @@ const moment = require('moment');
 module.exports = async (req, res, dbs) => {
 	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
-
 		let userId=  req.userId;
 		result    =  [];
 		try {
 			let userData = await User.findOne({ '_id': userId }).select("team_name");
 			var tzOffset = 5.5 * 1000 * 60 * 60;
-			var filter = { "user_id": userId, $or: [{ status: { $exists: false } }, { status: true }] }
-
-
+			var filter = { "user_id": userId,status: true }
 			let usersData = await LFTransactions.find(filter, {"txn_date":1, "added_type":1, "txn_amount":1, "local_txn_id":1, "txn_date":1,"retantion_amount":1, "withdraw_commission":1}).sort({"txn_date": -1 }).limit(50);
-
 			if(usersData && usersData.length > 0){
-			 
 				var newArr = [];
-				
 				_.forEach(usersData, function(i, k){
 					newArr.push({
 						"_id": i._id,
