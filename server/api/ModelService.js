@@ -972,7 +972,7 @@ class ModelService {
             try {
                 this.collection.aggregate([
                     {
-                        $match:{end_date: {$gte: new Date()}, over_match:true,status:1,match_status:"In Progress",sport:sport}
+                        $match:{over_match:true,status:1,match_status:"In Progress",sport:sport}
                     },
                     { $sort : {sort: -1, time : 1} },
                     { $limit : 100 },
