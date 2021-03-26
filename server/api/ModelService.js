@@ -16,7 +16,7 @@ class ModelService {
         this.collection = collection;
     }
 
-  getMatchContestLatestNew(categories,filter,limit,is_all){
+    getMatchContestLatestNew(categories,filter,limit,is_all){
         is_all = false;
         return new Promise((resolve, reject) => {
             try{
@@ -78,6 +78,110 @@ class ModelService {
                             "sequence": "$sequence",
                             "category_desc": "$description",
                             category_image: "$image",
+                            "contests": {
+                                $map: {
+                                    "input": "$contests",
+                                    as: "sec",
+                                    in: {
+                                        "contest_id": "$$sec.contest_id",
+                                        "parent_contest_id":"$$sec.parent_contest_id",
+                                        "entry_fee": "$$sec.contest.entry_fee",
+                                        "prize_money": "$$sec.contest.winning_amount",
+                                        "is_full": "$$sec.contest.is_full",
+                                        "confirm_winning": {$cond: { if: { $eq: [ "$$sec.contest.confirmed_winning", "yes" ] }, then: "yes", else: 'no' }},
+                                        "is_gadget": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "gadget" ] }, then: true, else: false }},
+                                        "category_id": "$$sec.contest.category_id",
+                                        "is_auto_create": "$$sec.contest.is_auto_create",                                       
+                                        "multiple_team": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: true, else: false }},
+                                        "invite_code": "$$sec.invite_code",
+                                        "breakup_detail": { 
+                                            $map: {
+                                                "input": "$$sec.contest.breakup",
+                                                as: "break",
+                                                in: {
+                                                    "rank": {$cond: { if: { $eq: [ "$$break.startRank", "$$break.endRank" ] }, then: { $concat: [ "Rank ", {$toString: "$$break.startRank" } ] }, else:  "$$break.name" }},
+                                                    "gadget_name": {$cond: { if: { $ne: [ "$$break.gadget_name", "" ] }, then: "$$break.gadget_name", else: "" }},
+                                                    "image": {$cond: { if: { $ne: [ "$$break.image", "" ] }, then: { $concat: [ imageurl, "/", "$$break.image" ] }, else: "" }},
+                                                    "price": {$cond: { if: { $gt: [ "$$break.price_each", 0 ] }, then: {$trunc : ["$$break.price_each", 2]}, else: {$trunc : ["$$break.price", 2]} }},
+                                                }
+                                            }
+                                        },
+                                        "after_time_bonus":  "$$sec.after_time_bonus",
+                                        "before_time_bonus": "$$sec.before_time_bonus",
+                                        "current_date": new Date(),
+                                        "usable_bonus_time":'$$sec.usable_bonus_time',
+                                        "use_bonus": {$cond: { if: { $ifNull: [ "$$sec.usable_bonus_time", false ] }, then: { $cond: { if: { $gt: [new Date(),'$$sec.usable_bonus_time'] },then: {$toString: "$$sec.before_time_bonus"},else: {$toString: "$$sec.after_time_bonus"} } }, else: {$toString: "$$sec.contest.used_bonus"} }},
+                                        "is_infinite": {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: true, else: false }},
+                                        "teams_joined": "$$sec.joined_users",
+                                        "total_teams": "$$sec.contest.contest_size",
+                                        "total_winners": { $arrayElemAt: [ "$$sec.contest.breakup", -1 ] },
+                                        "is_joined": is_joined, 
+                                        "infinite_breakup" : {$cond: { if: { $eq: [ "$$sec.contest.infinite_contest_size", 1 ] }, then: {"winner_percent": "$$sec.contest.winner_percent", "winner_amount": "$$sec.contest.winning_amount_times"}, else: {} }},
+                                        "is_aakash_team": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "aakash" ] }, then: true, else: false }},
+                                        "is_favourite":false,
+                                        "maximum_team_size": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: { $cond: { if: { $ifNull: ["$$sec.contest.maximum_team_size",false] },then: "$$sec.contest.maximum_team_size",else: 9 } }, else: 1 }},
+                                        "contest_shareable": {$cond: { if: { $ifNull: [ "$$sec.contest.contest_shareable", false ] }, then: "$$sec.contest.contest_shareable", else: 0 }} 
+                                    }
+                                }
+                            },
+                        }
+                    },
+                    {$sort : {sequence : 1}}
+                ], (err, data) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    if (!err) {
+                        if(is_all && data && data.length > 0){
+                            var conArry = [];
+                            var dlength = data.length;
+                            _.forEach(data, function(k, i){
+                                conArry.push(k.contests)
+                                if(i === (dlength - 1)){
+                                    var newArray = Array.prototype.concat.apply([], conArry);
+                                    resolve([{"contests": newArray}]);
+                                }
+                            })
+                        }else{
+                            resolve(data);
+                        }
+                    }
+                });
+            }catch(err){
+                reject(err);
+            } 
+        });
+    }
+    getMatchContestLatestNew1(categories,filter,limit,is_all){
+        is_all = false;
+        return new Promise((resolve, reject) => {
+            try{
+                var is_joined = false;
+                this.collection.aggregate([
+                    {
+                        $match: {match_id:parseInt(filter.match_id),sport:parseInt(filter.sport)}
+                    },   
+                    {
+                        $group : {
+                            _id : "$category_id",
+                            category_name : {$first : "$category_name"},
+                            sequence : {$first : "$category_seq"},
+                            description : {$first : "$category_description"},
+                            status : {$first : "$status"},
+                            match_id : {$first : "$match_id"},
+                            match_contest_id : {$first : "$_id"},
+                            contests : {$push : "$$ROOT"}
+                        }
+                    },
+                    {
+                        $project: {
+                            _id:"$_id",
+                            match_id: "$match_id",
+                            category_id:"$_id",
+                            "category_title": "$category_name",
+                            "sequence": "$sequence",
+                            "category_desc": "$description",
+                            category_image: "",
                             "contests": {
                                 $map: {
                                     "input": "$contests",
@@ -795,6 +899,80 @@ class ModelService {
                 this.collection.aggregate([
                     {
                         $match:{time: {$gte: new Date()}, status:1,match_status:"Not Started",sport:sport}
+                    },
+                    { $sort : {sort: -1, time : 1} },
+                    { $limit : 100 },
+                    {
+                        $lookup: {
+                            from: 'series',
+                            let: { seriesId: "$series_id"},
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr:{
+                                            $and : [
+                                                { $eq: [ "$id_api", "$$seriesId" ] },
+                                                { $eq: [ "$status", 1 ] }
+                                            ]
+                                        }
+                                    }
+                                },
+                                {$project : {"name":1, "short_name" : 1}}
+                            ],
+                            as: 'series',
+                        }
+                    },
+                    {
+                        $unwind: {
+                            path: "$series",
+                            preserveNullAndEmptyArrays: false // optional
+                        }
+                    },
+                    {
+                        $project:{
+                            "_id":"$_id",
+                            "match_id": "$match_id",
+                            "local_team_id":"$localteam_id",
+                            "visitor_team_id": "$visitorteam_id",
+                            "series_id":"$series_id",
+                            "local_team_flag":{ $concat: [ imageurl, "/", "$local_flag" ] },
+                            "visitor_team_flag":{ $concat: [ imageurl, "/", "$visitor_flag" ] },
+                            "series_name": {$cond: { if: { $ne: [ "$series_name", '' ] }, then: "$series_name", else : "$series.short_name"}},
+                            "local_team_name": {$cond: { if: { $ne: [ "$localteam_short_name", "" ] }, then: "$localteam_short_name", else: "$localteam" }},
+                            "visitor_team_name": {$cond: { if: { $ne: [ "$visitorteam_short_name", "" ] }, then: "$visitorteam_short_name", else: "$visitorteam" }},
+                            "star_date":{ $dateToString: {date: "$date", format: "%Y-%m-%d" } },
+                            "star_time":{ $dateToString: {date: "$time", format: "%H:%M" } },
+                            "total_contest": {$cond: { if: { $ne: [ "$contest_count", 0 ] }, then: "$contest_count", else: 0 }},
+                            // "total_contest": {$size : "$match_contest_count"},
+                            "server_time": serverTime1,
+                            "over_match":{ $ifNull: [ "$over_match", false ] },
+                            "playing_11": "$playing_11",
+                            "sort": "$sort",
+                            "xfactors":"$xfactors",
+                            "is_notification":{$cond: { if: { $eq: [ "$notification_status", 'active' ] }, then: true, else: false }},
+                            "notification_title":"$notification_title"
+                        }
+                    }
+                ], (err, data) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    if (!err) {
+                        resolve(data);
+                    }
+                });
+            }catch(error){
+                console.log("error", error)
+            }
+        });
+    }
+    getMatchLiveFantasyList(sport) {
+        return new Promise((resolve, reject) => {
+            var serverTime1 = moment(new Date()).format(config.DateFormat.datetime);
+            try {
+                this.collection.aggregate([
+                    {
+                        $match:{end_date: {$gte: new Date()}, over_match:true,status:1,match_status:"In Progress",sport:sport}
                     },
                     { $sort : {sort: -1, time : 1} },
                     { $limit : 100 },
