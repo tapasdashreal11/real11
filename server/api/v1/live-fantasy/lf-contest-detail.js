@@ -306,7 +306,7 @@ module.exports = {
                 if (userTeam) {
                     teamData[teamCount] = {};
                     teamData[teamCount]['user_id'] = userTeam.user_id;
-                    teamData[teamCount]['team_name'] = userTeam.team_name;
+                    teamData[teamCount]['team_name'] = userTeam.team_name || "";
                     teamData[teamCount]['user_image'] = '';
                     teamData[teamCount]['team_no'] = userTeam.team_count || 0;
                     teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;

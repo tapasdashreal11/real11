@@ -47,6 +47,7 @@ module.exports = {
                 my_contests: 0,
                 joined_contest_ids:[],
                 user_coupons: {},
+                user_prediction_ids:[]
             };
             if(match_id && sport){
                 let filter = {
@@ -54,16 +55,40 @@ module.exports = {
                     "sport": parseInt(sport),
                     is_full: { $ne: 1 }
                 };
-                let contestList  = await getLfMatchContest(filter,false);
+                let joinedTeamsCount = {};
+                let userTeamIds = {};
+                let myPrediction = 0;
+                let match_contest_data  = await getLfMatchContest(filter,false);
+                let myContest = [];
                 if(user_id){
                     let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
+                    myContest = await LFPlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id) }, { _id: 1, contest_id: 1, prediction_id: 1 }).exec();
+                    myPrediction = await LFPrediction.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id) }).countDocuments();
                     let userCoupons = await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}",user_id);
                     resObj['user_coupons'] = !_.isEmpty(userCoupons) ? JSON.parse(userCoupons)  : {};
-                }
-                resObj['match_contest'] = contestList || [];
+                    const contestGrpIds = myContest && myContest.length > 0 ? _.groupBy(myContest, 'contest_id') : {};
+                    let joinedContestIds = myContest && myContest.length > 0 ? _.uniqWith(_.map(myContest, 'contest_id'), _.isEqual) : [];
 
-                if(contestList && contestList.length>0){
-                    redis.setRedisForLf('lf-match-contest-list-'+ match_id + '-' + sport, contestList);
+                    resObj['my_contests'] = joinedContestIds.length || 0;
+                    resObj['joined_contest_ids'] = joinedContestIds;
+                    for (const contsIds of joinedContestIds) {
+                        userTeamIds[contsIds] = contestGrpIds[contsIds];
+                    }
+                }
+                resObj['match_contest'] = match_contest_data || [];
+
+                for (const matchContests of match_contest_data) {
+                    for (const contest of matchContests.contests) {
+                        joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
+                        contest.my_predction_ids = [];
+                    }
+                }
+                resObj['my_prediction'] = myPrediction;
+                resObj['user_prediction_ids'] = parseUserPrediction(userTeamIds);
+                resObj['joined_predictions_count'] = parseContestPredictionJoined(joinedTeamsCount);
+
+                if(match_contest_data && match_contest_data.length>0){
+                    //redis.setRedisForLf('lf-match-contest-list-'+ match_id + '-' + sport, match_contest_data);
                 }
                 
                 var finalResult = ApiUtility.success(resObj);
@@ -833,3 +858,40 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
         })
     })
 }
+
+function parseUserPrediction(userPredictionData){
+    let userPredctionIds = [];
+    for (const prop in userPredictionData) {
+        console.log(prop);
+      if (hasOwnProperty.call(userPredictionData, prop)) {
+        let teamData = userPredictionData[prop];
+        let predictionIds = [];
+        for(let team of teamData){
+          team.contest_id = prop;
+          if(team.prediction_id){
+            predictionIds.push(team.prediction_id);
+          }
+        }
+        userPredctionIds.push({
+          contest_id:prop,
+          prediction_ids: predictionIds
+        });
+      }
+    }
+    return userPredctionIds;
+  }
+
+function parseContestPredictionJoined (joinedTeamsCount){
+    let responseData = [];
+    for (const prop in joinedTeamsCount) {
+      if (hasOwnProperty.call(joinedTeamsCount, prop)) {
+        if(joinedTeamsCount[prop] > 0){
+          responseData.push({
+            contest_id:prop,
+            count: joinedTeamsCount[prop]
+          });
+        }
+      }
+    }
+    return responseData;
+  };
