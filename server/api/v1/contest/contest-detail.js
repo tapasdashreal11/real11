@@ -963,7 +963,7 @@ module.exports = {
                 let ranArr = [];
                 let MyUser = [];
                 let newTeamData = [];
-
+           console.log('***Iteam data',teamData);
                 if (teamData) {
                     key = 0;
                     for (const teamss of teamData) {
@@ -988,7 +988,7 @@ module.exports = {
                         }
                     }
                 }
-                
+                console.log('***newTeamData ',newTeamData);
                 let teamRankData = MyUser.concat(newTeamData);
 
                 if (!contestDetail.confirmed_winning || contestDetail.confirmed_winning == '' || contestDetail.confirmed_winning == '0' || contestDetail.confirmed_winning == 'no') {
