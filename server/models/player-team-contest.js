@@ -75,6 +75,9 @@ var playerTeamContestSchema = new Schema({
   },
 	rank: {
     type: Number, default: 0
+  },
+  points: {
+    type: Number, default: 0
   }
 },{
   timestamps:true
