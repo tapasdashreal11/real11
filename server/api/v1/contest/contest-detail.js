@@ -830,8 +830,9 @@ module.exports = {
                 contestData = await redis.getRedis(contestDataAPIKey);
             }
             if (!contestData) {
-                let contestDetail = await MatchContest.findOne({ _id: contest_id });
-                contestDetail = JSON.parse(JSON.stringify(contestDetail));
+                let matchContestDetail = await MatchContest.findOne({ _id: contest_id });
+                matchContestDetail = JSON.parse(JSON.stringify(matchContestDetail));
+                let contestDetail = matchContestDetail  && matchContestDetail.contest ? matchContestDetail.contest :{};
                 // console.log(contestDetail.contest_size);return false
                 let prizeMoney = 0;
                 let totalTeams = 0;
@@ -843,7 +844,7 @@ module.exports = {
                 let myTeamIds = [];
                 let customPrice = [];
                 //matchInviteCode = await MatchContest.getInviteCode(parseInt(match_id), contest_id, sport);
-                matchInviteCode = contestDetail;
+                matchInviteCode = matchContestDetail;
                 if (matchInviteCode && matchInviteCode.invite_code) {
                     inviteCode = matchInviteCode.invite_code;
                 }
