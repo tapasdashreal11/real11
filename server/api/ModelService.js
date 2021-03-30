@@ -152,7 +152,7 @@ class ModelService {
             } 
         });
     }
-    getMatchContestLatestNew1(categories,filter,limit,is_all){
+    getMatchContestLatestWithoutCat(categories,filter,limit,is_all){
         is_all = false;
         return new Promise((resolve, reject) => {
             try{
