@@ -897,12 +897,12 @@ module.exports = {
                 }
                 
                 if (mergedTeam && mergedTeam.length == 0) {
-                    myTeams = await PlayerTeamContest.find({
+                   /* myTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
                         sport:parseInt(sport),
                         contest_id:ObjectId(contest_id),
                         user_id:ObjectId(user_id)
-                      }).limit(15).sort({"rank": 1});
+                      }).limit(15).sort({"rank": 1});*/
                     
                     let allTeams = [];
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
@@ -938,6 +938,7 @@ module.exports = {
                     } else {
                         mergedTeam = [...myTeams, ...allTeams];
                     }
+                    console.log("ddddd***",allTeams);
                     
                 }
                
