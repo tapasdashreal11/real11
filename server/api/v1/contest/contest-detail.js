@@ -830,7 +830,7 @@ module.exports = {
                 contestData = await redis.getRedis(contestDataAPIKey);
             }
             if (!contestData) {
-                let contestDetail = await Contest.findOne({ _id: contest_id });
+                let contestDetail = await MatchContest.findOne({ _id: contest_id });
                 contestDetail = JSON.parse(JSON.stringify(contestDetail));
                 // console.log(contestDetail.contest_size);return false
                 let prizeMoney = 0;
@@ -842,7 +842,8 @@ module.exports = {
                 let teamData = [];
                 let myTeamIds = [];
                 let customPrice = [];
-                matchInviteCode = await MatchContest.getInviteCode(parseInt(match_id), contest_id, sport);
+                //matchInviteCode = await MatchContest.getInviteCode(parseInt(match_id), contest_id, sport);
+                matchInviteCode = contestDetail;
                 if (matchInviteCode && matchInviteCode.invite_code) {
                     inviteCode = matchInviteCode.invite_code;
                 }
@@ -876,7 +877,7 @@ module.exports = {
                 // console.log(aakashTeams);
                 if (!_.isEmpty(redisTeams)) {
                     console.log("Live leader board coming from redis*****");
-                    MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
+                    // MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
                     myTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
                         sport:parseInt(sport),
@@ -938,7 +939,7 @@ module.exports = {
                     } else {
                         mergedTeam = [...myTeams, ...allTeams];
                     }
-                    console.log("ddddd***",allTeams);
+                    
                     
                 }
                
@@ -971,7 +972,7 @@ module.exports = {
                 let ranArr = [];
                 let MyUser = [];
                 let newTeamData = [];
-                console.log('*****',teamData);
+                
                 if (teamData) {
                     key = 0;
                     for (const teamss of teamData) {
