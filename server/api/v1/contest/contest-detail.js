@@ -897,12 +897,12 @@ module.exports = {
                 }
                 
                 if (mergedTeam && mergedTeam.length == 0) {
-                   /* myTeams = await PlayerTeamContest.find({
+                   myTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
                         sport:parseInt(sport),
                         contest_id:ObjectId(contest_id),
                         user_id:ObjectId(user_id)
-                      }).limit(15).sort({"rank": 1});*/
+                      }).limit(15).sort({"rank": 1});
                     
                     let allTeams = [];
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
@@ -945,6 +945,10 @@ module.exports = {
                 let teamCount = 0;
                 let player_team_id_filter = []
                 for (const userTeam of mergedTeam) {
+                    if (_.find(player_team_id_filter, userTeam.player_team_id)){
+                        continue
+                    } else {
+                        player_team_id_filter.push(userTeam.player_team_id);
                         let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         
                         if (userTeam) {
@@ -959,7 +963,9 @@ module.exports = {
                             teamData[teamCount]['winning_amount'] = winAmount;
                             teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
                         }
-                    teamCount++;
+                       teamCount++;
+                    }
+                        
                 }
 
                 let ranArr = [];
