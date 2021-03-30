@@ -29,9 +29,6 @@ var playerTeamContestSchema = new Schema({
   user_id: {
     type: ObjectId
   },
-  rank: {
-    type: Number
-  },
   sport: {
     type: Number
   },

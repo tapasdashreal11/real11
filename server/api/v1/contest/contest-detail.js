@@ -940,12 +940,12 @@ module.exports = {
                     }
                     
                 }
-                console.log('myTeams***',myTeams);
+               
                 let teamCount = 0;
                 let player_team_id_filter = []
                 for (const userTeam of mergedTeam) {
                         let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
-                        console.log('***userTeam data',userTeam);
+                        
                         if (userTeam) {
                             teamData[teamCount] = {};
                             teamData[teamCount]['user_id'] = userTeam.user_id;
@@ -954,7 +954,6 @@ module.exports = {
                             teamData[teamCount]['team_no'] = userTeam.team_count || 1;
                             teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
                             teamData[teamCount]['previous_rank'] = userTeam.previous_rank || 0;
-                            console.log("***********",userTeam.points);
                             teamData[teamCount]['point'] = userTeam && userTeam.points ? userTeam.points: 0;
                             teamData[teamCount]['winning_amount'] = winAmount;
                             teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
@@ -990,7 +989,7 @@ module.exports = {
                         }
                     }
                 }
-                console.log('***newTeamData ',newTeamData);
+                
                 let teamRankData = MyUser.concat(newTeamData);
 
                 if (!contestDetail.confirmed_winning || contestDetail.confirmed_winning == '' || contestDetail.confirmed_winning == '0' || contestDetail.confirmed_winning == 'no') {
@@ -1100,7 +1099,7 @@ module.exports = {
                 if (reviewMatch == "In Progress") {
                     redis.setRedis(contestDataAPIKey, contestData)
                 }
-                console.log('contestData***',contestData);
+                
                 return res.send(ApiUtility.success(contestData));
             }
 
