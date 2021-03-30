@@ -23,6 +23,7 @@ module.exports = {
             if (!series_id || !match_id || !sport) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
+            let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
             let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id, sport: sport });
             if (liveMatch) {
                     let teamDataa = [];
@@ -46,9 +47,11 @@ module.exports = {
                         };
                         let teamId = new ObjectId()
                         team._id = teamId;
+                        redis.setRedisForLf('lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id, team_count);
                         let newTeam    =   await Prediction.collection.insertOne(team);
                         message = "Prediction has been created successfully.";
                         data1.message = message;
+                        redis.setRedisForLf(listKey, []);
                         return res.send(ApiUtility.success(data1));
                        
                     } else {
@@ -75,20 +78,36 @@ module.exports = {
             if (!series_id || !match_id || !sport) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
-           let pList = await Prediction.find({
-                user_id: user_id,
-                match_id: match_id,
-                series_id: series_id,
-                sport: sport
-            });
+           let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
            let respons = {}
-            respons.message = '';
-            respons.prediction = pList || [];
-            respons.match_type = "live-fantasy";
-            return res.send(ApiUtility.success(respons));
+            respons.message = '';        
+            redis.getRedisForLf(listKey, async (err, pListData) => {
+               if (pListData && pListData.length>0) {
+                   console.log('Prdction List data coming from redis***');
+                   respons.prediction = pListData || [];
+                   respons.match_type = "live-fantasy";
+                   return res.send(ApiUtility.success(respons));
+                } else {
+                    let pList = await Prediction.find({
+                        user_id: user_id,
+                        match_id: match_id,
+                        series_id: series_id,
+                        sport: sport
+                    }).sort({"team_count":1});
+                    console.log('Prdction List data coming from DB***');
+                    respons.prediction = pList || [];
+                    respons.match_type = "live-fantasy";
+                    if(pList && pList.length>0){
+                        redis.setRedisForLf(listKey, pList);
+                    }
+                    return res.send(ApiUtility.success(respons));
+                }
+            });
+           
+           
             
         } catch (error) {
-            console.log("Create predction****", error)
+            console.log("predction list error****", error)
             return res.send(ApiUtility.failed(error.message));
         }
     },
