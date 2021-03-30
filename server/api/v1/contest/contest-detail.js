@@ -964,7 +964,7 @@ module.exports = {
                 let ranArr = [];
                 let MyUser = [];
                 let newTeamData = [];
-           
+                console.log('*****',teamData);
                 if (teamData) {
                     key = 0;
                     for (const teamss of teamData) {
