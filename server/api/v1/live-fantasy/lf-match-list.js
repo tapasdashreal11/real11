@@ -27,6 +27,7 @@ module.exports = {
             data1.live_match = liveData;
             data1.completed_match = finishData;
             data1.message = 'Test Message';
+            data1.match_type = "live-fantasy";
             data1.server_time = moment(new Date()).format(config.DateFormat.datetime);
             var successObj = ApiUtility.success(data1);
             redis.setRedisForLf('lf-match-list-' + pmatch_id + '-' + sport, successObj);
@@ -85,6 +86,7 @@ module.exports = {
                 resObj['my_prediction'] = myPrediction;
                 resObj['user_prediction_ids'] = parseUserPrediction(userTeamIds);
                 resObj['joined_predictions_count'] = parseContestPredictionJoined(joinedTeamsCount);
+                resObj['match_type'] = "live-fantasy";
 
                 if (match_contest_data && match_contest_data.length > 0) {
                     //redis.setRedisForLf('lf-match-contest-list-'+ match_id + '-' + sport, match_contest_data);

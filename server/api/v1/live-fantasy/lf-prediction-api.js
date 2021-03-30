@@ -84,6 +84,7 @@ module.exports = {
            let respons = {}
             respons.message = '';
             respons.prediction = pList || [];
+            respons.match_type = "live-fantasy";
             return res.send(ApiUtility.success(respons));
             
         } catch (error) {
