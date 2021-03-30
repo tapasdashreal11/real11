@@ -42,7 +42,6 @@ const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId
     return new Promise(async (resv, rej) => {
         await redis.getRedisLeaderboard(leaderboardRedis, function (err, reply) {
             if (!err) {
-                console.log('reply****',reply)
                 const result = reply.reduce((index, obj) => {
                     if(aakashId) {
                         if (obj.user_id != user_id && obj.user_id != aakashId && index.length < 100)
@@ -97,14 +96,18 @@ module.exports = {
                 contestData = await redis.getRedis(contestDataAPIKey);
             }
             if (!contestData) {
-                let contestDetail = await Contest.findOne({ _id: contest_id });
-                let CategoryData = await getCategoryRedis(contestDetail.category_id);
+                // let contestDetail = await Contest.findOne({ _id: contest_id });
+                let matchContestDetail = await MatchContest.findOne({ contest_id: contest_id ,match_id:parseInt(match_id),sport:sport});
+                matchContestDetail = JSON.parse(JSON.stringify(matchContestDetail));
+                let contestDetail = matchContestDetail  && matchContestDetail.contest ? matchContestDetail.contest :{};
+
+                /*let CategoryData = await getCategoryRedis(contestDetail.category_id);
                 if(_.isEmpty()) {
                     CategoryData   =   await Category.findOne({ _id: contestDetail.category_id })
                     let categoryRedis = 'category-data-' + contestDetail.category_id;
                     setRedis(categoryRedis, CategoryData);
-                }
-                contestDetail = JSON.parse(JSON.stringify(contestDetail));
+                }*/
+                // contestDetail = JSON.parse(JSON.stringify(contestDetail));
                 let prizeMoney = 0;
                 let totalTeams = 0;
                 let entryfee = 0;
@@ -112,7 +115,8 @@ module.exports = {
                 let teamData = [];
                 let myTeamIds = [];
                 let customPrice = [];
-                matchInviteCode = await MatchContest.getInviteCode(parseInt(match_id), contest_id, sport);
+                // matchInviteCode = await MatchContest.getInviteCode(parseInt(match_id), contest_id, sport);
+                matchInviteCode = matchContestDetail;
                 if (matchInviteCode && matchInviteCode.invite_code) {
                     inviteCode = matchInviteCode.invite_code;
                 }
@@ -302,7 +306,7 @@ module.exports = {
                     maximum_team_size: multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
                     contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,	
                     category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:'',
-                    category_name:CategoryData && CategoryData.category_name ?CategoryData.category_name:'',
+                    category_name:matchContestDetail && matchContestDetail.category_name ?matchContestDetail.category_name:'',
                     my_teams: myTeamsCount || 0
                 }
                 if (reviewMatch == "In Progress") {
@@ -623,7 +627,7 @@ module.exports = {
                       }).limit(100).sort({_id:-1});
                 }
                 if(allTeams && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) {
-                   // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                    await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                 }
                 mergedTeam = allTeams;
             }
