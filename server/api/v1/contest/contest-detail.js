@@ -940,6 +940,7 @@ module.exports = {
                     }
                     
                 }
+                console.log('myTeams***',myTeams);
                 let teamCount = 0;
                 let player_team_id_filter = []
                 for (const userTeam of mergedTeam) {
