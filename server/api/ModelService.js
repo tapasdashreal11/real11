@@ -159,7 +159,7 @@ class ModelService {
                 var is_joined = false;
                 this.collection.aggregate([
                     {
-                        $match: {match_id:parseInt(filter.match_id),sport:parseInt(filter.sport)}
+                        $match: {match_id:parseInt(filter.match_id),sport:parseInt(filter.sport),is_full:0,is_private:0}
                     },   
                     {
                         $group : {
