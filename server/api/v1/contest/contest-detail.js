@@ -1098,6 +1098,7 @@ module.exports = {
                 if (reviewMatch == "In Progress") {
                     redis.setRedis(contestDataAPIKey, contestData)
                 }
+                console.log('contestData***',contestData);
                 return res.send(ApiUtility.success(contestData));
             }
 
