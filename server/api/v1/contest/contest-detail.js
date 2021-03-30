@@ -954,7 +954,7 @@ module.exports = {
                             teamData[teamCount]['team_no'] = userTeam.team_count || 1;
                             teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
                             teamData[teamCount]['previous_rank'] = userTeam.previous_rank || 0;
-                            teamData[teamCount]['point'] = userTeam.points || 0;
+                            teamData[teamCount]['point'] = userTeam && userTeam.points ? userTeam.points: 0;
                             teamData[teamCount]['winning_amount'] = winAmount;
                             teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
                         }
