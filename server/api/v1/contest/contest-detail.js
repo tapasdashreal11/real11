@@ -945,6 +945,7 @@ module.exports = {
                 let player_team_id_filter = []
                 for (const userTeam of mergedTeam) {
                         let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
+                        console.log('***userTeam data',userTeam);
                         if (userTeam) {
                             teamData[teamCount] = {};
                             teamData[teamCount]['user_id'] = userTeam.user_id;
@@ -963,7 +964,7 @@ module.exports = {
                 let ranArr = [];
                 let MyUser = [];
                 let newTeamData = [];
-           console.log('***Iteam data',teamData);
+           
                 if (teamData) {
                     key = 0;
                     for (const teamss of teamData) {
