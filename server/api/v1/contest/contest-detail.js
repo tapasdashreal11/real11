@@ -830,7 +830,7 @@ module.exports = {
                 contestData = await redis.getRedis(contestDataAPIKey);
             }
             if (!contestData) {
-                let matchContestDetail = await MatchContest.findOne({ _id: contest_id });
+                let matchContestDetail = await MatchContest.findOne({ contest_id: contest_id ,match_id:parseInt(match_id),sport:sport});
                 matchContestDetail = JSON.parse(JSON.stringify(matchContestDetail));
                 let contestDetail = matchContestDetail  && matchContestDetail.contest ? matchContestDetail.contest :{};
                 // console.log(contestDetail.contest_size);return false
