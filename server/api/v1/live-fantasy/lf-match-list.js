@@ -89,7 +89,7 @@ module.exports = {
                 resObj['match_type'] = "live-fantasy";
 
                 if (match_contest_data && match_contest_data.length > 0) {
-                    //redis.setRedisForLf('lf-match-contest-list-'+ match_id + '-' + sport, match_contest_data);
+                    redis.setRedisForLf('lf-match-contest-list-'+ match_id + '-' + sport, match_contest_data);
                 }
 
                 var finalResult = ApiUtility.success(resObj);

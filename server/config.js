@@ -180,7 +180,11 @@ config.leaderboard_redis = {
 }
 
 config.lf_redis = {
-  // host: 'localhost', //'redis-leaderboard.k6nkix.ng.0001.aps1.cache.amazonaws.com',
+  host: process.env.LF_REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379
+}
+
+config.lf_redis_leaderboard = {
   host: process.env.LF_REDIS_HOST || 'localhost',
   port: process.env.REDIS_PORT || 6379
 }
