@@ -137,6 +137,37 @@ module.exports = {
             console.log("update predction****", error)
             return res.send(ApiUtility.failed(error.message));
         }
+    },
+    lfPointSystem: async (req, res) => {
+        let user_id = req.userId;
+        let respons = {}
+            respons.message = ''; 
+        try {
+           let point_manager = {
+                '17' : 6,
+                '1' : 4,
+                '2' : 8,
+                '3' : 16,
+                '4' : 20,
+                '5' : 50,
+                '6' : 32,
+                '7' : 70,
+                '8' : 60,
+                '9' : 120,
+                '10' : 110,
+                '11' : 130,
+                '12' : 180,
+                '13' : 140,
+                '14' : 200,
+                '15' : 240,
+                '16' : 2,
+            }
+            respons.point_list = point_manager;
+            return res.send(ApiUtility.success(respons));
+            
+        } catch (error) {
+            return res.send(ApiUtility.failed(error.message));
+        }
     }
 }
 
