@@ -502,6 +502,13 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entityM.contest_id = newContestId;
             entityM.series_id = series_id;
             entityM.category_id = ObjectId(contestData.category_id);
+            entityM.category_name = contestData.category_name;
+            entityM.category_description = contestData.category_description;
+            entityM.category_seq = contestData.category_seq;
+            entityM.match_status= contestData.match_status;
+            entityM.before_time_bonus = contestData.before_time_bonus;
+            entityM.after_time_bonus = contestData.after_time_bonus;
+            entityM.usable_bonus_time = contestData.usable_bonus_time;
             entityM.invite_code = '1Q' + Math.random().toString(36).slice(-6);
             entityM.created = new Date();
             entityM.localteam = liveMatch.localteam || '';

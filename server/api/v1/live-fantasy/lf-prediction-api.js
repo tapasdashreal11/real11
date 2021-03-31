@@ -24,6 +24,7 @@ module.exports = {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
             let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
+            let countRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
             let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id, sport: sport });
             if (liveMatch) {
                     let teamDataa = [];
@@ -47,7 +48,7 @@ module.exports = {
                         };
                         let teamId = new ObjectId()
                         team._id = teamId;
-                        redis.setRedisForLf('lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id, team_count);
+                        redis.setRedisForLf(countRedisKey, team_count);
                         let newTeam    =   await Prediction.collection.insertOne(team);
                         message = "Prediction has been created successfully.";
                         data1.message = message;
