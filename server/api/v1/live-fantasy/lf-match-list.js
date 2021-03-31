@@ -744,7 +744,7 @@ function getLfMatchContest(filter, is_all) {
                     $group: {
                         _id: "$category_id",
                         category_name: { $first: "$category_name" },
-                        description: { $first: "$description" },
+                        description: { $first: "$category_description" },
                         status: { $first: "$status" },
                         sequence: { $first: "$category_seq" },
                         match_id: { $first: "$match_id" },
@@ -858,7 +858,27 @@ async function getPromiseForUserCoupons(key, defaultValue, user_id) {
         })
     })
 }
+async function getPromiseUserteamCounts(key, defaultValue, user_id) {
+    return new Promise((resolve, reject) => {
+        redis.redisObj.get(key, async (err, data) => {
+            if (err) {
+                reject(defaultValue);
+            }
+            if (data == null) {
+                const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 });
+                console.log('cSaleData from list *****', cSaleData);
+                if (cSaleData && cSaleData._id) {
+                    redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
+                    data = JSON.stringify(cSaleData);
+                } else {
+                    data = defaultValue;
+                }
 
+            }
+            resolve(data)
+        })
+    })
+}
 function parseUserPrediction(userPredictionData) {
     let userPredctionIds = [];
     for (const prop in userPredictionData) {
