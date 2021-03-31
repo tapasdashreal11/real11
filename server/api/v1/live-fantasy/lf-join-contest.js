@@ -58,7 +58,7 @@ module.exports = async (req, res) => {
                             let matchContest = results[1] ? results[1] : {};
                             let contestData = results[1] ? results[1] : '';
                             var parentContestId = (contestData && contestData.parent_contest_id) ? contestData.parent_contest_id : contestData.contest_id;
-                            var PlayerTeamContestFilter = { 'contest_id': contest_id,'prediction_id': ObjectId(prediction_id), 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id']}
+                            var PlayerTeamContestFilter = { 'contest_id': contest_id,'user_id': user_id, 'match_id': decoded['match_id'], 'series_id': decoded['series_id']}
                             let playerTeamRes = await LFPlayerTeamContest.findOne(PlayerTeamContestFilter);
                             if(playerTeamRes){
                                 return res.send(ApiUtility.failed("Already Joined Contest."));
@@ -83,7 +83,6 @@ module.exports = async (req, res) => {
                                             return res.json(response);
                                         } else {
 
-                                            
                                                 let contest = {};
                                                 let newContestId = new ObjectId();
                                                 contest._id = newContestId;
@@ -433,9 +432,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                       console.log('contestData***',contestData);
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
-                    // var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
-                    console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", joinedContestCount);
-                    //var ddCount = mcCountRes + 1 ;
+                    
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
                         contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session);
@@ -457,15 +454,12 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     "player_team_contest_id": newPTC._id,
                     "match_status": 'Not Started',
                 }
-
                 let totalContestKey = 1
-
-
-                //const sessionOpts = { session, new: true };
                 LFMyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, {$set:newMyModelobj ,$inc: { total_contest: 1 } }, { upsert: true, new: true }).then((MyContestModel) => {
                     totalContestKey = MyContestModel.total_contest || 0;
                 });
-
+                let redisKey = 'lf-user-joinedContestIds-' + user_id + '-' + match_id + '-' + series_id;
+                await getRedisForJoindContestIds(redisKey,[]);
                 return resolve(totalContestKey);
                 
 
@@ -696,4 +690,23 @@ async function calculateAdminComission(contestData){
     comission = 0;
     return comission;
   }
+}
+
+async function getRedisForJoindContestIds(key, defaultValue){
+    return new Promise((resolve, reject) => {
+        redis.getRedisForLf(key, (err, data) => {
+            if (err) { 
+                reject(defaultValue);
+            }
+            if (data) {
+                let userContests = data;
+                userContests.push(contest_id);
+                data = userContests;
+            } else {
+                data = [contest_id];
+            }
+            redis.setRedisForLf(key,data)
+            resolve(data)
+        });
+    })
 }
