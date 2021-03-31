@@ -163,10 +163,7 @@ module.exports = {
             }
             respons.point_list = point_manager;
             respons.divide_by = 8;
-            respons.hth_point_sign = "+";
-            respons.mt_point_sign = "+";
-            respons.lms_point_sign = "+";
-            respons.other_point_sign = "+";
+            respons.point_sign = "+";
 
             return res.send(ApiUtility.success(respons));
             
