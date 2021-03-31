@@ -141,7 +141,6 @@ module.exports = {
     lfPointSystem: async (req, res) => {
         let user_id = req.userId;
         let respons = {}
-            respons.message = ''; 
         try {
            let point_manager = {
                 '17' : 6,
@@ -163,6 +162,7 @@ module.exports = {
                 '16' : 2,
             }
             respons.point_list = point_manager;
+            respons.divide_by = 8;
             return res.send(ApiUtility.success(respons));
             
         } catch (error) {
