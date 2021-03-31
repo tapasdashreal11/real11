@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
                             if(playerTeamRes){
                                 return res.send(ApiUtility.failed("Already Joined Contest."));
                              } else {
-
+                                let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
                                 const session = await startSession()
                                 session.startTransaction();
                                 const sessionOpts = { session, new: true };
@@ -72,7 +72,7 @@ module.exports = async (req, res) => {
                                     const doc = await LFMatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, sessionOpts);
                                     if (doc) {
                                         let joinedContestCount = doc.joined_users;
-                                        if (matchContest && matchContest.contest_size < joinedContestCount) {
+                                        if (matchContest && matchContest.contest_size < joinedContestCount && infinteStatus ) {
                                             console.log("Join contest matchContest live fantasy response-----", matchContest.contest_size, joinedContestCount);
                                             await session.abortTransaction();
                                             session.endSession();
@@ -530,7 +530,6 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entityM.contest_size = contestData.contest_size;
             entityM.infinite_contest_size = contestData.infinite_contest_size;
             entityM.winning_amount_times = contestData.winning_amount_times;
-            entityM.is_auto_create = contestData.is_auto_create;
             entityM.auto_create = contestData.auto_create;
             entityM.used_bonus = contestData.used_bonus;
             entityM.winner_percent = contestData.winner_percent;
