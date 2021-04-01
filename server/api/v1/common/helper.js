@@ -350,7 +350,6 @@ const sendNotificationAPNS = (uid,notiType,deviceToken,title,notification) => {
 
 const parseContestPredictionJoined = (joinedTeamsCount) => {
   let responseData = [];
-  console.log('redsi',typeof joinedTeamsCount );
     for (const prop in joinedTeamsCount) {
       
         if (hasOwnProperty.call(joinedTeamsCount, prop)) {
@@ -366,7 +365,6 @@ const parseContestPredictionJoined = (joinedTeamsCount) => {
 };
 const parseUserPrediction = (userPredictionData) =>{
   let userPredctionIds = [];
-  console.log('redsi team',typeof userPredictionData );
   for (const prop in userPredictionData) {
       if (hasOwnProperty.call(userPredictionData, prop)) {
           let teamData = userPredictionData[prop];

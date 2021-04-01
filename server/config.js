@@ -180,12 +180,12 @@ config.leaderboard_redis = {
 }
 
 config.lf_redis = {
-  host: process.env.LF_REDIS_HOST || 'localhost',
+  host: process.env.LF_REDIS_HOST || 'reall11redis.kayq2e.0001.aps1.cache.amazonaws.com',
   port: process.env.REDIS_PORT || 6379
 }
 
 config.lf_redis_leaderboard = {
-  host: process.env.LF_REDIS_HOST || 'localhost',
+  host: process.env.LF_REDIS_HOST || 'reall11redis.kayq2e.0001.aps1.cache.amazonaws.com',
   port: process.env.REDIS_PORT || 6379
 }
 
