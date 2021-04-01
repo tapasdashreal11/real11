@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
         let data1 = {};
         let startTime = Date.now();
         const user_id = req.userId;
-        const { prediction_id,prediction,parent_match_id, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        const {team_count, prediction_id,prediction,parent_match_id, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
@@ -93,7 +93,7 @@ module.exports = async (req, res) => {
                                                 contest.contest_id = contest_id;
                                                 contest.user_id = user_id;
                                                 contest.team_name = authUser.team_name;
-                                                contest.team_count = 1;
+                                                contest.team_count = team_count ? parseInt(team_count):1;
                                                 contest.total_amount = contestData.entry_fee;
                                                 contest.parent_match_id = contestData && contestData.parent_match_id ? contestData.parent_match_id: parent_match_id;
                                                 let useableBonusPer = contestData.used_bonus || 0;
