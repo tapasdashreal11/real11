@@ -110,7 +110,7 @@ module.exports = {
                 let userContestTeamsIds  = 'lf-user-contest-teamIds-' + user_id + '-' + match_id + '-' + series_id;
                 let contestJoineTeamCounts  = 'lf-contest-joined-teams-count-'+ match_id + '-' + series_id;
                 let  matchContestList = 'lf-match-contest-list-'+ match_id + '-' + series_id;
-                redis.setRedisForLf(userContestTeamsIds, parseUserPrediction(userTeamIds));
+                redis.setRedisForLf(userContestTeamsIds, JSON.stringify(parseUserPrediction(userTeamIds)));
                 redis.setRedisForLf(userContestJoinedRKey, joinedContestIds);
                 redis.setRedisForLf(contestJoineTeamCounts, JSON.stringify(joinedTeamsCount));
                 redis.setRedisForLf(matchContestList, match_contest_data);
@@ -927,8 +927,9 @@ function parseUserPrediction(userPredictionData) {
 
 function parseContestPredictionJoined(joinedTeamsCount) {
     let responseData = [];
+    console.log("******ddd",joinedTeamsCount);
     for (const prop in joinedTeamsCount) {
-        console.log("******ddd",prop);
+        
         if (hasOwnProperty.call(joinedTeamsCount, prop)) {
             if (joinedTeamsCount[prop] > 0) {
                 responseData.push({
