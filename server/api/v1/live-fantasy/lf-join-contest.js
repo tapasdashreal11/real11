@@ -459,7 +459,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     totalContestKey = MyContestModel.total_contest || 0;
                 });
                 let redisKey = 'lf-user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + series_id;
-                await getRedisForJoindContestIds(redisKey,[],contest_id);
+                //await getRedisForJoindContestIds(redisKey,[],contest_id);
                 return resolve(totalContestKey);
                 
 
