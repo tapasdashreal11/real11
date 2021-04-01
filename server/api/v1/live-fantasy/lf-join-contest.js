@@ -459,7 +459,6 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     totalContestKey = MyContestModel.total_contest || 0;
                 });
                 let redisKey = 'lf-user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + series_id;
-                //await getRedisForJoindContestIds(redisKey,[],contest_id);
                 let userContestCountRedisKey = 'lf-user-contest-count-' + match_id + '-' + series_id + '-' + user_id;
                 redis.getRedisForLf(redisKey, (err, data) => {
                     if (data) {
@@ -475,7 +474,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                         redis.setRedisForLf(userContestCountRedisKey,totalContest);
                     }
                     let userTeamcountRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
-                    redis.setRedisForLf(userTeamcountRedisKey,0);
+                    redis.setRedisForLf(userTeamcountRedisKey,-1);
                     return resolve(totalContestKey);
                 });
                 
