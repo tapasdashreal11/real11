@@ -66,7 +66,7 @@ module.exports = {
                     let countRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
                     myContest = await LFPlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id) }, { _id: 1, contest_id: 1, prediction_id: 1 }).exec();
                     console.log('LF 1***');
-                    let teamCounts = await getMyTeamCountsFromRedis(countRedisKey,0);
+                    let teamCounts = 0; //await getMyTeamCountsFromRedis(countRedisKey,0);
                     if(teamCounts>0){
                         console.log('teamcounts from redis*****');
                         myPrediction = teamCounts;
