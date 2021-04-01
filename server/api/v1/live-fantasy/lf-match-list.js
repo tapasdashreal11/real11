@@ -65,6 +65,7 @@ module.exports = {
                     let redisKeyForUserMyCoupons = 'my-coupons-' + user_id;
                     let countRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
                     myContest = await LFPlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id) }, { _id: 1, contest_id: 1, prediction_id: 1 }).exec();
+                    console.log('LF 1***');
                     let teamCounts = await getMyTeamCountsFromRedis(countRedisKey,0);
                     if(teamCounts>0){
                         console.log('teamcounts from redis*****');
@@ -77,11 +78,12 @@ module.exports = {
                         }
                           
                     }
+                    console.log('LF 2***');
                     let userCoupons = await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}", user_id);
                     resObj['user_coupons'] = !_.isEmpty(userCoupons) ? JSON.parse(userCoupons) : {};
                     const contestGrpIds = myContest && myContest.length > 0 ? _.groupBy(myContest, 'contest_id') : {};
                     let joinedContestIds = myContest && myContest.length > 0 ? _.uniqWith(_.map(myContest, 'contest_id'), _.isEqual) : [];
-
+                    console.log('LF 3***');
                     resObj['my_contests'] = joinedContestIds.length || 0;
                     resObj['joined_contest_ids'] = joinedContestIds;
                     for (const contsIds of joinedContestIds) {
@@ -90,13 +92,14 @@ module.exports = {
                     redis.redisObj.set('lf-user-contest-count-' + match_id + '-' + series_id + '-' + user_id, joinedContestIds.length || 0);
                 }
                 
-
+                console.log('LF 4***');
                 for (const matchContests of match_contest_data) {
                     for (const contest of matchContests.contests) {
                         joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
                         contest.my_predction_ids = [];
                     }
                 }
+
                 resObj['my_prediction'] = myPrediction;
                 resObj['user_prediction_ids'] = parseUserPrediction(userTeamIds);
                 resObj['joined_predictions_count'] = parseContestPredictionJoined(joinedTeamsCount);
@@ -111,7 +114,7 @@ module.exports = {
                 redis.setRedisForLf(contestJoineTeamCounts, JSON.stringify(joinedTeamsCount));
                 redis.setRedisForLf(matchContestList, match_contest_data);
 
-
+                console.log('LF 6***');
                 var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);
             } else {
