@@ -350,8 +350,9 @@ const sendNotificationAPNS = (uid,notiType,deviceToken,title,notification) => {
 
 const parseContestPredictionJoined = (joinedTeamsCount) => {
   let responseData = [];
+  console.log('redsi',joinedTeamsCount);
     for (const prop in joinedTeamsCount) {
-      console.log('redsi',prop);
+      
         if (hasOwnProperty.call(joinedTeamsCount, prop)) {
             if (joinedTeamsCount[prop] > 0) {
                 responseData.push({
