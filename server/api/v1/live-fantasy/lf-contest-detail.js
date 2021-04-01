@@ -501,7 +501,12 @@ module.exports = {
                 let teamCount = 0;
                 let player_team_id_filter = []
                 for (const userTeam of mergedTeam) {
-                        let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
+                    if (_.find(player_team_id_filter, userTeam.prediction_id)){
+                        continue
+                    } else {
+                    
+                    player_team_id_filter.push(userTeam.prediction_id);
+                    let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam) {
                             teamData[teamCount] = {};
                             teamData[teamCount]['user_id'] = userTeam.user_id;
@@ -516,7 +521,9 @@ module.exports = {
                             teamData[teamCount]['prediction'] = userTeam.prediction || {};
                             teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
                         }
-                    teamCount++;
+                       teamCount++;
+                    }
+                        
                 }
 
                 let ranArr = [];
