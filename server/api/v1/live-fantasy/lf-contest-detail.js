@@ -41,7 +41,7 @@ module.exports = {
             }
             let contestData;
             if (!contestData) {
-                let contestDetail = await LFMatchContest.findOne({ contest_id: contest_id });
+                let contestDetail = await LFMatchContest.findOne({ 'match_id': match_id,contest_id: contest_id });
                 contestDetail = JSON.parse(JSON.stringify(contestDetail));
                 let prizeMoney = 0;
                 let totalTeams = 0;
@@ -95,6 +95,7 @@ module.exports = {
                        teamData[teamCount]['previous_rank'] = userTeam.previous_rank || 0;
                        teamData[teamCount]['point'] = userTeam.points || 0;
                        teamData[teamCount]['winning_amount'] = winAmount;
+                       teamData[teamCount]['prediction'] = userTeam.prediction || {};
                        teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
                     }
                     teamCount++;
@@ -315,7 +316,7 @@ module.exports = {
                     teamData[teamCount]['point'] = userTeam.points || 0;
                     teamData[teamCount]['winning_amount'] = winAmount;
                     teamData[teamCount]['user_preview_point'] = userTeam.user_preview || {};
-                    teamData[teamCount]['prediction'] = userTeam.prediction || {};
+                   // teamData[teamCount]['prediction'] = userTeam.prediction || {};
                     teamData[teamCount]['is_aakash_team'] = false;
                 }
                 teamCount++;
