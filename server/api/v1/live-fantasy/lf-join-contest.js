@@ -469,7 +469,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     } else {
                         data = [contest_id];
                     }
-                    redis.setRedisForLf(key,data)
+                    redis.setRedisForLf(redisKey,data)
                     return resolve(totalContestKey);
                 });
                 
