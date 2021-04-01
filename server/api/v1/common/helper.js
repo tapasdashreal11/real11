@@ -348,6 +348,21 @@ const sendNotificationAPNS = (uid,notiType,deviceToken,title,notification) => {
   }
 };
 
+const parseContestPredictionJoined = (joinedTeamsCount) => {
+  let responseData = [];
+    for (const prop in joinedTeamsCount) {
+        if (hasOwnProperty.call(joinedTeamsCount, prop)) {
+            if (joinedTeamsCount[prop] > 0) {
+                responseData.push({
+                    contest_id: prop,
+                    count: joinedTeamsCount[prop]
+                });
+            }
+        }
+    }
+    return responseData;
+};
+
 module.exports = {
   currentDateTimeFormat,
   generateClientToken,
@@ -359,6 +374,7 @@ module.exports = {
   sendMailToDeveloper,
   parseUserTeams,
   parseContestTeamsJoined,
+  parseContestPredictionJoined,
   sendSMTPMail,
   sendNotificationFCM,
   sendNotificationAPNS
