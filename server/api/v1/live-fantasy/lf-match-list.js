@@ -90,7 +90,7 @@ module.exports = {
                     for (const contsIds of joinedContestIds) {
                         userTeamIds[contsIds] = contestGrpIds[contsIds];
                     }
-                    redis.redisObj.set('lf-user-contest-count-' + match_id + '-' + series_id + '-' + user_id, joinedContestIds.length || 0);
+                    redis.setRedisForLf('lf-user-contest-count-' + match_id + '-' + series_id + '-' + user_id, joinedContestIds.length || 0);
                 }
                 
                 console.log('LF 4***');
