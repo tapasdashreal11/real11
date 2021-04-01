@@ -460,10 +460,18 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 });
                 let redisKey = 'lf-user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + series_id;
                 //await getRedisForJoindContestIds(redisKey,[],contest_id);
-                return resolve(totalContestKey);
                 
-
-
+                redis.getRedisForLf(redisKey, (err, data) => {
+                    if (data) {
+                        let userContests = data;
+                        userContests.push(contest_id);
+                        data = userContests;
+                    } else {
+                        data = [contest_id];
+                    }
+                    redis.setRedisForLf(key,data)
+                    return resolve(totalContestKey);
+                });
                 
                 // console.log("PlayerTeamContest000000000000000")
             });
