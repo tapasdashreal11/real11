@@ -458,8 +458,8 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 LFMyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, {$set:newMyModelobj ,$inc: { total_contest: 1 } }, { upsert: true, new: true }).then((MyContestModel) => {
                     totalContestKey = MyContestModel.total_contest || 0;
                 });
-                let redisKey = 'lf-user-joinedContestIds-' + user_id + '-' + match_id + '-' + series_id;
-                await getRedisForJoindContestIds(redisKey,[]);
+                let redisKey = 'lf-user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + series_id;
+                await getRedisForJoindContestIds(redisKey,[],contest_id);
                 return resolve(totalContestKey);
                 
 
@@ -692,7 +692,7 @@ async function calculateAdminComission(contestData){
   }
 }
 
-async function getRedisForJoindContestIds(key, defaultValue){
+async function getRedisForJoindContestIds(key, defaultValue,contest_id){
     return new Promise((resolve, reject) => {
         redis.getRedisForLf(key, (err, data) => {
             if (err) { 
