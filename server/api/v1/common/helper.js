@@ -350,7 +350,7 @@ const sendNotificationAPNS = (uid,notiType,deviceToken,title,notification) => {
 
 const parseContestPredictionJoined = (joinedTeamsCount) => {
   let responseData = [];
-  console.log('redsi',joinedTeamsCount);
+  console.log('redsi',typeof joinedTeamsCount );
     for (const prop in joinedTeamsCount) {
       
         if (hasOwnProperty.call(joinedTeamsCount, prop)) {
@@ -364,7 +364,27 @@ const parseContestPredictionJoined = (joinedTeamsCount) => {
     }
     return responseData;
 };
-
+const parseUserPrediction = (userPredictionData) =>{
+  let userPredctionIds = [];
+  console.log('redsi team',typeof userPredictionData );
+  for (const prop in userPredictionData) {
+      if (hasOwnProperty.call(userPredictionData, prop)) {
+          let teamData = userPredictionData[prop];
+          let predictionIds = [];
+          for (let team of teamData) {
+              team.contest_id = prop;
+              if (team.prediction_id) {
+                  predictionIds.push(team.prediction_id);
+              }
+          }
+          userPredctionIds.push({
+              contest_id: prop,
+              prediction_ids: predictionIds
+          });
+      }
+  }
+  return userPredctionIds;
+}
 module.exports = {
   currentDateTimeFormat,
   generateClientToken,
@@ -377,6 +397,7 @@ module.exports = {
   parseUserTeams,
   parseContestTeamsJoined,
   parseContestPredictionJoined,
+  parseUserPrediction,
   sendSMTPMail,
   sendNotificationFCM,
   sendNotificationAPNS
