@@ -474,8 +474,8 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     if(totalContest!=0){
                         redis.setRedisForLf(userContestCountRedisKey,totalContest);
                     }
-                    let  matchContestList = 'lf-match-contest-list-'+ match_id + '-' + series_id;
-                    redis.setRedisForLf(matchContestList,[]);
+                    let userTeamcountRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
+                    redis.setRedisForLf(userTeamcountRedisKey,0);
                     return resolve(totalContestKey);
                 });
                 
