@@ -110,9 +110,9 @@ module.exports = {
                 let userContestTeamsIds  = 'lf-user-contest-teamIds-' + user_id + '-' + match_id + '-' + series_id;
                 let contestJoineTeamCounts  = 'lf-contest-joined-teams-count-'+ match_id + '-' + series_id;
                 let  matchContestList = 'lf-match-contest-list-'+ match_id + '-' + series_id;
-                redis.setRedisForLf(userContestTeamsIds, JSON.stringify(userTeamIds));
+                redis.setRedisForLf(userContestTeamsIds, userTeamIds);
                 redis.setRedisForLf(userContestJoinedRKey, joinedContestIds);
-                redis.setRedisForLf(contestJoineTeamCounts, JSON.stringify(joinedTeamsCount));
+                redis.setRedisForLf(contestJoineTeamCounts, joinedTeamsCount);
                 redis.setRedisForLf(matchContestList, match_contest_data);
 
                 console.log('LF 6***');

@@ -460,7 +460,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 });
                 let redisKey = 'lf-user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + series_id;
                 //await getRedisForJoindContestIds(redisKey,[],contest_id);
-                
+                let userContestCountRedisKey = 'lf-user-contest-count-' + match_id + '-' + series_id + '-' + user_id;
                 redis.getRedisForLf(redisKey, (err, data) => {
                     if (data) {
                         let userContests = data;
@@ -469,7 +469,13 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     } else {
                         data = [contest_id];
                     }
-                    redis.setRedisForLf(redisKey,data)
+                    redis.setRedisForLf(redisKey,data);
+                    const totalContest = data && _.isArray(data)?data.length:0;
+                    if(totalContest!=0){
+                        redis.setRedisForLf(userContestCountRedisKey,totalContest);
+                    }
+                    let  matchContestList = 'lf-match-contest-list-'+ match_id + '-' + series_id;
+                    redis.setRedisForLf(matchContestList,[]);
                     return resolve(totalContestKey);
                 });
                 
