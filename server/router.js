@@ -357,7 +357,7 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
 
 // live fantasy api section 
  router.get('/api/v1/lf-match-list/:pmatch_id/:sport', liveFantasyMatchList); 
- router.get('/api/v1/lf-contest-list/:match_id/:sport/:series_id',auth.authenticate.jwtLogin,redis.cacheMiddle,liveFantasyMatchContestList);
+ router.get('/api/v1/lf-contest-list/:match_id/:sport/:series_id',auth.authenticate.jwtLogin,liveFantasyMatchContestList);
  router.post('/api/v1/lf-contest-wallet',auth.authenticate.jwtLogin,liveFantasyMatchContestWallet); //
  router.post('/api/v1/lf-prediction-add',auth.authenticate.jwtLogin,createPrediction); //
  router.get('/api/v1/lf-prediction-list/:series_id/:match_id/:sport',auth.authenticate.jwtLogin,predictionList); //

@@ -75,12 +75,12 @@ module.exports = {
                         console.log('teamcounts from db*****');
                         myPrediction = await LFPrediction.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id) }).countDocuments();
                         if(myPrediction && myPrediction>0){
-                            redis.getRedisForLf(countRedisKey,myPrediction);
+                            redis.setRedisForLf(countRedisKey,myPrediction);
                         }
                           
                     }
                     console.log('LF 2***');
-                    let userCoupons = await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}", user_id);
+                    let userCoupons ={}; // await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}", user_id);
                     resObj['user_coupons'] = !_.isEmpty(userCoupons) ? JSON.parse(userCoupons) : {};
                     const contestGrpIds = myContest && myContest.length > 0 ? _.groupBy(myContest, 'contest_id') : {};
                      joinedContestIds = myContest && myContest.length > 0 ? _.uniqWith(_.map(myContest, 'contest_id'), _.isEqual) : [];
@@ -928,6 +928,7 @@ function parseUserPrediction(userPredictionData) {
 function parseContestPredictionJoined(joinedTeamsCount) {
     let responseData = [];
     for (const prop in joinedTeamsCount) {
+        console.log("******ddd",prop);
         if (hasOwnProperty.call(joinedTeamsCount, prop)) {
             if (joinedTeamsCount[prop] > 0) {
                 responseData.push({
