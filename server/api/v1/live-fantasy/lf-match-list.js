@@ -58,6 +58,7 @@ module.exports = {
                 };
                 let joinedTeamsCount = {};
                 let userTeamIds = {};
+                let joinedContestIds =[];
                 let myPrediction = 0;
                 let match_contest_data = await getLfMatchContest(filter, false);
                 let myContest = [];
@@ -82,7 +83,7 @@ module.exports = {
                     let userCoupons = await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}", user_id);
                     resObj['user_coupons'] = !_.isEmpty(userCoupons) ? JSON.parse(userCoupons) : {};
                     const contestGrpIds = myContest && myContest.length > 0 ? _.groupBy(myContest, 'contest_id') : {};
-                    let joinedContestIds = myContest && myContest.length > 0 ? _.uniqWith(_.map(myContest, 'contest_id'), _.isEqual) : [];
+                     joinedContestIds = myContest && myContest.length > 0 ? _.uniqWith(_.map(myContest, 'contest_id'), _.isEqual) : [];
                     console.log('LF 3***');
                     resObj['my_contests'] = joinedContestIds.length || 0;
                     resObj['joined_contest_ids'] = joinedContestIds;
