@@ -42,7 +42,7 @@ module.exports = {
         try {
             const { match_id, sport, series_id } = req.params;
             const user_id = req.userId;
-            console.log('LF C Listdata coming from redis****');
+            console.log('LF C Listdata coming from DB****');
             let resObj = {
                 match_contest: [],
                 my_contests: 0,
