@@ -214,6 +214,7 @@ module.exports = {
                     entry_fee: entryfee,
                     invite_code: inviteCode,
                     join_multiple_teams: multipleTeam,
+                    teams_joined: contestDetail.joined_users|| 0,
                     is_gadget: gadgetLeague,
                     total_winners: (contestDetail.breakup && contestDetail.breakup.length > 0) ? contestDetail.breakup.pop() : {}, //toalWinner,
                     prediction_joined: myTeams ? myTeams.length : 0,
