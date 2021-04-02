@@ -95,7 +95,7 @@ module.exports = {
             redis.getRedisForLf(listKey, async (err, pListData) => {
                if (pListData && pListData.length>0) {
                    console.log('Prdction List data coming from redis***');
-                   respons.prediction = pListData || [];
+                   respons.list_data = pListData || [];
                    respons.match_type = "live-fantasy";
                    return res.send(ApiUtility.success(respons));
                 } else {
@@ -105,7 +105,7 @@ module.exports = {
                         series_id: series_id
                     }).sort({"team_count":1});
                     console.log('Prdction List data coming from DB***');
-                    respons.prediction = pList || [];
+                    respons.list_data = pList || [];
                     respons.match_type = "live-fantasy";
                     if(pList && pList.length>0){
                      redis.setRedisForLf(listKey, pList);
