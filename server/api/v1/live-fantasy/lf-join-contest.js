@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
                 console.log('results**',results);
                 let authUser = results[0] ? results[0] : {};
                 if (authUser) {
-                    let liveMatch = results[1] ? results[1] : {};
+                    let liveMatch = results[2] ? results[2] : {};
                     if(prediction_array && prediction_array.length<6){
                         return res.send(ApiUtility.failed("Prediction data is not in format!!"));
                      }
@@ -60,8 +60,8 @@ module.exports = async (req, res) => {
                         if (mtime < ctime || liveMatch.is_contest_stop ==1) {
                             return res.send(ApiUtility.failed('Match has been started.'));
                         } else {
-                            let matchContest = results[2] ? results[2] : {};
-                            let contestData = results[2] ? results[2] : '';
+                            let matchContest = results[1] ? results[1] : {};
+                            let contestData = results[1] ? results[1] : '';
                             var parentContestId = (contestData && contestData.parent_contest_id) ? contestData.parent_contest_id : contestData.contest_id;
                             var PlayerTeamContestFilter = { 'contest_id': contest_id,'user_id': user_id, 'match_id': decoded['match_id'], 'series_id': decoded['series_id']}
                             let playerTeamRes = await LFPlayerTeamContest.findOne(PlayerTeamContestFilter);
