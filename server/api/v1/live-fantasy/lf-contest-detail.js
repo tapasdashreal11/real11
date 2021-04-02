@@ -543,6 +543,7 @@ module.exports = {
                     player_team_id_filter.push(userTeam.prediction_id);
                     let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam) {
+                            console.log('userTeam***',userTeam);
                             teamData[teamCount] = {};
                             teamData[teamCount]['user_id'] = userTeam.user_id;
                             teamData[teamCount]['team_name'] = userTeam.team_name || '';
