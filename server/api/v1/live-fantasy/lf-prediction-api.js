@@ -14,13 +14,13 @@ module.exports = {
     
     createPrediction: async (req, res) => {
         let {
-            series_id, match_id, sport, team_count,prediction
+            series_id, match_id, sport, team_count,prediction,prediction_array
         } = req.body
         let user_id = req.userId;
         sport = parseInt(sport) || 1;
         let data1 = {}, message = "";
         try {
-            if (!series_id || !match_id || !sport || !_.isArray(prediction)) {
+            if (!series_id || !match_id || !sport || !_.isArray(prediction_array)) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
             let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
@@ -35,13 +35,13 @@ module.exports = {
                         sport: sport
                     }).count();
                     const totalTemCount = 10;
-                    console.log('create pppp',prediction);
-                    if(prediction && prediction.length<6){
+                    console.log('create pppp',prediction_array);
+                    if(prediction_array && prediction_array.length<6){
                         return res.send(ApiUtility.failed("Prediction data is not in format!!"));
                      }
                     let new_predit_dic = {};
-                    for (item in prediction){
-                        new_predit_dic = {...new_predit_dic,...prediction[item]['value']}
+                    for (item in prediction_array){
+                        new_predit_dic = {...new_predit_dic,...prediction_array[item]['value']}
                     }
                    
                     if (team_count < totalTemCount) {
@@ -53,7 +53,7 @@ module.exports = {
                             team_count: team_count,
                             sport: sport,
                             prediction: new_predit_dic,
-                            prediction_array: prediction,
+                            prediction_array: prediction_array,
                             created: new Date()
                         };
                         let teamId = new ObjectId()
@@ -123,26 +123,26 @@ module.exports = {
     },
     updatePrediction: async (req, res) => {
         let {
-            series_id, match_id,record_id,prediction
+            series_id, match_id,record_id,prediction,prediction_array
         } = req.body
         let user_id = req.userId;
         let data1 = {}, message = "";
         try {
-            if (!series_id || !match_id || !record_id || !_.isArray(prediction) || !user_id) {
+            if (!series_id || !match_id || !record_id || !_.isArray(prediction_array) || !user_id) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
-            if(prediction && prediction.length < 6){
+            if(prediction_array && prediction_array.length < 6){
                 return res.send(ApiUtility.failed("Prediction data not in format!!"));
              }
             let new_predit_dic = {};
             let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
-            for (item in prediction){
-                new_predit_dic = {...new_predit_dic,...prediction[item]['value']}
+            for (item in prediction_array){
+                new_predit_dic = {...new_predit_dic,...prediction_array[item]['value']}
             }
             let updateData = {};
-            if(prediction){
+            if(prediction_array){
                 updateData['prediction'] = new_predit_dic;
-                updateData['prediction_array'] = prediction;
+                updateData['prediction_array'] = prediction_array;
             }
             
 
