@@ -66,6 +66,7 @@ module.exports = {
                         if(newTeam && newTeam.ops){
                             console.log('newTeam ops****',newTeam.ops);
                             data1._id= newTeam.ops[0]._id;
+                            data1.team_count = newTeam.ops[0].team_count;
                             data1.prediction_array= newTeam.ops[0].prediction_array;
                         }
                         redis.setRedisForLf(listKey, []);
