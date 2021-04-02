@@ -41,6 +41,7 @@ var lfMatchesSchema = new Schema({
 	match_counter: { type: Number, default: 0 },
 	match_scores:{type:Object, default: {}},
 	ball_update:{type:Object, default: {}},
+	is_contest_stop: { type: Number, default: 0 },
 }, {
 	timestamps: true
 });
