@@ -35,6 +35,7 @@ module.exports = {
                         sport: sport
                     }).count();
                     const totalTemCount = 10;
+                    console.log('create pppp',prediction);
                     if(prediction && !_.isArray(prediction) && prediction.length < 6){
                         return res.send(ApiUtility.failed("Prediction data is not in format!!"));
                      }
