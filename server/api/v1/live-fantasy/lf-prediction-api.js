@@ -20,7 +20,7 @@ module.exports = {
         sport = parseInt(sport) || 1;
         let data1 = {}, message = "";
         try {
-            if (!series_id || !match_id || !sport) {
+            if (!series_id || !match_id || !sport || !_.isArray(prediction)) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
             let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
@@ -36,7 +36,7 @@ module.exports = {
                     }).count();
                     const totalTemCount = 10;
                     console.log('create pppp',prediction);
-                    if(prediction && !_.isArray(prediction) && prediction.length < 6){
+                    if(prediction && !_.isArray(prediction)){
                         return res.send(ApiUtility.failed("Prediction data is not in format!!"));
                      }
                     let new_predit_dic = {};
@@ -45,7 +45,7 @@ module.exports = {
                         new_predit_dic = {...new_predit_dic,...prediction[item]['value']}
                     }
                    
-                    if (team_count < totalTemCount) {
+                    if (team_count < totalTemCount && _.isArray(prediction)) {
                         team_count += 1;
                         let team = {
                             user_id: user_id,
