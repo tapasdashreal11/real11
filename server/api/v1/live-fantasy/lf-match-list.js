@@ -541,7 +541,7 @@ module.exports = {
             let decoded = { match_id: parseInt(match_id), series_id: parseInt(series_id), user_id: ObjectId(user_id) }
             if (match_id && series_id && user_id) {
                 let data1 = {};
-                let ptcData = await LFPlayerTeamContest.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'series_id': decoded['series_id','is_deleted': 0 }).exec()
+                let ptcData = await LFPlayerTeamContest.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'series_id': decoded['series_id'],'is_deleted': 0 }).exec()
                 if (ptcData && ptcData.length > 0) {
                     let predictionIds = _.map(ptcData, 'prediction_id');
                     let joinedContestIds = _.uniq(_.map(ptcData, 'contest_id'), _.isEqual);
