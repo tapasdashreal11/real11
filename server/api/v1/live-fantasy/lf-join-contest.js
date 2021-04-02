@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
                     if(prediction_array && prediction_array.length<6){
                         return res.send(ApiUtility.failed("Prediction data is not in format!!"));
                      }
-                    if (liveMatch && liveMatch.is_contest_stop == 0) {
+                    if (liveMatch) {
                         let ctime = Date.now();
                         let mtime = liveMatch.contestStartDateTime;
                         if (mtime < ctime) {
