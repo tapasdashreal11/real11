@@ -25,6 +25,7 @@ var playerTeamContestSchema = new Schema({
 	is_deleted: { type: Number, default: 0 },  // contest cancel 
 	prediction: { type: Object },
 	user_preview: { type: Object,default:{} },
+	price_win: { type: Number,default:0 },
 	join_contest_detail: {
 		deduct_bonus_amount: {type: Number,default:0},
 		deduct_winning_amount: {type: Number,default:0},
