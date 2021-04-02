@@ -135,6 +135,7 @@ module.exports = {
                 return res.send(ApiUtility.failed("Prediction data not in format!!"));
              }
             let new_predit_dic = {};
+            let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
             for (item in prediction){
                 new_predit_dic = {...new_predit_dic,...prediction[item]['value']}
             }
@@ -143,6 +144,7 @@ module.exports = {
                     await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":{prediction:new_predit_dic}}); 
                     message = "Predication has been updated successfully.";
                     data1.message = message;
+                    redis.setRedisForLf(listKey, []);
                     return res.send(ApiUtility.success(data1));
 
             } else {
