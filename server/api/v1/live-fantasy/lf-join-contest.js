@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
         let data1 = {};
         let startTime = Date.now();
         const user_id = req.userId;
-        const {team_count, prediction_id,prediction,prediction_array,parent_match_id, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        const {team_count, prediction_id,prediction_array,parent_match_id, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
             contest_id: contest_id,
             user_id: user_id
         }
-        if (match_id && series_id && contest_id && user_id && prediction_id && prediction_array) {
+        if (match_id && series_id && contest_id && user_id && prediction_id && prediction_array && _.isArray(prediction_array)) {
 
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
