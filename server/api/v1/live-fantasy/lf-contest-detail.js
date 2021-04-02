@@ -108,9 +108,9 @@ module.exports = {
                 }
                 let aakashTeams = [];
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                    aakashTeams = await LFJoinedContest.find({match_id:match_id, contest_id:ObjectId(contest_id), user_id:aakashData._id, sport:sport});
+                    aakashTeams = await LFJoinedContest.find({match_id:match_id, contest_id:ObjectId(contest_id), user_id:aakashData._id, is_deleted:0});
                 }
-                let myTeams = await LFJoinedContest.find({match_id:match_id, contest_id:ObjectId(contest_id), user_id:ObjectId(user_id), sport:sport});
+                let myTeams = await LFJoinedContest.find({match_id:match_id, contest_id:ObjectId(contest_id), user_id:ObjectId(user_id), is_deleted:0});
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && !_.isEmpty(aakashTeams)) {
                     mergedTeam = [...myTeams, ...aakashTeams];
                 } else {
@@ -325,13 +325,15 @@ module.exports = {
                         match_id:parseInt(match_id),
                         sport: sport,
                         contest_id:ObjectId(contest_id),
-                        user_id:{$ne:ObjectId(user_id)}
+                        user_id:{$ne:ObjectId(user_id)},
+                        is_deleted:0
                       }).limit(100).sort({_id:-1});
                 } else {
                     allTeams = await LFJoinedContest.find({
                         match_id:parseInt(match_id),
                         sport: sport,
-                        contest_id:ObjectId(contest_id)
+                        contest_id:ObjectId(contest_id),
+                        is_deleted:0
                       }).limit(100).sort({_id:-1});
                 }
                 if(allTeams && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) {
@@ -414,7 +416,7 @@ module.exports = {
             }
             sport   =   parseInt(sport) || 1;
             let reviewMatch = await LFMatchSeriesSquad.findOne({ 'match_id': match_id, "sport": sport });
-            let joinedTeams = await LFJoinedContest.find({ 'match_id': match_id, 'contest_id': contest_id }).countDocuments();
+            let joinedTeams = await LFJoinedContest.find({ 'match_id': match_id, 'contest_id': contest_id,is_deleted:0 }).countDocuments();
             let reviewStatus = '';
             if (reviewMatch) {
                 if (reviewMatch.match_status == 'Finished' && reviewMatch.win_flag == 0) {
@@ -465,7 +467,8 @@ module.exports = {
                         match_id:parseInt(match_id),
                         sport:parseInt(sport),
                         contest_id:ObjectId(contest_id),
-                        user_id:ObjectId(aakashData._id)
+                        user_id:ObjectId(aakashData._id),
+                        is_deleted:0
                       }).limit(15).sort({"rank": 1});
                 }
                
@@ -476,7 +479,8 @@ module.exports = {
                         match_id:parseInt(match_id),
                         sport:parseInt(sport),
                         contest_id:ObjectId(contest_id),
-                        user_id:ObjectId(user_id)
+                        user_id:ObjectId(user_id),
+                        is_deleted:0
                       }).limit(15).sort({"rank": 1});
                     let allTeams = [];
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
@@ -496,7 +500,8 @@ module.exports = {
                         match_id:parseInt(match_id),
                         sport:parseInt(sport),
                         contest_id:ObjectId(contest_id),
-                        user_id:ObjectId(user_id)
+                        user_id:ObjectId(user_id),
+                        is_deleted:0
                       }).limit(15).sort({"rank": 1});
         
                       let allTeams = await getLFRedisLeaderboard(match_id, contest_id);
@@ -510,14 +515,16 @@ module.exports = {
                                     match_id:parseInt(match_id),
                                     sport: sport,
                                     contest_id:ObjectId(contest_id),
-                                    user_id:{$ne:ObjectId(user_id)}
+                                    user_id:{$ne:ObjectId(user_id)},
+                                    is_deleted:0
                                   }).limit(100).sort({"rank": 1});
                             } else {
                                 
                                 allTeams = await LFJoinedContest.find({
                                     match_id:parseInt(match_id),
                                     sport: sport,
-                                    contest_id:ObjectId(contest_id)
+                                    contest_id:ObjectId(contest_id),
+                                    is_deleted:0
                                   }).limit(100).sort({"rank": 1});
                             }
                             if(((allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
@@ -543,7 +550,7 @@ module.exports = {
                     player_team_id_filter.push(userTeam.prediction_id);
                     let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam) {
-                            console.log('userTeam***',userTeam);
+                            
                             teamData[teamCount] = {};
                             teamData[teamCount]['user_id'] = userTeam.user_id;
                             teamData[teamCount]['team_name'] = userTeam.team_name || '';

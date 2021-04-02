@@ -21,8 +21,8 @@ var playerTeamContestSchema = new Schema({
 	winning_amount_notification: { type: Number,default:0 },
 	points: { type: Number ,default:0},
 	commision: { type: Number,default:0 },
-	is_cancelled: { type: Number, default: 0 },
-	is_deleted: { type: Number, default: 0 },
+	is_cancelled: { type: Number, default: 0 }, // match cancel
+	is_deleted: { type: Number, default: 0 },  // contest cancel 
 	prediction: { type: Object },
 	user_preview: { type: Object,default:{} },
 	join_contest_detail: {
