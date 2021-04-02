@@ -36,16 +36,15 @@ module.exports = {
                     }).count();
                     const totalTemCount = 10;
                     console.log('create pppp',prediction);
-                    if(prediction && !_.isArray(prediction)){
+                    if(prediction && prediction.length<6){
                         return res.send(ApiUtility.failed("Prediction data is not in format!!"));
                      }
                     let new_predit_dic = {};
                     for (item in prediction){
-                        // console.log("item value is",new_value[item]['value'])
                         new_predit_dic = {...new_predit_dic,...prediction[item]['value']}
                     }
                    
-                    if (team_count < totalTemCount && _.isArray(prediction)) {
+                    if (team_count < totalTemCount) {
                         team_count += 1;
                         let team = {
                             user_id: user_id,
@@ -129,10 +128,10 @@ module.exports = {
         let user_id = req.userId;
         let data1 = {}, message = "";
         try {
-            if (!series_id || !match_id || !record_id ||!prediction || !user_id) {
+            if (!series_id || !match_id || !record_id || !_.isArray(prediction) || !user_id) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
-            if(prediction && !_.isArray(prediction) && prediction.length < 6){
+            if(prediction && prediction.length < 6){
                 return res.send(ApiUtility.failed("Prediction data not in format!!"));
              }
             let new_predit_dic = {};
