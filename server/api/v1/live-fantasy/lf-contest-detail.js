@@ -18,6 +18,48 @@ const Helper = require('./../common/helper');
 const db = require('../../../db');
 const { setRedis } = require('../../../../lib/redis');
 
+async function getLFRedisLeaderboard(matchId, contestId) {
+    try {
+        return new Promise(async (resolve, reject) => {
+            let leaderboardRedis = 'lf-leaderboard-' + matchId + '-' + contestId;
+            await redis.getRedisLFBoard(leaderboardRedis, function (err, contestData) {
+                if (contestData) {
+                    return resolve(contestData);
+                } else {
+                    return resolve(false);
+                }
+            })
+        });
+    } catch (error) {
+        console.log('LF redis leaderboard > ', error);
+    }
+}
+
+const getAllLFTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId) => {
+    let leaderboardRedis = 'lf-leaderboard-' + match_id + '-' + contest_id
+
+    return new Promise(async (resv, rej) => {
+        await redis.getRedisLFBoard(leaderboardRedis, function (err, reply) {
+            if (!err) {
+                const result = reply.reduce((index, obj) => {
+                    if(aakashId) {
+                        if (obj.user_id != user_id && obj.user_id != aakashId && index.length < 100)
+                            index.push(obj);
+                    } else {
+                        if (obj.user_id != user_id && index.length < 100)
+                            index.push(obj);
+                    }
+                    return index;
+                }, []);
+                resv(result)
+            } else {
+                rej(err)
+            }
+        })
+        
+    })
+}
+
 module.exports = {
     lfContestDetailNew: async (req, res) => {
         try {
@@ -265,20 +307,19 @@ module.exports = {
             }
     
             let mergedTeam = [];
-            //let redisTeams = await getRedisLeaderboard(match_id, contest_id);
-           /* let myTeams = [];
+            let redisTeams = await getLFRedisLeaderboard(match_id, contest_id);
+            let myTeams = [];
             if (redisTeams) {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
+                    mergedTeam = await getAllLFTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
                 } else {
-                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
+                    mergedTeam = await getAllLFTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
                 }
-            }*/
+            }
             
             if (mergedTeam && mergedTeam.length == 0) {
                 let allTeams = [];
-                // allTeams = await getRedisLeaderboard(match_id, contest_id);
-                let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
+                let leaderboardKey = 'lf-leaderboard-' + match_id + '-' + contest_id;
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     allTeams = await LFJoinedContest.find({ 
                         match_id:parseInt(match_id),
@@ -293,8 +334,8 @@ module.exports = {
                         contest_id:ObjectId(contest_id)
                       }).limit(100).sort({_id:-1});
                 }
-                if(allTeams && allTeams.length == 100) {
-                   // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                if(allTeams && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) {
+                    await redis.setRedisLFBoard(leaderboardKey, allTeams);
                 }
                 
                 mergedTeam = allTeams;
@@ -382,15 +423,11 @@ module.exports = {
                     reviewStatus = 'Delayed';
                 }
             }
-            //let contestDataAPIKey = RedisKeys.getContestDetailAPIKey(match_id, contest_id);
             let contestData;
-            if (reviewMatch == "In Progress") {
-                // contestData = await redis.getRedis(contestDataAPIKey);
-            }
+        
             if (!contestData) {
                 let contestDetail = await LFMatchContest.findOne({ contest_id: contest_id });
                 contestDetail = JSON.parse(JSON.stringify(contestDetail));
-                // console.log(contestDetail.contest_size);return false
                 let prizeMoney = 0;
                 let totalTeams = 0;
                 let teamsJoined = [];
@@ -400,7 +437,7 @@ module.exports = {
                 let teamData = [];
                 let myTeamIds = [];
                 let customPrice = [];
-                matchInviteCode = contestDetail; // await MatchContest.getInviteCode(parseInt(match_id), contest_id, sport);
+                matchInviteCode = contestDetail;
                 if (matchInviteCode && matchInviteCode.invite_code) {
                     inviteCode = matchInviteCode.invite_code;
                 }
@@ -418,7 +455,7 @@ module.exports = {
                 }
                 
                 let mergedTeam = [];
-                let redisTeams = [] // await getRedisLeaderboard(match_id, contest_id);
+                let redisTeams = await getLFRedisLeaderboard(match_id, contest_id);
                 
                 let myTeams = [];
                 let aakashTeams = [];
@@ -431,7 +468,7 @@ module.exports = {
                         user_id:ObjectId(aakashData._id)
                       }).limit(15).sort({"rank": 1});
                 }
-                // console.log(aakashTeams);
+               
                 if (!_.isEmpty(redisTeams)) {
                     console.log("Live leader board coming from redis*****");
                     MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
@@ -443,9 +480,9 @@ module.exports = {
                       }).limit(15).sort({"rank": 1});
                     let allTeams = [];
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                        allTeams = []// await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
+                        allTeams =  await getAllLFTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
                     } else {
-                        allTeams = [] // await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
+                        allTeams =  await getAllLFTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
                     }
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && !_.isEmpty(aakashTeams)) {
                         mergedTeam = [...myTeams, ...aakashTeams, ...allTeams];
@@ -461,14 +498,12 @@ module.exports = {
                         contest_id:ObjectId(contest_id),
                         user_id:ObjectId(user_id)
                       }).limit(15).sort({"rank": 1});
-                    
-                    let allTeams = [];
-                    if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || true ||reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
-                        allTeams = [] //await getRedisLeaderboard(match_id, contest_id);
+        
+                      let allTeams = await getLFRedisLeaderboard(match_id, contest_id);
                         
                         if (_.isEmpty(allTeams)) {
                             console.log("Live FN leader board coming from DBBBBB*****");
-                            let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
+                            let leaderboardKey = 'lf-leaderboard-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                             
                                 allTeams = await LFJoinedContest.find({
@@ -485,12 +520,12 @@ module.exports = {
                                     contest_id:ObjectId(contest_id)
                                   }).limit(100).sort({"rank": 1});
                             }
-                            if((reviewMatch.time >= Date.now() && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
-                               // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                            if(((allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
+                                await redis.setRedisLFBoard(leaderboardKey, allTeams);
                             }
                            
                         }
-                    }
+
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && !_.isEmpty(aakashTeams)) {
                         mergedTeam = [...myTeams, ...aakashTeams, ...allTeams];
                     } else {
