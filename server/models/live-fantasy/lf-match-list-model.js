@@ -38,7 +38,9 @@ var lfMatchesSchema = new Schema({
 	end_over: { type: Number },
 	over_count: { type: Number },
 	// over_match: {type:Boolean, default: false},
-	match_counter: { type: Number, default: 0 }
+	match_counter: { type: Number, default: 0 },
+	match_scores:{type:Object, default: {}},
+	ball_update:{type:Object, default: {}},
 }, {
 	timestamps: true
 });

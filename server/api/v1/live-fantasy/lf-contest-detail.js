@@ -703,6 +703,8 @@ module.exports = {
                     is_infinite: (contestDetail.infinite_contest_size == 1) ? true : false,
                     infinite_breakup: finiteBreakupDetail,
                     is_aakash_team: aakashLeague,
+                    match_scores: reviewMatch.match_scores || {},
+                    ball_update: reviewMatch.ball_update || {},
                     match_type: "live-fantasy"
                 }
                 if (reviewMatch == "In Progress") {
