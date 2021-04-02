@@ -131,9 +131,16 @@ module.exports = {
             if (!series_id || !match_id || !record_id ||!prediction || !user_id) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
+            if(prediction && prediction.length < 6){
+                return res.send(ApiUtility.failed("Prediction data not in format!!"));
+             }
+            let new_predit_dic = {};
+            for (item in prediction){
+                new_predit_dic = {...new_predit_dic,...prediction[item]['value']}
+            }
             let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id });
             if (liveMatch && user_id) {
-                    await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":{prediction:prediction}}); 
+                    await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":{prediction:new_predit_dic}}); 
                     message = "Predication has been updated successfully.";
                     data1.message = message;
                     return res.send(ApiUtility.success(data1));
