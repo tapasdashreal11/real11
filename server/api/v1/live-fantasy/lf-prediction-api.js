@@ -35,7 +35,7 @@ module.exports = {
                         sport: sport
                     }).count();
                     const totalTemCount = 10;
-                    if(prediction && prediction.length < 6){
+                    if(prediction && !_.isArray(prediction) && prediction.length < 6){
                         return res.send(ApiUtility.failed("Prediction data is not in format!!"));
                      }
                     let new_predit_dic = {};
@@ -131,7 +131,7 @@ module.exports = {
             if (!series_id || !match_id || !record_id ||!prediction || !user_id) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
-            if(prediction && prediction.length < 6){
+            if(prediction && !_.isArray(prediction) && prediction.length < 6){
                 return res.send(ApiUtility.failed("Prediction data not in format!!"));
              }
             let new_predit_dic = {};
