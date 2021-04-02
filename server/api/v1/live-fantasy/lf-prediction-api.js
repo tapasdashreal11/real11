@@ -108,7 +108,7 @@ module.exports = {
                     respons.prediction = pList || [];
                     respons.match_type = "live-fantasy";
                     if(pList && pList.length>0){
-                       // redis.setRedisForLf(listKey, pList);
+                     redis.setRedisForLf(listKey, pList);
                     }
                     return res.send(ApiUtility.success(respons));
                 }
