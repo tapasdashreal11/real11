@@ -26,7 +26,10 @@ var predictionSchema = new Schema({
   },
   "prediction":{
       type:Object,default:{}
-  }
+  },
+  "prediction_array":{
+    type:Array,default:[]
+}
 },{
   timestamps:true
 });

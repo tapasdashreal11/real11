@@ -53,6 +53,7 @@ module.exports = {
                             team_count: team_count,
                             sport: sport,
                             prediction: new_predit_dic,
+                            prediction_array: prediction,
                             created: new Date()
                         };
                         let teamId = new ObjectId()
@@ -101,14 +102,13 @@ module.exports = {
                     let pList = await Prediction.find({
                         user_id: user_id,
                         match_id: match_id,
-                        series_id: series_id,
-                        sport: sport
+                        series_id: series_id
                     }).sort({"team_count":1});
                     console.log('Prdction List data coming from DB***');
                     respons.prediction = pList || [];
                     respons.match_type = "live-fantasy";
                     if(pList && pList.length>0){
-                        redis.setRedisForLf(listKey, pList);
+                       // redis.setRedisForLf(listKey, pList);
                     }
                     return res.send(ApiUtility.success(respons));
                 }
@@ -139,9 +139,16 @@ module.exports = {
             for (item in prediction){
                 new_predit_dic = {...new_predit_dic,...prediction[item]['value']}
             }
+            let updateData = {};
+            if(prediction){
+                updateData['prediction'] = new_predit_dic;
+                updateData['prediction_array'] = prediction;
+            }
+            
+
             let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id });
-            if (liveMatch && user_id) {
-                    await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":{prediction:new_predit_dic}}); 
+            if (liveMatch && user_id && updateData && updateData.prediction) {
+                    await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":updateData}); 
                     message = "Predication has been updated successfully.";
                     data1.message = message;
                     redis.setRedisForLf(listKey, []);
