@@ -185,7 +185,7 @@ module.exports = {
                 prizeMoney = contestDetail.winning_amount;
                 totalTeams = contestDetail.contest_size;
                 entryfee = contestDetail.entry_fee;
-                multipleTeam = (contestDetail.multiple_team && contestDetail.multiple_team == 'yes') ? true : false;
+                multipleTeam =false;  // (contestDetail.multiple_team && contestDetail.multiple_team == 'yes') ? true : false;
                 gadgetLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'gadget') ? true : false;
                 aakashLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'aakash') ? true : false;
                 
