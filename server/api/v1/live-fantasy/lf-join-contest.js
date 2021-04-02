@@ -47,6 +47,7 @@ module.exports = async (req, res) => {
             ];
             var results = await Promise.all(apiList);
             if(results && results.length>0){
+                console.log('results**',results);
                 let authUser = results[0] ? results[0] : {};
                 if (authUser) {
                     let liveMatch = results[1] ? results[1] : {};
