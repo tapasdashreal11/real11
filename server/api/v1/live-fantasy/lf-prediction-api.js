@@ -63,8 +63,11 @@ module.exports = {
                         console.log('newTeam****',newTeam);
                         message = "Prediction has been created successfully.";
                         data1.message = message;
-                        data1._id= newTeam._id;
-                        data1.prediction_array= prediction_array;
+                        if(newTeam && newTeam.ops){
+                            console.log('newTeam ops****',newTeam.ops);
+                            data1._id= newTeam.ops[0]._id;
+                            data1.prediction_array= newTeam.ops[0].prediction_array;
+                        }
                         redis.setRedisForLf(listKey, []);
                         return res.send(ApiUtility.success(data1));
                        
