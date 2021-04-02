@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
         let data1 = {};
         let startTime = Date.now();
         const user_id = req.userId;
-        const {team_count, prediction_id,prediction,parent_match_id, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        const {team_count, prediction_id,prediction,prediction_array,parent_match_id, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
             contest_id: contest_id,
             user_id: user_id
         }
-        if (match_id && series_id && contest_id && user_id) {
+        if (match_id && series_id && contest_id && user_id && prediction_id && prediction_array) {
 
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
@@ -49,6 +49,9 @@ module.exports = async (req, res) => {
                 let authUser = results[0] ? results[0] : {};
                 if (authUser) {
                     let liveMatch = results[1] ? results[1] : {};
+                    if(prediction_array && prediction_array.length<6){
+                        return res.send(ApiUtility.failed("Prediction data is not in format!!"));
+                     }
                     if (liveMatch) {
                         let ctime = Date.now();
                         let mtime = liveMatch.contestStartDateTime;
@@ -82,12 +85,15 @@ module.exports = async (req, res) => {
                                             response.error_code = null;
                                             return res.json(response);
                                         } else {
-
+                                            let new_predit_dic = {};
+                                            for (item in prediction_array){
+                                                new_predit_dic = {...new_predit_dic,...prediction_array[item]['value']}
+                                            }
                                                 let contest = {};
                                                 let newContestId = new ObjectId();
                                                 contest._id = newContestId;
                                                 contest.prediction_id = prediction_id;
-                                                contest.prediction = prediction;
+                                                contest.prediction = new_predit_dic;
                                                 contest.match_id = match_id;
                                                 contest.series_id = series_id;
                                                 contest.contest_id = contest_id;
