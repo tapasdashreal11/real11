@@ -35,6 +35,15 @@ module.exports = {
                         sport: sport
                     }).count();
                     const totalTemCount = 10;
+                    if(prediction && prediction.length < 6){
+                        return res.send(ApiUtility.failed("Prediction data is not in format!!"));
+                     }
+                    let new_predit_dic = {};
+                    for (item in prediction){
+                        // console.log("item value is",new_value[item]['value'])
+                        new_predit_dic = {...new_predit_dic,...prediction[item]['value']}
+                    }
+                   
                     if (team_count < totalTemCount) {
                         team_count += 1;
                         let team = {
@@ -43,7 +52,7 @@ module.exports = {
                             series_id: series_id,
                             team_count: team_count,
                             sport: sport,
-                            prediction: prediction,
+                            prediction: new_predit_dic,
                             created: new Date()
                         };
                         let teamId = new ObjectId()
