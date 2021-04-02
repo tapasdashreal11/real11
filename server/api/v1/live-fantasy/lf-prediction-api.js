@@ -60,8 +60,11 @@ module.exports = {
                         team._id = teamId;
                         redis.setRedisForLf(countRedisKey, team_count);
                         let newTeam    =   await Prediction.collection.insertOne(team);
+                        console.log('newTeam****',newTeam);
                         message = "Prediction has been created successfully.";
                         data1.message = message;
+                        data1._id= newTeam._id;
+                        data1.prediction_array= prediction_array;
                         redis.setRedisForLf(listKey, []);
                         return res.send(ApiUtility.success(data1));
                        
