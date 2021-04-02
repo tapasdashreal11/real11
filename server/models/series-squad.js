@@ -116,6 +116,9 @@ var seriesSquadSchema = new Schema({
 	league_code: { type: String, default:"" },
 	end_date: { type: Date },
 	over_match: {type:Boolean, default: false},
+	live_match_close: {type:Number, enum: [1,0], default: 0},
+    match_comment: {type:String, default: ""},
+    is_leaderboard: {type:Number, enum: [1,0], default: 0},
 }, {
 	timestamps: true
 });
