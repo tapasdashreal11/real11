@@ -40,7 +40,7 @@ const getAllLFTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakash
 
     return new Promise(async (resv, rej) => {
         await redis.getRedisLFBoard(leaderboardRedis, function (err, reply) {
-            console.log('repl********',reply);
+            
             if (!err) {
                 const result = reply.reduce((index, obj) => {
                     if(aakashId) {
@@ -52,7 +52,7 @@ const getAllLFTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakash
                     }
                     return index;
                 }, []);
-                console.log('result time***',result);
+                
                 resv(result)
             } else {
                 rej(err)
@@ -489,14 +489,13 @@ module.exports = {
                         allTeams =  await getAllLFTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
                     } else {
                         allTeams =  await getAllLFTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
-                        console.log('result time allTeams***',allTeams);
                     }
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && !_.isEmpty(aakashTeams)) {
                         mergedTeam = [...myTeams, ...aakashTeams, ...allTeams];
                     } else {
                         mergedTeam = [...myTeams, ...allTeams];
                     }
-                    console.log("mergedTeam****",mergedTeam);
+                    
                 }
                 
                 if (mergedTeam && mergedTeam.length == 0) {
