@@ -528,7 +528,7 @@ module.exports = {
                                   }).limit(100).sort({"rank": 1});
                             }
                             if(((allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
-                               // await redis.setRedisLFBoard(leaderboardKey, allTeams);
+                                await redis.setRedisLFBoard(leaderboardKey, allTeams);
                             }
                            
                         }
