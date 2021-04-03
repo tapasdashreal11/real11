@@ -15,7 +15,6 @@ module.exports = {
     matchList: async (req, res) => {
         try {
             let data1 = {};
-            console.log('match list call****');
             let sport   =   parseInt(req.params.sport || 1);
             const upCommingMatch = await (new ModelService(SeriesSquad)).getMatchList(sport);
             const lFMatch = await (new ModelService(SeriesSquad)).getMatchLiveFantasyList(sport);
