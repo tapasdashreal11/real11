@@ -493,6 +493,7 @@ module.exports = {
                     } else {
                         mergedTeam = [...myTeams, ...allTeams];
                     }
+                    console.log("mergedTeam****",mergedTeam);
                 }
                 
                 if (mergedTeam && mergedTeam.length == 0) {
@@ -528,7 +529,7 @@ module.exports = {
                                   }).limit(100).sort({"rank": 1});
                             }
                             if(((allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
-                                await redis.setRedisLFBoard(leaderboardKey, allTeams);
+                               // await redis.setRedisLFBoard(leaderboardKey, allTeams);
                             }
                            
                         }
@@ -542,6 +543,7 @@ module.exports = {
                 }
                 let teamCount = 0;
                 let player_team_id_filter = []
+
                 for (const userTeam of mergedTeam) {
                     if (_.find(player_team_id_filter, userTeam.prediction_id)){
                         continue
