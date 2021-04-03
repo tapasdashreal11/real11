@@ -1030,7 +1030,8 @@ class ModelService {
                             "sort": "$sort",
                             "xfactors":"$xfactors",
                             "is_notification":{$cond: { if: { $eq: [ "$notification_status", 'active' ] }, then: true, else: false }},
-                            "notification_title":"$notification_title"
+                            "notification_title":"$notification_title",
+                            "match_type" : "live-fantasy",
                         }
                     }
                 ], (err, data) => {
