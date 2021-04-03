@@ -40,6 +40,7 @@ const getAllLFTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakash
 
     return new Promise(async (resv, rej) => {
         await redis.getRedisLFBoard(leaderboardRedis, function (err, reply) {
+            console.log('repl********',reply);
             if (!err) {
                 const result = reply.reduce((index, obj) => {
                     if(aakashId) {
