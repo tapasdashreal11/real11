@@ -1297,8 +1297,12 @@ module.exports = {
                         if (userCouponCount >= couponData.per_user_limit && couponData.per_user_limit) {
                             return res.send(ApiUtility.failed('You have used your limit.'));
                         } else {
+                            const idArr     =   [ "606855256de28e3177251828","606855536de28e3177251829" ];
+                            let couponIndex =   idArr.indexOf((couponData._id).toString() );
+                            // console.log(idArr.indexOf((couponData._id).toString() ), 'enter');
                             let userCouponMEGAPAAS = await UserCouponCodes.find({ 'user_id': decoded['user_id'], 'coupon_code_id': {$in: [ObjectId("606855256de28e3177251828"),ObjectId("606855536de28e3177251829")]}, 'status': 1 }).countDocuments();
-                            if(userCouponMEGAPAAS >= 1) {
+                            
+                            if(userCouponMEGAPAAS >= 1 && couponIndex !== -1) {
                                 // console.log("enter");
                                 return res.send(ApiUtility.failed("You can not use same offer code multiple times."));
                             } else {
