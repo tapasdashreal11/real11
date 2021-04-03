@@ -194,7 +194,7 @@ module.exports = {
             }
             respons.point_list = point_manager;
             respons.divide_by = 8;
-            respons.point_sign = "-";
+            respons.point_sign = "+";
 
             return res.send(ApiUtility.success(respons));
             
