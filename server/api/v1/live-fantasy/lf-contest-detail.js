@@ -52,6 +52,7 @@ const getAllLFTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakash
                     }
                     return index;
                 }, []);
+                console.log('result time***',result);
                 resv(result)
             } else {
                 rej(err)
@@ -488,6 +489,7 @@ module.exports = {
                         allTeams =  await getAllLFTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
                     } else {
                         allTeams =  await getAllLFTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
+                        console.log('result time allTeams***',allTeams);
                     }
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && !_.isEmpty(aakashTeams)) {
                         mergedTeam = [...myTeams, ...aakashTeams, ...allTeams];
@@ -530,7 +532,7 @@ module.exports = {
                                   }).limit(100).sort({"rank": 1});
                             }
                             if(((allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
-                                await redis.setRedisLFBoard(leaderboardKey, allTeams);
+                               // await redis.setRedisLFBoard(leaderboardKey, allTeams);
                             }
                            
                         }
