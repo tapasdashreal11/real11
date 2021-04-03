@@ -548,11 +548,11 @@ module.exports = {
                 let player_team_id_filter = []
 
                 for (const userTeam of mergedTeam) {
-                    if (_.find(player_team_id_filter, userTeam.prediction_id)){
+                    if (_.find(player_team_id_filter, userTeam.user_id)){
                         continue
                     } else {
                     
-                    player_team_id_filter.push(userTeam.prediction_id);
+                    player_team_id_filter.push(userTeam.user_id);
                     let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam) {
                             
