@@ -11,8 +11,8 @@ const redis = require('../../../../lib/redis');
 const moment = require('moment');
 const _ = require("lodash");
 var imageurl = config.imageBaseUrl;
+const Helper = require('./../common/helper');
 const { MatchStatus } = require('../../../constants/app');
-const { sendMailToDeveloper } = require('./../common/helper');
 
 module.exports = {
     liveFantasyMatchList: async (req, res) => {
@@ -34,7 +34,7 @@ module.exports = {
             res.send(successObj);
         } catch (error) {
             console.log(error);
-            sendMailToDeveloper(req, error.message);  //send mail to developer to debug purpose
+            Helper.sendMailToDeveloper(req, error.message);  //send mail to developer to debug purpose
             res.send(ApiUtility.failed(error.message));
         }
     },
@@ -102,8 +102,8 @@ module.exports = {
                 }
 
                 resObj['my_prediction'] = myPrediction;
-                resObj['user_prediction_ids'] = parseUserPrediction(userTeamIds);
-                resObj['joined_predictions_count'] = parseContestPredictionJoined(joinedTeamsCount);
+                resObj['user_prediction_ids'] = Helper.parseUserPrediction(userTeamIds);
+                resObj['joined_predictions_count'] = Helper.parseContestPredictionJoined(joinedTeamsCount);
                 resObj['match_type'] = "live-fantasy";
                 resObj['match_contest'] = match_contest_data || [];
                 let userContestJoinedRKey = 'lf-user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + series_id;
@@ -124,7 +124,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
-            // sendMailToDeveloper(req, error.message);  //send mail to developer to debug purpose
+            // Helper.sendMailToDeveloper(req, error.message);  //send mail to developer to debug purpose
             res.send(ApiUtility.failed(error.message));
         }
     },
@@ -929,7 +929,6 @@ function parseUserPrediction(userPredictionData) {
 
 function parseContestPredictionJoined(joinedTeamsCount) {
     let responseData = [];
-    console.log("******ddd",joinedTeamsCount);
     for (const prop in joinedTeamsCount) {
         
         if (hasOwnProperty.call(joinedTeamsCount, prop)) {
