@@ -482,7 +482,9 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                         redis.setRedisForLf(userContestCountRedisKey,totalContest);
                     }
                     let userTeamcountRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
+                    let matchContestKey = 'lf-my-matches-list-' + user_id;
                     redis.setRedisForLf(userTeamcountRedisKey,-1);
+                    redis.setRedisLFBoard(matchContestKey, {}); // Set Redis  for my matches
                     return resolve(totalContestKey);
                 });
                 
