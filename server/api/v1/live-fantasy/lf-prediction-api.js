@@ -1,5 +1,6 @@
 const Prediction = require('../../../models/live-fantasy/lf-prediction');
 const MatchList = require('../../../models/live-fantasy/lf-match-list-model');
+const LFPlayerTeamContest = require('../../../models/live-fantasy/lf_joined_contest');
 const ApiUtility = require('../../api.utility');
 const { ObjectId } = require('mongodb');
 const moment = require('moment');
@@ -154,7 +155,12 @@ module.exports = {
 
             let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id });
             if (liveMatch && user_id && updateData && updateData.prediction) {
-                    await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":updateData}); 
+                    await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":updateData});
+                    let playerTeamRes = await LFPlayerTeamContest.findOne({prediction_id:ObjectId(record_id)});
+                    if(playerTeamRes && playerTeamRes.prediction_id && new_predit_dic){
+                        await LFPlayerTeamContest.updateOne({_id:ObjectId(playerTeamRes._id) },{"$set": {prediction : new_predit_dic}});
+                     }
+
                     message = "Predication has been updated successfully.";
                     data1.message = message;
                     redis.setRedisForLf(listKey, []);
