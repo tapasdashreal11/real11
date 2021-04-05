@@ -67,7 +67,7 @@ module.exports = {
                     let countRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
                     myContest = await LFPlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id) }, { _id: 1, contest_id: 1, prediction_id: 1 }).exec();
                     
-                    let teamCounts = 0; //await getMyTeamCountsFromRedis(countRedisKey,0);
+                    let teamCounts = await getLFRedisForMyTeamCount(countRedisKey);
                     if(teamCounts>0){
                         myPrediction = teamCounts;
                     } else {
@@ -959,4 +959,21 @@ async function getMyTeamCountsFromRedis(key, defaultValue) {
             resolve(data)
         })
     })
+}
+
+async function getLFRedisForMyTeamCount(keys) {
+    try {
+        return new Promise(async (resolve, reject) => {
+            
+            await redis.getRedisForLf(keys, function (err, teamCounts) {
+                if (teamCounts) {
+                    return resolve(teamCounts);
+                } else {
+                    return resolve(0);
+                }
+            })
+        });
+    } catch (error) {
+        console.log('LF redis leaderboard > ', error);
+    }
 }
