@@ -535,7 +535,6 @@ module.exports = {
             let decoded = { match_id: parseInt(match_id), series_id: parseInt(series_id), user_id: ObjectId(user_id) }
             let data1 = {};
             if (match_id && series_id && user_id) {
-                
                 let ptcData = await LFPlayerTeamContest.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'series_id': decoded['series_id'],'is_deleted': 0 }).exec()
                 if (ptcData && ptcData.length > 0) {
                     let predictionIds = _.map(ptcData, 'prediction_id');
@@ -736,7 +735,11 @@ module.exports = {
                 } else {
                     // No contest joined yet for this match and series
                     console.log('******dddd');
-                    return res.send(ApiUtility.success(data1));
+                   let resonse = {
+                        "status": false,
+                        "data": {}
+                    }
+                    return res.send(ApiUtility.success(resonse));
                 }
                 return res.send(ApiUtility.success(data1));
 
