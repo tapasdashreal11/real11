@@ -114,12 +114,8 @@ module.exports = {
                                 }
                             });
                     } else {
-                       /* getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
-                            console.log(results);
-                            results['server_time'] = serverTime;                              
-                            return res.send(ApiUtility.success(results));
-                        });*/
                         redis.getRedisLFBoard(matchContestKey, function (err, contestData) { // Get Redis 
+                            console.log("contestData**",contestData);
                             if (!contestData) {
                                 getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
                                     results['server_time'] = serverTime;
@@ -194,7 +190,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
                     { $in: [ "$match_status", [MatchStatus.MATCH_INPROGRESS,MatchStatus.MATCH_DELAYED,MatchStatus.MATCH_NOTSTART,'Finished'] ]},
                     { $eq: [ "$win_flag",  0 ]},
                     { $eq: [ "$status",  1 ]},
-                    { $lte: [ "$time",  currentDateLive ]},
+                    //{ $lte: [ "$time",  currentDateLive ]},
                     { $eq: [ "$match_id", "$$matchId" ]},
                     { $eq: [ "$series_id", "$$seriesId" ]},
                 ]
