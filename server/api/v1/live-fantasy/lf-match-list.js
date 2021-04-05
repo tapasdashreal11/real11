@@ -736,7 +736,7 @@ module.exports = {
                 } else {
                     // No contest joined yet for this match and series
                     console.log('******dddd');
-                    return res.send('Something went wrong!!');
+                    return res.send(ApiUtility.success(data1));
                 }
                 return res.send(ApiUtility.success(data1));
 
