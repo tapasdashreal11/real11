@@ -35,6 +35,23 @@ async function getLFRedisLeaderboard(matchId, contestId) {
     }
 }
 
+async function getLFRedisForMyTeamCount(match_id, series_id,user_id) {
+    try {
+        return new Promise(async (resolve, reject) => {
+            let myTeamCountRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
+            await redis.getRedisForLf(myTeamCountRedisKey, function (err, teamCounts) {
+                if (teamCounts) {
+                    return resolve(teamCounts);
+                } else {
+                    return resolve(0);
+                }
+            })
+        });
+    } catch (error) {
+        console.log('LF redis leaderboard > ', error);
+    }
+}
+
 const getAllLFTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId) => {
     let leaderboardRedis = 'lf-leaderboard-' + match_id + '-' + contest_id
 
@@ -65,7 +82,7 @@ const getAllLFTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakash
 module.exports = {
     lfContestDetailNew: async (req, res) => {
         try {
-            let { match_id, contest_id, sport } = req.params;
+            let { match_id, contest_id,series_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
                 match_id: parseInt(match_id),
@@ -247,7 +264,9 @@ module.exports = {
                         }
                     }
                 }
-               
+
+                let myTeamCounts = await getLFRedisForMyTeamCount(match_id,series_id,user_id);
+
                 let contestData = {
                     match_status: (reviewMatch) ? reviewMatch.status : '',
                     prize_money: prizeMoney,
@@ -277,7 +296,7 @@ module.exports = {
                     contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,	
                     category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:'',
                     category_name:contestDetail && contestDetail.category_name ?contestDetail.category_name:'',
-                    my_prediction: player_team_id_filter? player_team_id_filter.length : 0,
+                    my_prediction: myTeamCounts || 0,
                     match_type: "live-fantasy"
                 }
                 if (reviewMatch == "In Progress") {
