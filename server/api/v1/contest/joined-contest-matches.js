@@ -120,7 +120,7 @@ module.exports = {
                             if (!contestData) {
                                 getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
                                     results['server_time'] = serverTime;
-                                    redis.setRedisMyMatches(matchContestKey, results); // Set Redis                                
+                                    redis.setRedisMyMatches(matchContestKey, results); // Set Redis                                 
                                     return res.send(ApiUtility.success(results));
                                 })
                             } else {
