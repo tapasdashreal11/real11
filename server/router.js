@@ -365,9 +365,9 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
  router.get('/api/v1/lf-transation-history', auth.authenticate.jwtLogin, lfTransactionHistory);
  router.get('/api/v1/lf-joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, lfJoinedContestList);
  router.get('/api/v1/lf-joined-contest-matches/:is_complete?/:sport?', auth.authenticate.jwtLogin, lfJoinedContestMatches);
- router.get('/api/v1/lf-contest-detail/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, lfContestDetailNew);
- router.get('/api/v1/lf-contest-leaderboard/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, lfContestLeaderboard);
- router.get('/api/v1/lf-live-leaderboard/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, lfLivecontestDetailLB);
+ router.get('/api/v1/lf-contest-detail/:match_id/:contest_id/:series_id/:sport', auth.authenticate.jwtLogin, lfContestDetailNew);
+ router.get('/api/v1/lf-contest-leaderboard/:match_id/:contest_id/:series_id/:sport', auth.authenticate.jwtLogin, lfContestLeaderboard);
+ router.get('/api/v1/lf-live-leaderboard/:match_id/:contest_id/:series_id/:sport', auth.authenticate.jwtLogin, lfLivecontestDetailLB);
  router.post('/api/v1/lf-prediction-edit',auth.authenticate.jwtLogin,updatePrediction); 
  router.get('/api/v1/lf-point-system',auth.authenticate.jwtLogin,lfPointSystem);
  /* router.get('/cron/paytmwebhook', function(req, res){
