@@ -734,8 +734,17 @@ module.exports = {
                     }
                 } else {
                     // No contest joined yet for this match and series
-                    console.log('******dddd');
-                   return res.send(ApiUtility.success(data1));
+                    let resData = {
+                        "joined_contest": [],
+                        "upcoming_match": [],
+                        "my_team_count": 1,
+                        "my_teams": 1,
+                        "my_contests": 1,
+                        "my_team_rank":[],
+                        "match_status": "",
+                        "match_type": "live-fantasy"
+                    }
+                   return res.send(ApiUtility.success(resData));
                 }
                 return res.send(ApiUtility.success(data1));
 
