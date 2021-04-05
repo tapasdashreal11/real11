@@ -17,6 +17,7 @@ const mqtt = require('../../../../lib/mqtt');
 const Helper = require('./../common/helper');
 const db = require('../../../db');
 const { setRedis } = require('../../../../lib/redis');
+const { keyInSelect } = require('readline-sync');
 
 async function getLFRedisLeaderboard(matchId, contestId) {
     try {
@@ -35,11 +36,11 @@ async function getLFRedisLeaderboard(matchId, contestId) {
     }
 }
 
-async function getLFRedisForMyTeamCount(match_id, series_id,user_id) {
+async function getLFRedisForMyTeamCount(keys) {
     try {
         return new Promise(async (resolve, reject) => {
-            let myTeamCountRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
-            await redis.getRedisForLf(myTeamCountRedisKey, function (err, teamCounts) {
+            
+            await redis.getRedisForLf(keys, function (err, teamCounts) {
                 if (teamCounts) {
                     return resolve(teamCounts);
                 } else {
@@ -264,8 +265,21 @@ module.exports = {
                         }
                     }
                 }
-
-                let myTeamCounts = await getLFRedisForMyTeamCount(match_id,series_id,user_id);
+                let myTeamCounts = 0;
+                if(user_id && match_id){
+                    let myTeamCountRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
+                     myTeamCounts = 0;//await getLFRedisForMyTeamCount(myTeamCountRedisKey); 
+                     if(myTeamCounts == 0){
+                        myTeamCounts = await LFPrediction.find({
+                            user_id: user_id,
+                            match_id: match_id,
+                            series_id: series_id
+                        }).count();
+                        redis.setRedisForLf(myTeamCountRedisKey,myTeamCounts)
+                     }
+                      
+                 }
+                
 
                 let contestData = {
                     match_status: (reviewMatch) ? reviewMatch.status : '',
