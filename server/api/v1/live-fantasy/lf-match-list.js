@@ -735,8 +735,7 @@ module.exports = {
                 } else {
                     // No contest joined yet for this match and series
                     console.log('******dddd');
-                   let resonse = { "status": false, "data": {} };
-                    return res.send(resonse);
+                   return res.send(ApiUtility.success(data1));
                 }
                 return res.send(ApiUtility.success(data1));
 
