@@ -740,11 +740,13 @@ module.exports = {
                     }
                 } else {
                     // No contest joined yet for this match and series
+                    console.log('******dddd');
                     return res.send('Something went wrong!!');
                 }
                 return res.send(ApiUtility.success(data1));
 
             } else {
+                console.log('******dddd11');
                 return res.send('Something went wrong!!');
             }
 
