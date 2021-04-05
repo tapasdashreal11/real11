@@ -77,10 +77,11 @@ module.exports = {
             
             let serverTime = moment(Date.now()).format(config.DateFormat.datetime);
             let serverTimeForalc = moment().utc().toDate();
+            
 
             if (decoded) {
                 if (decoded['user_id']) {
-
+                    let matchContestKey = 'lf-my-matches-list-' + user_id;
                     let sort = { "createdAt": -1 }
                     let skip = (decoded.page - 1) * (decoded.pagesize);
                     let sport = decoded.sport || 1;
@@ -113,10 +114,43 @@ module.exports = {
                                 }
                             });
                     } else {
-                        getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
+                       /* getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
                             console.log(results);
                             results['server_time'] = serverTime;                              
                             return res.send(ApiUtility.success(results));
+                        });*/
+                        redis.getRedisLFBoard(matchContestKey, function (err, contestData) { // Get Redis 
+                            if (!contestData) {
+                                getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
+                                    results['server_time'] = serverTime;
+                                    redis.setRedisLFBoard(matchContestKey, results); // Set Redis                                 
+                                    return res.send(ApiUtility.success(results));
+                                })
+                            } else {
+                                console.log('my match list data coming from redis********');
+                                var newLiveArray = JSON.parse(JSON.stringify(contestData))
+                                var contestDataUp = newLiveArray.upcoming_match.length;
+                                if (contestDataUp > 0) {
+                                    let key = 0;
+                                    _.forEach(newLiveArray.upcoming_match, function (i, k) {
+                                        if (i && moment(i.sort_time).toDate() < serverTimeForalc) {
+                                            i["match_status"] = 'In Progress';
+                                            newLiveArray.live_match.unshift(i);
+                                            newLiveArray.upcoming_match.splice(k, 1)
+                                        }
+                                        key++;
+                                    })
+                                    if (key === contestDataUp) {
+                                        newLiveArray['server_time'] = serverTime;
+                                        //console.log("contestDataUp-af", newLiveArray.upcoming_match.length, newLiveArray.live_match.length)
+                                        redis.setRedisLFBoard(matchContestKey, newLiveArray); // Set Redis
+                                        return res.send(ApiUtility.success(newLiveArray));
+                                    }
+                                } else {
+                                    contestData['server_time'] = serverTime;
+                                    return res.send(ApiUtility.success(contestData));
+                                }
+                            }
                         });
                     }
                     
@@ -143,7 +177,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
             let sortTime =  {};
             if(type == 'upcoming') {
                 let currentDate2 = moment().utc().toDate();
-                let oneMonthDateUp =  moment().utc().add('30','days').toDate();
+                let oneMonthDateUp =  moment().utc().add('5','days').toDate();
 
                 matchesFilter = [
                     { $eq: [ "$match_id", "$$matchId" ]},
@@ -166,7 +200,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
                 ]
                 sortTime = {sort_time : -1}
             }else if(type == 'completed_match'){
-                let pastMonthDateCM	=  moment().utc().subtract('30','days').toDate();
+                let pastMonthDateCM	=  moment().utc().subtract('5','days').toDate();
                 matchesFilter = [
                     { $or: [ 
                         {$and: [{ $eq: ["$match_status", "Finished"] },{ $eq: [ "$win_flag",  1 ] }]},
