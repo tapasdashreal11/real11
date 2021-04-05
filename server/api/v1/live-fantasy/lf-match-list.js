@@ -75,7 +75,6 @@ module.exports = {
                         if(myPrediction && myPrediction>0){
                             redis.setRedisForLf(countRedisKey,myPrediction);
                         }
-                          
                     }
                     
                     let userCoupons ={}; // await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}", user_id);
@@ -945,21 +944,6 @@ function parseContestPredictionJoined(joinedTeamsCount) {
     }
     return responseData;
 };
-
-async function getMyTeamCountsFromRedis(key, defaultValue) {
-    return new Promise((resolve, reject) => {
-        redis.getRedisForLf(key, async (err, data) => {
-            if (err) {
-                reject(defaultValue);
-            }
-            if (data) {
-            
-
-            }
-            resolve(data)
-        })
-    })
-}
 
 async function getLFRedisForMyTeamCount(keys) {
     try {
