@@ -1297,45 +1297,22 @@ module.exports = {
                         if (userCouponCount >= couponData.per_user_limit && couponData.per_user_limit) {
                             return res.send(ApiUtility.failed('You have used your limit.'));
                         } else {
-                            const idArr     =   [ "606855256de28e3177251828","606855536de28e3177251829" ];
-                            let couponIndex =   idArr.indexOf((couponData._id).toString() );
-                            // console.log(idArr.indexOf((couponData._id).toString() ), 'enter');
-                            let userCouponMEGAPAAS = await UserCouponCodes.find({ 'user_id': decoded['user_id'], 'coupon_code_id': {$in: [ObjectId("606855256de28e3177251828"),ObjectId("606855536de28e3177251829")]}, 'status': 1 }).countDocuments();
+                            // const idArr     =   [ "606855256de28e3177251828","606855536de28e3177251829" ];
+                            // let couponIndex =   idArr.indexOf((couponData._id).toString() );
+                            // // console.log(idArr.indexOf((couponData._id).toString() ), 'enter');
+                            // let userCouponMEGAPAAS = await UserCouponCodes.find({ 'user_id': decoded['user_id'], 'coupon_code_id': {$in: [ObjectId("606855256de28e3177251828"),ObjectId("606855536de28e3177251829")]}, 'status': 1 }).countDocuments();
                             
-                            if(userCouponMEGAPAAS >= 1 && couponIndex !== -1) {
-                                // console.log("enter");
-                                return res.send(ApiUtility.failed("You can not use same offer code multiple times."));
-                            } else {
-                                if (couponData.usage_limit) {
-                                    let couponCount = await UserCouponCodes.find({ 'coupon_code_id': couponData._id, 'status': 1 }).countDocuments();
-                                    if (couponCount >= couponData.usage_limit) {
-                                        return res.send(ApiUtility.failed('Coupon code has expired.'));
-                                    } else {
-                                        let saveCouonData = {};
-                                        saveCouonData['coupon_code_id'] = couponData.id;
-                                        saveCouonData['user_id'] = decoded['user_id'];
-                                        saveCouonData['applied_on'] = new Date();
-                                        saveCouonData['min_amount'] = (couponData.min_amount) ? couponData.min_amount : 0;
-                                        saveCouonData['in_percentage'] = (couponData.max_cashback_percent > 0) ? true : false;
-                                        saveCouonData['created'] = new Date();
-                                        if (couponData.max_cashback_percent > 0) {
-                                            saveCouonData['discount_amount'] = couponData.max_cashback_percent;
-                                            saveCouonData['max_discount'] = couponData.max_cashback_amount;
-                                        } else {
-                                            saveCouonData['discount_amount'] = couponData.max_cashback_amount;
-                                            saveCouonData['max_discount'] = couponData.max_cashback_amount;
-                                        }
-    
-                                        let result = await UserCouponCodes.create(saveCouonData);
-                                        // userCoupon.status	=	ACTIVE;
-                                        if (result) {
-                                            saveCouonData.coupon_id = result.coupon_code_id;
-                                            return res.send(ApiUtility.success(saveCouonData, 'Coupon applied successfully.'));
-                                        }
-                                    }
+                            // if(userCouponMEGAPAAS >= 1 && couponIndex !== -1) {
+                            //     // console.log("enter");
+                            //     return res.send(ApiUtility.failed("You can not use same offer code multiple times."));
+                            // }
+                            if (couponData.usage_limit) {
+                                let couponCount = await UserCouponCodes.find({ 'coupon_code_id': couponData._id, 'status': 1 }).countDocuments();
+                                if (couponCount >= couponData.usage_limit) {
+                                    return res.send(ApiUtility.failed('Coupon code has expired.'));
                                 } else {
                                     let saveCouonData = {};
-                                    saveCouonData['coupon_code_id'] = couponData._id;
+                                    saveCouonData['coupon_code_id'] = couponData.id;
                                     saveCouonData['user_id'] = decoded['user_id'];
                                     saveCouonData['applied_on'] = new Date();
                                     saveCouonData['min_amount'] = (couponData.min_amount) ? couponData.min_amount : 0;
@@ -1348,12 +1325,34 @@ module.exports = {
                                         saveCouonData['discount_amount'] = couponData.max_cashback_amount;
                                         saveCouonData['max_discount'] = couponData.max_cashback_amount;
                                     }
+
                                     let result = await UserCouponCodes.create(saveCouonData);
+                                    // userCoupon.status	=	ACTIVE;
                                     if (result) {
                                         saveCouonData.coupon_id = result.coupon_code_id;
-                                        data1 = saveCouonData;
-                                        return res.send(ApiUtility.success(data1, 'Coupon applied successfully.'));
+                                        return res.send(ApiUtility.success(saveCouonData, 'Coupon applied successfully.'));
                                     }
+                                }
+                            } else {
+                                let saveCouonData = {};
+                                saveCouonData['coupon_code_id'] = couponData._id;
+                                saveCouonData['user_id'] = decoded['user_id'];
+                                saveCouonData['applied_on'] = new Date();
+                                saveCouonData['min_amount'] = (couponData.min_amount) ? couponData.min_amount : 0;
+                                saveCouonData['in_percentage'] = (couponData.max_cashback_percent > 0) ? true : false;
+                                saveCouonData['created'] = new Date();
+                                if (couponData.max_cashback_percent > 0) {
+                                    saveCouonData['discount_amount'] = couponData.max_cashback_percent;
+                                    saveCouonData['max_discount'] = couponData.max_cashback_amount;
+                                } else {
+                                    saveCouonData['discount_amount'] = couponData.max_cashback_amount;
+                                    saveCouonData['max_discount'] = couponData.max_cashback_amount;
+                                }
+                                let result = await UserCouponCodes.create(saveCouonData);
+                                if (result) {
+                                    saveCouonData.coupon_id = result.coupon_code_id;
+                                    data1 = saveCouonData;
+                                    return res.send(ApiUtility.success(data1, 'Coupon applied successfully.'));
                                 }
                             }
                         }
