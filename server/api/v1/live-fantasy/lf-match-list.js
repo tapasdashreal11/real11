@@ -66,25 +66,23 @@ module.exports = {
                     let redisKeyForUserMyCoupons = 'my-coupons-' + user_id;
                     let countRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
                     myContest = await LFPlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id) }, { _id: 1, contest_id: 1, prediction_id: 1 }).exec();
-                    console.log('LF 1***');
+                    
                     let teamCounts = 0; //await getMyTeamCountsFromRedis(countRedisKey,0);
                     if(teamCounts>0){
-                        console.log('teamcounts from redis*****');
                         myPrediction = teamCounts;
                     } else {
-                        console.log('teamcounts from db*****');
                         myPrediction = await LFPrediction.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id) }).countDocuments();
                         if(myPrediction && myPrediction>0){
                             redis.setRedisForLf(countRedisKey,myPrediction);
                         }
                           
                     }
-                    console.log('LF 2***');
+                    
                     let userCoupons ={}; // await getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}", user_id);
                     resObj['user_coupons'] = !_.isEmpty(userCoupons) ? JSON.parse(userCoupons) : {};
                     const contestGrpIds = myContest && myContest.length > 0 ? _.groupBy(myContest, 'contest_id') : {};
                      joinedContestIds = myContest && myContest.length > 0 ? _.uniqWith(_.map(myContest, 'contest_id'), _.isEqual) : [];
-                    console.log('LF 3***');
+                    
                     resObj['my_contests'] = joinedContestIds.length || 0;
                     resObj['joined_contest_ids'] = joinedContestIds;
                     for (const contsIds of joinedContestIds) {
@@ -92,8 +90,6 @@ module.exports = {
                     }
                     redis.setRedisForLf('lf-user-contest-count-' + match_id + '-' + series_id + '-' + user_id, joinedContestIds.length || 0);
                 }
-                
-                console.log('LF 4***');
                 for (const matchContests of match_contest_data) {
                     for (const contest of matchContests.contests) {
                         joinedTeamsCount[contest.contest_id] = contest.teams_joined || 0;
@@ -114,8 +110,6 @@ module.exports = {
                 redis.setRedisForLf(userContestJoinedRKey, joinedContestIds);
                 redis.setRedisForLf(contestJoineTeamCounts, joinedTeamsCount);
                 redis.setRedisForLf(matchContestList, match_contest_data);
-
-                console.log('LF 6***');
                 var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);
             } else {
