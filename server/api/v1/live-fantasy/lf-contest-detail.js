@@ -268,7 +268,7 @@ module.exports = {
                 let myTeamCounts = 0;
                 if(user_id && match_id){
                     let myTeamCountRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
-                     myTeamCounts = 0;//await getLFRedisForMyTeamCount(myTeamCountRedisKey); 
+                     myTeamCounts = await getLFRedisForMyTeamCount(myTeamCountRedisKey); 
                      if(myTeamCounts == 0){
                         myTeamCounts = await LFPrediction.find({
                             user_id: user_id,
@@ -277,7 +277,6 @@ module.exports = {
                         }).count();
                         redis.setRedisForLf(myTeamCountRedisKey,myTeamCounts)
                      }
-                      
                  }
                 
 
