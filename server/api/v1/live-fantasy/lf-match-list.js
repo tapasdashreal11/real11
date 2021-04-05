@@ -737,9 +737,9 @@ module.exports = {
                     let resData = {
                         "joined_contest": [],
                         "upcoming_match": [],
-                        "my_team_count": 1,
-                        "my_teams": 1,
-                        "my_contests": 1,
+                        "my_team_count": 0,
+                        "my_teams": 0,
+                        "my_contests": 0,
                         "my_team_rank":[],
                         "match_status": "",
                         "match_type": "live-fantasy"
