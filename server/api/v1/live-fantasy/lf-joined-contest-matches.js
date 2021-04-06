@@ -194,7 +194,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
                 ]
                 sortTime = {sort_time : -1}
             }else if(type == 'completed_match'){
-                let pastMonthDateCM	=  moment().utc().subtract('5','days').toDate();
+                let pastMonthDateCM	=  moment().utc().subtract('30','days').toDate();
                 matchesFilter = [
                     { $or: [ 
                         {$and: [{ $eq: ["$match_status", "Finished"] },{ $eq: [ "$win_flag",  1 ] }]},
