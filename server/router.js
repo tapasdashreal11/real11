@@ -76,7 +76,7 @@ const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breaku
 const  { applyContestInviteCode }  = require('./api/v1/contest/apply-contest-invite-code');
 const  categoryContestList  = require('./api/v1/contest/category-contest-list');
 
-const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData }  = require('./api/v1/users/week-leaderboard-series-api');
+const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
 const appSettingApi = require("./api/v1/common/app-settings");
 const user_offers = require("./api/v1/common/app-analysis-api");
@@ -280,6 +280,7 @@ router.post('/api/v1/favouite-create', favouriteContestCreate);
 router.post('/api/v1/retention-bonous-create', retentionBonousCreate);
 router.get('/api/v1/week-leaderboard-series',auth.authenticate.jwtLogin, weekLeaderBoardSeriesApi);
 router.get('/api/v1/week-leaderboard-series-data/:s_id/:w_count/:page',auth.authenticate.jwtLogin, weekLeaderBoardSeriesWeeksData);
+router.get('/api/v1/series-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, seriesLeaderBoardData);
 
 
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);

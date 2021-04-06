@@ -57,7 +57,13 @@ var seriesSchema = new Schema({
 	series_weeks: {
 		type: Array,default:[]
 	  },
+	tab_data: {
+		type: Array
+	},
     week_leaderboard: {
+		type: Number,default:0
+	  },
+    series_leaderboard: {
 		type: Number,default:0
 	  },
 	start_date: {
