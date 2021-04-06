@@ -19,7 +19,13 @@ module.exports = {
         try {
             let data1 = {};
             let { pmatch_id, sport } = req.params;
-            const upCommingMatch = await LiveFantasyMatchList.find({ over_parent_id: pmatch_id, time: { $gte: new Date() }, status: 1, match_status: "Not Started" }).limit(40).sort({ _id: -1 });
+            let  upCommingMatch = await LiveFantasyMatchList.find({ over_parent_id: pmatch_id, time: { $gte: new Date() }, status: 1, match_status: "Not Started" }).limit(40).sort({ _id: -1 });
+            if(upCommingMatch && upCommingMatch.length>0){
+                for (const item of upCommingMatch) {
+                    item['local_team_name'] = item.localteam_short_name;
+                    item['visitor_team_name'] = item.visitorteam_short_name;
+                }
+            }
             let liveData = [];
             let finishData = [];
             data1.upcoming_match = upCommingMatch;
