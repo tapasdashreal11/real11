@@ -17,13 +17,15 @@ module.exports = {
             let data1 = {};
             let sport   =   parseInt(req.params.sport || 1);
             const upCommingMatch = await (new ModelService(SeriesSquad)).getMatchList(sport);
-            const lFMatch = await (new ModelService(SeriesSquad)).getMatchLiveFantasyList(sport);
+            if(sport==1){
+              const lFMatch = await (new ModelService(SeriesSquad)).getMatchLiveFantasyList(sport);
+              data1.lf_match = lFMatch || [];
+              data1.lf_total = lFMatch.length || 0;
+            }
             let liveData = [];
             let finishData = [];
             data1.upcoming_match = upCommingMatch;
             data1.total = upCommingMatch.length;
-            data1.lf_match = lFMatch || [];
-            data1.lf_total = lFMatch.length || 0;
             data1.live_match = liveData;
             data1.completed_match = finishData;
             data1.version_code = 52;
