@@ -8,12 +8,14 @@ const redis = require('../../../../lib/redis');
 const { TransactionTypes } = require('../../../constants/app');
 const { startSession } = require('mongoose');
 const moment = require('moment');
+const config = require('../../../config');
+var imageurl = config.imageBaseUrl;
 module.exports = {
     userCouponList: async (req, res) => {
         var response = { status: false, message: "Invalid Request", data: {} };
         try {
             const user_id = req.userId;
-            let result = { coupon_list: [], my_coupons: {} };
+            let result = { coupon_list: [], my_coupons: {}, img_url:imageurl };
             let redisKeyForVipCouponsList = 'vip-coupons-list';
             let redisKeyForUserMyCoupons = 'my-coupons-' + user_id;
             try {
