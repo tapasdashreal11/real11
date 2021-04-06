@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
-var weeklyLeaderBoardSchema = new Schema({
+var seriesLeaderBoardSchema = new Schema({
     id: {
         type: String
     },
@@ -39,4 +39,4 @@ var weeklyLeaderBoardSchema = new Schema({
         type: Date, default: Date.now()
     }
 });
-module.exports = mongoose.model('series_leaderboard', weeklyLeaderBoardSchema, 'series_leaderboard');
+module.exports = mongoose.model('series_leaderboard', seriesLeaderBoardSchema, 'series_leaderboard');
