@@ -381,7 +381,7 @@ module.exports = {
                      matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                      entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                      if(cSaleData && cSaleData._id){
-                        couponSaleData = cSaleData.coupon_contest_data; 
+                        couponSaleData =cSaleData.coupon_credit > cSaleData.coupon_used ? cSaleData.coupon_contest_data:[]; 
                      }
                     if (matchContestData && matchContestData.usable_bonus_time) {
                         //////console.log("matchInviteCode", matchContest, moment().isBefore(matchContest.usable_bonus_time))
