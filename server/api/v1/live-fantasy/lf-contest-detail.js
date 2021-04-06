@@ -739,6 +739,7 @@ module.exports = {
                     is_aakash_team: aakashLeague,
                     match_scores: reviewMatch.match_scores || {},
                     ball_update: reviewMatch.ball_update || {},
+                    run_update: reviewMatch.run_update || {},
                     match_type: "live-fantasy"
                 }
                 if (reviewMatch == "In Progress") {
