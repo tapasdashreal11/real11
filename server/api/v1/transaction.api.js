@@ -5,6 +5,7 @@ const config = require('../../config');
 // const fs = require('fs');
 const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
+const PhonePeTransaction = require('../../models/phonepe_transaction');
 const PaymentOffers = require('../../models/payment-offers');
 const UserCouponCodes = require('../../models/user-coupon-codes');
 const { TransactionTypes } = require('../../constants/app');
@@ -555,7 +556,7 @@ module.exports = {
                     });
                 } else if (decoded['gateway_name'] == 'PHONEPE') {
                     let response = await checkPhonePeStatus(txn_id);
-                    if(response && response.success == true && response.data && response.data.paymentState == "COMPLETED") {
+                    if(response && response.success == true && response.code == "PAYMENT_SUCCESS") {
                         // console.log(response.data);
                         await updateTransactionAllGetway(decoded, function(txn_res) {
                             return res.send(txn_res);
@@ -785,7 +786,6 @@ module.exports = {
             let txnData;
             // objectid.isValid('53fbf4615c3b9f41c381b6a3')
             txnData = await Transaction.findOne({ _id: ObjectId(transactionId) });
-
             if (txnData && txnData._id && txnData.status == false) {
                 let authUser = await User.findOne({ '_id': txnData.user_id });
                 if (!txnData.status && authUser) {
@@ -818,18 +818,7 @@ module.exports = {
                                         discountAmount = parseFloat(discountAmount).toFixed(2);
                                         txnData.discount_amount = parseFloat(txnData.discount_amount).toFixed(2);
                                         if (discountAmount <= txnData.discount_amount) {
-                                            /* let couponCode =    await UserCouponCodes.updateOne({'coupon_code_id':txnData.coupon_id,user_id:authUser._id,status:0},{$set:{status : 1}});
-                                            if(couponCode && couponCode.nModified > 0) {
-                                                if(txnData.txn_amount >= 500) {
-                                                    authUser.extra_amount   =   parseFloat(authUser.extra_amount) + parseFloat(discountAmount);
-                                                } else {
-                                                    authUser.bonus_amount   =   parseFloat(authUser.bonus_amount) + parseFloat(discountAmount);
-                                                }
-                                                let date = new Date();
-                                                txnId   =   'CB'+date.getFullYear() + date.getMonth() + date.getDate() + Date.now()+authUser._id;
-                                                Transaction.saveTransaction(authUser.id,txnId,TransactionTypes.COUPON_BONUS,discountAmount);
-                                            } */
-
+                                            
                                             let updateCouponCode = await UserCouponCodes.updateOne({ 'coupon_code_id': txnData.coupon_id, user_id: authUser._id, status: 0 }, { $set: { status: 1 } });
                                             if (updateCouponCode && updateCouponCode.nModified > 0) {
                                                 let txnType = '';
@@ -1022,8 +1011,17 @@ module.exports = {
     checkPhonePeTransactionStatus: async(req,res) => {
         try {
             let transactionId   =   req.body.transaction_id;
+            const userId = req.userId;
             let response = await checkPhonePeStatus(transactionId);
             // console.log(response);
+            if(response && (response.code == "INTERNAL_SERVER_ERROR" || response.code == "PAYMENT_PENDING")) {
+                let createPhoneTxn  =   {
+                    "transaction_id": transactionId,
+                    "user_id": userId,
+                    "status": response.code
+                }
+                await PhonePeTransaction.create(createPhoneTxn);
+            }
             response.status =   response.success;
             return res.send(response);
         } catch(error) {
@@ -1044,7 +1042,6 @@ async function checkPhonePeStatus(txnId) {
             'X-VERIFY': verifyKey
         }
     };
-    // console.log(options,url);
 
     return fetch(url, options)
         .then(res => res.json())

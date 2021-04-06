@@ -350,9 +350,12 @@ router.post('/cron/bizwebhook', function(req, res) {
 
 router.post('/phonePe/phonePewebhook', function(req, res) {
     console.log("phonePe callback data", req.body)
-    // if (req.body.STATUS && req.body.STATUS == "TXN_SUCCESS") {
-    //     updateTransactionFromWebhook(req.body.ORDERID, 'PAYTM');
-    // }
+    const buff = Buffer.from(req.body.response, 'base64');
+    const response = JSON.parse(buff.toString('utf-8'));
+    
+    if (response && response.success == true && response.code == "PAYMENT_SUCCESS") {
+        updateTransactionFromWebhook(response.data.transactionId, 'phonePe');
+    }
     return res.send({ status: 'success' });
 });
 
