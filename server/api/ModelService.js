@@ -975,7 +975,7 @@ class ModelService {
             try {
                 this.collection.aggregate([
                     {
-                        $match:{over_match:true,status:1,match_status:"In Progress",live_match_close:0}
+                        $match:{over_match:true,status:1,match_status:"In Progress",live_match_close:0,sport:1}
                     },
                     { $sort : {sort: -1, time : 1} },
                     { $limit : 100 },
