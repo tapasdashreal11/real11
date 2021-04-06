@@ -185,7 +185,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
             } else if(type == 'live'){
                 let currentDateLive	 =	moment().utc().toDate();
                 matchesFilter = [
-                    { $in: [ "$match_status", [MatchStatus.MATCH_INPROGRESS,MatchStatus.MATCH_DELAYED,MatchStatus.MATCH_NOTSTART,'Finished'] ]},
+                    { $in: [ "$match_status", [MatchStatus.MATCH_INPROGRESS,'Finished'] ]},
                     { $eq: [ "$win_flag",  0 ]},
                     { $eq: [ "$status",  1 ]},
                     //{ $lte: [ "$time",  currentDateLive ]},
