@@ -556,7 +556,7 @@ module.exports = {
                     });
                 } else if (decoded['gateway_name'] == 'PHONEPE') {
                     let response = await checkPhonePeStatus(txn_id);
-                    if(response && response.success == true && response.code == "COMPLETED") {
+                    if(response && response.success == true && response.code == "PAYMENT_SUCCESS") {
                         // console.log(response.data);
                         await updateTransactionAllGetway(decoded, function(txn_res) {
                             return res.send(txn_res);
