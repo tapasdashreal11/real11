@@ -12,13 +12,14 @@ const { TransactionTypes } = require('../../constants/app');
 var sha512 = require('js-sha512');
 const paytm = require('../../../lib/paytm/checksum');
 const paytmAllInOne = require('../../../lib/paytm/PaytmChecksum')
-// const syncRequest = require('sync-request');
+const request = require('request');
 // const { sendSMTPMail } = require("./common/helper.js");
 const https = require('https');
 const _ = require('lodash');
 const redis = require('../../../lib/redis');
 var sha256 = require('sha256');
 const fetch = require('node-fetch');
+const { registerCustomQueryHandler } = require('puppeteer');
 
 module.exports = {
 
@@ -555,15 +556,25 @@ module.exports = {
                         post_req.end();
                     });
                 } else if (decoded['gateway_name'] == 'PHONEPE') {
-                    let response = await checkPhonePeStatus(txn_id);
-                    if(response && response.success == true && response.code == "PAYMENT_SUCCESS") {
-                        // console.log(response.data);
-                        await updateTransactionAllGetway(decoded, function(txn_res) {
-                            return res.send(txn_res);
-                        });
-                    } else {
-                        return res.send(ApiUtility.failed(response.message));
-                    }
+                    // let response = await checkPhonePeStatus(txn_id);
+                    await checkPhonePeStatus(txn_id, async function(result) {
+                        let response   =   JSON.parse(result.body);
+                        // console.log(response, result.header);
+                        // return false;
+                        if(response && response.success == true && response.code == "PAYMENT_SUCCESS") {
+                            const verifyKey     =   await generateXVerifyKey(txn_id);
+                            const responseAmount=   (response.data.amount) / 100;
+                            if(verifyKey == result.header && txn_amount == responseAmount) {
+                                await updateTransactionAllGetway(decoded, response.data, function(txn_res) {
+                                    return res.send(txn_res);
+                                });
+                            } else {
+                                return res.send(ApiUtility.failed('Amount not updated in your wallet.'));
+                            }
+                        } else {
+                            return res.send(ApiUtility.failed(response.message));
+                        }
+                    });
                 } else {
                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                 }
@@ -1012,18 +1023,21 @@ module.exports = {
         try {
             let transactionId   =   req.body.transaction_id;
             const userId = req.userId;
-            let response = await checkPhonePeStatus(transactionId);
-            // console.log(response);
-            if(response && (response.code == "INTERNAL_SERVER_ERROR" || response.code == "PAYMENT_PENDING")) {
-                let createPhoneTxn  =   {
-                    "transaction_id": transactionId,
-                    "user_id": userId,
-                    "status": response.code
+            let response    =   {}
+            await checkPhonePeStatus(transactionId, async function(result) {
+                // console.log(result)
+                if(result && (result.body.code == "INTERNAL_SERVER_ERROR" || result.body.code == "PAYMENT_PENDING")) {
+                    let createPhoneTxn  =   {
+                        "transaction_id": transactionId,
+                        "user_id": userId,
+                        "status": result.body.code
+                    }
+                    await PhonePeTransaction.create(createPhoneTxn);
                 }
-                await PhonePeTransaction.create(createPhoneTxn);
-            }
-            response.status =   response.success;
-            return res.send(response);
+                response    =   result.body;
+                response.status =   result.body.success;
+                return res.send(response);
+            });
         } catch(error) {
             console.log(error);
             return res.send(ApiUtility.failed(error.message));
@@ -1032,7 +1046,7 @@ module.exports = {
 
 }
 
-async function checkPhonePeStatus(txnId) {
+async function checkPhonePeStatus(txnId, cb) {
     const url = process.env.PHONEPE_STATUS_URL + process.env.PHONEPE_ENDPOINT + process.env.PHONEPE_MURCHANT_ID+ '/'+ txnId +'/status';
     const verifyKey =   await generateXVerifyKey(txnId);
     const options = {
@@ -1040,13 +1054,19 @@ async function checkPhonePeStatus(txnId) {
         "headers": {
             'Content-Type': 'application/json',
             'X-VERIFY': verifyKey
-        }
+        },
+        "url": url
     };
-
-    return fetch(url, options)
-        .then(res => res.json())
-        .then(json => json )
-        .catch(err => 'error:' + err);
+    request(options, async function (error, response) {
+        if (error) throw new Error(error);
+        // console.log(response.request.headers["X-VERIFY"], response.body);
+        
+        let finalRespose    =   {
+            "header": response.request ? response.request.headers["X-VERIFY"] : '',
+            "body": response.body ? response.body : {}
+        }
+        cb(finalRespose);
+    });
 }
 
 async function generateXVerifyKey(transactionId) {
@@ -1054,7 +1074,8 @@ async function generateXVerifyKey(transactionId) {
     return verfyKey;
 }
 
-async function updateTransactionAllGetway(decoded, cb) {
+async function updateTransactionAllGetway(decoded, response, cb) {
+    console.log(response);
     if (decoded['user_id'] && decoded['gateway_name'] && decoded['order_id'] && decoded['txn_id'] && decoded['banktxn_id'] && decoded['txn_date'] && decoded['txn_amount'] && decoded['currency']) {
 
         let authUser = await User.findOne({ '_id': decoded['user_id'] });
