@@ -14,13 +14,16 @@ const { sendMailToDeveloper } = require('./../common/helper');
 module.exports = {
     matchList: async (req, res) => {
         try {
-            let data1 = {};
+            let data1 = {
+                lf_match:[],
+                lf_total:0
+            };
             let sport   =   parseInt(req.params.sport || 1);
             const upCommingMatch = await (new ModelService(SeriesSquad)).getMatchList(sport);
             if(sport==1){
               const lFMatch = await (new ModelService(SeriesSquad)).getMatchLiveFantasyList(sport);
-              data1.lf_match = lFMatch || [];
-              data1.lf_total = lFMatch.length || 0;
+              data1['lf_match'] = lFMatch || [];
+              data1['lf_total'] = lFMatch.length || 0;
             }
             let liveData = [];
             let finishData = [];
