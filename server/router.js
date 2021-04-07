@@ -69,9 +69,9 @@ const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-o
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
 const  contestList  = require('./api/v1/contest/contest-list');
-//const  contestListNew  = require('./api/v1/contest/contest-list-new');
-const  contestListNew  = require('./api/v1/contest/contest-m-list');
-const  { contestDetailNew,contestLeaderboard, contestDetail }  = require('./api/v1/contest/contest-detail');
+const  contestListNew  = require('./api/v1/contest/contest-list-new');
+const  contestListNewLatest  = require('./api/v1/contest/contest-m-list');
+const  { contestDetailNew,contestLeaderboard, contestDetail,contestDetailNewLatest,contestLeaderboardLatest,contestDetailLatest }  = require('./api/v1/contest/contest-detail');
 const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breakup');
 const  { applyContestInviteCode }  = require('./api/v1/contest/apply-contest-invite-code');
 const  categoryContestList  = require('./api/v1/contest/category-contest-list');
@@ -231,6 +231,7 @@ router.get('/api/v1/banner-list', bannerList);
 //router.get('/api/v1/contest-list/:match_id/:sport?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
+router.get('/api/v1/contest-list-new-latest/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewLatest);
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
@@ -252,6 +253,11 @@ router.get('/api/v1/contest-prize-breakup/:contest_size', auth.authenticate.jwtL
 router.get('/api/v1/contest-detail/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetail);
 router.get('/api/v1/contest-detail-new/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNew);
 router.get('/api/v1/joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestList);
+
+router.get('/api/v1/contest-detail-new-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest);
+router.get('/api/v1/contest-detail-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailLatest);
+router.get('/api/v1/contest-leaderboard-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestLeaderboardLatest);
+
 router.get('/api/v1/series-player-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, seriesPlayerList);
 router.get('/api/v1/team-scores/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, teamScore);
 router.get('/api/v1/before-join-contest/:series_id/:match_id', auth.authenticate.jwtLogin, beforeJoinContest);

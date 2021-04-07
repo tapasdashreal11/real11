@@ -377,7 +377,7 @@ module.exports = {
                 if (decoded['contest_id']) {
                     let contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
                     const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1,expiry_date:{$gte:new Date()} });
-                    console.log("cSaleData***",cSaleData);
+                    //console.log("cSaleData***",cSaleData);
                      matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                      entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                      if(cSaleData && cSaleData._id){
@@ -415,7 +415,7 @@ module.exports = {
                 let calEntryFees = entryFee;
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
-                        console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
+                        // console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
                         let catid = matchContestData.category_id;
                         if(couponSaleData && couponSaleData.length>0){
                             couponSaleData = couponSaleData.map(item => {
@@ -427,10 +427,10 @@ module.exports = {
                             let  constestIdsData  =  _.find(couponSaleData,{category_id:ObjectId(catid)});
                             if(constestIdsData && constestIdsData.category_id){
                                let offDataArray = constestIdsData.offer_data;
-                               console.log('constestIdsData****',constestIdsData);
+                               // console.log('constestIdsData****',constestIdsData);
                                let offDataItem = _.find(offDataArray,{amount:entryFee});
                                   if(offDataItem){
-                                    console.log('offDataItem****',offDataItem);
+                                   // console.log('offDataItem****',offDataItem);
                                    userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                    calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                    retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
@@ -439,7 +439,7 @@ module.exports = {
                              }
                            } 
                            if (rdata && entryFee>0 && userOfferAmount ==0) {
-                            console.log('popup redis before join contest *********');
+                            // console.log('popup redis before join contest *********');
                             userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
