@@ -102,6 +102,7 @@ const {
     generatePaytmChecksum,
     updateTransaction,
     updateTransactionFromWebhook,
+    updateTransactionPhonePeWebhook,
     checkTransactionStatus,
     couponForAddCash,
     generatePhonePeChecksum,
@@ -350,12 +351,13 @@ router.post('/cron/bizwebhook', function(req, res) {
 
 router.post('/phonePe/phonePewebhook', function(req, res) {
     console.log("phonePe callback data", req.body)
-    console.log("phonePe callback x-very string", req.headers);
+    // console.log("phonePe callback x-very string", req.headers["x-verify"]);
     const buff = Buffer.from(req.body.response, 'base64');
     const response = JSON.parse(buff.toString('utf-8'));
+    const xVerifyString =   req.headers["x-verify"];
     
     if (response && response.success == true && response.code == "PAYMENT_SUCCESS") {
-        updateTransactionFromWebhook(response.data.transactionId, 'phonePe');
+        updateTransactionPhonePeWebhook(response, xVerifyString, 'phonePe');
     }
     return res.send({ status: 'success' });
 });
