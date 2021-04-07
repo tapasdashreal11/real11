@@ -31,8 +31,9 @@ module.exports = {
                   ]
                 if (decoded['invite_code'] && decoded['user_id']) {
                     
-                    invite_code = invite_code.toUpperCase();
-                    let codeItem = _.find(contestCode, {code: invite_code });
+                    let ddinvite_code = decoded['invite_code'];
+                    let codeItem = _.find(contestCode, {code: ddinvite_code.toUpperCase() });
+                    console.log('codeItem***',codeItem);
                     if(codeItem && codeItem.code){
                       // work for contest Invite
                       let contestMatch =   await getRedisContestCodeData(toLower(decoded['invite_code']));
