@@ -58,12 +58,12 @@ module.exports = async (req, res, dbs) => {
 			}
 		 
 		} catch (err) {
-			console.log("error11111", err)
+			
 			response["message"] = err.message;
 			return res.json(response);
 		}
 	} catch (error) {
-		console.log("error222", error)
+		
 		logger.error("LOGIN_ERROR", error.message);
 		res.send(ApiUtility.failed(error.message));
 	}

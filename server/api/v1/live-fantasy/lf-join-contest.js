@@ -78,7 +78,7 @@ module.exports = async (req, res) => {
                                     if (doc) {
                                         let joinedContestCount = doc.joined_users;
                                         if (matchContest && matchContest.contest_size < joinedContestCount && infinteStatus ) {
-                                            console.log("Join contest matchContest live fantasy response-----", matchContest.contest_size, joinedContestCount);
+                                            // console.log("Join contest matchContest live fantasy response-----", matchContest.contest_size, joinedContestCount);
                                             await session.abortTransaction();
                                             session.endSession();
                                             let response = {};
@@ -437,12 +437,12 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
             await LFPlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
 
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
-                      console.log('contestData***',contestData);
+                      
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
                     
                     if (joinedContestCount == contestData.contest_size) {
-                        console.log(contestData.contest_size, "************** auto create counter");
+                        
                         contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session);
                         await LFMatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     } else {
@@ -488,7 +488,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     return resolve(totalContestKey);
                 });
                 
-                // console.log("PlayerTeamContest000000000000000")
+                
             });
         })
     } catch (error) {
@@ -552,16 +552,16 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entityM.winner_percent = contestData.winner_percent;
             entityM.breakup = contestData.breakup;
             entityM.maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
-            console.log('entityM****',entityM);
+            
             const dd = await LFMatchContest.create([entityM], { session: session });
-            //console.log("dara at MatchContest in auto***",dd);
+            
             await session.commitTransaction();
             session.endSession();
             return entityM;
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
-        console.log('sometjhing went wrong in autocreate***************************wrong in auto error');
+        console.log('LF something went wrong in autocreate***************************wrong in auto error');
         return {}
     }
 }
@@ -600,7 +600,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
     let perdayExtraAmount = 0;
     if (remainingFee) {
         let extraBalance = authUser.extra_amount || 0;
-        // console.log(extraBalance,'extra amount');
+       
         let extraBal = 0;
         if (extraBalance && extraBalance > 0) {
             let perDayExtraAmt = 0;
@@ -608,7 +608,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
             if (String(authUser.extra_amount_date) == String(indianDate)) {
                 perDayExtraAmt = authUser.perday_extra_amount;
             }
-            // console.log(perDayExtraAmt, "perDayExtraAmt");
+            
             let saveData = {};
             if (perDayExtraAmt < perDayLimit) {
                 extraAmount = (extraBalance > remainingFee) ? remainingFee : extraBalance;
@@ -632,7 +632,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
         saveData['perday_extra_amount'] = perdayExtraAmount;
         saveData['extra_amount'] = extraBal;
     }
-    // console.log('remaining fee', remainingFee, 'extraAmount', extraAmount);
+    
     if (remainingFee) {
         let cashBalance = authUser.cash_balance;
 

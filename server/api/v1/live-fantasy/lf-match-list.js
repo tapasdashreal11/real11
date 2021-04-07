@@ -56,7 +56,6 @@ module.exports = {
         try {
             const { match_id, sport, series_id } = req.params;
             const user_id = req.userId;
-            console.log('LF C Listdata coming from DB****');
             let resObj = {
                 match_contest: [],
                 my_contests: 0,
@@ -154,7 +153,6 @@ module.exports = {
             let youtuber_code = 0;
             let is_offer_applied = false;
             let couponSaleData = [];
-            // //////console.log(req.userId);
             let userdata = await User.findOne({ _id: decoded['user_id'] })
             if (userdata) {
                 adminPer = 0; //(setting.admin_percentage) ? setting.admin_percentage : 0;
@@ -162,7 +160,6 @@ module.exports = {
                 let entryFee = 0;
                 if (decoded['contest_id']) {
                     const cSaleData = await CouponSale.findOne({ user_id: ObjectId(req.userId), status: 1, expiry_date: { $gte: new Date() } });
-                    console.log("cSaleData***", cSaleData);
                     matchContestData = await LiveFantasyMatchContest.findOne({ 'contest_id': decoded['contest_id'], sport: match_sport, match_id: match_id });
                     if (matchContestData && !matchContestData._id) {
                         return res.send(ApiUtility.failed("Something went wrong in params!!"));
@@ -192,7 +189,7 @@ module.exports = {
                     entryFee = decoded['entry_fee'];
                 }
                 let useAmount = eval((useableBonusPer / 100) * entryFee);
-                // ////////console.log(useAmount);
+                
                 let usableAmt = 0;
                 let extraAmount = 0;
                 let cashBalance = 0;
@@ -203,7 +200,7 @@ module.exports = {
                 let calEntryFees = entryFee;
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
-                        //console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
+                        
                         let catid = matchContestData.category_id;
                         if (couponSaleData && couponSaleData.length > 0) {
                             couponSaleData = couponSaleData.map(item => {
@@ -386,10 +383,10 @@ module.exports = {
                             let winningAmt = [];
 
                             let teamsJoined = await LFPlayerTeamContest.find(playerContestFilter);
-                            console.log(contestValue.doc.contest);
+                            
                             if (teamsJoined) {
                                 for (const joined of teamsJoined) {
-                                    console.log(joined);
+                                    
                                     myTeamIds.push({ "player_team_id": joined.prediction_id });
                                     myTeamNo.push(1);
                                     winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
@@ -470,7 +467,7 @@ module.exports = {
                             let useBonus = 0;
 
                             if (inviteCode && inviteCode.usable_bonus_time) {
-                                // console.log("matchInviteCode", inviteCode, moment().isBefore(inviteCode.usable_bonus_time))
+                                
                                 if (moment().isBefore(inviteCode.usable_bonus_time)) {
                                     useBonus = inviteCode.before_time_bonus;
                                 } else {
@@ -762,7 +759,7 @@ module.exports = {
                 return res.send(ApiUtility.success(data1));
 
             } else {
-                console.log('******dddd11');
+                
                 return res.send(ApiUtility.success(data1));
             }
 
@@ -790,7 +787,7 @@ module.exports = {
 
 function getLfMatchContest(filter, is_all) {
     is_all = false;
-    console.log(filter);
+    
     return new Promise((resolve, reject) => {
         try {
             var is_joined = false;
@@ -903,7 +900,7 @@ async function getPromiseForUserCoupons(key, defaultValue, user_id) {
             }
             if (data == null) {
                 const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 });
-                console.log('cSaleData from list *****', cSaleData);
+                
                 if (cSaleData && cSaleData._id) {
                     redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
                     data = JSON.stringify(cSaleData);
@@ -924,7 +921,7 @@ async function getPromiseUserteamCounts(key, defaultValue, user_id) {
             }
             if (data == null) {
                 const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 });
-                console.log('cSaleData from list *****', cSaleData);
+                
                 if (cSaleData && cSaleData._id) {
                     redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
                     data = JSON.stringify(cSaleData);
@@ -940,7 +937,7 @@ async function getPromiseUserteamCounts(key, defaultValue, user_id) {
 function parseUserPrediction(userPredictionData) {
     let userPredctionIds = [];
     for (const prop in userPredictionData) {
-        console.log(prop);
+        
         if (hasOwnProperty.call(userPredictionData, prop)) {
             let teamData = userPredictionData[prop];
             let predictionIds = [];

@@ -122,7 +122,7 @@ module.exports = {
                                     return res.send(ApiUtility.success(results));
                                 })
                             } else {
-                                console.log('my match list data coming from redis********');
+                                console.log('LF my match list data coming from redis********');
                                 var newLiveArray = JSON.parse(JSON.stringify(contestData))
                                 var contestDataUp = newLiveArray.upcoming_match.length;
                                 if (contestDataUp > 0) {

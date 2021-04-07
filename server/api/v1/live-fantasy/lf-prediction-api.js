@@ -36,7 +36,7 @@ module.exports = {
                         sport: sport
                     }).count();
                     const totalTemCount = 10;
-                    console.log('create pppp',prediction_array);
+                    
                     if(prediction_array && prediction_array.length<6){
                         return res.send(ApiUtility.failed("Prediction data is not in format!!"));
                      }
@@ -64,7 +64,7 @@ module.exports = {
                         message = "Prediction has been created successfully.";
                         data1.message = message;
                         if(newTeam && newTeam.ops){
-                            console.log('newTeam ops****',newTeam.ops);
+                            
                             data1._id= newTeam.ops[0]._id;
                             data1.team_count = newTeam.ops[0].team_count;
                             data1.prediction_array= newTeam.ops[0].prediction_array;
@@ -101,7 +101,7 @@ module.exports = {
             respons.message = '';        
             redis.getRedisForLf(listKey, async (err, pListData) => {
                if (pListData && pListData.length>0) {
-                   console.log('Prdction List data coming from redis***');
+                   
                    respons.list_data = pListData || [];
                    respons.match_type = "live-fantasy";
                    return res.send(ApiUtility.success(respons));
@@ -111,7 +111,7 @@ module.exports = {
                         match_id: match_id,
                         series_id: series_id
                     }).sort({"team_count":1});
-                    console.log('Prdction List data coming from DB***');
+                    
                     respons.list_data = pList || [];
                     respons.match_type = "live-fantasy";
                     if(pList && pList.length>0){

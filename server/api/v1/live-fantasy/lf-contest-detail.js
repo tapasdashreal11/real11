@@ -505,7 +505,7 @@ module.exports = {
                 }
                
                 if (!_.isEmpty(redisTeams)) {
-                    console.log("Live leader board coming from redis*****");
+                    
                     MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
                     myTeams = await LFJoinedContest.find({
                         match_id:parseInt(match_id),
@@ -540,7 +540,7 @@ module.exports = {
                       let allTeams = await getLFRedisLeaderboard(match_id, contest_id);
                         
                         if (_.isEmpty(allTeams)) {
-                            console.log("Live FN leader board coming from DBBBBB*****");
+                            
                             let leaderboardKey = 'lf-leaderboard-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                             
