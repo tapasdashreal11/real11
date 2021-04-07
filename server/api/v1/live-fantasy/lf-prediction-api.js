@@ -153,7 +153,7 @@ module.exports = {
             }
             
 
-            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id });
+            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id,is_contest_stop:0 });
             if (liveMatch && user_id && updateData && updateData.prediction) {
                     await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":updateData});
                     let playerTeamRes = await LFPlayerTeamContest.findOne({prediction_id:ObjectId(record_id)});
@@ -167,8 +167,7 @@ module.exports = {
                     return res.send(ApiUtility.success(data1));
 
             } else {
-                message = "Something went wrong!!"
-                return res.send(ApiUtility.failed(message));
+                return res.send(ApiUtility.failed('Match has been started!!.'));
             }
         } catch (error) {
             console.log("update predction****", error)
