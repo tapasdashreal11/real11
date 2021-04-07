@@ -224,7 +224,6 @@ module.exports = {
 
                 let bonusAmount = 0;
                 let useBonus = 0;
-                // console.log(matchInviteCode); return false;
                 if (matchInviteCode && matchInviteCode.usable_bonus_time) {
                     if (moment().isBefore(matchInviteCode.usable_bonus_time)) {
                         useBonus = matchInviteCode.before_time_bonus;
@@ -486,7 +485,6 @@ module.exports = {
 
                 let bonusAmount = 0;
                 let useBonus = 0;
-                // console.log(matchInviteCode); return false;
                 if (matchInviteCode && matchInviteCode.usable_bonus_time) {
                     if (moment().isBefore(matchInviteCode.usable_bonus_time)) {
                         useBonus = matchInviteCode.before_time_bonus;
@@ -604,7 +602,6 @@ module.exports = {
                 } else {
                     mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
                 }
-                console.log('Team Lader-Board coming****',mergedTeam);
 
             }
             
@@ -837,7 +834,7 @@ module.exports = {
                 let matchContestDetail = await MatchContest.findOne({ contest_id: contest_id ,match_id:parseInt(match_id),sport:sport});
                 matchContestDetail = JSON.parse(JSON.stringify(matchContestDetail));
                 let contestDetail = matchContestDetail  && matchContestDetail.contest ? matchContestDetail.contest :{};
-                // console.log(contestDetail.contest_size);return false
+               
                 let prizeMoney = 0;
                 let totalTeams = 0;
                 let teamsJoined = [];
@@ -879,9 +876,8 @@ module.exports = {
                         user_id:ObjectId(aakashData._id)
                       }).limit(15).sort({"rank": 1});
                 }
-                // console.log(aakashTeams);
+                
                 if (!_.isEmpty(redisTeams)) {
-                    console.log("Live leader board coming from redis*****");
                     // MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
                     myTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
@@ -915,7 +911,6 @@ module.exports = {
                         allTeams = await getRedisLeaderboard(match_id, contest_id);
                         
                         if (_.isEmpty(allTeams)) {
-                            console.log("Live leader board coming from DBBBBB*****");
                             let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                             
@@ -1149,7 +1144,6 @@ module.exports = {
             if (!contestData) {
                 let contestDetail = await Contest.findOne({ _id: contest_id });
                 contestDetail = JSON.parse(JSON.stringify(contestDetail));
-                // console.log(contestDetail.contest_size);return false
                 let prizeMoney = 0;
                 let totalTeams = 0;
                 let teamsJoined = [];
@@ -1184,7 +1178,6 @@ module.exports = {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     aakashTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, aakashData._id, sport);
                 }
-                // console.log(aakashTeams);
                 if (!_.isEmpty(redisTeams)) {
                     MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
 
