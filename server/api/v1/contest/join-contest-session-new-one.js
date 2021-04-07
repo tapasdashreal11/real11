@@ -210,7 +210,6 @@ module.exports = async (req, res) => {
                                                                     let offDataArray = constestIdsData.offer_data;
                                                                     let offDataItem = _.find(offDataArray, { amount: entryFee });
                                                                     if (offDataItem) {
-                                                                        console.log('data in ');
                                                                         userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                                                         calEntryFees = userOfferAmount > entryFee ? 0 : (entryFee - userOfferAmount);
                                                                         retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
@@ -509,7 +508,7 @@ module.exports = async (req, res) => {
                                                                             if (!contestData) {
                                                                                 getMatchRedisData(0, { "user_id": user_id, "pagesize": 25 }, {}, sortm, match_sport, function (results) {
                                                                                     results['server_time'] = serverTimeu;
-                                                                                    console.log("Join contest data in redis when data is empty****");
+                                                                                    // console.log("Join contest data in redis when data is empty****");
                                                                                     redis.setRedisMyMatches(matchContestUserKey, results);
                                                                                 })
                                                                             } else {
