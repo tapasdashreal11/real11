@@ -136,7 +136,7 @@ const { imageFilter } = require("./api/v1/common/helper");
 const playerImageDirPath = path.resolve('server', 'public', 'images');
 
 // live fantasy api section 
-const { liveFantasyMatchList,liveFantasyMatchContestList,liveFantasyMatchContestWallet,lfJoinedContestList } = require('./api/v1/live-fantasy/lf-match-list');
+const { liveFantasyMatchList,liveFantasyMatchContestList,liveFantasyMatchContestWallet,lfJoinedContestList,liveMatchScore } = require('./api/v1/live-fantasy/lf-match-list');
 const { createPrediction,predictionList,updatePrediction,lfPointSystem } = require('./api/v1/live-fantasy/lf-prediction-api');
 const lfJoinContest = require('./api/v1/live-fantasy/lf-join-contest');
 const lfTransactionHistory = require('./api/v1/live-fantasy/lf-transation-history');
@@ -374,6 +374,7 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
  router.get('/api/v1/lf-live-leaderboard/:match_id/:contest_id/:series_id/:sport', auth.authenticate.jwtLogin, lfLivecontestDetailLB);
  router.post('/api/v1/lf-prediction-edit',auth.authenticate.jwtLogin,updatePrediction); 
  router.get('/api/v1/lf-point-system',auth.authenticate.jwtLogin,lfPointSystem);
+ router.get('/api/v1/lf-match-live-score',liveMatchScore);
  /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
   if(req.query.STATUS && req.query.STATUS == "TXN_SUCCESS"){
