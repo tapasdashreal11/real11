@@ -117,7 +117,8 @@ var seriesSquadSchema = new Schema({
 	end_date: { type: Date },
 	over_match: {type:Boolean, default: false},
 	live_match_close: {type:Number, enum: [1,0], default: 0},
-    match_comment: {type:String, default: ""},
+	match_comment: {type:String, default: ""},
+	match_banner: {type:String, default: ""},
     is_leaderboard: {type:Number, enum: [1,0], default: 0},
 }, {
 	timestamps: true
