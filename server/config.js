@@ -230,33 +230,7 @@ config.user_category_prod = {
 }
 
 config.youtuber_bcode = [
-  {'code':'SS333','name':'shashi','applied':true},
-  {'code':'NM444','name':'Nidhi','applied':true},
-  {'code':'AK49','name':'Akash chopra','applied':true},
-  {'code':'GT18','name':'Fantasy Buzz','applied':true},
-  {'code':'RL11','name':'Sports Fantasy','applied':true},
-  {'code':'ZD40','name':'Technical Prediction','applied':true},
-  {'code':'ID77','name':'Fantasy Hitesh','applied':true},
-  {'code':'WL64','name':'Fantasy Tadka','applied':true},
-  {'code':'DK65','name':'Prediction cricket','applied':true},
-  {'code':'SR66','name':'Team 11 prediction','applied':true},
-  {'code':'SD67','name':'dream 11 tadka','applied':true},
-  {'code':'BS29','name':'Bindass Sikhye','applied':true},
-  {'code':'DP66','name':'fantasy with chauhan Prediction','applied':true},
-  {'code':'HD46','name':'Fantasy Money','applied':true},
-  {'code':'EJ123','name':'Enjoy Your Life','applied':true},
-  {'code':'VK09','name':'TAlent Fantasy Talent Hub Dream11','applied':true},
-  {'code':'AH72','name':'AR Dream Predictor','applied':true},
-  {'code':'FT73','name':'Fantasy 100','applied':true},
-  {'code':'FG86','name':'FCG youtuber','applied':true},
-  {'code':'FS75','name':'FCS youtuber ','applied':true},
-  {'code':'PC76','name':'Dream 11 tips and tricks ','applied':true},
-  {'code':'OS78','name':'Fantasy Predication point ','applied':true},
-  {'code':'RJ13','name':'Rajat Walia ','applied':true},
-  {'code':'DK42','name':'Deepak ','applied':true},
-  {'code':'SR33','name':'Saurabh ','applied':true},
-  {'code':'IN77','name':'Hitesh ','applied':true},
-  {'code':'AD143','name':'Anurag ','applied':true}
+  {'code':'HH333','name':'shashi','applied':true}
 ]
 
 config.contest_bonous = [
