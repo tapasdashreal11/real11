@@ -77,7 +77,7 @@ const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId
 }
 
 module.exports = {
-    contestDetailNew: async (req, res) => {
+    contestDetailNewLatest: async (req, res) => {
         try {
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
@@ -320,7 +320,7 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-    contestDetailNewOld: async (req, res) => {
+    contestDetailNew: async (req, res) => {
         try {
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
@@ -581,7 +581,7 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-    contestLeaderboard: async (req, res) => {
+    contestLeaderboardLatest: async (req, res) => {
         try {
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
@@ -683,7 +683,7 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-    contestLeaderboardOld: async (req, res) => {
+    contestLeaderboard: async (req, res) => {
         try {
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
@@ -808,7 +808,7 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-    contestDetail: async (req, res) => {
+    contestDetailLatest: async (req, res) => {
         try {
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
@@ -1121,7 +1121,7 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-    contestDetailOld: async (req, res) => {
+    contestDetail: async (req, res) => {
         try {
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
