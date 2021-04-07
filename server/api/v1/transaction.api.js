@@ -797,6 +797,7 @@ module.exports = {
             let txnData;
             // objectid.isValid('53fbf4615c3b9f41c381b6a3')
             txnData = await Transaction.findOne({ _id: ObjectId(transactionId) });
+            
             if (txnData && txnData._id && txnData.status == false) {
                 let authUser = await User.findOne({ '_id': txnData.user_id });
                 if (!txnData.status && authUser) {
@@ -1023,7 +1024,7 @@ module.exports = {
         try {
             let transactionId   =   req.body.transaction_id;
             const userId = req.userId;
-            let response    =   {}
+            // let response    =   {}
             await checkPhonePeStatus(transactionId, async function(result) {
                 // console.log(result)
                 if(result && (result.body.code == "INTERNAL_SERVER_ERROR" || result.body.code == "PAYMENT_PENDING")) {
@@ -1034,8 +1035,8 @@ module.exports = {
                     }
                     await PhonePeTransaction.create(createPhoneTxn);
                 }
-                response    =   result.body;
-                response.status =   result.body.success;
+                let response    =   JSON.parse(result.body);
+                response.status =   response.success;
                 return res.send(response);
             });
         } catch(error) {
