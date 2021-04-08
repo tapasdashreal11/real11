@@ -226,7 +226,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
                                     }
                                 }
                             },
-                            {$project : {"localteam_id": 1, "visitorteam_id" : 1, "series_id":1, "match_status":1, "time":1, "date":1, "localteam_short_name":1, "visitorteam_short_name":1, "local_flag":1, "visitor_flag":1, "series_name":1, "localteam": 1, "visitorteam": 1, "win_flag" : 1}}
+                            {$project : {"over_parent_id":1,"localteam_id": 1, "visitorteam_id" : 1, "series_id":1, "match_status":1, "time":1, "date":1, "localteam_short_name":1, "visitorteam_short_name":1, "local_flag":1, "visitor_flag":1, "series_name":1, "localteam": 1, "visitorteam": 1, "win_flag" : 1}}
                         ],
                         as: 'matches',
                     }
