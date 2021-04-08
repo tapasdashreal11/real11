@@ -230,7 +230,10 @@ config.user_category_prod = {
 }
 
 config.youtuber_bcode = [
-  {'code':'HH333','name':'shashi','applied':true}
+  {'code':'NM333','name':'shashi','applied':true},
+  {'code':'FC786','name':'fcg','applied':true},
+  {'code':'AD007','name':'anurag','applied':true},
+  {'code':'KS001','name':'kisan','applied':true}
 ]
 
 config.contest_bonous = [
