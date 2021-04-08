@@ -161,7 +161,7 @@ module.exports = {
                 let useableBonusPer = adminPer;
                 let entryFee = 0;
                 if (decoded['contest_id']) {
-                    const cSaleData = await CouponSale.findOne({ user_id: ObjectId(req.userId), status: 1, expiry_date: { $gte: new Date() } });
+                    const cSaleData = {}; // await CouponSale.findOne({ user_id: ObjectId(req.userId), status: 1, expiry_date: { $gte: new Date() } });
                     matchContestData = await LiveFantasyMatchContest.findOne({ 'contest_id': decoded['contest_id'], sport: match_sport, match_id: match_id });
                     if (matchContestData && !matchContestData._id) {
                         return res.send(ApiUtility.failed("Something went wrong in params!!"));
@@ -204,7 +204,7 @@ module.exports = {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                         
                         let catid = matchContestData.category_id;
-                        if (couponSaleData && couponSaleData.length > 0) {
+                       /*if (couponSaleData && couponSaleData.length > 0) {
                             couponSaleData = couponSaleData.map(item => {
                                 let container = {};
                                 container.category_id = ObjectId(item.category_id);
@@ -222,13 +222,14 @@ module.exports = {
                                 }
 
                             }
-                        }
-                        if (rdata && entryFee > 0 && userOfferAmount == 0) {
+                        }*/
+
+                        /*if (rdata && entryFee > 0 && userOfferAmount == 0) {
                             userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount : eval((rdata.offer_percent / 100) * entryFee);
-                            let pContestId = contest_id; //ObjectId(contest_id);
+                            let pContestId = contest_id;
                             let offerContests = rdata.contest_ids || [];
                             let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id) : pContestId;
-                            let cBonus = rdata && rdata.contest_bonous ? rdata.contest_bonous : [];  //config && config.contest_bonous ? config.contest_bonous:[];
+                            let cBonus = rdata && rdata.contest_bonous ? rdata.contest_bonous : []; 
                             let cBonusItem = {};
                             if (rdata.is_offer_type == 3) {
                                 cBonusItem = cBonus.find(function (el) {
@@ -247,7 +248,7 @@ module.exports = {
                                 retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
                                 is_offer_applied = true;
                             }
-                        }
+                        }*/
 
 
                         if (userdata) {

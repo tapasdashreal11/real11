@@ -150,12 +150,12 @@ module.exports = async (req, res) => {
                                                     if (contestType == 'Paid') {
                                                         // work for user rentation and cal amount for data
 
-                                                        //let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1,is_offer_repeat:1};
-                                                        let rdata = await UserAnalysis.findOne({ user_id: user_id, match_id: decoded['match_id'], sport: match_sport });
-                                                        let cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1, expiry_date: { $gte: new Date() } });
-                                                        let couponSaleData = [];
+                                                       // let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1,is_offer_repeat:1};
+                                                       // let rdata = await UserAnalysis.findOne({ user_id: user_id, match_id: decoded['match_id'], sport: match_sport });
+                                                        // let cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1, expiry_date: { $gte: new Date() } });
+                                                        // let couponSaleData = [];
 
-                                                        if (cSaleData && cSaleData._id && cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0) {
+                                                        /* if (cSaleData && cSaleData._id && cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0) {
                                                             let catid = matchContest.category_id;
                                                             couponSaleData = cSaleData.coupon_contest_data;
                                                             couponSaleData = couponSaleData.map(item => {
@@ -179,7 +179,7 @@ module.exports = async (req, res) => {
                                                                 }
 
                                                             }
-                                                        }
+                                                        }*/
 
                                                         
 
