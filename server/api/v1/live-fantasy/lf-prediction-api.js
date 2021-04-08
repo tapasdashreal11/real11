@@ -26,7 +26,7 @@ module.exports = {
             }
             let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
             let countRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
-            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id, sport: sport });
+            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id, sport: sport,is_contest_stop:0 });
             if (liveMatch) {
                     let teamDataa = [];
                     team_count = await Prediction.find({
@@ -79,7 +79,7 @@ module.exports = {
 
             } else {
                 message = "This Prediction is already created!!"
-                return res.send(ApiUtility.failed(message));
+                return res.send(ApiUtility.failed("Match has been started!!."));
             }
         } catch (error) {
             console.log("Create predction****", error)
