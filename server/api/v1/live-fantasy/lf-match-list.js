@@ -19,6 +19,7 @@ module.exports = {
         try {
             let data1 = {};
             let { pmatch_id, sport } = req.params;
+            let liveScoreRedisKey = "live-score-" + pmatch_id + '1';
             let  upCommingMatch = await LiveFantasyMatchList.find({ over_parent_id: pmatch_id, time: { $gte: new Date() }, status: 1, match_status: "Not Started" }).limit(40).sort({ _id: -1 });
             if(upCommingMatch && upCommingMatch.length>0){
                 for (const item of upCommingMatch) {
@@ -34,6 +35,7 @@ module.exports = {
             data1.completed_match = finishData;
             data1.message = 'Test Message';
             data1.match_type = "live-fantasy";
+            let lScore = await getLiveScore(liveScoreRedisKey);
             let data = {};
             data.running_over = 3;
             data.running_ball = 2;
@@ -41,7 +43,7 @@ module.exports = {
             data.message = 'Test Message';
             data.live_score = "India - 10/1";
 
-            data1['match_data'] = data;
+            data1['match_data'] = lScore || {};
             data1.server_time = moment(new Date()).format(config.DateFormat.datetime);
             var successObj = ApiUtility.success(data1);
             redis.setRedisForLf('lf-match-list-' + pmatch_id + '-' + sport, successObj);
@@ -986,5 +988,22 @@ async function getLFRedisForMyTeamCount(keys) {
         });
     } catch (error) {
         console.log('LF redis leaderboard > ', error);
+    }
+}
+
+async function getLiveScore(keys) {
+    try {
+        return new Promise(async (resolve, reject) => {
+            
+            await redis.getRedisLogin(keys, function (err, teamCounts) {
+                if (teamCounts) {
+                    return resolve(teamCounts);
+                } else {
+                    return resolve({});
+                }
+            })
+        });
+    } catch (error) {
+        console.log('Live score reids get eror> ', error);
     }
 }
