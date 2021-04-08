@@ -69,6 +69,7 @@ module.exports = async (req, res) => {
                                 return res.send(ApiUtility.failed("Already Joined Contest."));
                              } else {
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
+                                
                                 const session = await startSession()
                                 session.startTransaction();
                                 const sessionOpts = { session, new: true };
@@ -81,11 +82,23 @@ module.exports = async (req, res) => {
                                             // console.log("Join contest matchContest live fantasy response-----", matchContest.contest_size, joinedContestCount);
                                             await session.abortTransaction();
                                             session.endSession();
-                                            let response = {};
-                                            response.status = false;
-                                            response.message = "This contest is full, please join other contest!!!.";
-                                            response.error_code = null;
-                                            return res.json(response);
+
+                                            var MatchContestData = await LFMatchContest.findOne({ 'parent_contest_id': parentContestId,'match_id': decoded['match_id'], 'series_id': decoded['series_id'], is_full: 0 }).sort({ _id: -1 });
+                                            if (MatchContestData) {
+                                                response.status = false;
+                                                response.message = "This contest is full, please join other contest.";
+                                                response.data = { contest_id: MatchContestData.contest_id };
+                                                response.error_code = null;
+                                                return res.json(response);
+                                            } else {
+                                                response.status = false;
+                                                response.message = "This contest is full, please join other contest.";
+                                                response.error_code = null;
+                                                return res.json(response);
+                                            }
+
+
+                
                                         } else {
                                             let new_predit_dic = {};
                                             for (item in prediction_array){
