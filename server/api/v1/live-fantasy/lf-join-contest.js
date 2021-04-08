@@ -80,17 +80,21 @@ module.exports = async (req, res) => {
                                         let joinedContestCount = doc.joined_users;
                                         if (matchContest && matchContest.contest_size < joinedContestCount && infinteStatus ) {
                                             // console.log("Join contest matchContest live fantasy response-----", matchContest.contest_size, joinedContestCount);
-                                            await session.abortTransaction();
-                                            session.endSession();
+                                            
 
                                             var MatchContestData = await LFMatchContest.findOne({ 'parent_contest_id': parentContestId,'match_id': decoded['match_id'], 'series_id': decoded['series_id'], is_full: 0 }).sort({ _id: -1 });
+                                           console.log('MatchContestData***',MatchContestData);
                                             if (MatchContestData) {
+                                                await session.abortTransaction();
+                                                session.endSession();
                                                 response.status = false;
                                                 response.message = "This contest is full, please join other contest.";
                                                 response.data = { contest_id: MatchContestData.contest_id };
                                                 response.error_code = null;
                                                 return res.json(response);
                                             } else {
+                                                await session.abortTransaction();
+                                               session.endSession();
                                                 response.status = false;
                                                 response.message = "This contest is full, please join other contest.";
                                                 response.error_code = null;
