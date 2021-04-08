@@ -28,7 +28,8 @@ module.exports = {
                let contestCode  = [
                     {'code':'VIKAS877','name':'Vikas'},
                     {'code':'SAURABH11','name':'Surab'},
-                    {'code':'INDT20','name':'indiat'}
+                    {'code':'INDT20','name':'indiat'},
+                    {'code':'WALIAT20','name':'waliya'},
                   ]
                 if (decoded['invite_code'] && decoded['user_id']) {
                     
