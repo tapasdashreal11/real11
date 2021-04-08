@@ -83,7 +83,7 @@ module.exports = async (req, res) => {
                                             
 
                                             var MatchContestData = await LFMatchContest.findOne({ 'parent_contest_id': parentContestId,'match_id': decoded['match_id'], 'series_id': decoded['series_id'], is_full: 0 }).sort({ _id: -1 });
-                                           console.log('MatchContestData***',MatchContestData);
+                                             console.log('MatchContestData***',MatchContestData);
                                             if (MatchContestData) {
                                                 await session.abortTransaction();
                                                 session.endSession();
