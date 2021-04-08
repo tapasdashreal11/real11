@@ -257,6 +257,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
                         "star_time":  { $dateToString: {date: "$matches.time", format: "%H:%M" } },
                         "server_time": serverTime2,
                         "sort_time" : "$matches.time",
+                        "over_parent_id":"$matches.over_parent_id",
                         total_contest :"$total_contest",
                         match_type :"live-fantasy"
                     }
