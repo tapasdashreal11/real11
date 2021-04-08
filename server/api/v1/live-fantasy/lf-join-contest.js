@@ -83,7 +83,7 @@ module.exports = async (req, res) => {
                                             session.endSession();
                                             let response = {};
                                             response.status = false;
-                                            response.message = "This contest is full, please join other contest.";
+                                            response.message = "This contest is full, please join other contest!!!.";
                                             response.error_code = null;
                                             return res.json(response);
                                         } else {
