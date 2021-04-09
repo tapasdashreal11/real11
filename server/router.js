@@ -69,7 +69,7 @@ const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-o
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
 const  contestList  = require('./api/v1/contest/contest-list');
-const  contestListNew  = require('./api/v1/contest/contest-list-new');
+const  contestListNew  =   require('./api/v1/contest/contest-m-list'); // require('./api/v1/contest/contest-list-new');
 const  contestListNewLatest  = require('./api/v1/contest/contest-m-list');
 const  { contestDetailNew,contestLeaderboard, contestDetail,contestDetailNewLatest,contestLeaderboardLatest,contestDetailLatest }  = require('./api/v1/contest/contest-detail');
 const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breakup');
@@ -238,7 +238,7 @@ router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authent
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
 router.post('/api/v1/create-contest', auth.authenticate.jwtLogin, createContest);
 
-router.get('/api/v1/contest-leaderboard/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestLeaderboard);
+router.get('/api/v1/contest-leaderboard/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestLeaderboardLatest);
 // router.get('/api/v1/new-contest-leaderboard/:match_id/:contest_id', auth.authenticate.jwtLogin, newLeaderboard);
 // router.get('/api/v1/smtp-mail', auth.authenticate.jwtLogin, smtpMail);
 
@@ -250,8 +250,8 @@ router.get('/api/v1/team-states/:series_id', auth.authenticate.jwtLogin, (req, r
     })
 });
 router.get('/api/v1/contest-prize-breakup/:contest_size', auth.authenticate.jwtLogin, contestPrizeBreakup);
-router.get('/api/v1/contest-detail/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetail);
-router.get('/api/v1/contest-detail-new/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNew);
+router.get('/api/v1/contest-detail/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailLatest); // old
+router.get('/api/v1/contest-detail-new/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest); // old
 router.get('/api/v1/joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestList);
 
 router.get('/api/v1/contest-detail-new-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest);
