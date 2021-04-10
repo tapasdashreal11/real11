@@ -156,9 +156,11 @@ module.exports = {
             let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id,is_contest_stop:0 });
             if (liveMatch && user_id && updateData && updateData.prediction) {
                     await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":updateData});
-                    let playerTeamRes = await LFPlayerTeamContest.findOne({prediction_id:ObjectId(record_id)});
-                    if(playerTeamRes && playerTeamRes.prediction_id && new_predit_dic){
-                        await LFPlayerTeamContest.updateOne({_id:ObjectId(playerTeamRes._id) },{"$set": {prediction : new_predit_dic}});
+                    let playerTeamRes = await LFPlayerTeamContest.find({prediction_id:ObjectId(record_id)});
+                    if(playerTeamRes && playerTeamRes.length>0 && new_predit_dic){
+                        _.forEach(playerTeamRes, async function (i, k) {
+                            updatePredictionInJCFn(i._id, new_predit_dic);
+                        });
                      }
 
                     message = "Predication has been updated successfully.";
@@ -209,3 +211,15 @@ module.exports = {
     }
 }
 
+async function updatePredictionInJCFn(id, new_predit_dic) {
+    try {
+        if(!_.isNull(new_predit_dic) && !_.isNull(id)){
+
+            await LFPlayerTeamContest.updateOne({_id:ObjectId(id) },{"$set": {prediction : new_predit_dic}});
+           
+        }
+        
+    } catch (error) {
+
+    }
+}
