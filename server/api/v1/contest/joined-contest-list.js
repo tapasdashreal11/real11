@@ -320,7 +320,7 @@ module.exports = {
     
                     let ptAndContestData = await Promise.all([
                         PlayerTeam.find({ _id: { $in: playerteamIds } }).exec(),
-                        MatchContest.find({ match_id: decoded['match_id'], 'sport':decoded['sport'],contest_id: { $in: joinedContestIds } })
+                        MatchContest.find({ match_id: decoded['match_id'],contest_id: { $in: joinedContestIds } })
                     ]);
     
                     if (ptAndContestData && ptAndContestData.length > 0) {
@@ -332,8 +332,7 @@ module.exports = {
                         for (const ptcDataItem of ptcData) {
                             var joinObj = {};
                             const ptObj = _.find(playerTeamList, { '_id': ptcDataItem.player_team_id });
-                            const contstObj = _.find(matchContestWithCodeList, { '_id': ptcDataItem.contest_id });
-    
+                            const contstObj = _.find(matchContestWithCodeList, { 'contest_id': ptcDataItem.contest_id });
                             joinObj._id = ptcDataItem.contest_id;
                             joinObj.player_team = ptObj;
                             joinObj.contest = contstObj.contest || {};
