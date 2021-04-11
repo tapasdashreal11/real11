@@ -301,6 +301,7 @@ module.exports = {
     joinedContestList: async (req, res) => {
         try {
             //let sport = 1;
+            console.log('joined cotest list lates*****');
             const user_id = req.userId;
             const { match_id, series_id,sport } = req.params;
             let decoded = {
