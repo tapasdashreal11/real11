@@ -44,7 +44,8 @@ module.exports = {
                     for (item in prediction_array){
                         new_predit_dic = {...new_predit_dic,...prediction_array[item]['value']}
                     }
-                   
+                   console.log("prediction_array",prediction_array);
+
                     if (team_count < totalTemCount) {
                         team_count += 1;
                         let team = {
