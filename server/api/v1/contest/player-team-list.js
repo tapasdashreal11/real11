@@ -129,21 +129,22 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                 substitute = result.substitute;
                 playerTeamId = result._id;
                 playerTeamNo = result.team_count;
-                totalPoints = (!result.points) ? 0 : result.points;
+                // totalPoints = (!result.points) ? 0 : result.points;
                 playerDetail = [];
     
                 let totalBowler = 0;
                 let totalBatsman = 0;
                 let totalWicketkeeper = 0;
                 let totalAllrounder = 0;
-    
+                
+                let totalPoints    =   0;
                 if (result.players && result.players.length > 0) {
                     let playerTeamDetails = result.players;
                     let teamKey = 0;
                     
                     // Get players Points 
                     let pointsArray = await PlayerRecord.getPlayerPointPreview(series_id, match_id, player_list, captain, viceCaptain, liveMatch.type, sport);
-    
+                    
                     for (let teamValue of playerTeamDetails) {
                         teamValue = playerData[teamValue];
                         if (teamValue) {
@@ -170,16 +171,9 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                             playerDetail[teamKey]['points'] = point;
                             playerDetail[teamKey]['is_local_team'] = islocalTeam;
                             playerDetail[teamKey]['in_dream_team'] = (dreamPlayers.length > 0) ? true : false;
-    
-                            /*if (teamValue.playing_role.indexOf('Wicketkeeper') > -1) {
-                                totalWicketkeeper += 1;
-                            } else if (teamValue.playing_role.indexOf('Bowler') > -1) {
-                                totalBowler += 1;
-                            } else if (teamValue.playing_role.indexOf('Batsman') > -1) {
-                                totalBatsman += 1;
-                            } else if (teamValue.playing_role.indexOf('Allrounder') > -1) {
-                                totalAllrounder += 1;
-                            }*/
+                            
+                            totalPoints +=   point;
+                            
                             if (playerRole.indexOf('Wicketkeeper') > -1) {
                                 totalWicketkeeper += 1;
                             } else if (playerRole.indexOf('Bowler') > -1) {
@@ -194,7 +188,8 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                     }
     
                 }
-    
+                // console.log(totalPoints, totalPointss);
+                // return false
                 substituteDetail = {};
                 
                 data[key] = {};
@@ -251,7 +246,8 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                 substitute = result.substitute;
                 playerTeamId = result._id;
                 playerTeamNo = result.team_count;
-                totalPoints = (!result.points) ? 0 : result.points;
+                // totalPoints = (!result.points) ? 0 : result.points;
+                totalPoints = 0;
                 playerDetail = [];
 
                 let totalDefender = 0;
@@ -292,15 +288,8 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                             playerDetail[teamKey]['is_local_team'] = islocalTeam;
                             playerDetail[teamKey]['in_dream_team'] = (dreamPlayers.length > 0) ? true : false;
 
-                            /*if (teamValue.player_role.indexOf('Defender') > -1) {
-                                totalDefender += 1;
-                            } else if (teamValue.player_role.indexOf('Forward') > -1) {
-                                totalForward += 1;
-                            } else if (teamValue.player_role.indexOf('Goalkeeper') > -1) {
-                                totalGoalkeeper += 1;
-                            } else if (teamValue.player_role.indexOf('Midfielder') > -1) {
-                                totalMidfielder += 1;
-                            }*/
+                            totalPoints +=   point;
+
                             if (playerRole.indexOf('Defender') > -1) {
                                 totalDefender += 1;
                             } else if (playerRole.indexOf('Forward') > -1) {
