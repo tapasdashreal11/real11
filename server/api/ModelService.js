@@ -1015,7 +1015,7 @@ class ModelService {
                             "series_id":"$series_id",
                             "is_leaderboard":"$is_leaderboard",
                             "live_match_close":"$live_match_close",
-                            "match_comment":"$match_comment",
+                            // "match_comment":"$match_comment",
                             "local_team_flag":{ $concat: [ imageurl, "/", "$local_flag" ] },
                             "visitor_team_flag":{ $concat: [ imageurl, "/", "$visitor_flag" ] },
                             "series_name": {$cond: { if: { $ne: [ "$series_name", '' ] }, then: "$series_name", else : "$series.short_name"}},
