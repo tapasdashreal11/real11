@@ -9,11 +9,12 @@ const moment = require('moment');
 const { MatchStatus } = require('../../../constants/app');
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
+const { ObjectId } = require('mongodb');
 // const mqtt = require('../../../../lib/mqtt');
 // const Helper = require('./../common/helper');
 
 module.exports = {
-    joinedContestListOld: async (req, res) => {
+    joinedContestList: async (req, res) => {
         try {
             // let sport = 1;
             const user_id = req.userId;
@@ -296,7 +297,7 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-    joinedContestList: async (req, res) => {
+    joinedContestListNew: async (req, res) => {
         try {
             //let sport = 1;
             console.log('joined cotest list lates*****');
@@ -316,6 +317,16 @@ module.exports = {
                 if (joindedContestlistdata && joindedContestlistdata.joined_contest) {
                    // When data in redis
                    console.log('data in reids*****',joindedContestlistdata);
+                   let joindContesList = joindedContestlistdata.joined_contest;
+                   let cIds = _.map(joindContesList,'contest_id');
+                   let mList = await MatchContest.find({ match_id: decoded['match_id'], contest_id: { $in: cIds } },{"joined_users":1,"contest_id":1});
+                   for (const jclist of joindedContestlistdata.joined_contest) {
+                    let cId = jclist.contest_id;
+                    console.log('mList***',mList);
+                    const mcObj = mList.find(element => element.contest_id.equals(ObjectId(cId)));
+                    console.log("***",mcObj);
+                    jclist.teams_joined = mcObj && mcObj.joined_users ? mcObj.joined_users : 0;
+                   }
                    return res.send(ApiUtility.success(joindedContestlistdata));
                 } else {
                     // data is not in redis
