@@ -954,7 +954,7 @@ class ModelService {
                             "xfactors":"$xfactors",
                             "is_notification":{$cond: { if: { $eq: [ "$notification_status", 'active' ] }, then: true, else: false }},
                             "notification_title":"$notification_title",
-                            "match_banner":{ $concat: [ imageurl, "/", "$match_banner" ] },
+                            "match_banner":{$cond: { if: { $eq: [ "$match_banner", '' ] }, then: "", else: { $concat: [ imageurl, "/", "$match_banner" ] } }},
                         }
                     }
                 ], (err, data) => {
