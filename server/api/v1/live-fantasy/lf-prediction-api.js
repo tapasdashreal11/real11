@@ -29,6 +29,7 @@ module.exports = {
             let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id, sport: sport,is_contest_stop:0 });
             if (liveMatch) {
                     let teamDataa = [];
+                    let sOver = liveMatch.start_over;
                     team_count = await Prediction.find({
                         user_id: user_id,
                         match_id: match_id,
@@ -46,7 +47,19 @@ module.exports = {
                     }
                    console.log("prediction_array",prediction_array);
 
-                    if (team_count < totalTemCount) {
+                   let counter = 0;
+                   for (var key in new_predit_dic) {
+                    
+                     for (var i = 1; i < 7; i++){
+                         let nKey = sOver+"_"+i;
+                         if(key == nKey){
+                            console.log(key, key == nKey)
+                            counter ++;
+                         }
+                     }  
+                   }
+
+                    if (team_count < totalTemCount && counter ==6) {
                         team_count += 1;
                         let team = {
                             user_id: user_id,
@@ -74,7 +87,13 @@ module.exports = {
                         return res.send(ApiUtility.success(data1));
                        
                     } else {
-                        return res.send(ApiUtility.failed("You can not create prediction more than "+ totalTemCount + "."));
+                         
+                         if(counter <6){
+                            return res.send(ApiUtility.failed("You are doing wrong prediction.Please try again!!"));
+                         }else{
+                            return res.send(ApiUtility.failed("You can not create prediction more than "+ totalTemCount + "."));
+                         }
+                        
                     } 
                 
 
