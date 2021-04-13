@@ -14,7 +14,7 @@ const { ObjectId } = require('mongodb');
 // const Helper = require('./../common/helper');
 
 module.exports = {
-    joinedContestListOld: async (req, res) => {
+    joinedContestList: async (req, res) => {
         try {
             // let sport = 1;
             const user_id = req.userId;
@@ -589,7 +589,7 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
-    joinedContestList: async (req, res) => {
+    joinedContestList2: async (req, res) => {
         try {
             //let sport = 1;
             console.log('Live joined cotest list lates*****');
