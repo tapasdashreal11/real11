@@ -297,7 +297,7 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-    joinedContestList: async (req, res) => {
+    joinedContestList1: async (req, res) => {
         try {
             //let sport = 1;
             console.log('joined cotest list lates*****');
@@ -589,7 +589,7 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
-    joinedContestListLive: async (req, res) => {
+    joinedContestList: async (req, res) => {
         try {
             //let sport = 1;
             console.log('Live joined cotest list lates*****');
