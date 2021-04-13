@@ -14,7 +14,7 @@ const { ObjectId } = require('mongodb');
 // const Helper = require('./../common/helper');
 
 module.exports = {
-    joinedContestList: async (req, res) => {
+    joinedContestList22: async (req, res) => {
         try {
             // let sport = 1;
             const user_id = req.userId;
@@ -589,7 +589,7 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
-    joinedContestList2: async (req, res) => {
+    joinedContestList: async (req, res) => {
         try {
             //let sport = 1;
             console.log('Live joined cotest list lates*****');
@@ -655,6 +655,7 @@ module.exports = {
                         let contest = [];
                         let upComingData = [];
                         let myTeamRank = [];
+                        
                         if (joinedTeams) {
                             let contestKey = 0;
                             for (const contestValue of joinedTeams) {
@@ -699,6 +700,7 @@ module.exports = {
                                 let customPrice = [];
                                 let isWinner = false;
                                 let isGadget = false;
+                                let aakashLeague = (contestValue && contestValue.doc && contestValue.doc.contest && contestValue.doc.contest.amount_gadget == 'aakash') ? true : false;
                                 if (contestValue.contest.breakup) {
                                     let key = 0;
                                     if (contestValue.contest.amount_gadget == 'gadget') {
@@ -809,6 +811,8 @@ module.exports = {
                                 contest[contestKey]['use_bonus'] = useBonus;
                                 contest[contestKey]['is_infinite'] = (contestValue.contest.infinite_contest_size == 1) ? true : false;
                                 contest[contestKey]['infinite_breakup'] = finiteBreakupDetail;
+                                contest[contestKey]['is_aakash_team'] = aakashLeague;
+                                contest[contestKey]['maximum_team_size'] = (contestValue && contestValue.doc && contestValue.doc.contest && contestValue.doc.contest.multiple_team && contestValue.doc.contest.multiple_team == 'yes') ? (contestValue.doc.contest.maximum_team_size) : 1;
                                 contestKey++;
                             }
                         }

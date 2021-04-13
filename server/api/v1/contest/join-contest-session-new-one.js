@@ -161,7 +161,7 @@ module.exports = async (req, res) => {
                                                     contest.user_id = user_id;
                                                     contest.total_amount = contestData.entry_fee;
                                                     contest.team_count = teamCount;
-                                                    contest.team_name = authUser.team_name || '';
+                                                    contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                     let useableBonusPer = contestData.used_bonus || 0;
                                                     let contestType = contestData.contest_type;
                                                     let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
