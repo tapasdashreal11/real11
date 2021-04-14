@@ -231,11 +231,11 @@ config.user_category_prod = {
 
 config.youtuber_bcode = [
   {'code':'NM333','name':'shashi','applied':true},
-  {'code':'FC786','name':'fcg','applied':true},
+  {'code':'FC111','name':'fcg','applied':true},
   {'code':'AD007','name':'anurag','applied':true},
   {'code':'KS001','name':'kisan','applied':true},
   {'code':'AK21','name':'ak','applied':true},
-  {'code':'GT11','name':'gt','applied':true}
+  {'code':'GT999','name':'gt','applied':true}
 ]
 
 config.contest_bonous = [
