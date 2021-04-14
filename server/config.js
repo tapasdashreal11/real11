@@ -235,7 +235,8 @@ config.youtuber_bcode = [
   {'code':'AD007','name':'anurag','applied':true},
   {'code':'KS001','name':'kisan','applied':true},
   {'code':'AK21','name':'ak','applied':true},
-  {'code':'GT999','name':'gt','applied':true}
+  {'code':'GT999','name':'gt','applied':true},
+  {'code':'Cr222','name':'cr','applied':true}
 ]
 
 config.contest_bonous = [
