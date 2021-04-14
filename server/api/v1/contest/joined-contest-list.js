@@ -14,7 +14,7 @@ const { ObjectId } = require('mongodb');
 // const Helper = require('./../common/helper');
 
 module.exports = {
-    joinedContestList: async (req, res) => {
+    joinedContestList222: async (req, res) => {
         try {
             // let sport = 1;
             const user_id = req.userId;
@@ -64,7 +64,7 @@ module.exports = {
                         }
                     }
                     ])
-                    // consolelog(JSON.stringify(joinedTeams))
+                    
                     let pointsData = {};
                     if (joinedTeams) {
                         for (const teams of joinedTeams) {
@@ -589,7 +589,7 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
-    joinedContestList2: async (req, res) => {
+    joinedContestList: async (req, res) => {
         try {
             //let sport = 1;
             console.log('Live joined cotest list lates*****');
@@ -623,19 +623,26 @@ module.exports = {
                         const playerTeamList = ptAndContestData && ptAndContestData[0] ? ptAndContestData[0] : [];
                         // const contestList = ptAndContestData && ptAndContestData[1] ? _.map(ptAndContestData[1],'contest')  : [];
                         const matchContestWithCodeList = ptAndContestData && ptAndContestData[1] ? ptAndContestData[1] : [];
-
+                        console.log('matchContestWithCodeList**',matchContestWithCodeList);
                         let joinedTeams = [];
+                        let player_team_id_filter = [];
                         for (const ptcDataItem of ptcData) {
                             var joinObj = {};
                             const ptObj = _.find(playerTeamList, { '_id': ptcDataItem.player_team_id });
                             const contstObj = _.find(matchContestWithCodeList, { 'contest_id': ptcDataItem.contest_id });
-                            joinObj._id = ptcDataItem.contest_id;
-                            joinObj.player_team = ptObj;
-                            joinObj.contest = contstObj.contest || {};
-                            ptcDataItem.player_team = ptObj;
-                            ptcDataItem.contest = contstObj.contest || {};
-                            joinObj.doc = ptcDataItem;
-                            joinedTeams.push(joinObj);
+                            if (_.find(player_team_id_filter, ptcDataItem.contest_id)){
+                                continue
+                            } else {
+                                player_team_id_filter.push(ptcDataItem.contest_id);
+                                joinObj._id = ptcDataItem.contest_id;
+                                joinObj.player_team = ptObj;
+                                joinObj.contest = contstObj.contest || {};
+                                ptcDataItem.player_team = ptObj;
+                                ptcDataItem.contest = contstObj.contest || {};
+                                joinObj.doc = ptcDataItem;
+                                joinedTeams.push(joinObj);
+                            }
+                            
                         }
                         //******************************************
                         let pointsData = {};
