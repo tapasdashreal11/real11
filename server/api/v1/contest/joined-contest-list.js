@@ -591,7 +591,6 @@ module.exports = {
     },
     joinedContestList: async (req, res) => {
         try {
-            //let sport = 1;
             console.log('Live joined cotest list lates*****');
             const user_id = req.userId;
             const { match_id, series_id, sport } = req.params;
@@ -603,7 +602,6 @@ module.exports = {
             }
 
             if (match_id && series_id && user_id) {
-
                 // data is not in redis
                 console.log('data in db****');
                 let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
@@ -613,7 +611,6 @@ module.exports = {
                 if (ptcData && ptcData.length > 0) {
                     let playerteamIds = _.map(ptcData, 'player_team_id');
                     let joinedContestIds = _.uniq(_.map(ptcData, 'contest_id'), _.isEqual);
-                     console.log('joinedContestIds',joinedContestIds);
                     let ptAndContestData = await Promise.all([
                         PlayerTeam.find({ _id: { $in: playerteamIds } }).exec(),
                         MatchContest.find({ match_id: decoded['match_id'], contest_id: { $in: joinedContestIds } })
@@ -625,15 +622,15 @@ module.exports = {
                         const matchContestWithCodeList = ptAndContestData && ptAndContestData[1] ? ptAndContestData[1] : [];
                         
                         let joinedTeams = [];
-                        let player_team_id_filter = [];
+                        let contest_id_filter = [];
                         for (const ptcDataItem of ptcData) {
                             var joinObj = {};
                             const ptObj = _.find(playerTeamList, { '_id': ptcDataItem.player_team_id });
                             const contstObj = _.find(matchContestWithCodeList, { 'contest_id': ptcDataItem.contest_id });
-                            if (_.find(player_team_id_filter, ptcDataItem.contest_id)){
+                            if (_.find(contest_id_filter, ptcDataItem.contest_id)){
                                 continue
                             } else {
-                                player_team_id_filter.push(ptcDataItem.contest_id);
+                                contest_id_filter.push(ptcDataItem.contest_id);
                                 joinObj._id = ptcDataItem.contest_id;
                                 joinObj.player_team = ptObj;
                                 joinObj.contest = contstObj.contest || {};
@@ -679,23 +676,12 @@ module.exports = {
                                 }
                                 toalWinner = customBreakup && customBreakup.endRank ? customBreakup.endRank : ((customBreakup) ? customBreakup.startRank : 0);
 
-
-                                let playerContestFilter = {
-                                    'match_id': decoded['match_id'],
-                                    'contest_id': contestValue.doc.contest._id,
-                                    'user_id': decoded['user_id']
-                                };
-                                // let joinedTeamCount = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'contest_id': contestValue.doc.contest._id }).countDocuments();
                                 let joinedTeamCount = mcObj && mcObj.joined_users ? mcObj.joined_users : 0;
                                 let myTeamIds = [];
                                 let myTeamNo = [];
                                 let winningAmt = [];
-
                                 let joinedTeamList = _.filter(ptcData, { 'contest_id': contestValue.doc.contest_id });
-
-                                //let teamsJoined =    await PlayerTeamContest.find(playerContestFilter);
                                 let teamsJoined = joinedTeamList ? joinedTeamList : [];
-
                                 if (teamsJoined) {
                                     for (const joined of teamsJoined) {
                                         myTeamIds.push({ "player_team_id": joined.player_team_id });
@@ -703,7 +689,6 @@ module.exports = {
                                         winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
                                     }
                                 }
-
                                 let customPrice = [];
                                 let isWinner = false;
                                 let isGadget = false;
@@ -788,9 +773,6 @@ module.exports = {
                                         useBonus = contestValue.contest.used_bonus;
                                     }
                                 }
-                                // if (contestValue.doc.contest.used_bonus != '') {
-                                //     useBonus = contestValue.doc.contest.used_bonus;
-                                // }
                                 let totalWinningAmount = winningAmt.reduce(function (a, b) {
                                     return a + b;
                                 }, 0);
@@ -803,8 +785,8 @@ module.exports = {
                                 contest[contestKey]['total_teams'] = contestValue.contest.contest_size;
                                 contest[contestKey]['category_id'] = contestValue.contest.category_id;
                                 contest[contestKey]['contest_id'] = contestValue.doc.contest_id;
-                                contest[contestKey]['total_winners'] = customBreakup, //(customBreakup && customBreakup.length) ? customBreakup.pop : {},//toalWinner;
-                                    contest[contestKey]['teams_joined'] = joinedTeamCount;
+                                contest[contestKey]['total_winners'] = customBreakup,
+                                contest[contestKey]['teams_joined'] = joinedTeamCount;
                                 contest[contestKey]['is_joined'] = (teamsJoined) ? true : false;
                                 contest[contestKey]['multiple_team'] = (contestValue.contest.multiple_team && contestValue.contest.multiple_team == 'yes') ? true : false;
                                 contest[contestKey]['invite_code'] = (inviteCode) ? inviteCode.invite_code : '';
@@ -842,7 +824,7 @@ module.exports = {
                         data1.upcoming_match = upComingData;
                         data1.my_team_count = myTeams;
                         data1.my_teams = myTeams;
-                        data1.my_contests = joinedContestIds && _.isArray(joinedContestIds) ? joinedContestIds.length : 0;
+                        data1.my_contests = contest_id_filter && _.isArray(contest_id_filter) ? contest_id_filter.length : 0;
                         data1.my_team_rank = myTeamRank;
                         data1.match_status = reviewStatus;
 
