@@ -14,7 +14,7 @@ const { ObjectId } = require('mongodb');
 // const Helper = require('./../common/helper');
 
 module.exports = {
-    joinedContestList222: async (req, res) => {
+    joinedContestList33: async (req, res) => {
         try {
             // let sport = 1;
             const user_id = req.userId;
@@ -64,7 +64,7 @@ module.exports = {
                         }
                     }
                     ])
-                    
+
                     let pointsData = {};
                     if (joinedTeams) {
                         for (const teams of joinedTeams) {
@@ -613,7 +613,7 @@ module.exports = {
                 if (ptcData && ptcData.length > 0) {
                     let playerteamIds = _.map(ptcData, 'player_team_id');
                     let joinedContestIds = _.uniq(_.map(ptcData, 'contest_id'), _.isEqual);
-
+                     console.log('joinedContestIds',joinedContestIds);
                     let ptAndContestData = await Promise.all([
                         PlayerTeam.find({ _id: { $in: playerteamIds } }).exec(),
                         MatchContest.find({ match_id: decoded['match_id'], contest_id: { $in: joinedContestIds } })
@@ -623,7 +623,7 @@ module.exports = {
                         const playerTeamList = ptAndContestData && ptAndContestData[0] ? ptAndContestData[0] : [];
                         // const contestList = ptAndContestData && ptAndContestData[1] ? _.map(ptAndContestData[1],'contest')  : [];
                         const matchContestWithCodeList = ptAndContestData && ptAndContestData[1] ? ptAndContestData[1] : [];
-                        console.log('matchContestWithCodeList**',matchContestWithCodeList);
+                        
                         let joinedTeams = [];
                         let player_team_id_filter = [];
                         for (const ptcDataItem of ptcData) {
