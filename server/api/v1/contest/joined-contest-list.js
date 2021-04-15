@@ -297,10 +297,9 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
-    joinedContestList1: async (req, res) => {
+    joinedContestListUpcoming: async (req, res) => {
         try {
-            //let sport = 1;
-            console.log('joined cotest list lates*****');
+            console.log('upcoming joined list*****');
             const user_id = req.userId;
             const { match_id, series_id, sport } = req.params;
             let decoded = {
@@ -309,17 +308,15 @@ module.exports = {
                 series_id: parseInt(series_id),
                 user_id: user_id
             }
-
             if (match_id && series_id && user_id) {
-
                 let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
                 let joindedContestlistdata = await getPromiseUserJoinedContestList(myJoinedContestListKey);
                 if (joindedContestlistdata && joindedContestlistdata.joined_contest) {
                     // When data in redis
-                    console.log('data in reids*****', joindedContestlistdata);
+                    console.log('JC List Upcoming data in reids*****', joindedContestlistdata);
                     let joindContesList = joindedContestlistdata.joined_contest;
                     let cIds = _.map(joindContesList, 'contest_id');
-                    let mList = await MatchContest.find({ match_id: decoded['match_id'], contest_id: { $in: cIds } }, { "joined_users": 1, "contest_id": 1 });
+                    let mList = await MatchContest.find({ match_id: decoded['match_id'],'sport': decoded['sport'], contest_id: { $in: cIds } }, { "joined_users": 1, "contest_id": 1 });
                     for (const jclist of joindedContestlistdata.joined_contest) {
                         let cId = jclist.contest_id;
                         console.log('mList***', mList);
@@ -329,36 +326,41 @@ module.exports = {
                     }
                     return res.send(ApiUtility.success(joindedContestlistdata));
                 } else {
-                    // data is not in redis
-                    console.log('data in db****');
+                    //when data is not in redis
+                    console.log('JC List Upcoming data in db****');
                     let data1 = {};
                     let ptcData = await PlayerTeamContest.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': decoded['sport'], 'series_id': decoded['series_id'] }).exec()
                     if (ptcData && ptcData.length > 0) {
                         let playerteamIds = _.map(ptcData, 'player_team_id');
                         let joinedContestIds = _.uniq(_.map(ptcData, 'contest_id'), _.isEqual);
-
                         let ptAndContestData = await Promise.all([
                             PlayerTeam.find({ _id: { $in: playerteamIds } }).exec(),
                             MatchContest.find({ match_id: decoded['match_id'], contest_id: { $in: joinedContestIds } })
                         ]);
-
                         if (ptAndContestData && ptAndContestData.length > 0) {
                             const playerTeamList = ptAndContestData && ptAndContestData[0] ? ptAndContestData[0] : [];
                             // const contestList = ptAndContestData && ptAndContestData[1] ? _.map(ptAndContestData[1],'contest')  : [];
                             const matchContestWithCodeList = ptAndContestData && ptAndContestData[1] ? ptAndContestData[1] : [];
 
                             let joinedTeams = [];
+                            let contest_id_filter = [];
                             for (const ptcDataItem of ptcData) {
                                 var joinObj = {};
                                 const ptObj = _.find(playerTeamList, { '_id': ptcDataItem.player_team_id });
                                 const contstObj = _.find(matchContestWithCodeList, { 'contest_id': ptcDataItem.contest_id });
-                                joinObj._id = ptcDataItem.contest_id;
-                                joinObj.player_team = ptObj;
-                                joinObj.contest = contstObj.contest || {};
-                                ptcDataItem.player_team = ptObj;
-                                ptcDataItem.contest = contstObj.contest || {};
-                                joinObj.doc = ptcDataItem;
-                                joinedTeams.push(joinObj);
+                                if (_.find(contest_id_filter, ptcDataItem.contest_id)) {
+                                    continue
+                                } else {
+                                    contest_id_filter.push(ptcDataItem.contest_id);
+                                    joinObj._id = ptcDataItem.contest_id;
+                                    joinObj.player_team = ptObj;
+                                    joinObj.contest = contstObj.contest || {};
+                                    ptcDataItem.player_team = ptObj;
+                                    ptcDataItem.contest = contstObj.contest || {};
+                                    joinObj.doc = ptcDataItem;
+                                    joinedTeams.push(joinObj);
+                                }
+
                             }
                             //******************************************
                             let pointsData = {};
@@ -378,6 +380,7 @@ module.exports = {
                             let contest = [];
                             let upComingData = [];
                             let myTeamRank = [];
+
                             if (joinedTeams) {
                                 let contestKey = 0;
                                 for (const contestValue of joinedTeams) {
@@ -394,34 +397,24 @@ module.exports = {
                                     }
                                     toalWinner = customBreakup && customBreakup.endRank ? customBreakup.endRank : ((customBreakup) ? customBreakup.startRank : 0);
 
-
-                                    let playerContestFilter = {
-                                        'match_id': decoded['match_id'],
-                                        'contest_id': contestValue.doc.contest._id,
-                                        'user_id': decoded['user_id']
-                                    };
-                                    // let joinedTeamCount = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'contest_id': contestValue.doc.contest._id }).countDocuments();
                                     let joinedTeamCount = mcObj && mcObj.joined_users ? mcObj.joined_users : 0;
                                     let myTeamIds = [];
                                     let myTeamNo = [];
                                     let winningAmt = [];
-
                                     let joinedTeamList = _.filter(ptcData, { 'contest_id': contestValue.doc.contest_id });
-
-                                    //let teamsJoined =    await PlayerTeamContest.find(playerContestFilter);
                                     let teamsJoined = joinedTeamList ? joinedTeamList : [];
-
                                     if (teamsJoined) {
                                         for (const joined of teamsJoined) {
                                             myTeamIds.push({ "player_team_id": joined.player_team_id });
                                             myTeamNo.push((joined.player_team) ? joined.player_team.team_count : 0);
-                                            winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
+                                            // winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
+                                            winningAmt.push((joined && joined.price_win) ? parseFloat(joined.price_win) : 0);
                                         }
                                     }
-
                                     let customPrice = [];
                                     let isWinner = false;
                                     let isGadget = false;
+                                    let aakashLeague = (contestValue && contestValue.doc && contestValue.doc.contest && contestValue.doc.contest.amount_gadget == 'aakash') ? true : false;
                                     if (contestValue.contest.breakup) {
                                         let key = 0;
                                         if (contestValue.contest.amount_gadget == 'gadget') {
@@ -502,9 +495,6 @@ module.exports = {
                                             useBonus = contestValue.contest.used_bonus;
                                         }
                                     }
-                                    // if (contestValue.doc.contest.used_bonus != '') {
-                                    //     useBonus = contestValue.doc.contest.used_bonus;
-                                    // }
                                     let totalWinningAmount = winningAmt.reduce(function (a, b) {
                                         return a + b;
                                     }, 0);
@@ -517,7 +507,7 @@ module.exports = {
                                     contest[contestKey]['total_teams'] = contestValue.contest.contest_size;
                                     contest[contestKey]['category_id'] = contestValue.contest.category_id;
                                     contest[contestKey]['contest_id'] = contestValue.doc.contest_id;
-                                    contest[contestKey]['total_winners'] = customBreakup, //(customBreakup && customBreakup.length) ? customBreakup.pop : {},//toalWinner;
+                                    contest[contestKey]['total_winners'] = customBreakup,
                                         contest[contestKey]['teams_joined'] = joinedTeamCount;
                                     contest[contestKey]['is_joined'] = (teamsJoined) ? true : false;
                                     contest[contestKey]['multiple_team'] = (contestValue.contest.multiple_team && contestValue.contest.multiple_team == 'yes') ? true : false;
@@ -532,6 +522,8 @@ module.exports = {
                                     contest[contestKey]['use_bonus'] = useBonus;
                                     contest[contestKey]['is_infinite'] = (contestValue.contest.infinite_contest_size == 1) ? true : false;
                                     contest[contestKey]['infinite_breakup'] = finiteBreakupDetail;
+                                    contest[contestKey]['is_aakash_team'] = aakashLeague;
+                                    contest[contestKey]['maximum_team_size'] = (contestValue && contestValue.doc && contestValue.doc.contest && contestValue.doc.contest.multiple_team && contestValue.doc.contest.multiple_team == 'yes') ? (contestValue.doc.contest.maximum_team_size) : 1;
                                     contestKey++;
                                 }
                             }
@@ -554,32 +546,19 @@ module.exports = {
                             data1.upcoming_match = upComingData;
                             data1.my_team_count = myTeams;
                             data1.my_teams = myTeams;
-                            data1.my_contests = joinedContestIds && _.isArray(joinedContestIds) ? joinedContestIds.length : 0;
+                            data1.my_contests = contest_id_filter && _.isArray(contest_id_filter) ? contest_id_filter.length : 0;
                             data1.my_team_rank = myTeamRank;
                             data1.match_status = reviewStatus;
-
                             redis.setRedisMyMatches(myJoinedContestListKey, data1);
-
-                            //******************************************
+                            return res.send(ApiUtility.success(data1));
                         } else {
                             // Something went wrong
                             return res.send('Something went wrong!!');
                         }
                     } else {
                         // No contest joined yet for this match and series
-                        let resData = {
-                            "joined_contest": [],
-                            "upcoming_match": [],
-                            "my_team_count": 0,
-                            "my_teams": 0,
-                            "my_contests": 0,
-                            "my_team_rank": [],
-                            "match_status": ""
-                        }
-                        // return res.send(ApiUtility.success(resData));
+                        return res.send(ApiUtility.success(data1));
                     }
-                    return res.send(ApiUtility.success(data1));
-
                 }
             } else {
                 return res.send('Something went wrong!!');
@@ -600,10 +579,7 @@ module.exports = {
                 series_id: parseInt(series_id),
                 user_id: user_id
             }
-
             if (match_id && series_id && user_id) {
-                // data is not in redis
-                console.log('data in db****');
                 let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
                 redis.setRedisMyMatches(myJoinedContestListKey, {});
                 let data1 = {};
@@ -615,19 +591,18 @@ module.exports = {
                         PlayerTeam.find({ _id: { $in: playerteamIds } }).exec(),
                         MatchContest.find({ match_id: decoded['match_id'], contest_id: { $in: joinedContestIds } })
                     ]);
-
                     if (ptAndContestData && ptAndContestData.length > 0) {
                         const playerTeamList = ptAndContestData && ptAndContestData[0] ? ptAndContestData[0] : [];
                         // const contestList = ptAndContestData && ptAndContestData[1] ? _.map(ptAndContestData[1],'contest')  : [];
                         const matchContestWithCodeList = ptAndContestData && ptAndContestData[1] ? ptAndContestData[1] : [];
-                        
+
                         let joinedTeams = [];
                         let contest_id_filter = [];
                         for (const ptcDataItem of ptcData) {
                             var joinObj = {};
                             const ptObj = _.find(playerTeamList, { '_id': ptcDataItem.player_team_id });
                             const contstObj = _.find(matchContestWithCodeList, { 'contest_id': ptcDataItem.contest_id });
-                            if (_.find(contest_id_filter, ptcDataItem.contest_id)){
+                            if (_.find(contest_id_filter, ptcDataItem.contest_id)) {
                                 continue
                             } else {
                                 contest_id_filter.push(ptcDataItem.contest_id);
@@ -639,7 +614,7 @@ module.exports = {
                                 joinObj.doc = ptcDataItem;
                                 joinedTeams.push(joinObj);
                             }
-                            
+
                         }
                         //******************************************
                         let pointsData = {};
@@ -659,7 +634,7 @@ module.exports = {
                         let contest = [];
                         let upComingData = [];
                         let myTeamRank = [];
-                        
+
                         if (joinedTeams) {
                             let contestKey = 0;
                             for (const contestValue of joinedTeams) {
@@ -686,7 +661,8 @@ module.exports = {
                                     for (const joined of teamsJoined) {
                                         myTeamIds.push({ "player_team_id": joined.player_team_id });
                                         myTeamNo.push((joined.player_team) ? joined.player_team.team_count : 0);
-                                        winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
+                                        // winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
+                                        winningAmt.push((joined && joined.price_win) ? parseFloat(joined.price_win) : 0);
                                     }
                                 }
                                 let customPrice = [];
@@ -786,7 +762,7 @@ module.exports = {
                                 contest[contestKey]['category_id'] = contestValue.contest.category_id;
                                 contest[contestKey]['contest_id'] = contestValue.doc.contest_id;
                                 contest[contestKey]['total_winners'] = customBreakup,
-                                contest[contestKey]['teams_joined'] = joinedTeamCount;
+                                    contest[contestKey]['teams_joined'] = joinedTeamCount;
                                 contest[contestKey]['is_joined'] = (teamsJoined) ? true : false;
                                 contest[contestKey]['multiple_team'] = (contestValue.contest.multiple_team && contestValue.contest.multiple_team == 'yes') ? true : false;
                                 contest[contestKey]['invite_code'] = (inviteCode) ? inviteCode.invite_code : '';
@@ -828,7 +804,7 @@ module.exports = {
                         data1.my_team_rank = myTeamRank;
                         data1.match_status = reviewStatus;
 
-                        
+                        return res.send(ApiUtility.success(data1));
 
                         //******************************************
                     } else {
@@ -837,18 +813,8 @@ module.exports = {
                     }
                 } else {
                     // No contest joined yet for this match and series
-                    let resData = {
-                        "joined_contest": [],
-                        "upcoming_match": [],
-                        "my_team_count": 0,
-                        "my_teams": 0,
-                        "my_contests": 0,
-                        "my_team_rank": [],
-                        "match_status": ""
-                    }
-                    // return res.send(ApiUtility.success(resData));
+                    return res.send(ApiUtility.success(data1));
                 }
-                return res.send(ApiUtility.success(data1));
             } else {
                 return res.send('Something went wrong!!');
             }
