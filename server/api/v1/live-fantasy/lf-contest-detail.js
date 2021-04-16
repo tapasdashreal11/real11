@@ -584,7 +584,7 @@ module.exports = {
                     player_team_id_filter.push(userTeam.user_id);
                     let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
                         if (userTeam) {
-                            let userPrediction  = userTeam && userTeam.prediction_id ? await LFPrediction.findOne({'_id':ObjectId(userTeam.prediction_id)}): {};
+                            let userPrediction  = userTeam && userTeam.prediction_id ? await LFPrediction.findOne({'_id':ObjectId(userTeam.prediction_id)},{'prediction':1}): {};
                             teamData[teamCount] = {};
                             teamData[teamCount]['user_id'] = userTeam.user_id;
                             teamData[teamCount]['team_name'] = userTeam.team_name || '';
@@ -595,7 +595,7 @@ module.exports = {
                             teamData[teamCount]['point'] = userTeam.points || 0;
                             teamData[teamCount]['winning_amount'] = winAmount;
                             teamData[teamCount]['user_preview_point'] = userTeam.user_preview || {};
-                            teamData[teamCount]['prediction'] = reviewMatch && reviewMatch.is_contest_stop == 1 ? userPrediction : {};
+                            teamData[teamCount]['prediction'] = reviewMatch && reviewMatch.is_contest_stop == 1 ? (userPrediction && userPrediction.prediction ? userPrediction.prediction :{} ) : {};
                             teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
                         }
                        teamCount++;
