@@ -182,7 +182,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
                     { $eq: [ "$series_id", "$$seriesId" ]},
                     { $eq: [ "$match_status",  "Not Started" ]},
                     { $eq: [ "$status",  1 ]},
-                    { $gte: [ "$time",  currentDate2 ]},
+                    //{ $gte: [ "$time",  currentDate2 ]},
                     { $lt: [ "$time",  oneMonthDateUp ]},
                 ]
                 sortTime = {sort_time : 1}
