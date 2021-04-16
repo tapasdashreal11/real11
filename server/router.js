@@ -69,7 +69,7 @@ const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-o
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
 const  contestList  = require('./api/v1/contest/contest-list');
-const  contestListNew  =   require('./api/v1/contest/contest-m-list'); // require('./api/v1/contest/contest-list-new');
+const  contestListNew  =   require('./api/v1/contest/contest-m-list');  // require('./api/v1/contest/contest-list-new');
 const  contestListNewLatest  = require('./api/v1/contest/contest-m-list');
 const  { contestDetailNew,contestLeaderboard, contestDetail,contestDetailNewLatest,contestLeaderboardLatest,contestDetailLatest }  = require('./api/v1/contest/contest-detail');
 const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breakup');
@@ -138,7 +138,7 @@ const playerImageDirPath = path.resolve('server', 'public', 'images');
 
 // live fantasy api section 
 const { liveFantasyMatchList,liveFantasyMatchContestList,liveFantasyMatchContestWallet,lfJoinedContestList,liveMatchScore } = require('./api/v1/live-fantasy/lf-match-list');
-const { createPrediction,predictionList,updatePrediction,lfPointSystem } = require('./api/v1/live-fantasy/lf-prediction-api');
+const { createPrediction,predictionList,updatePrediction,lfPointSystem,predictionForUserItem } = require('./api/v1/live-fantasy/lf-prediction-api');
 const lfJoinContest = require('./api/v1/live-fantasy/lf-join-contest');
 const lfTransactionHistory = require('./api/v1/live-fantasy/lf-transation-history');
 const { lfJoinedContestMatches } = require('./api/v1/live-fantasy/lf-joined-contest-matches');
@@ -384,6 +384,7 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
  router.post('/api/v1/lf-prediction-edit',auth.authenticate.jwtLogin,updatePrediction); 
  router.get('/api/v1/lf-point-system',auth.authenticate.jwtLogin,lfPointSystem);
  router.get('/api/v1/lf-match-live-score',liveMatchScore);
+ router.get('/api/v1/lf-prediction-user-preview/:id',auth.authenticate.jwtLogin,predictionForUserItem);
  /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
   if(req.query.STATUS && req.query.STATUS == "TXN_SUCCESS"){

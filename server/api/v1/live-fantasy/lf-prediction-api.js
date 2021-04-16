@@ -228,6 +228,23 @@ module.exports = {
         } catch (error) {
             return res.send(ApiUtility.failed(error.message));
         }
+    },
+    predictionForUserItem: async (req, res) => {
+        let {id} = req.params;
+        let user_id = req.userId;
+        try {
+            if (!id && !user_id) {
+                return res.send(ApiUtility.failed('Something went wrong!!'));
+            }
+            let respons = {}
+            respons.message = '';
+            let pItem = await Prediction.findOne({ _id:ObjectId(id)});        
+            respons.user_prediction = pItem || {};
+            return res.send(ApiUtility.success(respons));
+        } catch (error) {
+            console.log("predction Item error****", error)
+            return res.send(ApiUtility.failed(error.message));
+        }
     }
 }
 
