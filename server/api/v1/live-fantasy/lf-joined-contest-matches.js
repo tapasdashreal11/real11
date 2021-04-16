@@ -133,7 +133,7 @@ module.exports = {
                                         if (i && moment(i.sort_time).toDate() < serverTimeForalc) {
                                            // i["match_status"] = 'In Progress';
                                            // newLiveArray.live_match.unshift(i);
-                                           // newLiveArray.upcoming_match.splice(k, 1)
+                                            newLiveArray.upcoming_match.splice(k, 1)
                                         }
                                         key++;
                                     })
