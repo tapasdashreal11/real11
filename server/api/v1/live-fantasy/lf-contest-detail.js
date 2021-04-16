@@ -359,14 +359,14 @@ module.exports = {
                         contest_id:ObjectId(contest_id),
                         user_id:{$ne:ObjectId(user_id)},
                         is_deleted:0
-                      }).limit(100).sort({_id:-1});
+                      },{prediction:0}).limit(100).sort({_id:-1});
                 } else {
                     allTeams = await LFJoinedContest.find({
                         match_id:parseInt(match_id),
                         sport: sport,
                         contest_id:ObjectId(contest_id),
                         is_deleted:0
-                      }).limit(100).sort({_id:-1});
+                      },{prediction:0}).limit(100).sort({_id:-1});
                 }
                 if(allTeams && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) {
                     await redis.setRedisLFBoard(leaderboardKey, allTeams);
