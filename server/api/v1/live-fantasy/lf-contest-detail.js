@@ -595,7 +595,7 @@ module.exports = {
                             teamData[teamCount]['point'] = userTeam.points || 0;
                             teamData[teamCount]['winning_amount'] = winAmount;
                             teamData[teamCount]['user_preview_point'] = userTeam.user_preview || {};
-                            teamData[teamCount]['prediction'] = userTeam.prediction || {};
+                            teamData[teamCount]['prediction'] = reviewMatch && reviewMatch.is_contest_stop == 1 ? userTeam.prediction : {};
                             teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
                         }
                        teamCount++;

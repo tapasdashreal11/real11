@@ -26,7 +26,7 @@ module.exports = {
             }
             let listKey = 'lf-user-prediction-list-' + match_id + '-' + series_id + '-' + user_id;
             let countRedisKey = 'lf-user-teams-count-' + match_id + '-' + series_id + '-' + user_id;
-            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id, sport: sport,is_contest_stop:0 });
+            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id, sport: sport,is_contest_stop:0,match_status: "Not Started" });
             if (liveMatch) {
                     let teamDataa = [];
                     let sOver = liveMatch.start_over;
@@ -173,7 +173,7 @@ module.exports = {
             }
             
 
-            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id,is_contest_stop:0 });
+            let liveMatch = await MatchList.findOne({ match_id: match_id, series_id: series_id,is_contest_stop:0,match_status: "Not Started" });
             if (liveMatch && user_id && updateData && updateData.prediction) {
                     await Prediction.updateOne({_id:ObjectId(record_id) },{"$set":updateData});
                     let playerTeamRes = await LFPlayerTeamContest.find({prediction_id:ObjectId(record_id)});

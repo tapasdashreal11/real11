@@ -124,26 +124,8 @@ module.exports = {
                             } else {
                                 console.log('LF my match list data coming from redis********');
                                 var newLiveArray = JSON.parse(JSON.stringify(contestData))
-                                var contestDataUp = newLiveArray.upcoming_match.length;
-                                if (contestDataUp > 0) {
-                                    let key = 0;
-                                    _.forEach(newLiveArray.upcoming_match, function (i, k) {
-                                        if (i && moment(i.sort_time).toDate() < serverTimeForalc) {
-                                            i["match_status"] = 'In Progress';
-                                            newLiveArray.live_match.unshift(i);
-                                            newLiveArray.upcoming_match.splice(k, 1)
-                                        }
-                                        key++;
-                                    })
-                                    if (key === contestDataUp) {
-                                        newLiveArray['server_time'] = serverTime;
-                                        redis.setRedisLFBoard(matchContestKey, newLiveArray); // Set Redis for my matches
-                                        return res.send(ApiUtility.success(newLiveArray));
-                                    }
-                                } else {
-                                    contestData['server_time'] = serverTime;
-                                    return res.send(ApiUtility.success(contestData));
-                                }
+                                newLiveArray['server_time'] = serverTime;
+                                return res.send(ApiUtility.success(newLiveArray));
                             }
                         });
                     }
@@ -188,6 +170,7 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
                     { $in: [ "$match_status", [MatchStatus.MATCH_INPROGRESS,'Finished'] ]},
                     { $eq: [ "$win_flag",  0 ]},
                     { $eq: [ "$status",  1 ]},
+                    { $eq: [ "$is_contest_stop",  1 ]},
                     //{ $lte: [ "$time",  currentDateLive ]},
                     { $eq: [ "$match_id", "$$matchId" ]},
                     { $eq: [ "$series_id", "$$seriesId" ]},
