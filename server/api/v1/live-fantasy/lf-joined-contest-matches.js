@@ -175,14 +175,14 @@ function lfMyContestModel(skip, limit, sort, filter, sport, type){
             let sortTime =  {};
             if(type == 'upcoming') {
                 let currentDate2 = moment().utc().toDate();
-                let oneMonthDateUp =  moment().utc().add('1','days').toDate();
+                let oneMonthDateUp =  moment().utc().add('5','days').toDate();
 
                 matchesFilter = [
                     { $eq: [ "$match_id", "$$matchId" ]},
                     { $eq: [ "$series_id", "$$seriesId" ]},
                     { $eq: [ "$match_status",  "Not Started" ]},
                     { $eq: [ "$status",  1 ]},
-                    //{ $gte: [ "$time",  currentDate2 ]},
+                    { $gte: [ "$time",  currentDate2 ]},
                     { $lt: [ "$time",  oneMonthDateUp ]},
                 ]
                 sortTime = {sort_time : 1}
