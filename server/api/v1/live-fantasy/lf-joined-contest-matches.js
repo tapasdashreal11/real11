@@ -136,13 +136,14 @@ module.exports = {
                                             newLiveArray.upcoming_match.splice(k, 1)
                                         }
                                         key++;
+                                        if (key === contestDataUp) {
+                                            console.log("redisdata data 2****");
+                                            newLiveArray['server_time'] = serverTime;
+                                            redis.setRedisLFBoard(matchContestKey, newLiveArray); // Set Redis for my matches
+                                            return res.send(ApiUtility.success(newLiveArray));
+                                        }
                                     })
-                                    if (key === contestDataUp) {
-                                        console.log("redisdata data 2****");
-                                        newLiveArray['server_time'] = serverTime;
-                                        redis.setRedisLFBoard(matchContestKey, newLiveArray); // Set Redis for my matches
-                                        return res.send(ApiUtility.success(newLiveArray));
-                                    }
+                                    
                                 } else {
                                     console.log("redisdata data 3****",contestData);
                                     contestData['server_time'] = serverTime;
