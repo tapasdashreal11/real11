@@ -594,6 +594,7 @@ module.exports = {
                             teamData[teamCount]['previous_rank'] = userTeam.rank || 0;
                             teamData[teamCount]['point'] = userTeam.points || 0;
                             teamData[teamCount]['winning_amount'] = winAmount;
+                            teamData[teamCount]['jc_id'] = userTeam._id;
                             teamData[teamCount]['prediction_id'] = userTeam.prediction_id;
                             teamData[teamCount]['user_preview_point'] = userTeam.user_preview || {};
                             teamData[teamCount]['prediction'] = reviewMatch && reviewMatch.is_contest_stop == 1 ? (userPrediction && userPrediction.prediction ? userPrediction.prediction :{} ) : {};

@@ -238,7 +238,7 @@ module.exports = {
             }
             let respons = {}
             respons.message = '';
-            let pItem = await Prediction.findOne({ _id:ObjectId(id)});        
+            let pItem = await LFPlayerTeamContest.findOne({ _id:ObjectId(id)});        
             respons.user_prediction = pItem || {};
             return res.send(ApiUtility.success(respons));
         } catch (error) {
