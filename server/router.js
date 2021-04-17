@@ -357,13 +357,13 @@ router.post('/cron/bizwebhook', function(req, res) {
 
 router.post('/phonePe/phonePewebhook', function(req, res) {
     console.log("phonePe callback data", req.body)
-    console.log("phonePe callback x-very string", req.headers["x-verify"]);
+    console.log("phonePe callback x-verify string", req.headers["x-verify"]);
     const buff = Buffer.from(req.body.response, 'base64');
     const response = JSON.parse(buff.toString('utf-8'));
     const xVerifyString =   req.headers["x-verify"];
-    
+    // console.log(response, xVerifyString);
     if (response && response.success == true && response.code == "PAYMENT_SUCCESS") {
-        updateTransactionPhonePeWebhook(response, xVerifyString, 'phonePe');
+        updateTransactionPhonePeWebhook(response, xVerifyString, 'PHONEPE');
     }
     return res.send({ status: 'success' });
 });

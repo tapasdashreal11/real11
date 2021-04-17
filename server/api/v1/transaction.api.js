@@ -556,7 +556,6 @@ module.exports = {
                         post_req.end();
                     });
                 } else if (decoded['gateway_name'] == 'PHONEPE') {
-                    // let response = await checkPhonePeStatus(txn_id);
                     await checkPhonePeStatus(txn_id, async function(result) {
                         let response   =   JSON.parse(result.body);
                         if(response && response.success == true && response.code == "PAYMENT_SUCCESS") {
@@ -799,10 +798,9 @@ module.exports = {
                         const verifyKey =   await generateXVerifyKey(transactionId);
                         let response    =   JSON.parse(result.body);
                         const responseAmount=   response.data.amount;
-                        console.log(verifyKey == result.header && txnAmount == responseAmount);
+                        // console.log(verifyKey == result.header && txnAmount == responseAmount, "dfsd");
                         if(verifyKey == result.header && txnAmount == responseAmount) {
-                            // await updateTransactionFromWebhook
-                            console.log(response.code);
+                            await module.exports.updateTransactionFromWebhook(transactionId, gateway);
                         }
                     }
                 });
@@ -813,6 +811,7 @@ module.exports = {
     },
 
     updateTransactionFromWebhook: async (transactionId, gateway = null) => {
+        
         try {
             let txnData;
             // objectid.isValid('53fbf4615c3b9f41c381b6a3')
