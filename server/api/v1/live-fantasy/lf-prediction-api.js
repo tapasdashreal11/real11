@@ -238,9 +238,19 @@ module.exports = {
             }
             let respons = {}
             respons.message = '';
-            let pItem = await LFPlayerTeamContest.findOne({ _id:ObjectId(id)});        
-            respons.user_prediction = pItem || {};
-            return res.send(ApiUtility.success(respons));
+            let pItem = await LFPlayerTeamContest.findOne({ _id:ObjectId(id)});   
+            if(pItem && pItem._id){
+                respons.user_prediction = {
+                    team_name:pItem.team_name || '',
+                    team_no:pItem.team_count,
+                    prediction:pItem.prediction || {},
+                    user_preview_point:pItem.user_preview || {},
+                } 
+                return res.send(ApiUtility.success(respons));
+            } else {
+                return res.send(ApiUtility.failed('Please wait,process is going on!!'));
+            }     
+            
         } catch (error) {
             console.log("predction Item error****", error)
             return res.send(ApiUtility.failed(error.message));
