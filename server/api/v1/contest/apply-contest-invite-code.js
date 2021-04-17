@@ -26,8 +26,8 @@ module.exports = {
             if (decoded) {
                 // console.log(decoded['invite_code'],toLower(decoded['invite_code']));return false
                let contestCode  = [
-                    {'code':'ANURAGROCKSTAR','name':'anurag'},
-                    {'code':'ANURAGT20','name':'anurag'},
+                    {'code':'IPL9','name':'anurag'},
+                    // {'code':'ANURAGT20','name':'anurag'},
                   ]
                 if (decoded['invite_code'] && decoded['user_id']) {
                     
