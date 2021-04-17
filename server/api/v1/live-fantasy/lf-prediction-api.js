@@ -238,7 +238,7 @@ module.exports = {
             }
             let respons = {}
             respons.message = '';
-            let pItem = await LFPlayerTeamContest.findOne({ _id:ObjectId(id)});   
+            let pItem = await LFPlayerTeamContest.findOne({ _id:ObjectId(id)},{_id:1,team_name:1,team_count:1,prediction:1,user_preview:1});   
             if(pItem && pItem._id){
                 respons.user_prediction = {
                     team_name:pItem.team_name || '',
