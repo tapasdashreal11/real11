@@ -609,29 +609,22 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
     try {
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create(contest, { session: session }).then(async (newDataPTC) => {
-
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
-
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
-                    // var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
-                    // console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", joinedContestCount);
-                    //var ddCount = mcCountRes + 1 ;
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
                         contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session,matchContest);
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     } else {
-                        
                         await session.commitTransaction();
                         session.endSession();
                     }
                 } else {
-                    
                     await session.commitTransaction();
                     session.endSession();
                 }
-
+                // This is used for user referal for contest upto ten friends and get bopnous
                 try {
                     if (contestData && contestData.entry_fee > 0 && refer_code && !_.isEmpty(refer_code) && refer_by_user && !_.isEmpty(refer_by_user)) {
                         await ContestInvite.create({ refer_code: refer_code, refer_by_user: refer_by_user, refered_user: user_id, contest_id: contest_id, match_id: match_id, series_id: series_id, sport: match_sport });
@@ -677,8 +670,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                 } catch (errrrrr) {
                     console.log('error in join contest for bonus update for referal**********');
                 }
-
-
+                // This is used to update data in MyContestModel for match entry as joined 
                 let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
                 redis.getRedis(redisKey, (err, data) => { 
                     if (data) {
@@ -692,25 +684,12 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                         return self.indexOf(value) === index;
                     });
                     
-
-                    //////////console.log("uniqueContestIds", uniqueContestIds)
-
                     var newMyModelobj = {
-                        'match_id': match_id,
-                        "series_id": series_id,
-                        "contest_id": contest_id,
-                        "user_id": user_id,
-                        "sport": match_sport,
-                        "player_team_contest_id": newPTC._id,
-                        "match_status": 'Not Started',
+                        'match_id': match_id,"series_id": series_id,"contest_id": contest_id,"user_id": user_id,
+                        "sport": match_sport,"player_team_contest_id": newPTC._id,"match_status": 'Not Started',
                         "total_contest": uniqueContestIds.length
-                        //'$inc' : { "total_contest": 1 }
                     }
-
-                    totalContestKey = uniqueContestIds.length
-
-
-                    //const sessionOpts = { session, new: true };
+                    totalContestKey = uniqueContestIds.length;
                     MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true }).then((MyContestModel) => {
                         mycontId = MyContestModel._id || 0;
                     });
