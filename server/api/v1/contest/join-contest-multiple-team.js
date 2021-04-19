@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
         let startTime = Date.now();
         const user_id = req.userId;
         const { } = req.params;
-        const { team_id,team_data, team_count, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        const {team_data, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
@@ -40,7 +40,6 @@ module.exports = async (req, res) => {
             contest_id: contest_id,
             user_id: user_id
         }
-        var team_count_number = team_count ? parseInt(team_count) : 0;
         var totalContestKey = 0;
         var mycontId = 0;
         if (match_id && series_id && contest_id && user_id && team_data && _.isArray(team_data) && team_data.length>0) {
@@ -52,16 +51,9 @@ module.exports = async (req, res) => {
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
                 PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
-                MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }),
-                // redis.getRedis('match-contest-detail-' + decoded['match_id'] + '-' + contest_id)
+                MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id })
             ];
-            if (!team_id) {
-                apiList.push(PlayerTeam.findOne({ 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
-
-            } else if (team_id && team_count_number == 0) {
-                apiList.push(PlayerTeam.findOne({'_id':ObjectId(team_id) ,'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
-                
-            }
+            
             var results = await Promise.all(apiList);
             if (results && results.length > 0) {
                 let authUser = results[0] ? results[0] : {};
@@ -74,11 +66,7 @@ module.exports = async (req, res) => {
                         if (mtime < ctime) {
                             return res.send(ApiUtility.failed('Match has been started.'));
                         } else {
-                            let teamId = team_id ? team_id : (results[5] && results[5]._id ? results[5]._id : '');
-                            let teamCount = team_count_number !=0 ? team_count_number : (results[5] && results[5].team_count ? results[5].team_count : 1);
-                            
-                            if (teamId && teamId != null && teamId != '') {
-                                // console.log(teamId);return false;
+                            if (team_data && team_data != null) {
                                 let matchContest = results[4] ? results[4] : {};
                                 if (!matchContest) {
 
@@ -93,7 +81,6 @@ module.exports = async (req, res) => {
                                         redis.setRedis('contest-detail-' + contest_id, contestData);
                                     }
                                 }
-                                //let joinedContest = 0;
                                 let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
 
                                 var parentContestId = (contestData && contestData.parent_id) ? contestData.parent_id : contestData._id;
@@ -121,7 +108,7 @@ module.exports = async (req, res) => {
                                 }
                                 let tIds = _.map(team_data,'team_id');
                                 var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': {$in:tIds} }
-                                let playerTeamRes = await PlayerTeamContest.find(PlayerTeamContestFilter);
+                                let playerTeamRes = await PlayerTeamContest.find(PlayerTeamContestFilter,{_id:1});
                                 let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
                                 let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
 
@@ -131,7 +118,6 @@ module.exports = async (req, res) => {
                                         if ((!contestData.multiple_team && joinedContestWithTeamCounts >= 1) || ((contestData.multiple_team !== 'yes') && joinedContestWithTeamCounts >= 1)) {
                                             return res.send(ApiUtility.failed('Multiple Teams Not Allowed'));
                                         }
-                                        //const session = await db.getMongoose().startSession();
                                         const session = await startSession()
                                         session.startTransaction();
                                         const sessionOpts = { session, new: true };
@@ -176,6 +162,7 @@ module.exports = async (req, res) => {
                                                     }
                                                     if(contestDataArray && contestDataArray.length>0){
                                                         contestDataArray = await removeDuplicateEntry(contestDataArray);
+                                                        console.log('contestDataArray after duplicate',contestDataArray);
                                                     }
                                                    
                                                     
