@@ -174,7 +174,10 @@ module.exports = async (req, res) => {
                                                         contest.sport = match_sport;
                                                         contestDataArray.push(contest);
                                                     }
-                                                    
+                                                    if(contestDataArray && contestDataArray.length>0){
+                                                        contestDataArray = await removeDuplicateEntry(contestDataArray);
+                                                    }
+                                                   
                                                     
                                                     let useableBonusPer = contestData.used_bonus || 0;
                                                     let contestType = contestData.contest_type;
@@ -1043,4 +1046,8 @@ async function multipleJoinContestDetail(contestTeamData,decoded,bonusAmount,win
 
    await JoinContestDetail.create(jcdArray);
     
+}
+
+async function removeDuplicateEntry(data){
+ return data.filter((value,index)=> data.indexOf(value) === index);
 }
