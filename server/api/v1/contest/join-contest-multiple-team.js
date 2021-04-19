@@ -303,6 +303,10 @@ module.exports = async (req, res) => {
                                                         if (contestType == "Free" || (contestType == "Paid" && totalEntryAmount > 0 && calEntryFees > 0 && totalEntryAmount == calEntryFees && userWalletStatus) || (calEntryFees == 0 && retention_bonus_amount > 0 && userWalletStatus)) {
                                                             try {
                                                                // contest.bonus_amount = bonusAmount;
+                                                               let tCount = contestTeamData.length;
+                                                               for (const team_data_item of contestDataArray) {
+                                                                  team_data_item.bonus_amount = (bonusAmount/tCount) || 0;
+                                                                 }
                                                                 
                                                                 let getCountKey = 0;
 
