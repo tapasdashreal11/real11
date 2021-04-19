@@ -161,6 +161,7 @@ module.exports = async (req, res) => {
                                                         contestDataArray.push(contest);
                                                     }
                                                     if(contestDataArray && contestDataArray.length>0){
+                                                        
                                                         contestDataArray = await removeDuplicateEntry(contestDataArray);
                                                         console.log('contestDataArray after duplicate',contestDataArray);
                                                     }
@@ -1015,5 +1016,6 @@ async function multipleJoinContestDetail(contestTeamData,decoded,bonusAmount,win
 }
 
 async function removeDuplicateEntry(data){
- return data.filter((value,index)=> data.indexOf(value) === index);
+    var uniqueUsersByID = _.uniqBy(data,'team_id')
+ return uniqueUsersByID;
 }
