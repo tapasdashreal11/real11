@@ -122,27 +122,8 @@ module.exports = async (req, res) => {
                                         session.startTransaction();
                                         const sessionOpts = { session, new: true };
                                         try {
-                                            let totalCounter = team_data.length;
-                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalCounter } }, sessionOpts);
-                                            if (doc) {
-                                                let joinedContestCount = doc.joined_users;
-
-                                                if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
-                                                    console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
-                                                    await session.abortTransaction();
-                                                    session.endSession();
-                                                    let response = {};
-                                                    response.status = false;
-                                                    response.message = "This contest is full, please join other contest.";
-                                                    response.error_code = null;
-                                                    return res.json(response);
-                                                }
-                                                let joinStatus = false;
-                                                joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
-
-                                                if (joinStatus == true) {
-                                                    
-                                                    let contestDataArray = [];
+                                            
+                                                  let contestDataArray = [];
                                                     let newContestId;
                                                     for (const team_data_item of team_data) {
                                                         let contest = {};
@@ -165,6 +146,27 @@ module.exports = async (req, res) => {
                                                         contestDataArray = await removeDuplicateEntry(contestDataArray);
                                                         console.log('contestDataArray after duplicate',contestDataArray);
                                                     }
+                                                    let totalCounter = contestDataArray.length;
+                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalCounter } }, sessionOpts);
+                                            if (doc) {
+                                                let joinedContestCount = doc.joined_users;
+
+                                                if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
+                                                    console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
+                                                    await session.abortTransaction();
+                                                    session.endSession();
+                                                    let response = {};
+                                                    response.status = false;
+                                                    response.message = "This contest is full, please join other contest.";
+                                                    response.error_code = null;
+                                                    return res.json(response);
+                                                }
+                                                let joinStatus = false;
+                                                joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
+
+                                                if (joinStatus == true) {
+                                                    
+                                                    
                                                    
                                                     
                                                     let useableBonusPer = contestData.used_bonus || 0;
