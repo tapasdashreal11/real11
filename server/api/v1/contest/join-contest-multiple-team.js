@@ -148,8 +148,8 @@ module.exports = async (req, res) => {
                                                         contestDataArray.push(contest);
                                                     }
                                                    
-                                            let totalCounter = contestDataArray.length;
-                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalCounter } }, sessionOpts);
+                                            let totalTeamJoinedCount = contestDataArray.length;
+                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, sessionOpts);
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
 
@@ -251,6 +251,7 @@ module.exports = async (req, res) => {
                                                                                 currency: "INR",
                                                                                 txn_date: Date.now(),
                                                                                 local_txn_id: txnId,
+                                                                                total_team_joined:totalTeamJoinedCount,
                                                                                 added_type: parseInt(status)
                                                                             };
 

@@ -79,6 +79,9 @@ var transactionSchema = new Schema({
   retantion_amount: {
     type: Number,default:0
   },
+  total_team_joined: {
+    type: Number,default:1
+  },
   currency: {
     type: String
   },
