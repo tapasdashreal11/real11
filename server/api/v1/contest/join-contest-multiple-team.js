@@ -122,7 +122,12 @@ module.exports = async (req, res) => {
                                         session.startTransaction();
                                         const sessionOpts = { session, new: true };
                                         try {
-                                            
+                                                if(team_data && team_data.length>0){
+                                                            
+                                                    team_data = await removeDuplicateEntry(team_data);
+                                                    console.log('contestDataArray after duplicate',team_data);
+                                                }
+                        
                                                   let contestDataArray = [];
                                                     let newContestId;
                                                     for (const team_data_item of team_data) {
@@ -141,12 +146,8 @@ module.exports = async (req, res) => {
                                                         contest.sport = match_sport;
                                                         contestDataArray.push(contest);
                                                     }
-                                                    if(contestDataArray && contestDataArray.length>0){
-                                                        
-                                                        contestDataArray = await removeDuplicateEntry(contestDataArray);
-                                                        console.log('contestDataArray after duplicate',contestDataArray);
-                                                    }
-                                                    let totalCounter = contestDataArray.length;
+                                                   
+                                            let totalCounter = contestDataArray.length;
                                             const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalCounter } }, sessionOpts);
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
