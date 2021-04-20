@@ -789,21 +789,27 @@ module.exports = {
             const txnAmount = response.data.amount;
             txnData = await Transaction.findOne({ _id: ObjectId(transactionId) });
             // console.log(response, xVerifyString, transactionId);
-            // console.log(txnData.status);
+            // console.log(txnData.txm_amount);
             // return false
+            // In case of call back dont need to check status
             if(txnData && txnData.status == false) {
-                await checkPhonePeStatus(transactionId, async function(result) {
-                    let response    =   JSON.parse(result.body);
-                    if(response && (response.code == "PAYMENT_SUCCESS")) {
-                        const verifyKey =   await generateXVerifyKey(transactionId);
-                        let response    =   JSON.parse(result.body);
-                        const responseAmount=   response.data.amount;
-                        // console.log(verifyKey == result.header && txnAmount == responseAmount, "dfsd");
-                        if(verifyKey == result.header && txnAmount == responseAmount) {
-                            await module.exports.updateTransactionFromWebhook(transactionId, gateway);
-                        }
-                    }
-                });
+                const verifyKey =   await generateXVerifyKey(transactionId);
+                const responseAmount    =   txnData.txm_amount * 100;
+                if(verifyKey == xVerifyString && txnAmount == responseAmount) {
+                    await module.exports.updateTransactionFromWebhook(transactionId, gateway);
+                }
+                // await checkPhonePeStatus(transactionId, async function(result) {
+                //     let response    =   JSON.parse(result.body);
+                //     if(response && (response.code == "PAYMENT_SUCCESS")) {
+                //         const verifyKey =   await generateXVerifyKey(transactionId);
+                //         let response    =   JSON.parse(result.body);
+                //         const responseAmount=   response.data.amount;
+                //         // console.log(verifyKey == result.header && txnAmount == responseAmount, "dfsd");
+                //         if(verifyKey == result.header && txnAmount == responseAmount) {
+                //             await module.exports.updateTransactionFromWebhook(transactionId, gateway);
+                //         }
+                //     }
+                // });
             }
         } catch(error) {
             console.log(error);
