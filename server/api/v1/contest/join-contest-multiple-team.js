@@ -122,15 +122,16 @@ module.exports = async (req, res) => {
                                         session.startTransaction();
                                         const sessionOpts = { session, new: true };
                                         try {
+                                              let teamArray =[];
                                                 if(team_data && team_data.length>0){
                                                             
-                                                    team_data = await removeDuplicateEntry(team_data);
-                                                    console.log('contestDataArray after duplicate',team_data);
+                                                    teamArray = await removeDuplicateEntry(team_data);
+                                                    console.log('contestDataArray after duplicate',teamArray);
                                                 }
                         
                                                   let contestDataArray = [];
                                                     let newContestId;
-                                                    for (const team_data_item of team_data) {
+                                                    for (const team_data_item of teamArray) {
                                                         let contest = {};
                                                         let genratedcontestId = new ObjectId();
                                                         newContestId = genratedcontestId;
