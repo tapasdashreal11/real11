@@ -1020,6 +1020,6 @@ async function multipleJoinContestDetail(contestTeamData,decoded,bonusAmount,win
 
 async function removeDuplicateEntry(data){
     console.log('data*****',data);
-    let uniqueUsersByID = _.uniqBy(data,'team_id');
+    let uniqueUsersByID = _.uniqWith(data, _.isEqual);;
     return uniqueUsersByID;
 }
