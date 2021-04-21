@@ -159,7 +159,11 @@ module.exports = async (req, res) => {
                                                     session.endSession();
                                                     let response = {};
                                                     response.status = false;
-                                                    response.message = "This contest is full, please join other contest.";
+                                                    if(contestData.contest_size > joinedContest){
+                                                        let remainJoinTeam  = contestData.contest_size - joinedContest;
+                                                        response.message = "Only few.Please Join with only "+remainJoinTeam+ "team";
+                                                     }
+                                                   
                                                     response.error_code = null;
                                                     return res.json(response);
                                                 }
