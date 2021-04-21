@@ -783,36 +783,29 @@ module.exports = {
         }
     },
 
-    updateTransactionPhonePeWebhook: async(response, xVerifyString, gateway = null) => {
+    updateTransactionPhonePeWebhook: async(response, xVerifyString, gateway = null, cb) => {
         try {
             let transactionId   =   response.data.transactionId;
             const txnAmount = response.data.amount;
             txnData = await Transaction.findOne({ _id: ObjectId(transactionId) });
-            // console.log(response, xVerifyString, transactionId);
-            // console.log(txnData.txm_amount);
-            // return false
+            
             // In case of call back dont need to check status
             if(txnData && txnData.status == false) {
                 const verifyKey =   await generateXVerifyKey(transactionId);
                 const responseAmount    =   txnData.txm_amount * 100;
                 if(verifyKey == xVerifyString && txnAmount == responseAmount) {
+                    // console.log('enter correct');
                     await module.exports.updateTransactionFromWebhook(transactionId, gateway);
+                    cb({"message":"Amount Added successfully.", "status": true});
+                } else {
+                    cb({"message": "Token or amount not verified.", "status": false})
                 }
-                // await checkPhonePeStatus(transactionId, async function(result) {
-                //     let response    =   JSON.parse(result.body);
-                //     if(response && (response.code == "PAYMENT_SUCCESS")) {
-                //         const verifyKey =   await generateXVerifyKey(transactionId);
-                //         let response    =   JSON.parse(result.body);
-                //         const responseAmount=   response.data.amount;
-                //         // console.log(verifyKey == result.header && txnAmount == responseAmount, "dfsd");
-                //         if(verifyKey == result.header && txnAmount == responseAmount) {
-                //             await module.exports.updateTransactionFromWebhook(transactionId, gateway);
-                //         }
-                //     }
-                // });
+            } else {
+                cb({"message": "Amount already added in your wallet.", "status": false})
             }
         } catch(error) {
             console.log(error);
+            cb({"message": error.message, "status": false});
         }
     },
 

@@ -365,9 +365,11 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
     const xVerifyString =   req.headers["x-verify"];
     // console.log(response, xVerifyString);
     if (response && response.success == true && response.code == "PAYMENT_SUCCESS") {
-        updateTransactionPhonePeWebhook(response, xVerifyString, 'PHONEPE');
+        updateTransactionPhonePeWebhook(response, xVerifyString, 'PHONEPE', function(resResult) {
+            return res.send(resResult)
+        });
     }
-    return res.send({ status: 'success' });
+    // return res.send({ status: 'success' });
 });
 
 // live fantasy api section 
