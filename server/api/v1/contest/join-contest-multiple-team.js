@@ -111,7 +111,7 @@ module.exports = async (req, res) => {
                                 let playerTeamRes = await PlayerTeamContest.find(PlayerTeamContestFilter,{_id:1});
                                 let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
                                 let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
-
+                                 console.log("joinedContestWithTeamCounts",joinedContestWithTeamCounts,"** maxTeamSize **",maxTeamSize);
                                 if (joinedContestWithTeamCounts < maxTeamSize) {
                                     console.log('playerTeamRes',playerTeamRes);
                                     if (playerTeamRes && playerTeamRes.length ==0) {
@@ -159,7 +159,11 @@ module.exports = async (req, res) => {
                                                     session.endSession();
                                                     let response = {};
                                                     response.status = false;
-                                                    response.message = "This contest is full, please join other contest.";
+                                                    if(contestData.contest_size > joinedContest){
+                                                       let remainJoinTeam  = contestData.contest_size - joinedContest;
+                                                       response.message = "Please Join with only "+remainJoinTeam+ "team";
+                                                    }
+                                                    
                                                     response.error_code = null;
                                                     return res.json(response);
                                                 }
