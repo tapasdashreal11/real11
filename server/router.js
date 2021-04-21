@@ -365,7 +365,7 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
     const xVerifyString =   req.headers["x-verify"];
     // console.log(response, xVerifyString);
     if (response && response.success == true && response.code == "PAYMENT_SUCCESS") {
-        updateTransactionPhonePeWebhook(response, xVerifyString, 'PHONEPE', function(resResult) {
+        updateTransactionPhonePeWebhook(response, xVerifyString, req.body.response, 'PHONEPE', function(resResult) {
             return res.send(resResult)
         });
     }
