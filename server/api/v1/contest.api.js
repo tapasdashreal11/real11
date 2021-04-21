@@ -539,7 +539,8 @@ module.exports = {
                 series_id:series_id
             }
             let match_sport = sport ? parseInt(sport) : 1;
-            let total_team_number = total_team ? parseInt(total_team) : 2;
+            console.log('total_team****',total_team);
+            let total_team_number = total_team ? parseInt(total_team) : 1;
             let match_series_id = series_id ? parseInt(series_id) : 1;
             let youtuber_code = 0;
             let is_offer_applied = false;
