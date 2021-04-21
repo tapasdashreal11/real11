@@ -190,10 +190,90 @@ module.exports = async (req, res) => {
                                                         }
                                                         let userOfferAmount = 0;
                                                         let calEntryFees = entryFee *(contestDataArray.length);
+                                                        let totalEntryForContest = entryFee *(contestDataArray.length);
                                                         let retention_bonus_amount = 0;
                                                         let userBounousData = {};
                                                         let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
-                                                        if (contestType == 'Paid') {      
+                                                        if (contestType == 'Paid') {    
+                                                            
+                                                            // work for user rentation and cal amount for data
+
+                                                            //let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1,is_offer_repeat:1};
+                                                            let rdata = await UserAnalysis.findOne({ user_id: user_id, match_id: decoded['match_id'], sport: match_sport });
+                                                            let cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1, expiry_date: { $gte: new Date() } });
+                                                            let couponSaleData = [];
+                                                            let totalCouponsToBeUsed =1;
+                                                            if (cSaleData && cSaleData._id && cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0) {
+                                                                let catid = matchContest.category_id;
+                                                                // couponSaleData = cSaleData.coupon_contest_data;
+                                                                couponSaleData =cSaleData.coupon_credit > cSaleData.coupon_used ? cSaleData.coupon_contest_data:[]; 
+                                                                couponSaleData = couponSaleData.map(item => {
+                                                                    let container = {};
+                                                                    container.category_id = ObjectId(item.category_id);
+                                                                    container.offer_data = item.offer_data;
+                                                                    return container;
+                                                                });
+                                                                let constestIdsData = _.find(couponSaleData, { category_id: ObjectId(catid) });
+                                                                if (constestIdsData && constestIdsData.category_id) {
+                                                                    let offDataArray = constestIdsData.offer_data;
+                                                                    let offDataItem = _.find(offDataArray, { amount: entryFee });
+                                                                    if (offDataItem) {
+                                                                        if(cSaleData.coupon_credit > cSaleData.coupon_used){
+                                                                            let couponRemainsCount   = cSaleData.coupon_used - cSaleData.coupon_credit;
+                                                                            
+                                                                            totalCouponsToBeUsed = couponRemainsCount > total_team_number ? total_team_number: couponRemainsCount;
+                                                                          }
+                                                                        userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
+                                                                        userOfferAmount = userOfferAmount * totalCouponsToBeUsed;
+                                                                        calEntryFees = userOfferAmount > totalEntryForContest ? 0 : (totalEntryForContest - userOfferAmount);
+                                                                        retention_bonus_amount = userOfferAmount > totalEntryForContest ? totalEntryForContest : userOfferAmount;
+                                                                        let cGap = cSaleData.coupon_credit - cSaleData.coupon_used;
+                                                                        if(cGap ==1){
+                                                                            redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
+                                                                            await CouponSale.updateOne({ user_id: ObjectId(user_id) }, { $set: { status: 0 }, $inc: { coupon_used: +totalCouponsToBeUsed } }, sessionOpts);
+                                                                        } else {
+                                                                            await CouponSale.updateOne({ user_id: ObjectId(user_id) }, {$inc: { coupon_used: +totalCouponsToBeUsed } }, sessionOpts);
+                                                                        }
+                                                                        
+                                                                    }
+
+                                                                }
+                                                            }
+
+                                                            if (rdata && rdata._id && entryFee > 0 && userOfferAmount == 0) {
+                                                                userBounousData = rdata;
+                                                                userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount : eval((rdata.offer_percent / 100) * entryFee);
+                                                                let pContestId = ObjectId(contest_id);
+                                                                let offerContests = rdata && rdata.contest_ids && (rdata.contest_ids).length > 0 ? rdata.contest_ids.map(itm => {
+                                                                    return ObjectId(itm)
+                                                                }) : [];
+                                                                let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id) : pContestId;
+
+                                                                let cBonus = rdata && rdata.contest_bonous ? rdata.contest_bonous : []; //config && config.contest_bonous ? config.contest_bonous:[];
+                                                                let cBonusItem = {};
+                                                                if (rdata.is_offer_type == 3) {
+                                                                    cBonusItem = cBonus.find(function (el) {
+                                                                        if (ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))) {
+                                                                            return el
+                                                                        }
+                                                                    });
+                                                                }
+
+                                                                if ((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && offerContests.length > 0 && rdata.is_offer_type == 2 && (_.find(offerContests, pContestId) || _.find(offerContests, prContestId)))) {
+
+                                                                    userOfferAmount = userOfferAmount.toFixed(2);
+                                                                    calEntryFees = userOfferAmount > totalEntryForContest ? 0 : (totalEntryForContest - userOfferAmount);
+                                                                    retention_bonus_amount = userOfferAmount > totalEntryForContest ? totalEntryForContest : userOfferAmount;
+
+                                                                } else if (rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id) {
+                                                                    userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
+                                                                    userOfferAmount = userOfferAmount  * totalTeamJoinedCount;
+                                                                    calEntryFees = userOfferAmount > totalEntryForContest ? 0 : (totalEntryForContest - userOfferAmount);
+                                                                    retention_bonus_amount = userOfferAmount > totalEntryForContest ? totalEntryForContest : userOfferAmount;
+                                                                }
+
+                                                            }
+
                                                             if (calEntryFees > 0) {
                                                                 const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
                                                                 cashAmount = paymentCal.cashAmount;
@@ -209,7 +289,7 @@ module.exports = async (req, res) => {
                                                                     userId = user_id;
                                                                     let txnId = joinContestTxnId;
                                                                     let status = TransactionTypes.JOIN_CONTEST;
-                                                                    let txnAmount = entryFee *(contestDataArray.length);
+                                                                    let txnAmount = totalEntryForContest;
                                                                     let withdrawId = 0;
 
                                                                     if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
@@ -284,6 +364,31 @@ module.exports = async (req, res) => {
                                                                     return res.send(ApiUtility.failed('something went wrong!!'));
 
                                                                 }
+                                                            } else if (calEntryFees == 0 && retention_bonus_amount > 0) {
+
+                                                                let date = new Date();
+                                                                let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
+                                                                userId = user_id;
+                                                                let txnId = joinContestTxnId;
+                                                                let status = TransactionTypes.JOIN_CONTEST;
+                                                                let txnAmount = entryFee;
+
+                                                                let entity = {
+                                                                    user_id: userId,
+                                                                    contest_id: contest_id,
+                                                                    match_id: match_id,
+                                                                    sport: match_sport,
+                                                                    txn_amount: txnAmount,
+                                                                    retantion_amount: retention_bonus_amount,
+                                                                    currency: "INR",
+                                                                    txn_date: Date.now(),
+                                                                    local_txn_id: txnId,
+                                                                    total_team_joined:totalTeamJoinedCount,
+                                                                    added_type: parseInt(status)
+                                                                };
+
+                                                                await Transaction.create([entity], { session: session });
+                                                                userWalletStatus = true;
                                                             } else {
                                                                 await session.abortTransaction();
                                                                 session.endSession();
