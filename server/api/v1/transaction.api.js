@@ -783,7 +783,7 @@ module.exports = {
         }
     },
 
-    updateTransactionPhonePeWebhook: async(response, xVerifyString, gateway = null, cb) => {
+    updateTransactionPhonePeWebhook: async(response, xVerifyString, bodyResponse, gateway = null, cb) => {
         try {
             let transactionId   =   response.data.transactionId;
             const txnAmount = response.data.amount;
@@ -791,10 +791,10 @@ module.exports = {
             
             // In case of call back dont need to check status
             if(txnData && txnData.status == false) {
-                const verifyKey =   await generateXVerifyKey(transactionId);
-                const responseAmount    =   txnData.txm_amount * 100;
+                
+                const verifyKey =   await verifyPhonePeTokenKey(bodyResponse);
+                const responseAmount    =   txnData.txn_amount * 100;
                 if(verifyKey == xVerifyString && txnAmount == responseAmount) {
-                    // console.log('enter correct');
                     await module.exports.updateTransactionFromWebhook(transactionId, gateway);
                     cb({"message":"Amount Added successfully.", "status": true});
                 } else {
@@ -1097,6 +1097,12 @@ async function checkPhonePeStatus(txnId, cb) {
 
 async function generateXVerifyKey(transactionId) {
     const verfyKey    =   sha256(process.env.PHONEPE_ENDPOINT + process.env.PHONEPE_MURCHANT_ID + "/"+ transactionId +"/status" + process.env.PHONEPE_SALT_KEY) + "###" + process.env.PHONEPE_SALT_INDEX
+    return verfyKey;
+}
+
+
+async function verifyPhonePeTokenKey(callBackResponse) {
+    const verfyKey    =   sha256(callBackResponse + process.env.PHONEPE_SALT_KEY) + "###" + process.env.PHONEPE_SALT_INDEX
     return verfyKey;
 }
 
