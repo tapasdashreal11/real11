@@ -23,7 +23,7 @@ module.exports = async (req, res, dbs) => {
 			var filter = { "user_id": userId, $or: [{ status: { $exists: false } }, { status: true }] }
 
 
-			let usersData = await Transactions.find(filter, {"txn_date":1, "added_type":1, "txn_amount":1, "local_txn_id":1, "txn_date":1,"retantion_amount":1, "withdraw_commission":1}).sort({"txn_date": -1 }).limit(50);
+			let usersData = await Transactions.find(filter, {"total_team_joined":1,"txn_date":1, "added_type":1, "txn_amount":1, "local_txn_id":1, "txn_date":1,"retantion_amount":1, "withdraw_commission":1}).sort({"txn_date": -1 }).limit(50);
 
 			if(usersData && usersData.length > 0){
 			 
@@ -41,6 +41,7 @@ module.exports = async (req, res, dbs) => {
 						"txn_date": moment(i.txn_date).add('5.5', 'hours').format("YYYY-MM-DD,HH:mm:ss"),
 						"team_name": userData.team_name || "",
 						"date": moment(i.txn_date).format("YYYY-MM-DD"),
+						"total_team_joined": i.total_team_joined,
 					});
 
 					if(k === (usersData.length - 1)){
