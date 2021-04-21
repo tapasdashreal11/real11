@@ -596,7 +596,7 @@ module.exports = {
                 let userOfferAmount = 0;
                 let retention_bonus_amount =0;
                 let calEntryFees = entryFee * total_team_number;
-                entryFee = entryFee * total_team_number;
+                let totalEntryFee = entryFee * total_team_number;
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                         // console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
@@ -627,6 +627,7 @@ module.exports = {
                            if (rdata && entryFee>0 && userOfferAmount ==0) {
                             // console.log('popup redis before join contest *********');
                             userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
+                            console.log('userOfferAmount**',userOfferAmount);
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
                             let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
@@ -640,14 +641,15 @@ module.exports = {
                                 });
                             }
                             if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) || _.includes(offerContests,prContestId)))){
-                                calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
-                                retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                calEntryFees = userOfferAmount > totalEntryFee ? 0: (totalEntryFee - userOfferAmount );
+                                retention_bonus_amount = userOfferAmount > totalEntryFee ? totalEntryFee: userOfferAmount;
+                                console.log('retention_bonus_amount**',retention_bonus_amount);
                                 
                             } else if(rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id ){
                                 userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
                                 userOfferAmount = userOfferAmount  * total_team_number;
-                                calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
-                                retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                calEntryFees = userOfferAmount > totalEntryFee ? 0: (totalEntryFee - userOfferAmount );
+                                retention_bonus_amount = userOfferAmount > totalEntryFee ? totalEntryFee: userOfferAmount;
                                 is_offer_applied = true;
                             }    
                         }
@@ -667,7 +669,7 @@ module.exports = {
                                     }
                                 }
                                 let extraBalance = userdata.extra_amount || 0;
-                                let remainingFee = retention_bonus_amount > 0 ? calEntryFees : entryFee - usableAmt;
+                                let remainingFee = retention_bonus_amount > 0 ? calEntryFees : totalEntryFee - usableAmt;
         
                                 let indianDate = Date.now();
                                 indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
