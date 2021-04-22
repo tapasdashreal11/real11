@@ -413,14 +413,23 @@ module.exports = async (req, res) => {
                                                                 let getCountKey = 0;
 
                                                                 let playerTeamContestId = newContestId;
+                                                                var contestDataFinal = _.reject(contestDataArray, ['player_team_id', null]);
+                                                                var contestDataFinalOne = _.reject(contestDataArray, ['player_team_id', '']);
                                                                 if (_.isUndefined(contestDataArray) || _.isNull(contestDataArray) || _.isEmpty(contestDataArray)) {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
 
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
-                                                                    console.log('contestDataArray',contestDataArray);
-                                                                    totalContestKey = await getContestCount(contestDataArray, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
+                                                                         if(contestDataFinal.length == contestDataArray.length && contestDataFinalOne.length == contestDataArray.length){
+                                                                            totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
+                                                                         }else{
+                                                                            console.log('contestDataFinal',contestDataFinal,contestDataFinalOne);
+                                                                            await session.abortTransaction();
+                                                                            session.endSession();
+                                                                         }   
+                                                                    
+                                                                    
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
                                                                     await multipleJoinContestDetail(contestDataArray,decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
