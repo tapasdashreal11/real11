@@ -1046,6 +1046,8 @@ module.exports = {
             // let response    =   {}
             await checkPhonePeStatus(transactionId, async function(result) {
                 let response    =   JSON.parse(result.body);
+                // console.log(response);
+                // return false;
                 if(response && (response.code == "INTERNAL_SERVER_ERROR" || response.code == "PAYMENT_PENDING")) {
                     let createPhoneTxn  =   {
                         "transaction_id": transactionId,
@@ -1053,6 +1055,7 @@ module.exports = {
                         "status": response.code
                     }
                     await PhonePeTransaction.create(createPhoneTxn);
+                    return res.send(ApiUtility.failed("Your transaction is under process, please try after some time."));
                 } else {
                     const verifyKey =   await generateXVerifyKey(transactionId);
                    
