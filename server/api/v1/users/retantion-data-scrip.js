@@ -11,7 +11,9 @@ module.exports = {
         let {
             bulkdata
         } = req.body
-        if(bulkdata && _.isArray(bulkdata) && bulkdata.length>0){
+       await FavouriteContest.deleteMany({});
+        return res.json(response);
+       /* if(bulkdata && _.isArray(bulkdata) && bulkdata.length>0){
             if(bulkdata){
                 for (const item of bulkdata) {
                     for (const cData of item.contest_data) {
@@ -31,14 +33,14 @@ module.exports = {
                     return res.json(response);
                 })
                 .catch(function(err) {
-                    /* Error handling */
+                    
                     console.log('error in carch bulk',err);
                     return res.json(response);
                 });
             }
            
 
-        }
+        }*/
         
       } catch (err) {
         response["message"] = err.message;
@@ -56,6 +58,9 @@ module.exports = {
         let {
             bulkdata
         } = req.body
+        await UserAnalysis.deleteMany({});
+        return res.json(response);
+
         if(bulkdata && _.isArray(bulkdata) && bulkdata.length>0){
             if(bulkdata){
                 for (const item of bulkdata) {
