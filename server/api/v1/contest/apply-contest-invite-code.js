@@ -32,9 +32,9 @@ module.exports = {
                 if (decoded['invite_code'] && decoded['user_id']) {
                     let ddinvite_code = decoded['invite_code'].toUpperCase();
                     redis.getRedis('app-setting', async (err, data) => {
-                        console.log(decoded['invite_code']);
+                        // console.log(decoded['invite_code']);
                         let contestCode =   data.contest_invite_codes.split(",");
-                        if(contestCode.indexOf(decoded['invite_code'] ) > -1) {
+                        if(contestCode.indexOf(ddinvite_code ) > -1) {
                             // console.log('enter');
                             var regCode = new RegExp(["^", decoded['invite_code'], "$"].join(""), "i");
                             let contestMatch = await MatchContest.aggregate([
