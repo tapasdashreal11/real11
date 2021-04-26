@@ -1478,11 +1478,15 @@ module.exports = {
                     let currentDateTime = new Date(); //,'expiry_date':{$gte:currentDateTime}
                     // $couponData	=	$this->PaymentOffers->find()->where(['coupon_code LIKE'=>$decoded['coupon_code'],'expiry_date >='=>$currentDateTime,'status'=>ACTIVE])->first();
                     // //////console.log(currentDateTime,"expiry_date");
-                    let firstDepostCode = ["FRIST"];
+                    let firstDepostCode = ["FIRSTDEPOSIT"];
                     let ncoupon_code = coupon_code.toUpperCase();
                     if(firstDepostCode.indexOf(ncoupon_code ) > -1) {
-
-                        return res.send(ApiUtility.success({applied:true}, 'Coupon applied successfully.'));
+                        if(authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 2){
+                            return res.send(ApiUtility.success({applied:true}, 'Coupon applied successfully.'));
+                        } else {
+                            return res.send(ApiUtility.failed("This Coupon is not valid for you!!."));
+                        }
+                        
                     }
 
                     var regCode = new RegExp(["^", coupon_code, "$"].join(""), "i");
