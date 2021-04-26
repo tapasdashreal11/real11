@@ -1478,9 +1478,10 @@ module.exports = {
                     let currentDateTime = new Date(); //,'expiry_date':{$gte:currentDateTime}
                     // $couponData	=	$this->PaymentOffers->find()->where(['coupon_code LIKE'=>$decoded['coupon_code'],'expiry_date >='=>$currentDateTime,'status'=>ACTIVE])->first();
                     // //////console.log(currentDateTime,"expiry_date");
-                    let firstDepostCode = ["FRISTDESPOSIT"];
+                    let firstDepostCode = ["FRIST"];
                     let ncoupon_code = coupon_code.toUpperCase();
                     if(firstDepostCode.indexOf(ncoupon_code ) > -1) {
+
                         return res.send(ApiUtility.success({}, 'Coupon applied successfully.'));
                     }
 
