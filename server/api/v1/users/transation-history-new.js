@@ -42,6 +42,7 @@ module.exports = async (req, res, dbs) => {
 						"team_name": userData.team_name || "",
 						"date": moment(i.txn_date).format("YYYY-MM-DD"),
 						"total_team_joined": i.total_team_joined || 1,
+						"contest_entry_fee":i.contest_entry_fee
 					});
 
 					if(k === (usersData.length - 1)){
