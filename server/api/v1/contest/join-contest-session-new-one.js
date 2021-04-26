@@ -317,6 +317,8 @@ module.exports = async (req, res) => {
                                                                                 retantion_amount: retention_bonus_amount,
                                                                                 currency: "INR",
                                                                                 txn_date: Date.now(),
+                                                                                contest_entry_fee:entryFee,
+                                                                                total_team_joined:1,
                                                                                 local_txn_id: txnId,
                                                                                 added_type: parseInt(status)
                                                                             };
@@ -376,6 +378,8 @@ module.exports = async (req, res) => {
                                                                     retantion_amount: retention_bonus_amount,
                                                                     currency: "INR",
                                                                     txn_date: Date.now(),
+                                                                    contest_entry_fee:entryFee,
+                                                                    total_team_joined:1,
                                                                     local_txn_id: txnId,
                                                                     added_type: parseInt(status)
                                                                 };
