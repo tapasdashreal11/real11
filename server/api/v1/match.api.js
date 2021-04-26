@@ -136,7 +136,7 @@ module.exports = {
                             } else {
                                 data1.match_started = true;
                             }
-                            data1.comment = team.comment;
+                            data1.comment = ''; //team.comment;
                         }
                         return res.send(ApiUtility.success(data1));
                     } else {
