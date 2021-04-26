@@ -82,6 +82,9 @@ var transactionSchema = new Schema({
   total_team_joined: {
     type: Number,default:1
   },
+  contest_entry_fee: {
+    type: Number
+  },
   currency: {
     type: String
   },

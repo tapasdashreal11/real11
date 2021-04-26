@@ -335,6 +335,7 @@ module.exports = async (req, res) => {
                                                                                 currency: "INR",
                                                                                 txn_date: Date.now(),
                                                                                 local_txn_id: txnId,
+                                                                                contest_entry_fee:entryFee,
                                                                                 total_team_joined:totalTeamJoinedCount,
                                                                                 added_type: parseInt(status)
                                                                             };
@@ -375,7 +376,7 @@ module.exports = async (req, res) => {
                                                                 userId = user_id;
                                                                 let txnId = joinContestTxnId;
                                                                 let status = TransactionTypes.JOIN_CONTEST;
-                                                                let txnAmount = entryFee;
+                                                                let txnAmount = totalEntryForContest;
 
                                                                 let entity = {
                                                                     user_id: userId,
@@ -387,6 +388,7 @@ module.exports = async (req, res) => {
                                                                     currency: "INR",
                                                                     txn_date: Date.now(),
                                                                     local_txn_id: txnId,
+                                                                    contest_entry_fee:entryFee,
                                                                     total_team_joined:totalTeamJoinedCount,
                                                                     added_type: parseInt(status)
                                                                 };
