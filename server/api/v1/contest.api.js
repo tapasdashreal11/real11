@@ -1482,7 +1482,7 @@ module.exports = {
                     let ncoupon_code = coupon_code.toUpperCase();
                     if(firstDepostCode.indexOf(ncoupon_code ) > -1) {
 
-                        return res.send(ApiUtility.success({}, 'Coupon applied successfully.'));
+                        return res.send(ApiUtility.success({applied:true}, 'Coupon applied successfully.'));
                     }
 
                     var regCode = new RegExp(["^", coupon_code, "$"].join(""), "i");
