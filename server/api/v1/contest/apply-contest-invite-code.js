@@ -36,33 +36,37 @@ module.exports = {
                         let contestCode =   (data.contest_invite_codes.replace(/\s+/g, "")).split(",");
                         if(contestCode.indexOf(ddinvite_code ) > -1) {
                             // console.log('enter');
-                            var regCode = new RegExp(["^", decoded['invite_code'], "$"].join(""), "i");
-                            let contestMatch = await MatchContest.aggregate([
-                                {
-                                    $match: { 'invite_code': regCode,is_full:{$ne:1} }
-                                },
-                                {
-                                    $lookup: {
-                                        from: 'series_squad',
-                                        let: { matchId: "$match_id", sport: "$sport" },
-                                        pipeline: [{
-                                            $match: {
-                                                $expr: {
-                                                    $and: [
-                                                        { $eq: ["$match_id", "$$matchId"] },
-                                                        { $eq: ["$sport", "$$sport"] }
-                                                    ]
+                            let contestMatch =   await getRedisContestCodeData(toLower(decoded['invite_code']));
+
+                            if(!contestMatch || contestMatch == false) {
+                                var regCode = new RegExp(["^", decoded['invite_code'], "$"].join(""), "i");
+                                contestMatch = await MatchContest.aggregate([
+                                    {
+                                        $match: { 'invite_code': regCode,is_full:{$ne:1} }
+                                    },
+                                    {
+                                        $lookup: {
+                                            from: 'series_squad',
+                                            let: { matchId: "$match_id", sport: "$sport" },
+                                            pipeline: [{
+                                                $match: {
+                                                    $expr: {
+                                                        $and: [
+                                                            { $eq: ["$match_id", "$$matchId"] },
+                                                            { $eq: ["$sport", "$$sport"] }
+                                                        ]
+                                                    }
                                                 }
-                                            }
-                                        }],
-                                        as: 'series_squad'
-                                    }
-                                },
-                                {
-                                    $unwind: "$series_squad"
-                                },
-                                { $limit: 1 }
-                            ])
+                                            }],
+                                            as: 'series_squad'
+                                        }
+                                    },
+                                    {
+                                        $unwind: "$series_squad"
+                                    },
+                                    { $limit: 1 }
+                                ])
+                            }
                             // console.log(contestMatch);return false
                             if (contestMatch && contestMatch.length === 1) {
                                 redis.setRedis("contest-invite-conde-"+ toLower(decoded['invite_code']), contestMatch);
