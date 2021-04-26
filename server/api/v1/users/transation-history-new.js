@@ -23,7 +23,7 @@ module.exports = async (req, res, dbs) => {
 			var filter = { "user_id": userId, $or: [{ status: { $exists: false } }, { status: true }] }
 
 
-			let usersData = await Transactions.find(filter, {"total_team_joined":1,"txn_date":1, "added_type":1, "txn_amount":1, "local_txn_id":1, "txn_date":1,"retantion_amount":1, "withdraw_commission":1}).sort({"txn_date": -1 }).limit(50);
+			let usersData = await Transactions.find(filter, {"contest_entry_fee":1,"total_team_joined":1,"txn_date":1, "added_type":1, "txn_amount":1, "local_txn_id":1, "txn_date":1,"retantion_amount":1, "withdraw_commission":1}).sort({"txn_date": -1 }).limit(50);
 
 			if(usersData && usersData.length > 0){
 			 
