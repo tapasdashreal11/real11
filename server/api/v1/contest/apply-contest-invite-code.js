@@ -33,7 +33,7 @@ module.exports = {
                     let ddinvite_code = decoded['invite_code'].toUpperCase();
                     redis.getRedis('app-setting', async (err, data) => {
                         // console.log(decoded['invite_code']);
-                        let contestCode =   data.contest_invite_codes.split(",");
+                        let contestCode =   (data.contest_invite_codes.replace(/\s+/g, "")).split(",");
                         if(contestCode.indexOf(ddinvite_code ) > -1) {
                             // console.log('enter');
                             var regCode = new RegExp(["^", decoded['invite_code'], "$"].join(""), "i");
