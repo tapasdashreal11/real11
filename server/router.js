@@ -112,7 +112,7 @@ const {
 
 const { matchList } = require('./api/v1/contest/match-list');
 const { playerList, playerListn } = require('./api/v1/contest/player-list');
-const { playerTeamList, playerTeamListn } = require('./api/v1/contest/player-team-list');
+const { playerTeamList, previewPlayerTeamList,playerTeamListn } = require('./api/v1/contest/player-team-list');
 const { createTeam } = require('./api/v1/contest/create-team');
 const { seriesPlayerList } = require('./api/v1/contest/series-player-list');
 const {
@@ -263,6 +263,7 @@ router.get('/api/v1/series-player-list/:series_id/:match_id/:sport?', auth.authe
 router.get('/api/v1/team-scores/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, teamScore);
 router.get('/api/v1/before-join-contest/:series_id/:match_id', auth.authenticate.jwtLogin, beforeJoinContest);
 router.get('/api/v1/player-team-list/:series_id/:match_id/:user_id?/:team_no?/:sport?', auth.authenticate.jwtLogin, playerTeamList);
+router.get('/api/v1/preview-player-team-list/:series_id/:match_id/:player_team_id?/:team_no?/:sport?', auth.authenticate.jwtLogin, playerTeamList);
 router.get('/api/v1/player-team-listn/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListn);
 router.get('/api/v1/player-list/:series_id/:match_id/:sport?', playerList);
 router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListn);

@@ -76,6 +76,63 @@ module.exports = {
             return res.send(ApiUtility.failed(error.message));
         }
     },
+    previewPlayerTeamList: async (req, res) => {
+        var _this = this;
+        try {
+            let { match_id, series_id, team_no, player_team_id, sport } = req.params;
+           
+            let  user_id = req.userId;
+            sport   =   parseInt(sport) || 1;
+
+            match_id = parseInt(match_id);
+            series_id = parseInt(series_id);
+
+            let data = [];
+            let data1 = [];
+
+            if (!user_id || !match_id || !series_id || !player_team_id) {
+                return res.send(ApiUtility.failed('user id, match id team id or series id are empty.'));
+            }
+
+            let myContest = 0;
+            let myTeams = 0;
+            let liveMatch = await SeriesSquad.findOne({
+                series_id: series_id,
+                match_id: match_id,
+                sport: sport,
+            }, { localteam_id: 1, time: 1, date: 1, type: 1, visitorteam_id: 1 });
+
+            if (!liveMatch) {
+                return res.send(ApiUtility.failed('Match Detail not found'));
+            }
+
+            let filter = { user_id: user_id, match_id: match_id, series_id: series_id, sport: sport };
+            
+            if (team_no) {
+                filter['team_count'] = parseInt(team_no);
+                let result;
+                
+                result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
+
+                let player_list = result && result.players ? result.players : [];
+                if(sport === 1) {
+                    cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
+                        return res.send(result);
+                    });
+                } else {
+                    
+                    footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
+                        return res.send(result);
+                    });
+                }
+            } else {
+                return res.send(ApiUtility.failed("Server error"))
+            }
+        } catch (error) {
+            console.log(error);
+            return res.send(ApiUtility.failed(error.message));
+        }
+    },
     
     playerTeamListn: async (req, res) => {
         var _this = this;
