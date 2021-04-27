@@ -111,13 +111,9 @@ module.exports = {
             if (player_team_id) {
                // filter['team_count'] = parseInt(team_no);
                 let result;
-                console.log("dtaa",req.params);
                 result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
-
                 let player_list = result && result.players ? result.players : [];
-                console.log("result***",result);
                 if(sport === 1) {
-                    console.log("result*** spoer",player_list);
                     cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
                         return res.send(result);
                     });
@@ -128,7 +124,7 @@ module.exports = {
                     });
                 }
             } else {
-                return res.send(ApiUtility.failed("Server errorrrrr"))
+                return res.send(ApiUtility.failed("Server error"))
             }
         } catch (error) {
             console.log(error);
@@ -165,7 +161,6 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
     try {
         let data    =   [];
         let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
-        console.log("playerRecord.length",playerRecord.length);
         if (playerRecord && playerRecord.length == 11) {
     
             let playerData = {};
