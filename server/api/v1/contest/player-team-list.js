@@ -108,8 +108,8 @@ module.exports = {
 
             let filter = { user_id: user_id, match_id: match_id, series_id: series_id, sport: sport };
             
-            if (team_no) {
-                filter['team_count'] = parseInt(team_no);
+            if (player_team_id) {
+               // filter['team_count'] = parseInt(team_no);
                 let result;
                 
                 result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
