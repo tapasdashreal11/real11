@@ -166,6 +166,7 @@ module.exports = {
                         // teamData[teamCount]['point'] = playerTeam.points || 0;
                         teamData[teamCount]['winning_amount'] = winAmount;
                         teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
+                        teamData[teamCount]['player_team_id'] = userTeam.player_team_id;
                     }
                     teamCount++;
                 }
@@ -383,6 +384,7 @@ module.exports = {
                     teamData[teamCount]['point'] = userTeam.points || 0;
                     teamData[teamCount]['winning_amount'] = winAmount;
                     teamData[teamCount]['is_aakash_team'] = false;
+                    teamData[teamCount]['player_team_id'] = userTeam.player_team_id;
                 }
                 teamCount++;
             }
@@ -578,6 +580,7 @@ module.exports = {
                             teamData[teamCount]['point'] = userTeam && userTeam.points ? userTeam.points: 0;
                             teamData[teamCount]['winning_amount'] = winAmount;
                             teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
+                            teamData[teamCount]['player_team_id'] = userTeam.player_team_id;
                         }
                        teamCount++;
                     }

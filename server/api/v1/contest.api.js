@@ -1484,7 +1484,7 @@ module.exports = {
                         if(authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 2){
                             return res.send(ApiUtility.success({applied:true}, 'Coupon applied successfully.'));
                         } else {
-                            return res.send(ApiUtility.failed("This Coupon is not valid for you!!."));
+                            return res.send(ApiUtility.failed("This coupon is not valid for you!!."));
                         }
                         
                     }
