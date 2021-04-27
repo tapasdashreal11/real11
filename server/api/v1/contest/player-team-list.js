@@ -117,6 +117,7 @@ module.exports = {
                 let player_list = result && result.players ? result.players : [];
                 console.log("result***",result);
                 if(sport === 1) {
+                    console.log("result*** spoer",player_list);
                     cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
                         return res.send(result);
                     });
