@@ -111,7 +111,7 @@ module.exports = {
             if (player_team_id) {
                // filter['team_count'] = parseInt(team_no);
                 let result;
-                
+                console.log("dtaa",req.params);
                 result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
 
                 let player_list = result && result.players ? result.players : [];
@@ -126,7 +126,7 @@ module.exports = {
                     });
                 }
             } else {
-                return res.send(ApiUtility.failed("Server error"))
+                return res.send(ApiUtility.failed("Server error",player_team_id))
             }
         } catch (error) {
             console.log(error);
