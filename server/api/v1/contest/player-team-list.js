@@ -126,7 +126,7 @@ module.exports = {
                     });
                 }
             } else {
-                return res.send(ApiUtility.failed("Server error",player_team_id))
+                return res.send(ApiUtility.failed("Server errorrrrr"))
             }
         } catch (error) {
             console.log(error);
@@ -163,6 +163,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
     try {
         let data    =   [];
         let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
+        console.log("playerRecord.length",playerRecord.length);
         if (playerRecord && playerRecord.length == 11) {
     
             let playerData = {};
