@@ -115,6 +115,7 @@ module.exports = {
                 result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
 
                 let player_list = result && result.players ? result.players : [];
+                console.log("result***",result);
                 if(sport === 1) {
                     cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
                         return res.send(result);
