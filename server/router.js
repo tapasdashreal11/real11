@@ -263,7 +263,7 @@ router.get('/api/v1/series-player-list/:series_id/:match_id/:sport?', auth.authe
 router.get('/api/v1/team-scores/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, teamScore);
 router.get('/api/v1/before-join-contest/:series_id/:match_id', auth.authenticate.jwtLogin, beforeJoinContest);
 router.get('/api/v1/player-team-list/:series_id/:match_id/:user_id?/:team_no?/:sport?', auth.authenticate.jwtLogin, playerTeamList);
-router.get('/api/v1/preview-player-team-list/:series_id/:match_id/:player_team_id?/:team_no?/:sport?', auth.authenticate.jwtLogin, playerTeamList);
+router.get('/api/v1/preview-player-team-list/:series_id/:match_id/:player_team_id?/:team_no?/:sport?', auth.authenticate.jwtLogin, previewPlayerTeamList);
 router.get('/api/v1/player-team-listn/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListn);
 router.get('/api/v1/player-list/:series_id/:match_id/:sport?', playerList);
 router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListn);
