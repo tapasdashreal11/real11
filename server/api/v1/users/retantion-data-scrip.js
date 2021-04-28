@@ -11,8 +11,8 @@ module.exports = {
         let {
             bulkdata
         } = req.body
-       await FavouriteContest.deleteMany({});
-        return res.json(response);
+      // await FavouriteContest.deleteMany({});
+      //  return res.json(response);
        /* if(bulkdata && _.isArray(bulkdata) && bulkdata.length>0){
             if(bulkdata){
                 for (const item of bulkdata) {
@@ -58,8 +58,8 @@ module.exports = {
         let {
             bulkdata
         } = req.body
-        await UserAnalysis.deleteMany({});
-        return res.json(response);
+       // await UserAnalysis.deleteMany({});
+       // return res.json(response);
 
         if(bulkdata && _.isArray(bulkdata) && bulkdata.length>0){
             if(bulkdata){
