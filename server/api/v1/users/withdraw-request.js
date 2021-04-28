@@ -314,7 +314,11 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 													if(userWallet.nModified && userWallet.nModified > 0) {
 														let status = TransactionTypes.TRANSACTION_REJECT;
 														await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
-														cb({"status": false, "message": res1.message })
+														if(res1.message == "Account balance is low. Please add funds and try again.") {
+															cb({"status": false, "message": "Instant withdrawal service is temporarily unavailable. Please try after some time." })
+														} else {
+															cb({"status": false, "message": res1.message })
+														}
 													}
 												}
 												// const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 4, message: res1.message } });
@@ -324,6 +328,8 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 										});
 									} catch (error) {
 										console.log("update user withdraw status == ", error);
+										let status = TransactionTypes.TRANSACTION_PENDING;
+										await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
 										cb({"status": true, "message": "Withdraw in Process, please wait." })
 										// return res.status(409).json({ status: true, message: "Withdraw confirmed, but there is something wrong to update status." });
 									}
@@ -337,7 +343,11 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 										if(userWallet.nModified && userWallet.nModified > 0) {
 											let status = TransactionTypes.TRANSACTION_REJECT;
 											await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
-											cb({"status": false, "message": result.statusMessage })
+											if(res1.statusMessage == "Account balance is low. Please add funds and try again.") {
+												cb({"status": false, "message": "Instant withdrawal service is temporarily unavailable. Please try after some time." })
+											} else {
+												cb({"status": false, "message": result.statusMessage })
+											}
 										}
 									}
 								}
@@ -355,6 +365,8 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 				}
 			} catch (err) {
 				console.log("Withdraw param error ===", err);
+				let status = TransactionTypes.TRANSACTION_PENDING;
+				await Transaction.saveTransaction(userId, txnId, status, withdraw_request.refund_amount, withdrawData._id);
 				cb({"status": false, "message": err.message })
 				// return res.status(409).json({ status: true, message: response["message"] });
 			}
@@ -367,6 +379,8 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 		}
 	} catch (error) {
 		logger.error("ERROR", error.message);
+		let status = TransactionTypes.TRANSACTION_PENDING;
+		await Transaction.saveTransaction(userId, txnId, status, withdraw_request.refund_amount, withdrawData._id);
 		console.log("Withdraw accept error === ", error);
 		cb({"status": false, "message": error.message })
 		// return res.status(409).json({ status: false, message: error.message });
