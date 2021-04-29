@@ -323,12 +323,12 @@ module.exports = async (req, res) => {
                                                                                 added_type: parseInt(status)
                                                                             };
                                                                             let userBalance = await User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1})
-                                                                            if(userBalance && extraAmount >0){
-                                                                                if(userBalance.extra_amount<extraAmount || userBalance.cash_balance<cashAmount || userBalance.winning_balance<winAmount || userBalance.bonus_amount<bonusAmount){
+                                                                            if(userBalance){
+                                                                                if(userBalance.extra_amount <= extraAmount || userBalance.cash_balance <= cashAmount || userBalance.winning_balance <= winAmount || userBalance.bonus_amount <= bonusAmount){
                                                                                     userWalletStatus = false;
-                                                                                   await session.abortTransaction();
-                                                                                   session.endSession();
-                                                                                   return res.send(ApiUtility.failed("Something went wrong, Please try again."));
+                                                                                    await session.abortTransaction();
+                                                                                    session.endSession();
+                                                                                    return res.send(ApiUtility.failed("Something went wrong, Please try again."));
                                                                                 }
                                                                             }
                                                                             let walletRes = await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
