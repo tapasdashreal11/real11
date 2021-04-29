@@ -328,7 +328,7 @@ module.exports = async (req, res) => {
                                                                                     userWalletStatus = false;
                                                                                     await session.abortTransaction();
                                                                                     session.endSession();
-                                                                                    return res.send(ApiUtility.failed("Something went wrong, Please try again."));
+                                                                                    return res.send(ApiUtility.failed("Please try again."));
                                                                                 }
                                                                             }
                                                                             let walletRes = await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
