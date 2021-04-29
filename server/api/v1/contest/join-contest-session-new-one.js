@@ -324,7 +324,7 @@ module.exports = async (req, res) => {
                                                                             };
                                                                             let userBalance = await User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1})
                                                                             if(userBalance){
-                                                                                if(userBalance.extra_amount <= extraAmount || userBalance.cash_balance <= cashAmount || userBalance.winning_balance <= winAmount || userBalance.bonus_amount <= bonusAmount){
+                                                                                if(userBalance.extra_amount < extraAmount || userBalance.cash_balance < cashAmount || userBalance.winning_balance < winAmount || userBalance.bonus_amount < bonusAmount){
                                                                                     userWalletStatus = false;
                                                                                     await session.abortTransaction();
                                                                                     session.endSession();
