@@ -115,7 +115,7 @@ module.exports = {
                             });
                     } else {
                         redis.getRedisLFBoard(matchContestKey, function (err, contestData) { // Get Redis for my matches
-                            console.log("redisdata****",contestData);
+                            
                             if (!contestData) {
                                 getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
                                     results['server_time'] = serverTime;
@@ -123,11 +123,11 @@ module.exports = {
                                     return res.send(ApiUtility.success(results));
                                 })
                             } else {
-                                console.log('LF my match list data coming from redis********');
+                               
                                 var newLiveArray = JSON.parse(JSON.stringify(contestData))
                                 var contestDataUp = newLiveArray.upcoming_match.length;
                                 if (contestDataUp > 0) {
-                                    console.log("redisdata data 1****");
+                                    
                                     let key = 0;
                                     _.forEach(newLiveArray.upcoming_match, function (i, k) {
                                         if (i && moment(i.sort_time).toDate() < serverTimeForalc) {
@@ -137,7 +137,7 @@ module.exports = {
                                         }
                                         key++;
                                         if (key === contestDataUp) {
-                                            console.log("redisdata data 2****");
+                                            
                                             newLiveArray['server_time'] = serverTime;
                                             redis.setRedisLFBoard(matchContestKey, newLiveArray); // Set Redis for my matches
                                             return res.send(ApiUtility.success(newLiveArray));
@@ -145,7 +145,7 @@ module.exports = {
                                     })
                                     
                                 } else {
-                                    console.log("redisdata data 3****",contestData);
+                                    
                                     contestData['server_time'] = serverTime;
                                     return res.send(ApiUtility.success(contestData));
                                 }
