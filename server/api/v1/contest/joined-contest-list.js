@@ -14,7 +14,7 @@ const { ObjectId } = require('mongodb');
 // const Helper = require('./../common/helper');
 
 module.exports = {
-    joinedContestList33: async (req, res) => {
+    joinedContestListOld: async (req, res) => {
         try {
             // let sport = 1;
             const user_id = req.userId;
@@ -299,7 +299,6 @@ module.exports = {
     },
     joinedContestListUpcoming: async (req, res) => {
         try {
-            console.log('upcoming joined list*****');
             const user_id = req.userId;
             const { match_id, series_id, sport } = req.params;
             let decoded = {
@@ -313,15 +312,13 @@ module.exports = {
                 let joindedContestlistdata = await getPromiseUserJoinedContestList(myJoinedContestListKey);
                 if (joindedContestlistdata && joindedContestlistdata.joined_contest) {
                     // When data in redis
-                    console.log('JC List Upcoming data in reids*****', joindedContestlistdata);
+                    console.log('JC List Upcoming data in reids*****');
                     let joindContesList = joindedContestlistdata.joined_contest;
                     let cIds = _.map(joindContesList, 'contest_id');
                     let mList = await MatchContest.find({ match_id: decoded['match_id'],'sport': decoded['sport'], contest_id: { $in: cIds } }, { "joined_users": 1, "contest_id": 1 });
                     for (const jclist of joindedContestlistdata.joined_contest) {
                         let cId = jclist.contest_id;
-                        console.log('mList***', mList);
                         const mcObj = mList.find(element => element.contest_id.equals(ObjectId(cId)));
-                        console.log("***", mcObj);
                         jclist.teams_joined = mcObj && mcObj.joined_users ? mcObj.joined_users : 0;
                     }
                     return res.send(ApiUtility.success(joindedContestlistdata));
@@ -484,7 +481,6 @@ module.exports = {
                                     let useBonus = 0;
 
                                     if (inviteCode && inviteCode.usable_bonus_time) {
-                                        // //////console.log("matchInviteCode", inviteCode, moment().isBefore(inviteCode.usable_bonus_time))
                                         if (moment().isBefore(inviteCode.usable_bonus_time)) {
                                             useBonus = inviteCode.before_time_bonus;
                                         } else {
@@ -570,7 +566,6 @@ module.exports = {
     },
     joinedContestList: async (req, res) => {
         try {
-            console.log('Live joined cotest list lates*****');
             const user_id = req.userId;
             const { match_id, series_id, sport } = req.params;
             let decoded = {
@@ -580,8 +575,8 @@ module.exports = {
                 user_id: user_id
             }
             if (match_id && series_id && user_id) {
-                let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
-                redis.setRedisMyMatches(myJoinedContestListKey, {});
+                //let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
+               // redis.setRedisMyMatches(myJoinedContestListKey, {});
                 let data1 = {};
                 let ptcData = await PlayerTeamContest.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': decoded['sport'], 'series_id': decoded['series_id'] }).exec()
                 if (ptcData && ptcData.length > 0) {
