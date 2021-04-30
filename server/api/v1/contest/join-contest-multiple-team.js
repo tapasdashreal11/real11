@@ -435,7 +435,7 @@ module.exports = async (req, res) => {
                                                                          if(contestDataFinal.length == contestDataArray.length && contestDataFinalOne.length == contestDataArray.length){
                                                                             totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
                                                                          }else{
-                                                                            console.log('contestDataFinal',contestDataFinal,contestDataFinalOne);
+                                                                            
                                                                             await session.abortTransaction();
                                                                             session.endSession();
                                                                          }   
