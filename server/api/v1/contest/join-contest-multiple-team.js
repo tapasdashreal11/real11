@@ -425,7 +425,7 @@ module.exports = async (req, res) => {
 
                                                                 let playerTeamContestId = newContestId;
                                                                 var filteredCDArray = contestDataArray.filter(function (el) {
-                                                                    return el.player_team_id != null ;
+                                                                    return el.player_team_id != null && el.player_team_id != '';
                                                                   });
                                                                 var contestDataFinal = _.reject(contestDataArray, ['player_team_id', null]);
                                                                 var contestDataFinalOne = _.reject(contestDataArray, ['player_team_id', '']);

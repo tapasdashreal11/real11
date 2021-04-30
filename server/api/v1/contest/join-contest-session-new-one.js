@@ -154,7 +154,7 @@ module.exports = async (req, res) => {
                                                     let contest = {};
                                                     let newContestId = new ObjectId();
                                                     contest._id = newContestId;
-                                                    contest.player_team_id = teamId;
+                                                    contest.player_team_id = teamId || null;
                                                     contest.match_id = match_id;
                                                     contest.series_id = series_id;
                                                     contest.contest_id = contest_id;
@@ -417,7 +417,15 @@ module.exports = async (req, res) => {
 
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
-                                                                    totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
+                                                                    
+                                                                    if(contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != ''  ){
+                                                                        totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
+                                                                    } else {
+                                                                        await session.abortTransaction();
+                                                                        session.endSession();
+                                                                        return res.send(ApiUtility.failed("Player team not found."));
+                                                                    }
+                                                                    
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
                                                                    
