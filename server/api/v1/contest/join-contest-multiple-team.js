@@ -424,17 +424,22 @@ module.exports = async (req, res) => {
                                                                 let getCountKey = 0;
 
                                                                 let playerTeamContestId = newContestId;
+                                                                var filteredCDArray = contestDataArray.filter(function (el) {
+                                                                    return el.player_team_id != null ;
+                                                                  });
                                                                 var contestDataFinal = _.reject(contestDataArray, ['player_team_id', null]);
                                                                 var contestDataFinalOne = _.reject(contestDataArray, ['player_team_id', '']);
+                                                                var ptIdArray  = _.map(contestDataArray,'player_team_id');
                                                                 if (_.isUndefined(contestDataArray) || _.isNull(contestDataArray) || _.isEmpty(contestDataArray)) {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
 
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
-                                                                         if(contestDataFinal.length == contestDataArray.length && contestDataFinalOne.length == contestDataArray.length){
+                                                                        console.log("filteredCDArray**",filteredCDArray);
+                                                                         if(filteredCDArray.length == contestDataArray.length && ptIdArray.length == contestDataArray.length &&  contestDataFinal.length == contestDataArray.length && contestDataFinalOne.length == contestDataArray.length){
                                                                             totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
-                                                                         }else{
+                                                                         } else {
                                                                             
                                                                             await session.abortTransaction();
                                                                             session.endSession();
