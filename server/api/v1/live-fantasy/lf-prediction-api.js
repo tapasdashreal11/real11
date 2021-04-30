@@ -45,7 +45,7 @@ module.exports = {
                     for (item in prediction_array){
                         new_predit_dic = {...new_predit_dic,...prediction_array[item]['value']}
                     }
-                   console.log("prediction_array",prediction_array);
+                   
 
                    let counter = 0;
                    for (var key in new_predit_dic) {
@@ -53,7 +53,7 @@ module.exports = {
                      for (var i = 1; i < 7; i++){
                          let nKey = sOver+"_"+i;
                          if(key == nKey){
-                            console.log(key, key == nKey)
+                           // console.log(key, key == nKey)
                             counter ++;
                          }
                      }  
