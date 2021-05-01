@@ -25,6 +25,7 @@ const CouponSale = require("../../../models/coupon-sale");
 
 module.exports = async (req, res) => {
     try {
+        console.log('join contest session new one***');
         let data1 = {};
         let startTime = Date.now();
         const user_id = req.userId;
@@ -154,7 +155,7 @@ module.exports = async (req, res) => {
                                                     let contest = {};
                                                     let newContestId = new ObjectId();
                                                     contest._id = newContestId;
-                                                    contest.player_team_id = teamId || null;
+                                                    contest.player_team_id = teamId;
                                                     contest.match_id = match_id;
                                                     contest.series_id = series_id;
                                                     contest.contest_id = contest_id;
@@ -410,20 +411,20 @@ module.exports = async (req, res) => {
                                                                 contest.sport = match_sport;
                                                                 let getCountKey = 0;
 
-                                                                let playerTeamContestId = newContestId;
-                                                                if (_.isUndefined(contest.player_team_id) || _.isNull(contest.player_team_id) || _.isEmpty(contest.player_team_id)) {
+                                                                let playerTeamContestId = newContestId; //
+                                                                if (_.isNull(teamId) ||  _.isEmpty(teamId) || _.isUndefined(teamId) ||  _.isUndefined(contest.player_team_id) || _.isNull(contest.player_team_id) || _.isEmpty(contest.player_team_id)) {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
 
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
                                                                     
-                                                                    if(contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != ''  ){
+                                                                    if(_.has(contest, "player_team_id") && _.has(contest, "team_count") &&  _.has(contest, "team_name") &&  contest.team_name !='' && contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != ''  ){
                                                                         totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
                                                                     } else {
                                                                         await session.abortTransaction();
                                                                         session.endSession();
-                                                                        return res.send(ApiUtility.failed("Player team not found."));
+                                                                        return res.send(ApiUtility.failed("Player team not found.Please try again!!"));
                                                                     }
                                                                     
                                                                 }
