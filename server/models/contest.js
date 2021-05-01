@@ -222,14 +222,14 @@ contestSchema.statics.createAutoContest = async function(contestData, series_id,
 }
 
 contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmount,winAmount,cashAmount,playerTeamContestId,contestData, extraAmount,match_sport) {
-  console.log("22222***************");
+  // console.log("22222***************");
   let surpriseAmount  = extraAmount || 0;
   let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
   // let totalAmount = bonusAmount+winAmount+cashAmount;
   if(!contestData){
      contestData = await this.findOne({'_id':decoded['contest_id']});
   }
-  console.log("22222***************",contestData);
+  // console.log("22222***************",contestData);
   let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
   let winningAmount = contestData.winning_amount;
   let contestSize = contestData.contest_size;
@@ -259,7 +259,7 @@ contestSchema.statics.saveJoinContestDetail = async function (decoded,bonusAmoun
   saveEntity.total_amount   =	totalAmount;
   saveEntity.admin_comission=	parseFloat(comission);
   saveEntity.player_team_contest_id=	playerTeamContestId;
-  console.log("JoinContestDetail*************121221",saveEntity)
+  // console.log("JoinContestDetail*************121221",saveEntity)
   JoinContestDetail.create(saveEntity);
   // PlayerTeamContest.findByIdAndUpdate(ObjectId(playerTeamContestId) , { "total_amount": totalAmount , "bonus_amount": bonusAmount}, { new: true });
   return true;
@@ -273,8 +273,8 @@ contestSchema.statics.saveJoinContestDetailNew = async function (decoded,bonusAm
   if(!contestData){
     contestData = await this.findOne({'_id':decoded['contest_id']});
  }
-  console.log("22222***************",contestData);
- let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
+ // console.log("22222***************",contestData);
+  let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
   let winningAmount = contestData.winning_amount;
   let contestSize = contestData.contest_size;
   let comission = 0;
@@ -304,7 +304,7 @@ contestSchema.statics.saveJoinContestDetailNew = async function (decoded,bonusAm
   saveEntity.admin_comission= comission ? parseFloat(comission):0;
   saveEntity.player_team_contest_id=	playerTeamContestId;
   saveEntity.retention_bonus = retention_bonus_amount|| 0;
-  console.log("JoinContestDetail*************121221");
+  // console.log("JoinContestDetail*************121221");
   JoinContestDetail.create(saveEntity);
   // PlayerTeamContest.findByIdAndUpdate(ObjectId(playerTeamContestId) , { "total_amount": totalAmount , "bonus_amount": bonusAmount}, { new: true });
   return true;
