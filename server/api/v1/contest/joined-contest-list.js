@@ -16,9 +16,9 @@ const { ObjectId } = require('mongodb');
 module.exports = {
     joinedContestListOld: async (req, res) => {
         try {
-            // let sport = 1;
+           // let sport = 1;
             const user_id = req.userId;
-            const { match_id, series_id, sport } = req.params;
+            const { match_id, series_id,sport } = req.params;
             let decoded = {
                 sport: parseInt(sport || 1),
                 match_id: parseInt(match_id),
@@ -31,7 +31,7 @@ module.exports = {
                 let authUser = await User.findById(user_id);
                 if (authUser) {
                     let joinedTeams = await PlayerTeamContest.aggregate([{
-                        $match: { 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': decoded['sport'], 'series_id': decoded['series_id'] }
+                        $match: { 'user_id': decoded['user_id'], 'match_id': decoded['match_id'],'sport':decoded['sport'], 'series_id': decoded['series_id'] }
                     },
                     {
                         $lookup: {
@@ -64,7 +64,7 @@ module.exports = {
                         }
                     }
                     ])
-
+                    // consolelog(JSON.stringify(joinedTeams))
                     let pointsData = {};
                     if (joinedTeams) {
                         for (const teams of joinedTeams) {
@@ -117,9 +117,9 @@ module.exports = {
                                 'match_id': decoded['match_id'],
                                 'contest_id': contestValue.doc.contest._id,
                                 'user_id': decoded['user_id'],
-                                'sport': decoded['sport']
+                                'sport':decoded['sport']
                             };
-                            let joinedTeamCount = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': decoded['sport'], 'contest_id': contestValue.doc.contest._id }).countDocuments();
+                            let joinedTeamCount = await PlayerTeamContest.find({ 'match_id': decoded['match_id'],'sport':decoded['sport'], 'contest_id': contestValue.doc.contest._id }).countDocuments();
 
                             let myTeamIds = [];
                             let myTeamNo = [];
@@ -131,15 +131,15 @@ module.exports = {
                                 for (const joined of teamsJoined) {
                                     myTeamIds.push({ "player_team_id": joined.player_team_id });
                                     myTeamNo.push((joined.player_team) ? joined.player_team.team_count : 0);
-                                    // winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
-                                    winningAmt.push((joined && joined.price_win) ? parseFloat(joined.price_win) : 0);
+                                   // winningAmt.push((joined.winning_amount) ? joined.winning_amount : 0);
+                                  winningAmt.push((joined && joined.price_win) ? parseFloat(joined.price_win) : 0);
                                 }
                             }
 
                             let customPrice = [];
                             let isWinner = false;
                             let isGadget = false;
-                            let aakashLeague = (contestValue.doc.contest.amount_gadget == 'aakash') ? true : false;
+                            let aakashLeague  = (contestValue.doc.contest.amount_gadget == 'aakash') ? true : false;
                             if (contestValue.doc.contest.breakup) {
                                 let key = 0;
                                 if (contestValue.doc.contest.amount_gadget == 'gadget') {
@@ -268,10 +268,10 @@ module.exports = {
                         }
                     }
 
-                    let myTeams = await PlayerTeam.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': decoded['sport'] }).countDocuments();
+                    let myTeams = await PlayerTeam.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'] ,'sport': decoded['sport']}).countDocuments();
 
                     let myContest = await PlayerTeamContest.aggregate([{
-                        $match: { 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': decoded['sport'] }
+                        $match: { 'user_id': decoded['user_id'], 'match_id': decoded['match_id'],'sport': decoded['sport'] }
                     },
                     {
                         $group: { _id: "$contest_id", count: { $sum: 1 } }
