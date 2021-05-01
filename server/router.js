@@ -363,17 +363,25 @@ router.post('/cron/bizwebhook', function(req, res) {
 router.post('/phonePe/phonePewebhook', function(req, res) {
     console.log("phonePe callback data", req.body)
     console.log("phonePe callback x-verify string", req.headers["x-verify"]);
-    const buff = Buffer.from(req.body.response, 'base64');
-    const response = JSON.parse(buff.toString('utf-8'));
-    const xVerifyString =   req.headers["x-verify"];
     // console.log(response, xVerifyString);
-    if (response && response.success == true && response.code == "PAYMENT_SUCCESS") {
-        updateTransactionPhonePeWebhook(response, xVerifyString, req.body.response, 'PHONEPE', function(resResult) {
-            return res.send(resResult)
-        });
+    if(req.body && req.body.response) {
+        const buff = Buffer.from(req.body.response, 'base64');
+        const response = JSON.parse(buff.toString('utf-8'));
+        const xVerifyString =   req.headers["x-verify"];
+        // console.log(response, xVerifyString);
+        if (response && response.success == true && response.code == "PAYMENT_SUCCESS") {
+            updateTransactionPhonePeWebhook(response, xVerifyString, req.body.response, 'PHONEPE', function(resResult) {
+                return res.send(resResult)
+            });
+        } else {
+            return res.send({ status: false, "message":"Something went wrong..!!" });
+        }
+    } else {
+        return res.send({ status: false, "message":"Something went wrong..!!" });
     }
     // return res.send({ status: 'success' });
 });
+
 
 // live fantasy api section 
  router.get('/api/v1/lf-match-list/:pmatch_id/:sport', liveFantasyMatchList); 
