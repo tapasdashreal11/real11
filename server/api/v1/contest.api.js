@@ -348,7 +348,7 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
-    joinContestWalletAmount11: async (req, res) => {
+    joinContestWalletAmount: async (req, res) => {
         try {
             let data = {};
             let data1 = {};
@@ -523,7 +523,7 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
-    joinContestWalletAmount: async (req, res) => {
+    joinContestWalletAmountMultiple: async (req, res) => {
         try {
             let data = {};
             let data1 = {};
