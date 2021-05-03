@@ -196,6 +196,8 @@ module.exports = {
                             let teamId = new ObjectId()
                             team._id = teamId;
                             data1.team_id = teamId;
+                            data1.team_count = team_count;
+                            
                             // message = "Team has been created successfully."
                             // data1.message = message;
                             //TODO: Create Object ID first and Save Mongodb and Redis Parallely
