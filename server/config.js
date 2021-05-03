@@ -220,7 +220,7 @@ config.mqtt = {
 // This is used to define cat for user according to contest cat
 config.user_category = {
   beginner_cat: '600a7d84a3d2553aa779eae7',
-  super_cat:'600a7dfaa3d2553aa779eae8',
+  super_cat:'608f9b833f625d05d4529c16',
   dimond_cat:'608f907c3f625d05d4529c0f'
 }
 config.user_category_prod = {
