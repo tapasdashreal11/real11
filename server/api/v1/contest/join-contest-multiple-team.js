@@ -474,6 +474,8 @@ module.exports = async (req, res) => {
                                                                 if (mcCountResNew && contestData.contest_size === mcCountResNew.joined_users) {
                                                                      await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
                                                                 }
+                                                                let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
+                                                                redis.setRedisMyMatches(myJoinedContestListKey, {});
                                                             } catch (error) {
                                                                 console.log('error in JC at line 428******* at',error);
                                                                 await session.abortTransaction();
