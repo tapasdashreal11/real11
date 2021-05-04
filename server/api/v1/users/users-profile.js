@@ -18,26 +18,18 @@ module.exports = {
         let userId = req.userId;
         let user = await User.findOne({ _id: userId }).select("  ");
         let userProData = await Profile.findOne({ user_id: ObjectId(userId) })
-        // let user = await User.findOne({ status: 1 }).maxTimeMS(2)
-        // console.log(user.fair_play_violation);return false; 
-        //.populate('profile','team_name image cash_balance winning_balance bonus_amount email_verified bank_account_verify pen_verify email');
+        
         if (user) {
           let is_profile_complete = false;
           if(user.first_name !== '' && user.email !== '' && user.phone !== '' && user.address !== '' && user.city !== user.postal_code !== '') {
             is_profile_complete = true;
           }
-          let Referdetails = []; //await ReferralCodeDetails.find({ refered_by: userId });
-          //console.log("user", user.bank_account_verify, user.pen_verify, user.email_verified)
+          let Referdetails = []; 
           let sport = 1;
-          const contestCount = []; //await (new ModelService(PlayerTeamContest)).getContestCount(req.userId,sport);
-          const paidContests = []; //await (new ModelService(PlayerTeamContest)).getPaidContests(req.userId,sport);
-          const totalMatches = []; //await (new ModelService(PlayerTeamContest)).getTotalMatches(req.userId,sport);
-          const totalSeries = []; //await (new ModelService(PlayerTeamContest)).getTotalSeries(req.userId,sport);
-          const totalMatchWin = []; //await (new ModelService(PlayerTeamContest)).getTotalMatchWin(req.userId,sport);
           
           let level	= 1;
           let totalPaidContest = userProData && userProData.paid_contest_count ? userProData.paid_contest_count : 0;
-          // let totalPaidContest = (!_.isEmpty(paidContests)) ? paidContests["0"].player_team_id : 0;
+          
           if(totalPaidContest >= 0) {
             let ratio		=	totalPaidContest / 20;
             let ratioPlus	=	parseInt(ratio) + 1;
@@ -54,10 +46,7 @@ module.exports = {
           data.total_match = userProData && userProData.total_match ? userProData.total_match : 0;
           data.total_series = userProData && userProData.total_series ? userProData.total_series : 0;
           data.series_wins = userProData && userProData.series_wins ? userProData.series_wins : 0;
-          //data.contest_finished = (!_.isEmpty(contestCount)) ? contestCount["0"].player_team_id : 0;
-          //data.total_match = (!_.isEmpty(totalMatches)) ? totalMatches["0"].player_team_id : 0;
-          //data.total_series = (!_.isEmpty(totalSeries)) ? totalSeries["0"].player_team_id : 0;
-          //data.series_wins = (!_.isEmpty(totalMatchWin)) ? totalMatchWin["0"].player_team_id : 0;
+          
           data.contest_level = level;
           data.paid_contest_count = totalPaidContest;
 
@@ -89,7 +78,7 @@ module.exports = {
           data.is_youtuber= (user.is_youtuber == 1) ? true : false;
           data.pan_reject_reason = user.pan_reject_reason || null;
           data.bank_reject_reason = user.bank_reject_reason || null;
-          data.withdraw_message  = "";
+          data.withdraw_message  = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
           data.deposite_message  = "Rupay cardholders, please use paytm payment gateway for better success rate.";
           data.change_bank_req = user && user.change_bank_req ? user.change_bank_req: false ;
           
