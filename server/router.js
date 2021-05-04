@@ -58,7 +58,7 @@ const loginWithEmail = require('./api/v1/users/users-email-login');
 const transactionHistoryNew = require('./api/v1/users/transation-history-new');
 const { teamProfileComparision, teamProfilePaging } = require('./api/v1/users/team-profile-comparision');
 const withdrawHistory = require('./api/v1/users/withdraw-history');
-const { joinedContestList } = require('./api/v1/contest/joined-contest-list');
+const { joinedContestList,joinedContestListUpcoming } = require('./api/v1/contest/joined-contest-list');
 const askToAakash = require('./api/v1/users/ask-to-aakash-api');
 const { favouriteContestCreate,retentionBonousCreate } = require('./api/v1/users/retantion-data-scrip');
 
@@ -254,7 +254,8 @@ router.get('/api/v1/team-states/:series_id', auth.authenticate.jwtLogin, (req, r
 router.get('/api/v1/contest-prize-breakup/:contest_size', auth.authenticate.jwtLogin, contestPrizeBreakup);
 router.get('/api/v1/contest-detail/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailLatest); // old
 router.get('/api/v1/contest-detail-new/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest); // old
-router.get('/api/v1/joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestList);
+router.get('/api/v1/joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestList); //
+router.get('/api/v1/joined-contest-list-upcoming/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestListUpcoming);
 
 router.get('/api/v1/contest-detail-new-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest);
 router.get('/api/v1/contest-detail-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailLatest);
