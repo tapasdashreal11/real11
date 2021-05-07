@@ -575,8 +575,6 @@ module.exports = {
                 user_id: user_id
             }
             if (match_id && series_id && user_id) {
-                //let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
-               // redis.setRedisMyMatches(myJoinedContestListKey, {});
                 let data1 = {};
                 let ptcData = await PlayerTeamContest.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': decoded['sport'], 'series_id': decoded['series_id'] }).exec()
                 if (ptcData && ptcData.length > 0) {
