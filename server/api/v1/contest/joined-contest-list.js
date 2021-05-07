@@ -299,7 +299,6 @@ module.exports = {
     },
     joinedContestListUpcoming: async (req, res) => {
         try {
-            console.log('JC List Upcoming start*****');
             const user_id = req.userId;
             const { match_id, series_id, sport } = req.params;
             let decoded = {
