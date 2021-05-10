@@ -347,7 +347,7 @@ router.post('/cron/paytmwebhook', function(req, res) {
 router.post('/payumoney/webhook', function(req, res) {
     console.log("payumoney callback data", req.body)
     if (req.body.status && req.body.status == "Success") {
-        updateTransactionFromWebhook(req.body.merchantTransactionId, '', req.body.amount);
+        updateTransactionFromWebhook(req.body.merchantTransactionId, 'payumoney', req.body.amount);
     }
     return res.send({ status: 'success' });
 });

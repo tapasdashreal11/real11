@@ -37,31 +37,36 @@ module.exports = async (req, res) => {
       // const user = await (new ModelService(Users)).getUserDetail(userId);
       let user = await Users.findOne({ _id: userId });
       if(user) {
-        let panDetail = await PanDetails.findOne({ user_id: userId });
-        
-        let updatedData = {};
-        updatedData.state = params.state || null;
-        updatedData.pan_name = params.pan_name || null;
-        updatedData.date_of_birth = params.date_of_birth || null;
-        updatedData.pan_card = params.pan_number || null;
-        updatedData.aadhar_card = params.aadhar_card || null;
-        updatedData.user_id = userId;
-        updatedData.is_verified = 1;
-
-        if (params.image) {
-          updatedData.pan_image = params.image;
-        }
-        if(!panDetail) {
-          await PanDetails.create(updatedData);
+        if(user && user.status == 1) {
+          let panDetail = await PanDetails.findOne({ user_id: userId });
+          
+          let updatedData = {};
+          updatedData.state = params.state || null;
+          updatedData.pan_name = params.pan_name || null;
+          updatedData.date_of_birth = params.date_of_birth || null;
+          updatedData.pan_card = params.pan_number || null;
+          updatedData.aadhar_card = params.aadhar_card || null;
+          updatedData.user_id = userId;
+          updatedData.is_verified = 1;
+  
+          if (params.image) {
+            updatedData.pan_image = params.image;
+          }
+          if(!panDetail) {
+            await PanDetails.create(updatedData);
+          } else {
+            const result = await PanDetails.update({ user_id: user._id }, { $set: updatedData });
+          }
+          await Users.updateOne({ _id: userId }, { $set: {pen_verify:2} });
+          await (new ModelService()).referalManageAtVerification(userId,true,false,false);
+          response["message"] = "Pan card detail updated successfully.";
+          response["status"] = true;
+          response["data"] = updatedData;
+          return res.json(response);
         } else {
-          const result = await PanDetails.update({ user_id: user._id }, { $set: updatedData });
+          response["message"] = "Before verifing pan, please verify your phone number.";
+          return res.json(response);
         }
-        await Users.updateOne({ _id: userId }, { $set: {pen_verify:2} });
-        await (new ModelService()).referalManageAtVerification(userId,true,false,false);
-        response["message"] = "Pan card detail updated successfully.";
-        response["status"] = true;
-        response["data"] = updatedData;
-        return res.json(response);
       } else {
         response["message"] = "Invalid User id.";
         return res.json(response);

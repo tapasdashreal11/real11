@@ -450,7 +450,7 @@ module.exports = {
                                                 }
 
                                                 // Manage tnxdata
-                                                if (txnData && Number(txnData.txn_amount), Number(response.txnAmount)) {
+                                                if (txnData && Number(txnData.txn_amount) == Number(response.txnAmount)) {
                                                     if (decoded['coupon_id'] && decoded['discount_amount'] > 0) {
                                                         var start = new Date();
                                                         start.setHours(0,0,0,0);
@@ -512,7 +512,7 @@ module.exports = {
                                                 let txn_status = false;
                                                 // console.log(Number(txnData.txn_amount), Number(response.txnAmount))
                                                 // return false;
-                                                if (txnData && Number(txnData.txn_amount), Number(response.txnAmount)) {
+                                                if (txnData && Number(txnData.txn_amount) == Number(response.txnAmount)) {
                                                     users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
                                                     try{
                                                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
@@ -820,7 +820,7 @@ module.exports = {
             txnData = await Transaction.findOne({ _id: ObjectId(transactionId) });
             // console.log(gateway);
             // return false;
-            if ((txnData && txnData._id && txnData.status == false && gateway != "payubiz") || (txnData && txnData._id && txnData.status == false && gateway == "payubiz" && Number(txnAmount) == txnData.txn_amount)) {
+            if (txnData && txnData._id && txnData.status == false && Number(txnAmount) == Number(txnData.txn_amount)) {
                 // console.log("enter");return false
                 let authUser = await User.findOne({ '_id': txnData.user_id });
                 if (!txnData.status && authUser) {
