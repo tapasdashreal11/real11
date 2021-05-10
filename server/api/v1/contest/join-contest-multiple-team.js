@@ -295,8 +295,7 @@ module.exports = async (req, res) => {
                                                                     let status = TransactionTypes.JOIN_CONTEST;
                                                                     let txnAmount = totalEntryForContest;
                                                                     let withdrawId = 0;
-                                                                    console.log('calEntryFees****',calEntryFees);
-                                                                    console.log('winAmount****',winAmount,cashAmount,bonusAmount,extraAmount);
+                                                                   
                                                                     if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
                                                                 
                                                                         let cons_cash_balance = bonusAmount;

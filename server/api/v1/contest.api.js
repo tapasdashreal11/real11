@@ -586,7 +586,8 @@ module.exports = {
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
-                let useAmount = eval((useableBonusPer / 100) * entryFee);
+                let useAmountCal = eval((useableBonusPer / 100) * entryFee);
+                let useAmount = eval(useAmountCal * total_team_number);
                 // ////////console.log(useAmount);
                 let usableAmt = 0;
                 let extraAmount = 0;
@@ -662,10 +663,8 @@ module.exports = {
                                 } else {
                                     if (useAmount > userdata.bonus_amount) {
                                         usableAmt = userdata.bonus_amount;
-                                        usableAmt = usableAmt * total_team_number;
                                     } else {
                                         usableAmt = useAmount;
-                                        usableAmt = usableAmt * total_team_number;
                                     }
                                 }
                                 let extraBalance = userdata.extra_amount || 0;
