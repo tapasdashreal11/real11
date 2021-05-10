@@ -339,7 +339,7 @@ router.get('/api/v1/change-bank-req',auth.authenticate.jwtLogin,changeBankReq);
 router.post('/cron/paytmwebhook', function(req, res) {
     console.log("paytm callback data", req.body)
     if (req.body.STATUS && req.body.STATUS == "TXN_SUCCESS") {
-        updateTransactionFromWebhook(req.body.ORDERID, 'PAYTM');
+        updateTransactionFromWebhook(req.body.ORDERID, 'PAYTM', req.body.TXNAMOUNT);
     }
     return res.send({ status: 'success' });
 });
@@ -347,7 +347,7 @@ router.post('/cron/paytmwebhook', function(req, res) {
 router.post('/payumoney/webhook', function(req, res) {
     console.log("payumoney callback data", req.body)
     if (req.body.status && req.body.status == "Success") {
-        updateTransactionFromWebhook(req.body.merchantTransactionId);
+        updateTransactionFromWebhook(req.body.merchantTransactionId, '', req.body.amount);
     }
     return res.send({ status: 'success' });
 });
@@ -355,8 +355,8 @@ router.post('/payumoney/webhook', function(req, res) {
 router.post('/cron/bizwebhook', function(req, res) {
     console.log("payubiz callback data", req.body)
     if (req.body.status && req.body.status == "success") {
-        console.log(req.body.txnid);
-        updateTransactionFromWebhook(req.body.txnid);
+        // console.log(req.body.txnid);
+        updateTransactionFromWebhook(req.body.txnid, 'payubiz', req.body.amount);
     }
     return res.send({ status: 'success' });
 });

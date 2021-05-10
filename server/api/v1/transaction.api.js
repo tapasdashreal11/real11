@@ -405,7 +405,8 @@ module.exports = {
 
                             post_res.on('end', async function () {
                                 response = JSON.parse(response)
-
+                                // console.log(response.body.txnAmount);
+                                // return false;
                                 if (response.body && response.body.resultInfo.resultStatus == 'TXN_SUCCESS') {
                                     response = response.body
 
@@ -449,7 +450,7 @@ module.exports = {
                                                 }
 
                                                 // Manage tnxdata
-                                                if (txnData) {
+                                                if (txnData && Number(txnData.txn_amount), Number(response.txnAmount)) {
                                                     if (decoded['coupon_id'] && decoded['discount_amount'] > 0) {
                                                         var start = new Date();
                                                         start.setHours(0,0,0,0);
@@ -509,7 +510,9 @@ module.exports = {
                                                     }
                                                 }
                                                 let txn_status = false;
-                                                if (txnData) {
+                                                // console.log(Number(txnData.txn_amount), Number(response.txnAmount))
+                                                // return false;
+                                                if (txnData && Number(txnData.txn_amount), Number(response.txnAmount)) {
                                                     users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
                                                     try{
                                                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
@@ -809,14 +812,16 @@ module.exports = {
         }
     },
 
-    updateTransactionFromWebhook: async (transactionId, gateway = null) => {
+    updateTransactionFromWebhook: async (transactionId, gateway = null, txnAmount = 0) => {
         
         try {
             let txnData;
             // objectid.isValid('53fbf4615c3b9f41c381b6a3')
             txnData = await Transaction.findOne({ _id: ObjectId(transactionId) });
-            
-            if (txnData && txnData._id && txnData.status == false) {
+            // console.log(gateway);
+            // return false;
+            if ((txnData && txnData._id && txnData.status == false && gateway != "payubiz") || (txnData && txnData._id && txnData.status == false && gateway == "payubiz" && Number(txnAmount) == txnData.txn_amount)) {
+                // console.log("enter");return false
                 let authUser = await User.findOne({ '_id': txnData.user_id });
                 if (!txnData.status && authUser) {
                     let isCouponUsed = 0;
