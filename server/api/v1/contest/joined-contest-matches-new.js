@@ -61,7 +61,7 @@ module.exports = {
         try {
             let data1 = {};
             const { pagesize, page, is_complete, sport } = req.params;
-            let user_id = "5f65fce7e42a92091bb21f46"; //req.userId;
+            let user_id = req.userId;
             let decoded = {
                 user_id: user_id,
                 pagesize: (pagesize) ? parseInt(pagesize) : 25,
