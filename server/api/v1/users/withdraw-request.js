@@ -157,7 +157,7 @@ module.exports = async (req, res) => {
 						}
 					}
 				} else {
-					response["message"] = "Before doing any withdraw, you have to verify your phone number.";
+					response["message"] = "Before doing withdraw, please verify your phone number.";
 					return res.json(response);
 				}
 			} else {
