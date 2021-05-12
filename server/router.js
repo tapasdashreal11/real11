@@ -63,6 +63,7 @@ const askToAakash = require('./api/v1/users/ask-to-aakash-api');
 const { favouriteContestCreate,retentionBonousCreate } = require('./api/v1/users/retantion-data-scrip');
 
 const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
+const { joinedContestMatchesNew } = require('./api/v1/contest/joined-contest-matches-new');
 const  joinContest  = require('./api/v1/contest/join-contest');
 const  joinContestNew  = require('./api/v1/contest/join-contest');
 const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
@@ -284,6 +285,7 @@ router.post('/api/v1/generate-payubiz-checksum', auth.authenticate.jwtLogin, gen
 router.post('/api/v1/generate-paytm-checksum', auth.authenticate.jwtLogin, generatePaytmChecksum);
 router.post('/api/v1/create-transaction-id', auth.authenticate.jwtLogin, createTransactionId);
 router.get('/api/v1/joined-contest-matches/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatches);
+router.get('/api/v1/joined-contest-matches-new/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatchesNew);
 router.get('/api/v1/apply-contest-invite-code/:invite_code', auth.authenticate.jwtLogin, applyContestInviteCode);
 router.get('/api/v1/get-match-list/:sport?', redis.cacheMiddle, matchList);
 router.get('/api/v1/get-match-detail/:match_id/:sport/:series_id',  redis.cacheMiddle);
