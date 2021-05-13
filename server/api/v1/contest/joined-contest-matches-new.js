@@ -59,6 +59,7 @@ function getMatchRedisData(skip, decoded, filter, sort, sport, cb) {
 module.exports = {
     joinedContestMatchesNew: async (req, res) => {
         try {
+            console.log("this is my match list new ****");
             let data1 = {};
             const { pagesize, page, is_complete, sport } = req.params;
             let user_id = req.userId;
@@ -184,14 +185,14 @@ function myContestModel(skip, limit, sort, filter, sport, type){
 
            let matchIds  = _.map(myJoindMatch,'match_id');
            queryObj['match_id']= {$in:matchIds};
-           console.log(queryObj);
+           
            let seriesSqueadData = await SeriesSquadModel.find(queryObj).sort(sortTime);
            let data = [];
             if(seriesSqueadData && seriesSqueadData.length>0){
                 for (const sItem of seriesSqueadData) {
                     let myMatchItem = myJoindMatch.find(element => element.match_id==sItem.match_id && element.series_id==sItem.series_id);
                     if(myMatchItem && myMatchItem._id){
-                        console.log("myMatchItem****",myMatchItem);
+                        
                         let ddItem = {
                             _id : myMatchItem._id,
                             match_id : sItem.match_id,
