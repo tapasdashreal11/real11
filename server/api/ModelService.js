@@ -955,7 +955,8 @@ class ModelService {
                             "is_notification":{$cond: { if: { $eq: [ "$notification_status", 'active' ] }, then: true, else: false }},
                             "notification_title":"$notification_title",
                             "match_banner":{$cond: { if: { $eq: [ "$match_banner", '' ] }, then: "", else: { $concat: [ imageurl, "/", "$match_banner" ] } }},
-                            "active_giveaway":{ $ifNull: [ "$active_giveaway", false ] }
+                            "active_giveaway":{ $ifNull: [ "$active_giveaway", false ] },
+                            "live_fantasy":{ $ifNull: [ "$custom_live_fantasy", false ] }
                         }
                     }
                 ], (err, data) => {
