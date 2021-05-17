@@ -46,5 +46,32 @@ module.exports = {
             res.send(ApiUtility.failed(error.message));
         }
     },
+    fiveOverliveFantasyMatchList: async (req, res) => {
+        try {
+            let data1 = {};
+            let { pmatch_id, sport } = req.params;
+            if(pmatch_id){
+                let  upCommingMatch = await SeriesSquad.find({live_fantasy_parent_id:parseInt(pmatch_id),status:1,sport:sport,time: { $gte: new Date() }, match_status: "Not Started"}).sort({start_over:1});
+                let liveData = [];
+                let finishData = [];
+                data1.upcoming_match = upCommingMatch;
+                data1.total = upCommingMatch.length;
+                data1.live_match = liveData;
+                data1.completed_match = finishData;
+                data1.message = 'Test Message';
+                data1.match_type = "five-over";
+                data1.server_time = moment(new Date()).format(config.DateFormat.datetime);
+                var successObj = ApiUtility.success(data1);
+                res.send(successObj);
+            }else{
+                res.send(ApiUtility.failed("invalid params"));
+            }
+           
+        } catch (error) {
+            console.log(error);
+            Helper.sendMailToDeveloper(req, error.message);  //send mail to developer to debug purpose
+            res.send(ApiUtility.failed(error.message));
+        }
+    },
 }
 

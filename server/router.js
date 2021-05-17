@@ -112,7 +112,7 @@ const {
     checkPhonePeTransactionStatus
 } = require('./api/v1/transaction.api');
 
-const { matchList } = require('./api/v1/contest/match-list');
+const { matchList,fiveOverliveFantasyMatchList } = require('./api/v1/contest/match-list');
 const { playerList, playerListn } = require('./api/v1/contest/player-list');
 const { playerTeamList, previewPlayerTeamList,playerTeamListn } = require('./api/v1/contest/player-team-list');
 const { createTeam } = require('./api/v1/contest/create-team');
@@ -288,6 +288,7 @@ router.get('/api/v1/joined-contest-matches/:is_complete?/:sport?', auth.authenti
 router.get('/api/v1/joined-contest-matches-new/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatchesNew);
 router.get('/api/v1/apply-contest-invite-code/:invite_code', auth.authenticate.jwtLogin, applyContestInviteCode);
 router.get('/api/v1/get-match-list/:sport?', redis.cacheMiddle, matchList);
+router.get('/api/v1/five-over-match-list/:pmatch_id/:sport',  fiveOverliveFantasyMatchList);
 router.get('/api/v1/get-match-detail/:match_id/:sport/:series_id',  redis.cacheMiddle);
 router.post('/api/v1/team-profile-comparision', auth.authenticate.jwtLogin, teamProfileComparision);
 router.post('/api/v1/team-profile-paging', teamProfilePaging);
