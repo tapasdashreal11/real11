@@ -34,15 +34,22 @@ module.exports = {
                 // let wk = 0, bat = 0, bowl = 0, ar = 0;
                 let playerIds = player_id;
                 let teamString = playerIds.sort().join("|");
+               if(liveMatch.live_fantasy_parent_id){
+                   
+                if (playerIds.length != 5)
+                 return res.send(ApiUtility.failed('Please select valid team'));
 
-                if (sport === 1) {
-                    if (playerIds.length != 11)
-                        return res.send(ApiUtility.failed('Please select valid team'));
+               } else {
+                    if (sport === 1) {
+                        if (playerIds.length != 11)
+                            return res.send(ApiUtility.failed('Please select valid team'));
 
-                } else if (sport === 2) {
-                    if (playerIds.length !== 11)
-                        return res.send(ApiUtility.failed('Please select valid team'));
-                }
+                    } else if (sport === 2) {
+                        if (playerIds.length !== 11)
+                            return res.send(ApiUtility.failed('Please select valid team'));
+                    }
+               }
+                
 
                 let statusAdd = false;
 
