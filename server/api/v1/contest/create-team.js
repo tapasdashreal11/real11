@@ -35,9 +35,9 @@ module.exports = {
                 let playerIds = player_id;
                 let teamString = playerIds.sort().join("|");
                if(liveMatch.live_fantasy_parent_id){
-                   
+
                 if (playerIds.length != 5)
-                 return res.send(ApiUtility.failed('Please select valid team'));
+                 return res.send(ApiUtility.failed('Please select only 5 players!!'));
 
                } else {
                     if (sport === 1) {
