@@ -161,7 +161,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
     try {
         let data    =   [];
         let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
-        if (playerRecord && playerRecord.length == 11) {
+        if (playerRecord && (playerRecord.length == 11 || playerRecord.length == 5)) {
     
             let playerData = {};
             for (const value of playerRecord) {
