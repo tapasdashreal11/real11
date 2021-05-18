@@ -121,6 +121,7 @@ var seriesSquadSchema = new Schema({
 	match_banner: {type:String, default: ""},
 	is_leaderboard: {type:Number, enum: [1,0], default: 0},
 	active_giveaway: {type:Boolean, default: false},
+	live_fantasy_parent_id:{type:Number}
 }, {
 	timestamps: true
 });
