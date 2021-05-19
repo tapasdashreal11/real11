@@ -192,7 +192,7 @@ function myContestModel(skip, limit, sort, filter, sport, type){
                 for (const sItem of seriesSqueadData) {
                     let myMatchItem = myJoindMatch.find(element => element.match_id==sItem.match_id && element.series_id==sItem.series_id);
                     if(myMatchItem && myMatchItem._id){
-                        
+                        console.log("sItem***",sItem);
                         let ddItem = {
                             _id : myMatchItem._id,
                             match_id : sItem.match_id,
@@ -210,7 +210,7 @@ function myContestModel(skip, limit, sort, filter, sport, type){
                             server_time : serverTime2,
                             sort_time : sItem.time,
                             total_contest : myMatchItem.total_contest,
-                            match_type : _.has(sItem, "is_parent") || _.has(sItem, "live_fantasy_parent_id")?(sItem.is_parent ? "FULL":"LIVE"):"FULL" 
+                            match_type : _.has(sItem, "is_parent") || _.has(sItem, "live_fantasy_parent_id")?(sItem.is_parent ? "FULL":(sItem.live_fantasy_parent_id ? "LIVE":"FULL")):"FULL" 
                         }
                         data.push(ddItem);
                         
