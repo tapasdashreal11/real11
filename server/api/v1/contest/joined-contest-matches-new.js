@@ -210,7 +210,7 @@ function myContestModel(skip, limit, sort, filter, sport, type){
                             server_time : serverTime2,
                             sort_time : sItem.time,
                             total_contest : myMatchItem.total_contest,
-                            match_type : sItem && !sItem.is_parent ? 'LIVE':'FULL'
+                            match_type : sItem.is_parent
                         }
                         data.push(ddItem);
                         
