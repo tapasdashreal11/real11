@@ -210,7 +210,7 @@ function myContestModel(skip, limit, sort, filter, sport, type){
                             server_time : serverTime2,
                             sort_time : sItem.time,
                             total_contest : myMatchItem.total_contest,
-                            match_type : _.has(sItem, "is_parent") ? (sItem.is_parent ? "FULL":(sItem.live_fantasy_parent_id ? "LIVE":"FULL")):(sItem.live_fantasy_parent_id ?"LIVE":"FULL") 
+                            match_filter : _.has(sItem, "is_parent") ? (sItem.is_parent ? "FULL":(sItem.live_fantasy_parent_id ? "LIVE":"FULL")):(sItem.live_fantasy_parent_id ?"LIVE":"FULL") 
                         }
                         data.push(ddItem);
                         
