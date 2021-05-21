@@ -1040,6 +1040,7 @@ module.exports = {
                 let authUser = await User.findOne({ '_id': decoded['user_id'] });
                 if (authUser) {
                     let liveMatch = await SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'series_id': decoded['series_id'] });
+                    console.log('liveMatch***',liveMatch);
                     if (liveMatch) {
                         let ctime = new Date();
                         let mtime = liveMatch.time;
@@ -1054,6 +1055,7 @@ module.exports = {
                                 'contest_id': decoded['contest_id'],
                                 'user_id': decoded['user_id']
                             }
+                            console.log('filter',filter);
                             
                             var pleasrTeamData = await PlayerTeamContest.find(filter);
                             _.forEach(pleasrTeamData, async function (i, k) {
