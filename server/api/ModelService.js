@@ -898,7 +898,7 @@ class ModelService {
             try {
                 this.collection.aggregate([
                     {
-                        $match:{time: {$gte: new Date()}, status:1,match_status:"Not Started",sport:sport}
+                        $match:{time: {$gte: new Date()},is_parent:true, status:1,match_status:"Not Started",sport:sport}
                     },
                     { $sort : {sort: -1, time : 1} },
                     { $limit : 100 },
