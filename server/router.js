@@ -404,6 +404,15 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
  router.get('/api/v1/lf-point-system',auth.authenticate.jwtLogin,lfPointSystem);
  router.get('/api/v1/lf-match-live-score',liveMatchScore);
  router.get('/api/v1/lf-prediction-user-preview/:id',auth.authenticate.jwtLogin,predictionForUserItem);
+ 
+ //old api with new name 
+ router.post('/api/v1/game-login', usersLogin);
+ router.post('/api/v1/game-signup', usersSignup);
+ router.post('/api/v1/game-email-login', loginWithEmail);
+ router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestNewOne);
+ router.post('/api/v1/game-multiple-join-contest', auth.authenticate.jwtLogin, joinContestMultipleTeam);
+ router.post('/api/v1/game-update-transactions', auth.authenticate.jwtLogin, updateTransaction);
+ router.post('/api/v1/game-add-withdraw-request', auth.authenticate.jwtLogin, addWithdrawRequest); 
  /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
   if(req.query.STATUS && req.query.STATUS == "TXN_SUCCESS"){
