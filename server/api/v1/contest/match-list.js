@@ -51,7 +51,7 @@ module.exports = {
             let data1 = {};
             let { pmatch_id, sport } = req.params;
             if(pmatch_id){
-                let  upCommingMatch = await SeriesSquad.find({live_fantasy_parent_id:parseInt(pmatch_id),status:1,sport:sport,time: { $gte: new Date() }, match_status: "Not Started"}).sort({start_over:1});
+                let  upCommingMatch = await SeriesSquad.find({live_fantasy_parent_id:parseInt(pmatch_id),status:1,sport:sport,time: { $gte: new Date() }, match_status: "Not Started"}).sort({time:1});
                 let liveData = [];
                 let finishData = [];
                 data1.upcoming_match = upCommingMatch;
