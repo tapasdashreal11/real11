@@ -731,7 +731,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     let parContestId= matchContest && matchContest.parent_contest_id ? matchContest.parent_contest_id :contest_id; 
                     let createCount = 1;
                     var remainCounts = await MatchContest.find({ 'parent_contest_id': ObjectId(parContestId), match_id: match_id, sport: match_sport, is_full:0, is_private:1 }).countDocuments();
-                    if(contestData.contest_size == 2){
+                    if(contestData.contest_size == 2 && contestData.entry_fee<1000){
                         if(remainCounts<2){
                             createCount = 5;
                         }
