@@ -732,6 +732,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     let createCount = 1;
                     var remainCounts = await MatchContest.find({ 'parent_contest_id': ObjectId(parContestId), match_id: match_id, sport: match_sport, is_full:0, is_private:1 }).countDocuments();
                     if(contestData.contest_size == 2 && contestData.entry_fee<1000){
+                       console.log('remainCounts  ******',remainCounts);
                         if(remainCounts<2){
                             createCount = 5;
                         }
@@ -739,11 +740,13 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                     if(matchContest && matchContest.is_private && matchContest.is_private == 1 && contestData.contest_size == 2){
                         await session.commitTransaction();
                         session.endSession();
+                        console.log('remainCounts  ****** in only privte');
                        if (joinedContestCount == contestData.contest_size) {
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                        }
                     } else {
                         if (joinedContestCount == contestData.contest_size) {
+                            console.log('remainCounts  ****** in only pu');
                             console.log(contestData.contest_size, "************** auto create counter");
                             contestAutoCreateAferJoin(createCount,contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session,matchContest);
                             await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
