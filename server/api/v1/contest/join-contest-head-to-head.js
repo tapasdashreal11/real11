@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
         let startTime = Date.now();
         const user_id = req.userId;
         const { } = req.params;
-        const { team_id, team_count, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        let { team_id, team_count, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
@@ -101,15 +101,19 @@ module.exports = async (req, res) => {
                                 if (contestData && contestData.contest_size == parseInt(joinedContest) && infinteStatus) {
 
                                     let response = {};
-                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: 0 }).sort({ _id: -1 });
+                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: 0,is_private:1 }).sort({ _id: -1 });
                                     await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
 
                                     if (MatchContestData) {
-                                        response.status = false;
-                                        response.message = "This contest is full, please join other contest.";
-                                        response.data = { contest_id: MatchContestData.contest_id };
-                                        response.error_code = null;
-                                        return res.json(response);
+                                        contestData = await Contest.findOne({ _id: ObjectId(MatchContestData.contest_id) });
+                                        matchContest = MatchContestData;
+                                        contest_id = MatchContestData.contest_id;
+                                        joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
+                                        // response.status = false;
+                                        // response.message = "This contest is full, please join other contest.";
+                                        // response.data = { contest_id: MatchContestData.contest_id };
+                                        // response.error_code = null;
+                                        // return res.json(response);
                                     } else {
                                         response.status = false;
                                         response.message = "This contest is full, please join other contest.";
@@ -142,9 +146,13 @@ module.exports = async (req, res) => {
                                                     console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
                                                     await session.abortTransaction();
                                                     session.endSession();
+                                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: 0,is_private:1 }).sort({ _id: -1 });
                                                     let response = {};
                                                     response.status = false;
                                                     response.message = "This contest is full, please join other contest.";
+                                                    if(MatchContestData){
+                                                        response.data = { contest_id: MatchContestData.contest_id };
+                                                    }
                                                     response.error_code = null;
                                                     return res.json(response);
                                                 }
@@ -622,7 +630,7 @@ module.exports = async (req, res) => {
                                                     let response = {};
                                                     await session.abortTransaction();
                                                     session.endSession();
-                                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
+                                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: { $ne: 1 },is_private:1 }).sort({ _id: -1 });
                                                     if (MatchContestData) {
                                                         response.status = false;
                                                         response.message = "This contest is full, please join other contest.";
@@ -720,18 +728,34 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
 
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
-                    // var mcCountRes = await PlayerTeamContest.find({ 'match_id': parseInt(match_id),'sport': match_sport, 'contest_id': contest_id, 'series_id': parseInt(series_id) }).countDocuments();
-                    // console.log("newPTC.user_id*****", newPTC.user_id, "own id", user_id, "mcCountRes", joinedContestCount);
-                    //var ddCount = mcCountRes + 1 ;
-                    if (joinedContestCount == contestData.contest_size) {
-                        console.log(contestData.contest_size, "************** auto create counter");
-                        contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session,matchContest);
-                        await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
-                    } else {
-                        
+                    let parContestId= matchContest && matchContest.parent_contest_id ? matchContest.parent_contest_id :contest_id; 
+                    let createCount = 1;
+                    var remainCounts = await MatchContest.find({ 'parent_contest_id': ObjectId(parContestId), match_id: match_id, sport: match_sport, is_full:0, is_private:1 }).countDocuments();
+                    if(contestData.contest_size == 2){
+                        if(remainCounts<2){
+                            createCount = 5;
+                        }
+                     }
+                    if(matchContest && matchContest.is_private && matchContest.is_private == 1 && contestData.contest_size == 2){
                         await session.commitTransaction();
                         session.endSession();
+                       if (joinedContestCount == contestData.contest_size) {
+                        await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
+                       }
+                    } else {
+                        if (joinedContestCount == contestData.contest_size) {
+                            console.log(contestData.contest_size, "************** auto create counter");
+                            contestAutoCreateAferJoin(createCount,contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session,matchContest);
+                            await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
+                        } else {
+                            
+                            await session.commitTransaction();
+                            session.endSession();
+                        }
                     }
+                    
+                    
+                    
                 } else {
                     
                     await session.commitTransaction();
@@ -845,7 +869,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
  * @param {*} parentContestId 
  */
 
-async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session,matchContest) {
+async function contestAutoCreateAferJoin(createCount,contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session,matchContest) {
     try {
 
         let catID = contestData.category_id;
@@ -876,7 +900,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         entity.is_auto_create = 2;
         // console.log('cResult************** before');
         let newContestArray = [];
-        for(var i=0;i<5;i++){
+        for(var i=0;i<createCount;i++){
             newContestArray.push(entity);
         }
         const newDataC = await Contest.create(newContestArray, { session: session });
@@ -895,6 +919,11 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
                     entityM.parent_contest_id = parentContestId;
                 } else {
                     entityM.parent_contest_id = contestData._id;
+                }
+                if(i==0){
+                    entityM.is_private = 0;
+                } else {
+                    entityM.is_private =1;
                 }
                 entityM.match_id = match_id;
                 entityM.contest_id = newContestId;
