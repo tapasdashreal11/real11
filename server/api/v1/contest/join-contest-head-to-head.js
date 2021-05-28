@@ -101,7 +101,7 @@ module.exports = async (req, res) => {
                                 if (contestData && contestData.contest_size == parseInt(joinedContest) && infinteStatus) {
 
                                     let response = {};
-                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: 0,is_private:1 }).sort({ _id: -1 });
+                                    var MatchContestData = await MatchContest.findOne({ 'category_id': matchContest.category_id, "contest.entry_fee":contestData.entry_fee,match_id: match_id, sport: match_sport, is_full: 0,is_private:1 }).sort({ _id: -1 });
                                     await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
 
                                     if (MatchContestData) {
@@ -146,7 +146,7 @@ module.exports = async (req, res) => {
                                                     console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
                                                     await session.abortTransaction();
                                                     session.endSession();
-                                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: 0,is_private:1 }).sort({ _id: -1 });
+                                                    var MatchContestData = await MatchContest.findOne({'category_id': matchContest.category_id, "contest.entry_fee":contestData.entry_fee, match_id: match_id, sport: match_sport, is_full: 0,is_private:1 }).sort({ _id: -1 });
                                                     let response = {};
                                                     response.status = false;
                                                     response.message = "This contest is full, please join other contest.";
@@ -630,7 +630,7 @@ module.exports = async (req, res) => {
                                                     let response = {};
                                                     await session.abortTransaction();
                                                     session.endSession();
-                                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: { $ne: 1 },is_private:1 }).sort({ _id: -1 });
+                                                    var MatchContestData = await MatchContest.findOne({'category_id': matchContest.category_id, "contest.entry_fee":contestData.entry_fee, match_id: match_id, sport: match_sport, is_full: 0,is_private:1 }).sort({ _id: -1 });
                                                     if (MatchContestData) {
                                                         response.status = false;
                                                         response.message = "This contest is full, please join other contest.";
@@ -661,7 +661,7 @@ module.exports = async (req, res) => {
                                             await session.abortTransaction();
                                             session.endSession();
                                             console.log("error in catch***", errorr);
-                                            var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
+                                            var MatchContestData = await MatchContest.findOne({'category_id': matchContest.category_id, "contest.entry_fee":contestData.entry_fee, match_id: match_id, 'sport': match_sport, is_full: 0 }).sort({ _id: -1 });
                                             if (MatchContestData) {
                                                 response.status = false;
                                                 response.message = "This contest is full, please join other contest.";
