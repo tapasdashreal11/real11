@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
 				if(user.status == 1) {
 					var finalResponse ={};
 					finalResponse = user;
-	
+					finalResponse["fair_play_user"]= user.user_type;
 					
 					let tokendata = {};
 	
@@ -93,7 +93,8 @@ module.exports = async (req, res) => {
 	
 					Tokens.create(tokenInsertData);
 					delete finalResponse.password;
-					delete finalResponse.otp; 
+					delete finalResponse.otp;
+					delete finalResponse.user_type;  
 					
 					response["status"]	=	true;
 					response["token"]	=	token;
