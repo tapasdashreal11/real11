@@ -56,15 +56,14 @@ module.exports = {
                 let finishData = [];
                 let mList = [];
                 if(upCommingMatch && upCommingMatch.length>0){
-                    for (let i =0;i< upCommingMatch.length;i++) {
-                      let dateItem = upCommingMatch[i];
-                      console.log("item.date_str***",dateItem.date_str,"*****time ***",dateItem.time_str);
-                      dateItem['star_date'] = dateItem.date_str;
-                      dateItem['star_time'] = dateItem.time_str;
-                        mList.push(dateItem);
-                    }
+                    mList = upCommingMatch.map(item => {
+                        let itemClone = JSON.parse(JSON.stringify(item));
+                        itemClone.star_date = moment(item.date).utc().format('YYYY-MM-DD');
+                        itemClone.star_time = moment(item.time).utc().format('HH:mm');
+                        return itemClone;
+                    });
                 }
-                data1.upcoming_match = mList;
+                data1.upcoming_match = mList; 
                 data1.total = mList.length;
                 data1.live_match = liveData;
                 data1.completed_match = finishData;
