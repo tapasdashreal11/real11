@@ -56,11 +56,11 @@ module.exports = {
                 let finishData = [];
                 let mList = [];
                 if(upCommingMatch && upCommingMatch.length>0){
-                    for (let item of upCommingMatch) {
-                      let dateItem = item;
-                      console.log("item.date_str***",item.date_str,"*****time ***",item.time_str);
-                      dateItem['star_date'] = item.date_str;
-                      dateItem['star_time'] = item.time_str;
+                    for (let i =0;i< upCommingMatch.length;i++) {
+                      let dateItem = upCommingMatch[i];
+                      console.log("item.date_str***",dateItem.date_str,"*****time ***",dateItem.time_str);
+                      dateItem['star_date'] = dateItem.date_str;
+                      dateItem['star_time'] = dateItem.time_str;
                         mList.push(dateItem);
                     }
                 }
