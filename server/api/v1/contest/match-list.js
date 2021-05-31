@@ -62,8 +62,8 @@ module.exports = {
                         mList.push(item);
                     }
                 }
-                data1.upcoming_match = upCommingMatch;
-                data1.total = upCommingMatch.length;
+                data1.upcoming_match = mList;
+                data1.total = mList.length;
                 data1.live_match = liveData;
                 data1.completed_match = finishData;
                 data1.message = 'Test Message';
