@@ -57,10 +57,11 @@ module.exports = {
                 let mList = [];
                 if(upCommingMatch && upCommingMatch.length>0){
                     for (let item of upCommingMatch) {
-
-                        item['star_date'] = item.date_str;
-                        item['star_time'] = item.time_str;
-                        mList.push(item);
+                      let dateItem = item;
+                      console.log("item.date_str***",item.date_str,"*****time ***",item.time_str);
+                      dateItem['star_date'] = item.date_str;
+                      dateItem['star_time'] = item.time_str;
+                        mList.push(dateItem);
                     }
                 }
                 data1.upcoming_match = mList;
