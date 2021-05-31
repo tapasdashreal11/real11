@@ -54,10 +54,12 @@ module.exports = {
                 let  upCommingMatch = await SeriesSquad.find({live_fantasy_parent_id:parseInt(pmatch_id),status:1,sport:sport,time: { $gte: new Date() }, match_status: "Not Started"}).sort({time:1});
                 let liveData = [];
                 let finishData = [];
+                let mList = [];
                 if(upCommingMatch && upCommingMatch.length>0){
                     for (const item of upCommingMatch) {
                         item['star_date'] = item.date_str;
                         item['star_time'] = item.time_str;
+                        mList.push(item);
                     }
                 }
                 data1.upcoming_match = upCommingMatch;
