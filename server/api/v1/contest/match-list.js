@@ -56,7 +56,8 @@ module.exports = {
                 let finishData = [];
                 let mList = [];
                 if(upCommingMatch && upCommingMatch.length>0){
-                    for (const item of upCommingMatch) {
+                    for (let item of upCommingMatch) {
+
                         item['star_date'] = item.date_str;
                         item['star_time'] = item.time_str;
                         mList.push(item);
