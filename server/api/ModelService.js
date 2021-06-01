@@ -7,6 +7,8 @@ var imageurl = config.imageBaseUrl;
 const ReferralCodeDetails = require('../models/user-referral-code-details');
 const Transaction = require('../models/transaction');
 const Users = require("../models/user");
+const MyContestModel = require("../models/my-contest-model");
+const SeriesSquadModel = require("../models/series-squad");
 
 const { TransactionTypes, MatchStatus } = require('../constants/app');
 
