@@ -1548,7 +1548,7 @@ class ModelService {
         });
     }
 
-    myContestModel(skip, limit, sort, filter, sport, type){
+    myContestModelLastOne(skip, limit, sort, filter, sport, type){
         return new Promise((resolve, reject) => {
             try{
                 var serverTime2 = moment(new Date()).format(config.DateFormat.datetime);
@@ -1666,6 +1666,78 @@ class ModelService {
                 }).option({ allowDiskUse: true });
             }catch(error){
                 console.log("error", error)
+            }
+        });
+    }
+    myContestModel(skip, limit, sort, filter, sport, type){
+        return new Promise(async (resolve, reject) => {
+            try{
+                var serverTime2 = moment(new Date()).format(config.DateFormat.datetime);
+                var matchesFilter = []
+                let sortTime =  {};
+                var queryObj = {};
+                if(type == 'upcoming') {
+                    let currentDate2 = moment().utc().toDate();
+                    let oneMonthDateUp =  moment().utc().add('30','days').toDate();
+                    queryObj = {sport:sport,status:1,match_status:"Not Started",time:{$gte:currentDate2,$lt:oneMonthDateUp}}
+                    sortTime = {date : 1}
+                } else if (type == 'live'){
+                    let currentDateLive	 =	moment().utc().toDate();
+                    sortTime = {date : -1}
+                    queryObj = {win_flag:0,sport:sport,status:1,match_status:{$in:[MatchStatus.MATCH_INPROGRESS,MatchStatus.MATCH_DELAYED,MatchStatus.MATCH_NOTSTART,'Finished']},time:{$lte:currentDateLive}}
+    
+                } else if (type == 'completed_match'){
+                    let pastMonthDateCM	=  moment().utc().subtract('30','days').toDate();
+                    queryObj = {sport:sport,status:1,time:{$gte:pastMonthDateCM},$or: [ 
+                        {match_status:"Finished", win_flag:1},
+                        {match_status:"Cancelled"}
+                    ]}
+                    sortTime = {date : -1}
+                }
+               let myJoindMatch = await MyContestModel.find(filter).skip(skip).sort(sort);
+    
+               let matchIds  = _.map(myJoindMatch,'match_id');
+               queryObj['match_id']= {$in:matchIds};
+               
+               let seriesSqueadData = await SeriesSquadModel.find(queryObj).sort(sortTime);
+               let data = [];
+                if(seriesSqueadData && seriesSqueadData.length>0){
+                    for (const sItem of seriesSqueadData) {
+                        let myMatchItem = myJoindMatch.find(element => element.match_id==sItem.match_id && element.series_id==sItem.series_id);
+                        if(myMatchItem && myMatchItem._id){
+                            let ddItem = {
+                                _id : myMatchItem._id,
+                                match_id : sItem.match_id,
+                                series_id : sItem.series_id,
+                                match_status : sItem && sItem.match_status && sItem.match_status== "Finished" && sItem.win_flag == 0 ? "Under Review" : sItem.match_status,
+                                local_team_id : sItem.localteam_id,
+                                local_team_name : _.isNull(sItem.localteam_short_name) ?sItem.localteam :sItem.localteam_short_name,
+                                local_team_flag : _.isNull(sItem.local_flag) ? null :config.imageBaseUrl + "/" + sItem.local_flag,
+                                visitor_team_id : sItem.visitorteam_id,
+                                visitor_team_name : _.isNull(sItem.visitorteam_short_name) ?sItem.visitorteam :sItem.visitorteam_short_name,
+                                visitor_team_flag : _.isNull(sItem.visitor_flag) ? null :config.imageBaseUrl + "/" + sItem.visitor_flag,
+                                series_name : _.isNull(sItem.series_name) ? "" :sItem.series_name,
+                                star_date:  sItem.date_str || '',
+                                star_time: sItem.time_str || '', 
+                                server_time : serverTime2,
+                                sort_time : sItem.time,
+                                total_contest : myMatchItem.total_contest,
+                                match_filter : _.has(sItem, "is_parent") ? (sItem.is_parent ? "FULL":(sItem.live_fantasy_parent_id ? "LIVE":"FULL")):(sItem.live_fantasy_parent_id ?"LIVE":"FULL") 
+                            }
+                            data.push(ddItem);
+                            
+                        }
+                    }
+                    if(data && data.length>0){
+                        resolve(data);
+                    }
+                } else {
+                    resolve(data);
+                }
+               
+            } catch (error){
+                console.log("error in*******", error)
+                reject(error);
             }
         });
     }

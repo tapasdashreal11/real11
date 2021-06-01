@@ -192,7 +192,6 @@ function myContestModel(skip, limit, sort, filter, sport, type){
                 for (const sItem of seriesSqueadData) {
                     let myMatchItem = myJoindMatch.find(element => element.match_id==sItem.match_id && element.series_id==sItem.series_id);
                     if(myMatchItem && myMatchItem._id){
-                        console.log("sItem***",sItem);
                         let ddItem = {
                             _id : myMatchItem._id,
                             match_id : sItem.match_id,
