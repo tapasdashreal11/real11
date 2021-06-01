@@ -114,6 +114,27 @@ module.exports = async (req, res) => {
                                             matchContest = MatchContestData;
                                             contest_id = MatchContestData.contest_id;
                                             joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
+
+                                            var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': teamId }
+                                            let playerTeamRes = await PlayerTeamContest.findOne(PlayerTeamContestFilter);
+                                            if (playerTeamRes) {
+                                                var parentContestId = (contestData && contestData.parent_id) ? contestData.parent_id : contestData._id;
+                                                let m_query_new = { 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: 0 };
+                                                var MatchContestDataNew = await MatchContest.findOne(m_query_new).sort({ _id: -1 });
+                                                if(MatchContestDataNew){
+                                                    contestData = await Contest.findOne({ _id: ObjectId(MatchContestDataNew.contest_id) });
+                                                    matchContest = MatchContestDataNew;
+                                                    contest_id = MatchContestDataNew.contest_id;
+                                                    joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
+                                                } else {
+                                                    response.status = false;
+                                                    response.message = "This contest is full, please join other contest.";
+                                                    // response.data = { contest_id: MatchContestData.contest_id };
+                                                    response.error_code = null;
+                                                    return res.json(response);
+                                                }
+                                                
+                                             }
                                         } else {
                                             response.status = false;
                                             response.message = "This contest is full, please join other contest.";
