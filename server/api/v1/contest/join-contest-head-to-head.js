@@ -731,7 +731,20 @@ module.exports = async (req, res) => {
                                         return res.send(ApiUtility.failed("Already Joined Contest."));
                                     }
                                 } else {
-                                    return res.send(ApiUtility.failed("You can not add more than " + maxTeamSize + " teams."));
+                                    if(contestData.contest_size == 2){
+                                        console.log("Hello**********************");
+                                        let m_query_else = { 'category_id': matchContest.category_id, "contest.entry_fee":contestData.entry_fee, match_id: match_id, sport: match_sport, is_full: 0 };
+                                        var MatchContestDataElse = await MatchContest.findOne(m_query_else).sort({ _id: -1 });
+                                        if(MatchContestDataElse){
+                                            response.data = { contest_id: MatchContestDataElse.contest_id };
+                                        }
+                                        response.status = false;
+                                        response.message = "This contest is full, please join other contest.";
+                                        response.error_code = null;
+                                        return res.json(response);
+                                    } else {
+                                        return res.send(ApiUtility.failed("You can not add more than " + maxTeamSize + " teams."));
+                                    }
                                 }
                             } else {
                                 return res.send(ApiUtility.failed('You have no team to join this contest.'));
