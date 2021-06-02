@@ -579,6 +579,7 @@ module.exports = async (req, res) => {
                                                                                                 "star_time": moment(data.time).format("HH:mm"),
                                                                                                 "server_time": serverTimeu,
                                                                                                 "sort_time": data.time,
+                                                                                                "match_filter" : _.has(data, "is_parent") ? (data.is_parent ? "FULL":(data.live_fantasy_parent_id ? "LIVE":"FULL")):(data.live_fantasy_parent_id ?"LIVE":"FULL") 
                                                                                                 // "total_contest": totalContestKey
                                                                                             };
 
