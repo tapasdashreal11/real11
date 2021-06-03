@@ -734,10 +734,17 @@ module.exports = async (req, res) => {
                                     if(contestData.contest_size == 2){
                                         console.log("Hello**********************");
                                         let response = {};
-                                        let m_query_else = { 'category_id': matchContest.category_id, "contest.entry_fee":contestData.entry_fee, match_id: match_id, sport: match_sport, is_full: 0 };
+                                        let m_query_else = { 'category_id': matchContest.category_id, "contest.entry_fee":contestData.entry_fee, match_id: match_id, sport: match_sport, is_full: 0,is_private:1 };
                                         var MatchContestDataElse = await MatchContest.findOne(m_query_else).sort({ _id: -1 });
                                         if(MatchContestDataElse){
-                                            response.data = { contest_id: MatchContestDataElse.contest_id };
+                                            if(MatchContestDataElse.joined_users == 1){
+                                                response.data = { contest_id: MatchContestDataElse.contest_id };
+                                            } else {
+                                                let m_query_new = { 'category_id': matchContest.category_id, "contest.entry_fee":contestData.entry_fee, match_id: match_id, sport: match_sport, is_full: 0,is_private:0 };
+                                                 var matchContestDataNew = await MatchContest.findOne(m_query_new).sort({ _id: -1 });
+                                                 response.data = matchContestDataNew &&  matchContestDataNew.contest_id ? { contest_id: matchContestDataNew.contest_id } :{ contest_id: MatchContestDataElse.contest_id };
+                                            }
+                                            
                                         }
                                         response.status = false;
                                         response.message = "This contest is full, please join other contest.";
