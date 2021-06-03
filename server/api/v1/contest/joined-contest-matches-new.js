@@ -59,7 +59,6 @@ function getMatchRedisData(skip, decoded, filter, sort, sport, cb) {
 module.exports = {
     joinedContestMatchesNew: async (req, res) => {
         try {
-            console.log("this is my match list new ****");
             let data1 = {};
             const { pagesize, page, is_complete, sport } = req.params;
             let user_id = req.userId;
