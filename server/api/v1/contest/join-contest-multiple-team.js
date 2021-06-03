@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
         var totalContestKey = 0;
         var mycontId = 0;
         if (match_id && series_id && contest_id && user_id && team_data && _.isArray(team_data) && team_data.length>0) {
-            console.log('req.body',req.body);
+            
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
@@ -111,9 +111,9 @@ module.exports = async (req, res) => {
                                 let playerTeamRes = await PlayerTeamContest.find(PlayerTeamContestFilter,{_id:1});
                                 let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
                                 let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
-                                 console.log("joinedContestWithTeamCounts",joinedContestWithTeamCounts,"** maxTeamSize **",maxTeamSize);
+                                 
                                 if (joinedContestWithTeamCounts < maxTeamSize) {
-                                    console.log('playerTeamRes',playerTeamRes);
+                                    
                                     if (playerTeamRes && playerTeamRes.length ==0) {
                                         if ((!contestData.multiple_team && joinedContestWithTeamCounts >= 1) || ((contestData.multiple_team !== 'yes') && joinedContestWithTeamCounts >= 1)) {
                                             return res.send(ApiUtility.failed('Multiple Teams Not Allowed'));
@@ -124,9 +124,7 @@ module.exports = async (req, res) => {
                                         try {
                                               let teamArray =[];
                                                 if(team_data && team_data.length>0){
-                                                            
                                                     teamArray = await removeDuplicateEntry(team_data);
-                                                    console.log('contestDataArray after duplicate',teamArray);
                                                 }
                         
                                                   let contestDataArray = [];
@@ -436,11 +434,11 @@ module.exports = async (req, res) => {
 
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
-                                                                        console.log("filteredCDArray**",filteredCDArray);
+                                                                        
                                                                          if(filteredCDArray.length == contestDataArray.length && ptIdArray.length == contestDataArray.length &&  contestDataFinal.length == contestDataArray.length && contestDataFinalOne.length == contestDataArray.length){
                                                                             totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
                                                                          } else {
-                                                                            
+                                                                            console.log("Team data not match before join");
                                                                             await session.abortTransaction();
                                                                             session.endSession();
                                                                          }   
@@ -872,14 +870,8 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entity.parent_id = contestData._id;
         }
         entity.is_auto_create = 2;
-        // console.log('cResult************** before');
         const newDataC = await Contest.create([entity], { session: session });
-
-
         var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
-
-        // console.log('cResult************** after contest create in auto',cResult);
-
         if (cResult && cResult._id) {
             let newContestId = cResult._id;
             let entityM = {};
@@ -928,7 +920,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
 
 
             const dd = await MatchContest.create([entityM], { session: session });
-            //console.log("dara at MatchContest in auto***",dd);
+            
             await session.commitTransaction();
             session.endSession();
 
@@ -1009,7 +1001,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
     let perdayExtraAmount = 0;
     if (remainingFee) {
         let extraBalance = authUser.extra_amount || 0;
-        // console.log(extraBalance,'extra amount');
+        
         let extraBal = 0;
         if (extraBalance && extraBalance > 0) {
             let perDayExtraAmt = 0;
@@ -1017,7 +1009,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
             if (String(authUser.extra_amount_date) == String(indianDate)) {
                 perDayExtraAmt = authUser.perday_extra_amount;
             }
-            // console.log(perDayExtraAmt, "perDayExtraAmt");
+            
             let saveData = {};
             if (perDayExtraAmt < perDayLimit) {
                 extraAmount = (extraBalance > remainingFee) ? remainingFee : extraBalance;
@@ -1041,7 +1033,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
         saveData['perday_extra_amount'] = perdayExtraAmount;
         saveData['extra_amount'] = extraBal;
     }
-    // console.log('remaining fee', remainingFee, 'extraAmount', extraAmount);
+    
     if (remainingFee) {
         let cashBalance = authUser.cash_balance;
 
@@ -1105,7 +1097,6 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
         var data = await (new ModelService(MyContestModel)).myContestModel(skip, pagesize, sort, filter, sport, type);
         callback(null, data)
     } catch (error) {
-        //console.log("error",error)
     }
 }
 
@@ -1116,7 +1107,6 @@ async function multipleJoinContestDetail(contestTeamData,decoded,bonusAmount,win
     if(!contestData){
       contestData = await Contest.findOne({'_id':decoded['contest_id']});
     }
-    console.log("Multiple JCD Data***************",contestData);
     let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
     let winningAmount = contestData.winning_amount;
     let contestSize = contestData.contest_size;
@@ -1155,7 +1145,6 @@ async function multipleJoinContestDetail(contestTeamData,decoded,bonusAmount,win
 }
 
 async function removeDuplicateEntry(data){
-    console.log('data*****',data);
     let uniqueUsersByID = _.uniqWith(data, _.isEqual);;
     return uniqueUsersByID;
 }
