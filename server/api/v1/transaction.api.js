@@ -539,15 +539,16 @@ module.exports = {
                                                 if (txn_status == true) {
                                                       let appsflyerURL = "";
                                                       if(authUser.device_type == "Android"){
-                                                        appsflyerURL = "https://app.appsflyer.com/os.real11";
+                                                        appsflyerURL =  config.appsFlyerAndroidUrl;
                                                       } else {
-                                                        appsflyerURL = "https://app.appsflyer.com/id1455728625";
+                                                        appsflyerURL = config.appsFlyeriPhoneUrl;
                                                       }
 
                                                       try{
                                                          var tData = {
                                                             "eventName": "Cash Deposit",
                                                             "app_version_name": "1.0.53",
+                                                            "appsflyer_id": authUser.appsflayer_id || '', 
                                                             "eventValue": { 
                                                                 "af_customer_user_id": authUser.clevertap_id || '',
                                                                 "email":  authUser.email || '', 
@@ -556,7 +557,7 @@ module.exports = {
                                                                 "af_currency": "INR", 
                                                                 "txn_id": txnData._id || '', 
                                                                 "clevertap_id": authUser.clevertap_id || '',
-                                                                "appsflayer_id": authUser.appsflayer_id || '', 
+                                                                "appsflyer_id": authUser.appsflayer_id || '', 
                                                                 "user_id": authUser._id || '', 
                                                                 "coupon_id": coupon_id || '', 
                                                                 "discount_amount": c_discount_amount
@@ -1274,15 +1275,16 @@ async function updateTransactionAllGetway(decoded, cb) {
                 if (txn_status == true) {
                     let appsflyerURL = "";
                     if(authUser.device_type == "Android"){
-                      appsflyerURL = "https://app.appsflyer.com/os.real11";
+                        appsflyerURL = config.appsFlyerAndroidUrl;
                     } else {
-                      appsflyerURL = "https://app.appsflyer.com/id1455728625";
+                        appsflyerURL = config.appsFlyeriPhoneUrl;
                     }
 
                     try{
                         var tData = {
                           "eventName": "Cash Deposit",
                           "app_version_name": "1.0.53",
+                          "appsflyer_id": authUser.appsflayer_id || '', 
                           "eventValue": { 
                               "af_customer_user_id": authUser.clevertap_id || '',
                               "email":  authUser.email || '', 
@@ -1291,7 +1293,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                               "af_currency": "INR", 
                               "txn_id": txnData._id || '', 
                               "clevertap_id": authUser.clevertap_id || '',
-                              "appsflayer_id": authUser.appsflayer_id || '', 
+                              "appsflyer_id": authUser.appsflayer_id || '', 
                               "user_id": authUser._id || '', 
                               "coupon_id": decoded['coupon_id'] || '', 
                               "discount_amount": c_discount_amount

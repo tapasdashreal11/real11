@@ -270,6 +270,10 @@ config.min_withdraw_amount = 200.00;
 config.extra_bonus_percent_amount = 20;
 config.extra_bonus_perday_limit = 500;
 
+// Appsflyer URL for Android and iphone
+config.appsFlyerAndroidUrl = "https://api2.appsflyer.com/inappevent/os.real11";
+config.appsFlyeriPhoneUrl = "https://api2.appsflyer.com/inappevent/id1455728625";
+
 config.imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://real11-images.s3.ap-south-1.amazonaws.com';
 // config.imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://real-11-dev.s3.ap-south-1.amazonaws.com'; 
 
