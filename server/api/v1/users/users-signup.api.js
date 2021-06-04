@@ -221,6 +221,8 @@ module.exports = async (req, res) => {
 
           response["status"] = true;
           response["data"] = insertData;
+
+          // After successfully signup entery data in appsflyer
           try{
               var signUpBody = {
                   "eventName": "SignUp",
@@ -232,7 +234,7 @@ module.exports = async (req, res) => {
                       }
                 };
              var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
-             console.log(resData);
+             console.log("apps flyer res",resData);
           } catch(errr){
 
           }
