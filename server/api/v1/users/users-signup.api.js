@@ -225,7 +225,7 @@ module.exports = async (req, res) => {
           // After successfully signup entery data in appsflyer
           try{
             var signUpBody = {
-              "eventName": "SignUp",
+              "eventName": "NewSignUp",
               "app_version_name": "1.0.53",
               "eventValue": { 
                   "af_customer_user_id": params.appsflayer_id || '', 

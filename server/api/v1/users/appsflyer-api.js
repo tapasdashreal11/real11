@@ -14,7 +14,8 @@ const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
                 "body": appsflyerdata
             };
             request(options, function (error,res,body) {
-                return resolve(body);
+                console.log("**** applyer",res,body);
+                return resolve(res);
             });
            
         } else {
