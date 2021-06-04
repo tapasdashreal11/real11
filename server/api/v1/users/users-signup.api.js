@@ -14,6 +14,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
+const { appsFlyerEntryService } = require("./appsflyer-api");
 
 // @params
 // {
@@ -29,6 +30,7 @@ module.exports = async (req, res) => {
     
     
     var response = { status: false, message: "Invalid Request", data: {} };
+    let appsflyerURL = "";
     let params = req.body;
     let constraints = {
       mobile_number: "required",
@@ -91,8 +93,15 @@ module.exports = async (req, res) => {
           if(params && params.device_id)
            insertData.device_id = params.device_id;
 
-           if(params && params.device_type)
-           insertData.device_type = params.device_type;
+           if(params && params.device_type){
+              insertData.device_type = params.device_type;
+              if(params.device_type == "Android"){
+                appsflyerURL = "https://app.appsflyer.com/os.real11";
+              } else {
+                appsflyerURL = "https://app.appsflyer.com/id1455728625";
+              }
+           }
+           
   
           insertData.team_name = createTeamName(params.email);
           insertData.bonus_amount = config.referral_bouns_amount;
@@ -212,6 +221,21 @@ module.exports = async (req, res) => {
 
           response["status"] = true;
           response["data"] = insertData;
+          try{
+              var signUpBody = {
+                  "eventName": "SignUp",
+                  "app_version_name": "1.0.53",
+                  "eventValue": { 
+                      "af_customer_user_id": params.appsflayer_id || '', 
+                      "email":  params.email || '', 
+                      "mobile": params.mobile_number || ''
+                      }
+                };
+             var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
+             console.log(resData);
+          } catch(errr){
+
+          }
           return res.json(response);
         }else{
           response["message"] = "Email already exists.";
