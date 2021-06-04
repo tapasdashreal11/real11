@@ -96,9 +96,9 @@ module.exports = async (req, res) => {
            if(params && params.device_type){
               insertData.device_type = params.device_type;
               if(params.device_type == "Android"){
-                appsflyerURL = "https://app.appsflyer.com/os.real11";
+                appsflyerURL = "https://api2.appsflyer.com/inappevent/os.real11";
               } else {
-                appsflyerURL = "https://app.appsflyer.com/id1455728625";
+                appsflyerURL = "https://api2.appsflyer.com/inappevent/id1455728625";
               }
            }
            
@@ -225,7 +225,7 @@ module.exports = async (req, res) => {
           // After successfully signup entery data in appsflyer
           try{
             var signUpBody = {
-              "eventName": "SignUp",
+              "eventName": "ModelSignUp",
               "app_version_name": "1.0.53",
               "eventValue": { 
                   "af_customer_user_id": params.clevertap_id || '', 
