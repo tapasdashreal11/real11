@@ -226,7 +226,6 @@ module.exports = async (req, res) => {
           try{
             var signUpBody = {
               "eventName": "SignUp",
-              "app_version_name": "1.0.53",
               "appsflyer_id": params.appsflayer_id || '', 
               "customer_user_id": insertId || '',
               "eventTime" : new Date(),
