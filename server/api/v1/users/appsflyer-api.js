@@ -5,7 +5,7 @@ const config = require('../../../config');
 
 const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
     return new Promise((resolve, reject) => {
-        if(!isEmpty(panData)){
+        if(!isEmpty(appsflyerdata)){
             var options = {
                 "method": "POST",
                 "url": appsflyerUrl,
