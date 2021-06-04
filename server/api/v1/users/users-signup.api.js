@@ -237,7 +237,7 @@ module.exports = async (req, res) => {
             };
             console.log("signUpBody***",signUpBody);
          var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
-         console.log("apps flyer res",resData);
+         console.log("apps flyer res signup",resData);
           } catch(errr){
          console.log('errr',errr);
           }
