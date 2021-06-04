@@ -406,6 +406,7 @@ module.exports = {
 
                             post_res.on('end', async function () {
                                 response = JSON.parse(response)
+                                var c_discount_amount = 0;
                                 // console.log(response.body.txnAmount);
                                 // return false;
                                 if (response.body && response.body.resultInfo.resultStatus == 'TXN_SUCCESS') {
@@ -499,6 +500,7 @@ module.exports = {
                                                                                     users.bonus_amount = parseFloat(users.bonus_amount) + parseFloat(discountAmount);
                                                                                     txnType = TransactionTypes.COUPON_BONUS
                                                                                 }
+                                                                                c_discount_amount = discountAmount; 
                                                                                 let date = new Date();
                                                                                 let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
                                                                                 Transaction.saveTransaction(users.id, txnId, txnType, discountAmount);
@@ -535,7 +537,36 @@ module.exports = {
                                                 }
 
                                                 if (txn_status == true) {
-                                                    if(authUser)
+                                                      let appsflyerURL = "";
+                                                      if(authUser.device_type == "Android"){
+                                                        appsflyerURL = "https://app.appsflyer.com/os.real11";
+                                                      } else {
+                                                        appsflyerURL = "https://app.appsflyer.com/id1455728625";
+                                                      }
+
+                                                      try{
+                                                         var tData = {
+                                                            "eventName": "Cash Deposit",
+                                                            "app_version_name": "1.0.53",
+                                                            "eventValue": { 
+                                                                "af_customer_user_id": authUser.clevertap_id || '',
+                                                                "email":  authUser.email || '', 
+                                                                "mobile": authUser.mobile_number || '',
+                                                                "af_revenue": txnData.txn_amount, 
+                                                                "af_currency": "INR", 
+                                                                "txn_id": txnData._id || '', 
+                                                                "clevertap_id": authUser.clevertap_id || '',
+                                                                "appsflayer_id": authUser.appsflayer_id || '', 
+                                                                "user_id": authUser._id || '', 
+                                                                "coupon_id": coupon_id || '', 
+                                                                "discount_amount": c_discount_amount
+                                                              },
+                                                            };
+                                                           var resData = await appsFlyerEntryService(tData,appsflyerURL);
+                                                           console.log("appsflyer data at deposit",resData);
+                                                        } catch(errr){
+                                                          console.log('errr in transaction for appsflyer',errr);
+                                                        }
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                                                 } else {
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
@@ -1125,6 +1156,7 @@ async function updateTransactionAllGetway(decoded, cb) {
 
             let txnEntity = {};
             let isCouponUsed = 0;
+            let c_discount_amount = 0;
             let date = new Date();
             txnEntity.user_id = decoded['user_id'];
             txnEntity.order_id = decoded['order_id'];
@@ -1206,6 +1238,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                                     users.bonus_amount = parseFloat(users.bonus_amount) + parseFloat(discountAmount);
                                                     txnType = TransactionTypes.COUPON_BONUS
                                                 }
+                                                c_discount_amount = discountAmount;
                                                 let date = new Date();
                                                 let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
                                                 Transaction.saveTransaction(users.id, txnId, txnType, discountAmount);
@@ -1229,9 +1262,9 @@ async function updateTransactionAllGetway(decoded, cb) {
                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
                             Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                           }
-                    }catch(errrrr){
+                     }catch(errrrr){
                         console.log('first time user is coming errrr*****',errrrr);
-                    }
+                     }
                     
                     let res = await User.updateOne({ '_id': decoded['user_id'] }, { $set: { isFirstPaymentAdded:1,cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
@@ -1239,6 +1272,36 @@ async function updateTransactionAllGetway(decoded, cb) {
                     txn_status = true;
                 }
                 if (txn_status == true) {
+                    let appsflyerURL = "";
+                    if(authUser.device_type == "Android"){
+                      appsflyerURL = "https://app.appsflyer.com/os.real11";
+                    } else {
+                      appsflyerURL = "https://app.appsflyer.com/id1455728625";
+                    }
+
+                    try{
+                        var tData = {
+                          "eventName": "Cash Deposit",
+                          "app_version_name": "1.0.53",
+                          "eventValue": { 
+                              "af_customer_user_id": authUser.clevertap_id || '',
+                              "email":  authUser.email || '', 
+                              "mobile": authUser.mobile_number || '',
+                              "af_revenue": txnData.txn_amount, 
+                              "af_currency": "INR", 
+                              "txn_id": txnData._id || '', 
+                              "clevertap_id": authUser.clevertap_id || '',
+                              "appsflayer_id": authUser.appsflayer_id || '', 
+                              "user_id": authUser._id || '', 
+                              "coupon_id": decoded['coupon_id'] || '', 
+                              "discount_amount": c_discount_amount
+                            },
+                          };
+                         var resData = await appsFlyerEntryService(tData,appsflyerURL);
+                         console.log("appsflyer data at deposit",resData);
+                      } catch(errr){
+                         console.log('errr in transaction for appsflyer',errr);
+                      }
                     cb(ApiUtility.success({}, 'Amount added successfully'));
                 } else {
                     cb(ApiUtility.success({}, 'Amount added successfully'));
