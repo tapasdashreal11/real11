@@ -32,7 +32,8 @@ var matchContestSchema = new Schema({
     default: 0
   },
   isCanceled: {
-    type: Number
+    type: Number,
+    default: 0
   },
   youtuber_code: {
     type: Number

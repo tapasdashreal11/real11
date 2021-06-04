@@ -20,6 +20,7 @@ const redis = require('../../../lib/redis');
 var sha256 = require('sha256');
 const fetch = require('node-fetch');
 const { registerCustomQueryHandler } = require('puppeteer');
+const { appsFlyerEntryService } = require("./users/appsflyer-api");
 
 module.exports = {
 
@@ -534,6 +535,7 @@ module.exports = {
                                                 }
 
                                                 if (txn_status == true) {
+                                                    if(authUser)
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                                                 } else {
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
