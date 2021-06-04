@@ -229,6 +229,7 @@ module.exports = async (req, res) => {
               "app_version_name": "1.0.53",
               "appsflyer_id": params.appsflayer_id || '', 
               "customer_user_id": insertId || '',
+              "eventTime" : new Date(),
               "eventValue": { 
                   "af_customer_user_id": params.clevertap_id || '',
                   "email":  params.email || '', 

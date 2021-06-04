@@ -548,7 +548,8 @@ module.exports = {
                                                          var tData = {
                                                             "eventName": "Cash Deposit",
                                                             "app_version_name": "1.0.53",
-                                                            "appsflyer_id": authUser.appsflayer_id || '', 
+                                                            "appsflyer_id": authUser.appsflayer_id || '',
+                                                            "eventCurrency": 'INR',  
                                                             "eventValue": { 
                                                                 "af_customer_user_id": authUser.clevertap_id || '',
                                                                 "email":  authUser.email || '', 
@@ -1284,7 +1285,8 @@ async function updateTransactionAllGetway(decoded, cb) {
                         var tData = {
                           "eventName": "Cash Deposit",
                           "app_version_name": "1.0.53",
-                          "appsflyer_id": authUser.appsflayer_id || '', 
+                          "appsflyer_id": authUser.appsflayer_id || '',
+                          "eventCurrency": 'INR', 
                           "eventValue": { 
                               "af_customer_user_id": authUser.clevertap_id || '',
                               "email":  authUser.email || '', 
