@@ -216,10 +216,10 @@ async function cricketPreview(decoded, liveScore, cb) {
                         'points': value.wickets_point
                     };
 
-                    playerRecord['wickets'] = {
-                        'actual': value.wickets,
-                        'points': value.wickets_point
-                    };
+                    // playerRecord['wickets'] = {
+                    //     'actual': value.wickets,
+                    //     'points': value.wickets_point
+                    // };
 
                     playerRecord['maiden_over'] = {
                         'actual': value.maiden_over,
