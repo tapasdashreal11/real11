@@ -233,6 +233,7 @@ module.exports = async (req, res) => {
                   "mobile": params.mobile_number || ''
                   }
             };
+            console.log("signUpBody***",signUpBody);
          var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
          console.log("apps flyer res",resData);
           } catch(errr){
