@@ -224,19 +224,19 @@ module.exports = async (req, res) => {
 
           // After successfully signup entery data in appsflyer
           try{
-              var signUpBody = {
-                  "eventName": "SignUp",
-                  "app_version_name": "1.0.53",
-                  "eventValue": { 
-                      "af_customer_user_id": params.appsflayer_id || '', 
-                      "email":  params.email || '', 
-                      "mobile": params.mobile_number || ''
-                      }
-                };
-             var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
-             console.log("apps flyer res");
+            var signUpBody = {
+              "eventName": "SignUp",
+              "app_version_name": "1.0.53",
+              "eventValue": { 
+                  "af_customer_user_id": params.appsflayer_id || '', 
+                  "email":  params.email || '', 
+                  "mobile": params.mobile_number || ''
+                  }
+            };
+         var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
+         console.log("apps flyer res");
           } catch(errr){
-
+         console.log('errr',errr);
           }
           return res.json(response);
         }else{
