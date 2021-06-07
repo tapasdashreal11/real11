@@ -237,13 +237,10 @@ module.exports = async (req, res) => {
             };
             
             if(_.isEmpty(params.invite_code)){
-              console.log("signUpBody***",signUpBody);
               var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
-              console.log("apps flyer res signup",resData);
             }
-           
           } catch(errr){
-         console.log('errr',errr);
+            console.log('errr',errr);
           }
           return res.json(response);
         }else{
