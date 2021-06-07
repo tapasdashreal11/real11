@@ -235,9 +235,13 @@ module.exports = async (req, res) => {
                   "mobile": params.mobile_number || ''
                   }
             };
-            console.log("signUpBody***",signUpBody);
-         var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
-         console.log("apps flyer res signup",resData);
+            
+            if(_.isEmpty(params.invite_code)){
+              console.log("signUpBody***",signUpBody);
+              var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
+              console.log("apps flyer res signup",resData);
+            }
+           
           } catch(errr){
          console.log('errr',errr);
           }
