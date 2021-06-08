@@ -51,6 +51,7 @@ module.exports = {
             let data1 = {};
             let { pmatch_id, sport } = req.params;
             if(pmatch_id){
+                console.log("five over from db***");
                 let  upCommingMatch = await SeriesSquad.find({live_fantasy_parent_id:parseInt(pmatch_id),status:1,sport:sport,time: { $gte: new Date() }, match_status: "Not Started"}).sort({time:1});
                 let liveData = [];
                 let finishData = [];
@@ -71,6 +72,7 @@ module.exports = {
                 data1.match_type = "five-over";
                 data1.server_time = moment(new Date()).format(config.DateFormat.datetime);
                 var successObj = ApiUtility.success(data1);
+                redis.setRedis('fiveover-match-list-' + pmatch_id, successObj)
                 res.send(successObj);
             }else{
                 res.send(ApiUtility.failed("invalid params"));
