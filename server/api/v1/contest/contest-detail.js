@@ -19,10 +19,10 @@ const Helper = require('./../common/helper');
 const db = require('../../../db');
 const { setRedis } = require('../../../../lib/redis');
 
-async function getRedisLeaderboard(matchId, contestId) {
+async function getRedisLeaderboard(matchId, contestId,sport) {
     try {
         return new Promise(async (resolve, reject) => {
-            let leaderboardRedis = 'leaderboard-' + matchId + '-' + contestId;
+            let leaderboardRedis = 'leaderboard-'+ sport + '-' + matchId + '-' + contestId;
             await redis.getRedisLeaderboard(leaderboardRedis, function (err, contestData) {
                 if (contestData) {
                     return resolve(contestData);
@@ -36,8 +36,8 @@ async function getRedisLeaderboard(matchId, contestId) {
     }
 }
 
-const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId) => {
-    let leaderboardRedis = 'leaderboard-' + match_id + '-' + contest_id
+const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId, sport) => {
+    let leaderboardRedis = 'leaderboard-' + sport + '-' + match_id + '-' + contest_id
 
     return new Promise(async (resv, rej) => {
         await redis.getRedisLeaderboard(leaderboardRedis, function (err, reply) {
@@ -335,20 +335,20 @@ module.exports = {
             }
 
             let mergedTeam = [];
-            let redisTeams = await getRedisLeaderboard(match_id, contest_id);
+            let redisTeams = await getRedisLeaderboard(match_id, contest_id,sport);
             let myTeams = [];
             if (redisTeams) {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
+                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id,sport);
                 } else {
-                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
+                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '',sport);
                 }
 
             }
             
             if (mergedTeam && mergedTeam.length == 0) {
                 let allTeams = [];
-                let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
+                let leaderboardKey = 'leaderboard-'+ sport + '-' + match_id + '-' + contest_id;
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     allTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
@@ -480,7 +480,7 @@ module.exports = {
                 }
                 
                 let mergedTeam = [];
-                let redisTeams = await getRedisLeaderboard(match_id, contest_id);
+                let redisTeams = await getRedisLeaderboard(match_id, contest_id,sport);
                 
                 let myTeams = [];
                 let aakashTeams = [];
@@ -504,9 +504,9 @@ module.exports = {
                       }).limit(15).sort({"rank": 1});
                     let allTeams = [];
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                        allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
+                        allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id,sport);
                     } else {
-                        allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
+                        allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '',sport);
                     }
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && !_.isEmpty(aakashTeams)) {
                         mergedTeam = [...myTeams, ...aakashTeams, ...allTeams];
@@ -525,10 +525,10 @@ module.exports = {
                     
                     let allTeams = [];
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
-                        allTeams = await getRedisLeaderboard(match_id, contest_id);
+                        allTeams = await getRedisLeaderboard(match_id, contest_id,sport);
                         
                         if (_.isEmpty(allTeams)) {
-                            let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
+                            let leaderboardKey = 'leaderboard-' + sport + '-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                             
                                 allTeams = await PlayerTeamContest.find({
@@ -1015,20 +1015,20 @@ module.exports = {
             }
 
             let mergedTeam = [];
-            let redisTeams = await getRedisLeaderboard(match_id, contest_id);
+            let redisTeams = await getRedisLeaderboard(match_id, contest_id,sport);
             let myTeams = [];
             if (redisTeams) {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
+                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id,sport);
                 } else {
-                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
+                    mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '',sport);
                 }
             }
             
             if (mergedTeam && mergedTeam.length == 0) {
                 let allTeams = [];
-                // allTeams = await getRedisLeaderboard(match_id, contest_id);
-                let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
+                
+                let leaderboardKey = 'leaderboard-'+ sport + '-' + match_id + '-' + contest_id;
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id, sport, aakashData._id);
                 } else {
@@ -1175,7 +1175,7 @@ module.exports = {
                 }
                 
                 let mergedTeam = [];
-                let redisTeams = await getRedisLeaderboard(match_id, contest_id);
+                let redisTeams = await getRedisLeaderboard(match_id, contest_id,sport);
                 
                 let myTeams = [];
                 let aakashTeams = [];
@@ -1189,9 +1189,9 @@ module.exports = {
                     myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id, sport);
                     let allTeams = [];
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                        allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id);
+                        allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id,sport);
                     } else {
-                        allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '');
+                        allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '',sport);
                     }
                     if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && !_.isEmpty(aakashTeams)) {
                         mergedTeam = [...myTeams, ...aakashTeams, ...allTeams];
@@ -1205,10 +1205,10 @@ module.exports = {
                     
                     let allTeams = [];
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
-                        allTeams = await getRedisLeaderboard(match_id, contest_id);
+                        allTeams = await getRedisLeaderboard(match_id, contest_id,sport);
                         
                         if (_.isEmpty(allTeams)) {
-                            let leaderboardKey = 'leaderboard-' + match_id + '-' + contest_id;
+                            let leaderboardKey = 'leaderboard-' + sport + '-' + match_id + '-' + contest_id;
                             if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                                 allTeams = await PlayerTeamContest.getAllTeamsByMatchId(match_id, contest_id, user_id,sport, aakashData._id);
                             } else {
