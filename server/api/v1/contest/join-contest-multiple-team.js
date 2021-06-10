@@ -1134,7 +1134,7 @@ async function multipleJoinContestDetail(contestTeamData,decoded,bonusAmount,win
         saveEntity.extra_amount	=	surpriseAmount/tCount;
         saveEntity.total_amount   =	totalAmount/tCount;
         saveEntity.admin_comission= comission ? parseFloat(comission):0;
-        saveEntity.player_team_contest_id=	playerTeamContestId;
+        saveEntity.player_team_contest_id =	team_data_item._id;
         saveEntity.retention_bonus = retention_bonus_amount|| 0;
         jcdArray.push(saveEntity);
     }
