@@ -76,7 +76,7 @@ module.exports = async (req, res) => {
                             let teamId = team_id ? team_id : (results[5] && results[5]._id ? results[5]._id : '');
                             let teamCount = team_count_number !=0 ? team_count_number : (results[5] && results[5].team_count ? results[5].team_count : 1);
                             
-                            if (teamId && teamId != null && teamId != '' && ! _.isUndefined(teamId) ) {
+                            if (teamId && teamId != null && teamId != '' && ! _.isUndefined(teamId) && teamCount > 0) {
                                 // console.log(teamId);return false;
                                 let matchContest = results[4] ? results[4] : {};
                                 if (!matchContest) {
@@ -419,12 +419,12 @@ module.exports = async (req, res) => {
                                                                     return res.send(ApiUtility.failed("Player team id not found."));
                                                                 } else {
                                                                     
-                                                                    if(_.has(contest, "player_team_id") && _.has(contest, "team_count") &&  _.has(contest, "team_name") &&  contest.team_name !='' && contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != ''  ){
+                                                                    if(_.has(contest, "player_team_id") && _.has(contest, "team_count") &&  _.has(contest, "team_name") &&  contest.team_name !='' && contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0 ){
                                                                         totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user,matchContest);
                                                                     } else {
                                                                         await session.abortTransaction();
                                                                         session.endSession();
-                                                                        return res.send(ApiUtility.failed("Player team not found.Please try again!!"));
+                                                                        return res.send(ApiUtility.failed("Player team not found. Please try again!!"));
                                                                     }
                                                                     
                                                                 }
