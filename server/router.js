@@ -78,6 +78,7 @@ const  { contestDetailNew,contestLeaderboard, contestDetail,contestDetailNewLate
 const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breakup');
 const  { applyContestInviteCode }  = require('./api/v1/contest/apply-contest-invite-code');
 const  categoryContestList  = require('./api/v1/contest/category-contest-list');
+const  { otherGamesMatch }  = require('./api/v1/contest/other_games_match');
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
@@ -289,6 +290,7 @@ router.get('/api/v1/joined-contest-matches/:is_complete?/:sport?', auth.authenti
 router.get('/api/v1/joined-contest-matches-new/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatchesNew);
 router.get('/api/v1/apply-contest-invite-code/:invite_code', auth.authenticate.jwtLogin, applyContestInviteCode);
 router.get('/api/v1/get-match-list/:sport?', redis.cacheMiddle, matchList);
+router.get('/api/v1/other-match-list', otherGamesMatch); 
 router.get('/api/v1/five-over-match-list/:pmatch_id/:sport', fiveOverliveFantasyMatchList);
 router.get('/api/v1/get-match-detail/:match_id/:sport/:series_id',  redis.cacheMiddle);
 router.post('/api/v1/team-profile-comparision', auth.authenticate.jwtLogin, teamProfileComparision);
