@@ -161,7 +161,6 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
 
 async function getContestListForOthergames(filter,is_all){
     is_all = false;
-    console.log(filter);
     return new Promise((resolve, reject) => {
         try{
             var is_joined = false;
@@ -245,7 +244,6 @@ async function getContestListForOthergames(filter,is_all){
                     reject(err);
                 }
                 if (!err) {
-                    console.log("data",data);
                     if(is_all && data && data.length > 0){
                         var conArry = [];
                         var dlength = data.length;
