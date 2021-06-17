@@ -80,6 +80,7 @@ const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breaku
 const  { applyContestInviteCode }  = require('./api/v1/contest/apply-contest-invite-code');
 const  categoryContestList  = require('./api/v1/contest/category-contest-list');
 const  { otherGamesMatch }  = require('./api/v1/contest/other_games_match');
+const  { otherGameContestWallet }  = require('./api/v1/contest/other-games-wallet');
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
@@ -282,6 +283,7 @@ router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
 router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
 router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); 
 router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joinContestMultipleTeam);
+router.post('/api/v1/other-games-wallet-amount', auth.authenticate.jwtLogin, otherGameContestWallet);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
