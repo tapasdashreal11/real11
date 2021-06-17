@@ -71,6 +71,7 @@ const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-o
 const  joinContestMultipleTeam  = require('./api/v1/contest/join-contest-multiple-team');
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
+const  otherGameContestList  = require('./api/v1/contest/other-games-contest');
 const  contestList  = require('./api/v1/contest/contest-list');
 const  contestListNew  =   require('./api/v1/contest/contest-m-list');  // require('./api/v1/contest/contest-list-new');
 const  contestListNewLatest  = require('./api/v1/contest/contest-m-list');
@@ -238,6 +239,7 @@ router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authentica
 router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
 router.get('/api/v1/contest-list-new-latest/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewLatest);
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);
+router.get('/api/v1/other-game-contest-list/:match_id/:sport', otherGameContestList);
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
