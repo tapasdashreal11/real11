@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
  
 try {
         const { match_id, sport,series_id } = req.params;
-        const user_id = "609b66b8ed55670950d6f7d3";  //req.userId;
+        const user_id = req.userId;
         let match_sport = sport ? parseInt(sport) : 3;
         let filter = {
             "match_id": parseInt(match_id),
