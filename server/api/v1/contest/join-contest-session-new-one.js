@@ -262,9 +262,9 @@ module.exports = async (req, res) => {
 
 
                                                             if (calEntryFees > 0) {
-                                                                console.log("paymentCal *** start");
+                                                                
                                                                 const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
-                                                               console.log("paymentCal",paymentCal);
+                                                               
                                                                 cashAmount = paymentCal.cashAmount;
                                                                 winAmount = paymentCal.winAmount;
                                                                 bonusAmount = paymentCal.bonusAmount;
@@ -280,8 +280,7 @@ module.exports = async (req, res) => {
                                                                     let status = TransactionTypes.JOIN_CONTEST;
                                                                     let txnAmount = entryFee;
                                                                     let withdrawId = 0;
-                                                                    let ddd = winAmount + cashAmount + bonusAmount + extraAmount;
-                                                                    console.log("ddd",ddd);
+                                                                    
                                                                     if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
                                                                         // Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId, contest_id, match_id);
 
@@ -1068,7 +1067,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
             saveData['winning_balance'] = winningBal1;
         }
     }
-    console.log("winAmount*******",winAmount,"cashAmount",cashAmount,"bonusAmount",bonusAmount);
+    
     return { 'winAmount': winAmount, 'cashAmount': cashAmount, 'bonusAmount': bonusAmount, 'extraAmount': extraAmount, 'saveData': saveData, 'perdayExtraAmount': perdayExtraAmount };
 
 }
