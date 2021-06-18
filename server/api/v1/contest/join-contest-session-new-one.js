@@ -1065,6 +1065,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
             saveData['winning_balance'] = winningBal1;
         }
     }
+    console.log("winAmount",winAmount,"cashAmount",cashAmount,"bonusAmount",bonusAmount);
     return { 'winAmount': winAmount, 'cashAmount': cashAmount, 'bonusAmount': bonusAmount, 'extraAmount': extraAmount, 'saveData': saveData, 'perdayExtraAmount': perdayExtraAmount };
 
 }
