@@ -262,7 +262,9 @@ module.exports = async (req, res) => {
 
 
                                                             if (calEntryFees > 0) {
+                                                                console.log("paymentCal *** start");
                                                                 const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
+                                                               console.log("paymentCal",paymentCal);
                                                                 cashAmount = paymentCal.cashAmount;
                                                                 winAmount = paymentCal.winAmount;
                                                                 bonusAmount = paymentCal.bonusAmount;
