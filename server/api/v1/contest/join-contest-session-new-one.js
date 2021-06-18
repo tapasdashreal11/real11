@@ -280,7 +280,8 @@ module.exports = async (req, res) => {
                                                                     let status = TransactionTypes.JOIN_CONTEST;
                                                                     let txnAmount = entryFee;
                                                                     let withdrawId = 0;
-
+                                                                    let ddd = winAmount + cashAmount + bonusAmount + extraAmount;
+                                                                    console.log("ddd",ddd);
                                                                     if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
                                                                         // Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId, contest_id, match_id);
 
