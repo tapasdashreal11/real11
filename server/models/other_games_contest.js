@@ -18,18 +18,12 @@ var otherGamesContest = new Schema({
     category_id: {
         type: ObjectId
     },
-    created: {
-        type: Date
-    },
     invite_code: {
         type: String
     },
     joined_users: {
         type: Number,
         default: 0
-    },
-    youtuber_code: {
-        type: Number
     },
     is_full: {
         type: Number,
@@ -43,6 +37,11 @@ var otherGamesContest = new Schema({
     admin_create: { type: Number, enum: [1, 0], default: 0 },
     sport: { type: Number },
     contest: { type: Object },
+    is_private: {type: Number, default: 0 },
+},{
+    timestamps: { createdAt: 'created', updatedAt: 'modified' },
+    toObject: { getters: true, setters: true },
+    toJSON: { getters: true, setters: true }
 });
 
 module.exports = mongoose.model('other_games_contest', otherGamesContest, 'other_games_contest');
