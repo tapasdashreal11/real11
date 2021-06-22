@@ -319,7 +319,7 @@ module.exports = async (req, res) => {
                                                             contest.sport = match_sport;
                                                             let getCountKey = 0;
                                                             console.log('fsfsfsfsf*** 55');
-                                                            ludoMqtt.publishJoinContestOthergame(111,contest_id,"Hello");
+                                                            ludoMqtt.publishJoinContestOthergame('111',contest_id,"Hello");
                                                             let playerTeamContestId = newContestId;
                                                             totalContestKey = await getContestCount(matchContest,contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
                                                             console.log('fsfsfsfsf*** totalContestKey',totalContestKey);
