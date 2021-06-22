@@ -433,6 +433,7 @@ module.exports = {
     },
     contestDetailLatest: async (req, res) => {
         try {
+            console.log('asfasfsdf dsf dsf gds fds fgds fds 22');
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
