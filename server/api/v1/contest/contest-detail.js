@@ -44,8 +44,10 @@ const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId
             if (!err) {
                 const result = reply.reduce((index, obj) => {
                     if(aakashId) {
-                        if (obj.user_id != user_id && obj.user_id != aakashId && index.length < 100)
+                        if (obj.user_id != user_id && obj.user_id != aakashId && index.length < 100){
                             index.push(obj);
+                         }
+                            
                     } else {
                         if (obj.user_id != user_id && index.length < 100)
                             index.push(obj);
@@ -349,12 +351,13 @@ module.exports = {
             if (mergedTeam && mergedTeam.length == 0) {
                 let allTeams = [];
                 let leaderboardKey = 'leaderboard-'+ sport + '-' + match_id + '-' + contest_id;
-                if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
+                if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && aakashData._id) {
+                    
                     allTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
                         sport: sport,
                         contest_id:ObjectId(contest_id),
-                        user_id:{$ne:ObjectId(user_id)}
+                        user_id:{$ne:ObjectId(aakashData._id)}
                       }).limit(100).sort({_id:-1});
                 
                 } else {
