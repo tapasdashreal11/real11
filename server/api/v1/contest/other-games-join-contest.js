@@ -317,7 +317,7 @@ module.exports = async (req, res) => {
                                                             contest.bonus_amount = bonusAmount;
                                                             contest.sport = match_sport;
                                                             let getCountKey = 0;
-                                                            console.log('fsfsfsfsf*** 5555');
+                                                            console.log('fsfsfsfsf*** 555555555');
                                                             ludoMqtt.publishJoinContestOthergame('111',contest_id,"Hello");
                                                             console.log('fsfsfsfsf*** 56');
                                                             let playerTeamContestId = newContestId;
