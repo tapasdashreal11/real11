@@ -1008,7 +1008,7 @@ module.exports = {
     },
     contestLeaderboard: async (req, res) => {
         try {
-            console.log('HIIIIIIIIIII');
+            console.log('HIIIIIIIIIIIii');
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
