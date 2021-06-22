@@ -341,7 +341,7 @@ module.exports = {
             let myTeams = [];
             if (redisTeams) {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                    
+                    console.log('data******* akash');
                     mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id,sport);
                     console.log('data*******',mergedTeam);
                 } else {
