@@ -81,6 +81,7 @@ const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId
 module.exports = {
     contestDetailNewLatest: async (req, res) => {
         try {
+            console.log('asfasfsdf dsf dsf gds fds fgds fds 111');
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
@@ -324,6 +325,7 @@ module.exports = {
     },
     contestLeaderboardLatest: async (req, res) => {
         try {
+            console.log('asfasfsdf dsf dsf gds fds fgds fds ');
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = { match_id: parseInt(match_id),contest_id: contest_id,user_id: user_id,
