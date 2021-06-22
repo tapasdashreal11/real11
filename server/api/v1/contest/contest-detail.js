@@ -354,6 +354,7 @@ module.exports = {
                 let allTeams = [];
                 let leaderboardKey = 'leaderboard-'+ sport + '-' + match_id + '-' + contest_id;
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && aakashData._id) {
+                    console.log('asksa yes');
                     
                     allTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
@@ -363,6 +364,7 @@ module.exports = {
                       }).limit(100).sort({_id:-1});
                 
                 } else {
+                    console.log('asksa No');
                     allTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
                         sport: sport,
