@@ -57,7 +57,7 @@ module.exports = async (req, res) => {
             if (!team_id) {
                 apiList.push(PlayerTeam.findOne({ 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
 
-            } else if (team_id && team_count_number == 0) {
+            } else if (team_id) {
                 apiList.push(PlayerTeam.findOne({'_id':ObjectId(team_id) ,'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
                 
             }
@@ -73,7 +73,8 @@ module.exports = async (req, res) => {
                         if (mtime < ctime) {
                             return res.send(ApiUtility.failed('Match has been started.'));
                         } else {
-                            let teamId = team_id ? team_id : (results[5] && results[5]._id ? results[5]._id : '');
+                            console.log("results[5]*** team",results[5]);
+                            let teamId = results[5] && results[5]._id ? results[5]._id : '';
                             let teamCount = team_count_number !=0 ? team_count_number : (results[5] && results[5].team_count ? results[5].team_count : 1);
                             
                             if (teamId && teamId != null && teamId != '' && ! _.isUndefined(teamId) && teamCount > 0) {
