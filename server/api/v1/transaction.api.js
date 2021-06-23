@@ -566,7 +566,7 @@ module.exports = {
                                                               },
                                                             };
                                                            var resData = await appsFlyerEntryService(tData,appsflyerURL);
-                                                           console.log("appsflyer data at deposit",resData);
+                                                           console.log("appsflyer data at deposit",tData);
                                                         } catch(errr){
                                                           console.log('errr in transaction for appsflyer',errr);
                                                         }
@@ -1304,7 +1304,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                             },
                           };
                          var resData = await appsFlyerEntryService(tData,appsflyerURL);
-                         console.log("appsflyer data at deposit",resData);
+                         console.log("appsflyer data at deposit",tData);
                       } catch(errr){
                          console.log('errr in transaction for appsflyer',errr);
                       }
