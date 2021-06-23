@@ -73,7 +73,7 @@ module.exports = async (req, res) => {
                         if (mtime < ctime) {
                             return res.send(ApiUtility.failed('Match has been started.'));
                         } else {
-                            console.log("results[5]*** team",results[5]);
+                    
                             let teamId = results[5] && results[5]._id ? results[5]._id : '';
                             let teamCount = team_count_number !=0 ? team_count_number : (results[5] && results[5].team_count ? results[5].team_count : 1);
                             
