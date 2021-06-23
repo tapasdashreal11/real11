@@ -571,7 +571,10 @@ module.exports = async (req, res) => {
                                                                                                 newLiveArray['total_contest'] = totalContestKey;
                                                                                             }
 
-                                                                                            contestData.upcoming_match.push(newLiveArray);
+                                                
+                                                                                            if(contestData && contestData.upcoming_match){
+                                                                                                contestData.upcoming_match.push(newLiveArray);
+                                                                                            }
 
                                                                                             var newContDataSort = _.sortBy(contestData.upcoming_match, ['sort_time', 'desc']);
 
