@@ -81,7 +81,6 @@ const getAllTeamsByMatchIdRedis = async (match_id, contest_id, user_id, aakashId
 module.exports = {
     contestDetailNewLatest: async (req, res) => {
         try {
-            console.log('asfasfsdf dsf dsf gds fds fgds fds 111');
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
@@ -325,8 +324,6 @@ module.exports = {
     },
     contestLeaderboardLatest: async (req, res) => {
         try {
-            console.log('asfasfsdf dsf dsf gds fds fgds fds');
-
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = { match_id: parseInt(match_id),contest_id: contest_id,user_id: user_id,
@@ -344,9 +341,8 @@ module.exports = {
             let myTeams = [];
             if (redisTeams) {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
-                    console.log('data******* akash');
                     mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id,sport);
-                    console.log('data*******',mergedTeam);
+                
                 } else {
                     mergedTeam = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, '',sport);
                 }
@@ -357,8 +353,6 @@ module.exports = {
                 let allTeams = [];
                 let leaderboardKey = 'leaderboard-'+ sport + '-' + match_id + '-' + contest_id;
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData) && aakashData._id) {
-                    console.log('asksa yes');
-                    
                     allTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
                         sport: sport,
@@ -367,7 +361,6 @@ module.exports = {
                       }).limit(100).sort({_id:-1});
                 
                 } else {
-                    console.log('asksa No');
                     allTeams = await PlayerTeamContest.find({
                         match_id:parseInt(match_id),
                         sport: sport,
@@ -434,7 +427,6 @@ module.exports = {
     },
     contestDetailLatest: async (req, res) => {
         try {
-            console.log('asfasfsdf dsf dsf gds fds fgds fds 22');
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
@@ -1008,7 +1000,6 @@ module.exports = {
     },
     contestLeaderboard: async (req, res) => {
         try {
-            console.log('HIIIIIIIIIIIii');
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
@@ -1194,7 +1185,7 @@ module.exports = {
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                     aakashTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, aakashData._id, sport);
                 }
-                // console.log(aakashTeams);
+                
                 if (!_.isEmpty(redisTeams)) {
                     MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
 
