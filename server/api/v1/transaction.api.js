@@ -546,7 +546,7 @@ module.exports = {
 
                                                       try{
                                                          var tData = {
-                                                            "eventName": "ss depost",
+                                                            "eventName": "MCash Deposit",
                                                             "appsflyer_id": authUser.appsflayer_id || '',
                                                             "eventCurrency": 'INR', 
                                                             "eventTime" : new Date(),
@@ -1284,7 +1284,7 @@ async function updateTransactionAllGetway(decoded, cb) {
 
                     try{
                         var tData = {
-                          "eventName": "ss depost",
+                          "eventName": "MCash Deposit",
                           "appsflyer_id": authUser.appsflayer_id || '',
                           "eventCurrency": 'INR',
                           "eventTime" : new Date(),
