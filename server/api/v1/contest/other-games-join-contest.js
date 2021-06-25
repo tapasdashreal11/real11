@@ -324,7 +324,7 @@ module.exports = async (req, res) => {
                                                             console.log('fsfsfsfsf*** totalContestKey',totalContestKey);
                                                             let ptcList = await OtherGamesPtc.find({match_id:match_id, contest_id:contest_id,is_deleted:0},{user_id:1,team_name:1,contest_id:1,match_id:1,_id:1}).sort({_id:-1})
                                                             ludoMqtt.publishJoinContestOthergame('111',contest_id,JSON.stringify(ptcList));
-                                                            data1.data = ptcList;
+                                                            data1.player_data = ptcList || [];
                                                             return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                             
                                                         } catch (error) {
