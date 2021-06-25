@@ -10,7 +10,7 @@ const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
             const bData = JSON.parse(JSON.stringify(appsflyerdata));
             var options = {
                 "method": "POST",
-                "url": appsflyerUrl,
+                "url": appsflyerUrl, 
                 "json": true,
                 "headers": {'authentication':"BUvaUbjej7PNorfc5Kmpzg",'Content-Type': 'application/json'},
                 "body":bData
