@@ -17,7 +17,6 @@ const { startSession } = require('mongoose');
 const UserAnalysis = require("../../../models/user-analysis");
 const ContestInvite = require("../../../models/contest-invite");
 const CouponSale = require("../../../models/coupon-sale");
-const { ObjectID } = require('mongodb');
 
 
 module.exports = async (req, res) => {
@@ -35,7 +34,7 @@ module.exports = async (req, res) => {
             user_id: user_id
         }
         if (match_id && contest_id && user_id) {
-            console.log('fsfsfsfsf***');
+            console.log('hello');
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
