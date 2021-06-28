@@ -699,7 +699,7 @@ module.exports = {
                         }
                     }
                 }
-                // consolelog(contestDetail.breakup);
+                
                 let contestData = {
                     match_status: (reviewMatch) ? reviewMatch.status : '',
                     prize_money: prizeMoney,
