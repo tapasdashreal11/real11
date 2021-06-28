@@ -105,10 +105,6 @@ module.exports = {
             if (!liveMatch) {
                 return res.send(ApiUtility.failed('Match Detail not found'));
             }
-            if(liveMatch && liveMatch.is_parent){
-
-            }
-
             let filter = { user_id: user_id, match_id: match_id, series_id: series_id, sport: sport };
             
             if (player_team_id) {
@@ -121,8 +117,7 @@ module.exports = {
                         var teamuserId = ObjectId(result.user_id);
                         var loginUserId = ObjectId(user_id);
                         var mStatus = liveMatch.match_status;
-                        console.log('liveMatch',liveMatch);
-                        if(!loginUserId.equals(teamuserId) && liveMatch && liveMatch.is_parent && liveMatch.show_preview==0 && mStatus == "In Progress" ){
+                        if(!loginUserId.equals(teamuserId) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && mStatus == "In Progress" ){
                             return res.send(ApiUtility.failed("Please wait for few seconds!!"))
                          }
                     }
