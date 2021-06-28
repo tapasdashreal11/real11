@@ -100,10 +100,13 @@ module.exports = {
                 series_id: series_id,
                 match_id: match_id,
                 sport: sport,
-            }, { localteam_id: 1, time: 1, date: 1, type: 1, visitorteam_id: 1 });
+            }, { localteam_id: 1,show_preview:1,is_parent:1,time: 1, date: 1, type: 1, visitorteam_id: 1 });
 
             if (!liveMatch) {
                 return res.send(ApiUtility.failed('Match Detail not found'));
+            }
+            if(liveMatch && liveMatch.is_parent){
+
             }
 
             let filter = { user_id: user_id, match_id: match_id, series_id: series_id, sport: sport };
@@ -114,6 +117,13 @@ module.exports = {
                 result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
                 let player_list = result && result.players ? result.players : [];
                 if(sport === 1) {
+                    if(result &&  result.user_id){
+                        var teamuserId = ObjectId(result.user_id);
+                        var loginUserId = ObjectId(user_id);
+                        if(!loginUserId.equals(teamuserId) && liveMatch && liveMatch.is_parent && liveMatch.show_preview==0){
+                            return res.send(ApiUtility.failed("Please wait for few seconds!!"))
+                         }
+                    }
                     cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
                         return res.send(result);
                     });
