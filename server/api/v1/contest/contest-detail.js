@@ -713,7 +713,7 @@ module.exports = {
                     join_multiple_teams: multipleTeam,
                     is_gadget: gadgetLeague,
                     total_winners: (contestDetail.breakup && contestDetail.breakup.length > 0) ? contestDetail.breakup.pop() : {}, //toalWinner,
-                    teams_joined: joinedTeams,
+                    teams_joined: (reviewMatch && reviewMatch.is_parent && reviewMatch.show_preview == 0)? 0 :joinedTeams,
                     is_joined: is_joined,
                     my_team_ids: myTeamIds,
                     joined_team_list: teamRankData,
