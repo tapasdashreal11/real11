@@ -120,8 +120,9 @@ module.exports = {
                     if(result &&  result.user_id){
                         var teamuserId = ObjectId(result.user_id);
                         var loginUserId = ObjectId(user_id);
+                        var mStatus = liveMatch.match_status;
                         console.log('liveMatch',liveMatch);
-                        if(!loginUserId.equals(teamuserId) && liveMatch && liveMatch.is_parent && liveMatch.show_preview==0 && liveMatch.match_status && liveMatch.match_status.equals("In Progress") ){
+                        if(!loginUserId.equals(teamuserId) && liveMatch && liveMatch.is_parent && liveMatch.show_preview==0 && mStatus == "In Progress" ){
                             return res.send(ApiUtility.failed("Please wait for few seconds!!"))
                          }
                     }
