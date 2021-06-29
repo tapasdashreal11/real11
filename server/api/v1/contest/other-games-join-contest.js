@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
                             let matchContest = results[1] ? results[1] : {};
                             let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
                             var parentContestId = (matchContest && matchContest.parent_contest_id) ? matchContest.parent_contest_id : matchContest.contest_id;
-                            var PlayerTeamContestFilter = { 'contest_id': contest_id,'user_id': user_id, 'match_id': decoded['match_id']}
+                            var PlayerTeamContestFilter = { 'contest_id': contest_id,'user_id': user_id, 'match_id': decoded['match_id'],is_deleted:0}
                             let playerTeamRes = await OtherGamesPtc.findOne(PlayerTeamContestFilter);
                             console.log('fsfsfsfsf*** 1',playerTeamRes);
                             if(playerTeamRes){
