@@ -17,6 +17,7 @@ module.exports = {
                 if(!bannerData){
                     bannerData = await (new ModelService(Banner)).getBannerList();
                     redis.setRedis(bannerListKey,bannerData,RedisKeys.TIME_10_DAYS);
+                    return res.send(ApiUtility.success(bannerData));
                 } else {
                     return res.send(ApiUtility.success(bannerData));
                 }
