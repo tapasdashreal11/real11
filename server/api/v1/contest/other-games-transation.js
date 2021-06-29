@@ -16,7 +16,6 @@ module.exports = async (req, res, dbs) => {
 		let userId=  req.userId;
 		result    =  [];
 		try {
-			// let userData = await User.findOne({ '_id': userId }).select("team_name");
 			var tzOffset = 5.5 * 1000 * 60 * 60;
 			var filter = { "user_id": userId,status: true }
 			let usersData = await OGTransactions.find(filter, {"txn_date":1, "added_type":1, "txn_amount":1, "local_txn_id":1, "txn_date":1,"retantion_amount":1, "withdraw_commission":1}).sort({"txn_date": -1 }).limit(50);
@@ -38,7 +37,6 @@ module.exports = async (req, res, dbs) => {
 
 					if(k === (usersData.length - 1)){
 						var fnData = _.chain(newArr)
-						// Group the elements of Array based on `color` property
 						.groupBy("date")
 						// `key` is group's name (color), `value` is the array of objects
 						.map((value, key) => ({ _id: key, date: key, info: value }))
