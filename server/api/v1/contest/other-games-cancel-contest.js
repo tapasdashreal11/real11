@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
             if(doc){
                 await OtherGamesPtc.updateOne({_id:ptc_id},{$set:{is_deleted:1}});
                 
-                return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
+                return res.send(ApiUtility.success(data1, 'Contest cancel successfully.'));
             } else {
                 console.log('in elase');
                 return res.send(ApiUtility.failed("Something went wrong!!"));
