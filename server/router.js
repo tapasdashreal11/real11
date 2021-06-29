@@ -67,6 +67,7 @@ const { joinedContestMatchesNew } = require('./api/v1/contest/joined-contest-mat
 const  joinContest  = require('./api/v1/contest/join-contest');
 const  joinContestNew  = require('./api/v1/contest/join-contest');
 const  joinContestOtherGames  = require('./api/v1/contest/other-games-join-contest');
+const  otherGamesCancelContest  = require('./api/v1/contest/other-games-cancel-contest');
 const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-head-to-head');
 const  joinContestMultipleTeam  = require('./api/v1/contest/join-contest-multiple-team');
@@ -286,6 +287,7 @@ router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestN
 router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joinContestMultipleTeam);
 router.post('/api/v1/other-games-wallet-amount', auth.authenticate.jwtLogin, otherGameContestWallet);
 router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, joinContestOtherGames);
+router.post('/api/v1/other-games-cancel-contest', auth.authenticate.jwtLogin, otherGamesCancelContest);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
