@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
                                     const doc = await OtherGamesContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, sessionOpts);
                                     if (doc) {
                                         let joinedContestCount = doc.joined_users;
-                                        if (matchContest && matchContest.contest_size < joinedContestCount && infinteStatus ) {
+                                        if (contestData && contestData.contest_size < joinedContestCount && infinteStatus ) {
                                             // console.log("Join contest matchContest live fantasy response-----", matchContest.contest_size, joinedContestCount);
                                             console.log('fsfsfsfsf*** 3');
                                             let response = {};

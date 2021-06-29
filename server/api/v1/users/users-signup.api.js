@@ -231,8 +231,8 @@ module.exports = async (req, res) => {
               "eventTime" : new Date(),
               "eventValue": { 
                   "af_customer_user_id": params.clevertap_id || '',
-                  "email":  params.email || '', 
-                  "mobile": params.mobile_number || ''
+                  "af_email":  params.email || '', 
+                  "af_mobile": params.mobile_number || ''
                   }
             };
             
