@@ -10,8 +10,6 @@ module.exports.showForm = async function (req, res) {
     let transaction = await Transaction.findById(transactionId);
     if(transaction){
         let user = await User.findById(transaction.user_id);
-        console.log(user);
-        return false
         if(user){
             let txnDate = new Date();
             let month = ("0" + (txnDate.getMonth() + 1)).slice(-2);
