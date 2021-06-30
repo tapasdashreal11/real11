@@ -1,5 +1,3 @@
-const PlayerRecord = require('../../../models/player-record');
-const PlayerTeam = require('../../../models/player-team');
 const SeriesSquad = require('../../../models/series-squad');
 const LiveScore = require('../../../models/live-score');
 const PointsBreakup = require('../../../models/points-breakup');
@@ -25,7 +23,7 @@ module.exports = {
             if (decoded['series_id'] && decoded['match_id'] && decoded['player_id']) {
                 let apiList = [
                     SeriesSquad.find({'series_id': decoded["series_id"],'is_parent':true, 'parent_id':{$exists:false}}),
-                    PlayerRecord.findOne({ 'player_id': decoded['player_id'], sport: sport })
+                    SeriesPlayer.findOne({'series_id': decoded["series_id"], 'player_id': decoded['player_id'], sport: sport })
                 ];
                 var results = await Promise.all(apiList);
                 if(results && results.length>0){
@@ -48,12 +46,11 @@ module.exports = {
                                         localteam: obj.localteam || '',
                                         localteam_id: obj.localteam_id || '',
                                         localteam_short_name: obj.localteam_short_name || '',
-                                        series_name: obj.series_name || '',
                                         visitorteam: obj.visitorteam || '',
                                         visitorteam_id: obj.visitorteam_id || '',
                                         visitorteam_short_name: obj.visitorteam_short_name || '',
                                         date: obj.date || '',
-                                        socre: liveScoreItem.point || 0,
+                                        score: liveScoreItem.point || 0,
                                         selected_by: pointsBreakupObj.selected_by || 0,
                                     }
                                     playedMatchData.push(data);

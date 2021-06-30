@@ -117,7 +117,7 @@ module.exports = {
                         var teamuserId = ObjectId(result.user_id);
                         var loginUserId = ObjectId(user_id);
                         var mStatus = liveMatch.match_status;
-                        if(!loginUserId.equals(teamuserId) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && mStatus == "In Progress" ){
+                        if(!loginUserId.equals(teamuserId) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && (mStatus == "In Progress" || mStatus == "Not Started") ){
                             return res.send(ApiUtility.failed("Please wait for a few seconds to view other teams!!"))
                          } else {
                             cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
