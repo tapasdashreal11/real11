@@ -6,8 +6,6 @@ const PointsBreakup = require('../../../models/points-breakup');
 const ApiUtility = require('../../api.utility');
 const _ = require("lodash");
 // const redis = require('../../../../lib/redis');
-// const mqtt = require('../../../../lib/mqtt');
-// const { RedisKeys } = require('../../../constants/app');
 const SeriesPlayer = require('../../../models/series-player');
 
 module.exports = {
@@ -15,7 +13,6 @@ module.exports = {
     seriesPlayerDetail: async (req, res) => {
         try {
             let data1 = {};
-            // const user_id = req.userId;
             const { series_id, match_id,player_id} = req.params;
             let sport   =   parseInt(req.params.sport) || 1;
             let decoded = {
@@ -36,7 +33,7 @@ module.exports = {
                     let playedMatchData = [];
                     let sereiesMatches = results[0] ? results[0]:[];  // This will extract all series main match
                     let playerRecordsData = results[1] ? results[1]:{}; // This will extract player data 
-                    // We factch all match id for the series useing series records
+                    // We fatch all match id for the series useing series records
                     let matchIds = sereiesMatches && sereiesMatches.length > 0 ? _.map(sereiesMatches,'match_id'):[]; 
                     if(matchIds && matchIds.length>0){
                        let playeLiveScoreData = await LiveScore.find({'player_id' :decoded['player_id'],'match_id':{$in:matchIds},'series_id': decoded["series_id"]});
@@ -46,33 +43,33 @@ module.exports = {
                             for (const liveScoreItem of playeLiveScoreData) {
                                 let obj = sereiesMatches.find(o => o.match_id == liveScoreItem.match_id);
                                 let pointsBreakupObj = pointBreakeup.find(o => o.match_id == liveScoreItem.match_id);
-                                let data = {
-                                    localteam: obj.localteam || '',
-                                    localteam_id: obj.localteam_id || '',
-                                    localteam_short_name: obj.localteam_short_name || '',
-                                    series_name: obj.series_name || '',
-                                    visitorteam: obj.visitorteam || '',
-                                    visitorteam_id: obj.visitorteam_id || '',
-                                    visitorteam_short_name: obj.visitorteam_short_name || '',
-                                    date: obj.date || '',
-                                    socre: liveScoreItem.point || 0,
-                                    selected_by: pointsBreakupObj.selected_by || 0,
+                                if(obj && obj.match_id){
+                                    let data = {
+                                        localteam: obj.localteam || '',
+                                        localteam_id: obj.localteam_id || '',
+                                        localteam_short_name: obj.localteam_short_name || '',
+                                        series_name: obj.series_name || '',
+                                        visitorteam: obj.visitorteam || '',
+                                        visitorteam_id: obj.visitorteam_id || '',
+                                        visitorteam_short_name: obj.visitorteam_short_name || '',
+                                        date: obj.date || '',
+                                        socre: liveScoreItem.point || 0,
+                                        selected_by: pointsBreakupObj.selected_by || 0,
+                                    }
+                                    playedMatchData.push(data);
                                 }
-                                playedMatchData.push(data);
                             }
                         }
                         data1.player_record = playerRecordsData || {};
                         data1.match_played = playedMatchData || [];
-                        
                     }
-                    
                     return res.send(ApiUtility.success(data1));
                     
                 } else {
                     return res.send(ApiUtility.failed("Something went wrong!!."));
                 }
             } else {
-                return res.send(ApiUtility.failed("User id, language, Series id, Match id are Empty."));
+                return res.send(ApiUtility.failed("Request Parameters not complete!!."));
             }
         } catch (error) {
             console.log(error);
