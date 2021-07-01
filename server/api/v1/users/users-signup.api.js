@@ -240,7 +240,7 @@ module.exports = async (req, res) => {
               };
               
               if(_.isEmpty(params.invite_code)){
-                var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
+                await appsFlyerEntryService(signUpBody,appsflyerURL);
               }
             }
             
