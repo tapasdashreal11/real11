@@ -608,25 +608,28 @@ module.exports = async (req, res) => {
                                                                     }
                                                                     // add bonus cash to user who shared his/her referal code
                                                                     try{
-                                                                       let appsflyerURL = config.appsFlyerAndroidUrl;
-                                                                        var joinContestAppslyeBd = {
-                                                                          "eventName": "JoinContestS2S",
-                                                                          "appsflyer_id": authUser.appsflayer_id || '', 
-                                                                          "customer_user_id": authUser._id || '',
-                                                                          "eventTime" : new Date(),
-                                                                          "eventValue": { 
+                                                                        if(authUser && authUser.appsflayer_id){
+                                                                            let appsflyerURL = config.appsFlyerAndroidUrl;
+                                                                            var joinContestAppslyeBd = {
+                                                                              "eventName": "JoinContestS2S",
                                                                               "appsflyer_id": authUser.appsflayer_id || '', 
-                                                                              "af_customer_user_id": authUser.clevertap_id || '',
-                                                                              "match_id":  match_id || '', 
-                                                                              "sport": sport || '',
-                                                                              "contest_id": contest_id || ''
-                                                                              }
-                                                                        };
-                                                                        
-                                                                        await appsFlyerEntryService(joinContestAppslyeBd,appsflyerURL);
-                                                                      } catch(appserr){
-                                                                        console.log('appserr',appserr);
-                                                                      }
+                                                                              "customer_user_id": authUser._id || '',
+                                                                              "eventTime" : new Date(),
+                                                                              "eventValue": { 
+                                                                                  "appsflyer_id": authUser.appsflayer_id || '', 
+                                                                                  "af_customer_user_id": authUser.clevertap_id || '',
+                                                                                  "match_id":  match_id || '', 
+                                                                                  "sport": sport || '',
+                                                                                  "contest_id": contest_id || '',
+                                                                                  "team_joined": 1
+                                                                                  }
+                                                                            };
+                                                                            await appsFlyerEntryService(joinContestAppslyeBd,appsflyerURL);
+                                                                        }
+                                                                         
+                                                                       } catch(appserr){
+                                                                         console.log('appserr',appserr);
+                                                                       }
 
                                                                     return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                                 }
