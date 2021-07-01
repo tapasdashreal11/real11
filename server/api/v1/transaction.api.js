@@ -532,20 +532,21 @@ module.exports = {
                                                                 } else {
                                                                   appsflyerURL = config.appsFlyeriPhoneUrl;
                                                                 }
-                                                                let event_val = { 
-                                                                    "af_customer_user_id": authUser.clevertap_id || '',
-                                                                    "af_email":  authUser.email || '', 
-                                                                    "af_mobile": authUser.mobile_number || '',
-                                                                    "af_revenue": txnData.txn_amount, 
-                                                                    "af_currency": "INR", 
-                                                                    "txn_id": txnData._id || '', 
-                                                                    "clevertap_id": authUser.clevertap_id || '',
-                                                                    "appsflyer_id": authUser.appsflayer_id || '', 
-                                                                    "user_id": authUser._id || '', 
-                                                                    "coupon_id": coupon_id || '', 
-                                                                    "discount_amount": c_discount_amount
-                                                                  };
+                                                                
                                                                 if(authUser && authUser.appsflayer_id) {
+                                                                    let event_val = { 
+                                                                        "af_customer_user_id": authUser.clevertap_id || '',
+                                                                        "af_email":  authUser.email || '', 
+                                                                        "af_mobile": authUser.mobile_number || '',
+                                                                        "af_revenue": txnData.txn_amount, 
+                                                                        "af_currency": "INR", 
+                                                                        "txn_id": txnData._id || '', 
+                                                                        "clevertap_id": authUser.clevertap_id || '',
+                                                                        "appsflyer_id": authUser.appsflayer_id || '', 
+                                                                        "user_id": authUser._id || '', 
+                                                                        "coupon_id": coupon_id || '', 
+                                                                        "discount_amount": c_discount_amount
+                                                                      };
                                                                     var tData = {
                                                                         "eventName": "FirstDepositS2S",
                                                                         "appsflyer_id": authUser.appsflayer_id || '',
@@ -569,20 +570,21 @@ module.exports = {
                                                                 } else {
                                                                   appsflyerURL = config.appsFlyeriPhoneUrl;
                                                                 }
-                                                                let event_val = { 
-                                                                    "af_customer_user_id": authUser.clevertap_id || '',
-                                                                    "af_email":  authUser.email || '', 
-                                                                    "af_mobile": authUser.mobile_number || '',
-                                                                    "af_revenue": txnData.txn_amount, 
-                                                                    "af_currency": "INR", 
-                                                                    "txn_id": txnData._id || '', 
-                                                                    "clevertap_id": authUser.clevertap_id || '',
-                                                                    "appsflyer_id": authUser.appsflayer_id || '', 
-                                                                    "user_id": authUser._id || '', 
-                                                                    "coupon_id": coupon_id || '', 
-                                                                    "discount_amount": c_discount_amount
-                                                                  };
+                                                                
                                                                 if(authUser && authUser.appsflayer_id) {
+                                                                    let event_val = { 
+                                                                        "af_customer_user_id": authUser.clevertap_id || '',
+                                                                        "af_email":  authUser.email || '', 
+                                                                        "af_mobile": authUser.mobile_number || '',
+                                                                        "af_revenue": txnData.txn_amount, 
+                                                                        "af_currency": "INR", 
+                                                                        "txn_id": txnData._id || '', 
+                                                                        "clevertap_id": authUser.clevertap_id || '',
+                                                                        "appsflyer_id": authUser.appsflayer_id || '', 
+                                                                        "user_id": authUser._id || '', 
+                                                                        "coupon_id": coupon_id || '', 
+                                                                        "discount_amount": c_discount_amount
+                                                                      };
                                                                     var tData = {
                                                                         "eventName": "Cash Deposit",
                                                                         "appsflyer_id": authUser.appsflayer_id || '',
