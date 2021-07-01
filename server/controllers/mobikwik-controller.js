@@ -29,7 +29,7 @@ module.exports.showForm = async function (req, res) {
                 txnType:12,
                 zpPayOption:1
             }
-            console.log(mobikwikParams,"mobikwik");
+            // console.log(mobikwikParams,"mobikwik");
             let checksumString = "";
             for(const param of Object.keys(mobikwikParams)){
                 checksumString += `${param}=${mobikwikParams[param]}`;

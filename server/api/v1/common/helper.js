@@ -264,6 +264,85 @@ const sendSMTPMail = (to, subject, message) => {
     // console.log(info);
   }
 };
+const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, orderId) => {
+  try {
+    /** export mailer */
+    var transporter = nodemailer.createTransport(({
+      tls: {
+        rejectUnauthorized: false
+      },
+      host: config.smtp.host,
+      secureConnection: false,
+      port: config.smtp.port,
+      name: "Real11",
+      auth: {
+        user: config.smtp.username,
+        pass: config.smtp.password
+      }
+    }));
+    /** export mailer */
+    /** start with template */
+    let emailTemplate;
+    let siteBaseUrl = `${req.protocol}://${req.get('host')}`;
+    let requestUrl = siteBaseUrl + req.url;
+    let requestMethod = req.method;
+    const currentDate = new Date();
+
+    let param = {};
+    if (requestMethod == 'POST') {
+      param = req.body;
+    }
+    // console.log(requestUrl, param);
+    // return false;
+
+    const messageData = {
+      userName: username,
+      depositeAmount: txnAmount,
+      orderId: orderId
+    };
+    // console.log(messageData);
+    // return
+    ejs.renderFile(path.join(__dirname, `../../../../views/email-templates/${template}`), {
+      requestUrl: requestUrl,
+      requestMethod: requestMethod,
+      messageData: messageData || '',
+      requestTime: currentDate
+    })
+      .then(result => {
+        emailTemplate = result;
+        // console.log("hahahahahahahahahahha", emailTemplate)
+        // return
+        // const data = {
+        //   to: "nidhimittal@real11.com",
+        //   subject: subject,
+        //   message: emailTemplate
+        // }
+        var mailOptions = {
+          from: config.smtp.fromEmail,
+          // from: { email : config.smtp.fromEmail, name: "Real11" },
+          to: to,
+          subject: subject,
+          text: emailTemplate,
+          html: emailTemplate,
+        };
+        console.log("mailOptions", mailOptions.from, mailOptions.subject, mailOptions.to);
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log("send mail error ===> ", error);
+          } else {
+            console.log(info);
+            console.log("mail sent on:", info.accepted);
+          }
+        });
+      }).catch(err => {
+        console.log("Error Rendering emailTemplate", err);
+      });
+    /** start with template */
+    /************************** */
+  } catch (error) {
+    // console.log(info);
+  }
+};
 
 const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
   try {
@@ -398,5 +477,6 @@ module.exports = {
   parseUserPrediction,
   sendSMTPMail,
   sendNotificationFCM,
-  sendNotificationAPNS
+  sendNotificationAPNS,
+  sendSMTPMailTemplate
 };

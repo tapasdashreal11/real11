@@ -80,7 +80,7 @@ module.exports = {
            
         } catch (error) {
             console.log(error);
-            Helper.sendMailToDeveloper(req, error.message);  //send mail to developer to debug purpose
+            sendMailToDeveloper(req, error.message);  //send mail to developer to debug purpose
             res.send(ApiUtility.failed(error.message));
         }
     },
