@@ -224,22 +224,26 @@ module.exports = async (req, res) => {
 
           // After successfully signup entery data in appsflyer
           try{
-            var signUpBody = {
-              "eventName": "SignUp",
-              "appsflyer_id": params.appsflayer_id || '', 
-              "customer_user_id": insertId || '',
-              "eventTime" : new Date(),
-              "eventValue": { 
-                  "appsflyer_id": params.appsflayer_id || '', 
-                  "af_customer_user_id": params.clevertap_id || '',
-                  "af_email":  params.email || '', 
-                  "af_mobile": params.mobile_number || ''
-                  }
-            };
-            
-            if(_.isEmpty(params.invite_code)){
-              var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
+            if(params && params.appsflayer_id){
+              let event_val = { 
+                "appsflyer_id": params.appsflayer_id || '', 
+                "af_customer_user_id": params.clevertap_id || '',
+                "af_email":  params.email || '', 
+                "af_mobile": params.mobile_number || ''
+                };
+               var signUpBody = {
+                "eventName": "SignUp",
+                "appsflyer_id": params.appsflayer_id || '', 
+                "customer_user_id": insertId || '',
+                "eventTime" : new Date(),
+                "eventValue": JSON.stringify(event_val)
+              };
+              
+              if(_.isEmpty(params.invite_code)){
+                var resData = await appsFlyerEntryService(signUpBody,appsflyerURL);
+              }
             }
+            
           } catch(errr){
             console.log('errr',errr);
           }

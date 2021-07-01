@@ -7,15 +7,15 @@ const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
     return new Promise((resolve, reject) => {
          
         if(!isEmpty(appsflyerdata)){
-            const bData = JSON.parse(JSON.stringify(appsflyerdata));
+            //const bData = JSON.parse(JSON.stringify(appsflyerdata));
             var options = {
                 "method": "POST",
                 "url": appsflyerUrl, 
                 "json": true,
                 "headers": {'authentication':"BUvaUbjej7PNorfc5Kmpzg",'Content-Type': 'application/json'},
-                "body":bData
+                "body":appsflyerdata
             };
-            console.log("*** bData",bData);
+            console.log("*** bData",appsflyerdata);
             request(options, function (error,res,body) {
                 console.log("**** applyer",body);
                 return resolve(body);
