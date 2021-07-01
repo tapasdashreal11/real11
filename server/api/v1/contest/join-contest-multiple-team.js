@@ -23,6 +23,7 @@ const UserAnalysis = require("../../../models/user-analysis");
 const ContestInvite = require("../../../models/contest-invite");
 const CouponSale = require("../../../models/coupon-sale");
 const JoinContestDetail = require('../../../models/join-contest-detail');
+const { appsFlyerEntryService } = require("../users/appsflyer-api");
 
 module.exports = async (req, res) => {
     try {
