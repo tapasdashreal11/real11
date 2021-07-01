@@ -525,8 +525,81 @@ module.exports = {
                                                             let date = new Date();
                                                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
                                                             Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                                                            try{
+                                                                let appsflyerURL = "";
+                                                                if(authUser.device_type == "Android"){
+                                                                  appsflyerURL =  config.appsFlyerAndroidUrl;
+                                                                } else {
+                                                                  appsflyerURL = config.appsFlyeriPhoneUrl;
+                                                                }
+                                                                let event_val = { 
+                                                                    "af_customer_user_id": authUser.clevertap_id || '',
+                                                                    "af_email":  authUser.email || '', 
+                                                                    "af_mobile": authUser.mobile_number || '',
+                                                                    "af_revenue": txnData.txn_amount, 
+                                                                    "af_currency": "INR", 
+                                                                    "txn_id": txnData._id || '', 
+                                                                    "clevertap_id": authUser.clevertap_id || '',
+                                                                    "appsflyer_id": authUser.appsflayer_id || '', 
+                                                                    "user_id": authUser._id || '', 
+                                                                    "coupon_id": coupon_id || '', 
+                                                                    "discount_amount": c_discount_amount
+                                                                  };
+                                                                if(authUser && authUser.appsflayer_id) {
+                                                                    var tData = {
+                                                                        "eventName": "FirstDepositS2S",
+                                                                        "appsflyer_id": authUser.appsflayer_id || '',
+                                                                        "eventCurrency": 'INR', 
+                                                                        "eventTime" : new Date(),
+                                                                        "customer_user_id": decoded['user_id'] || '',  
+                                                                        "eventValue":Json.stringify(event_val)
+                                                                        };
+                                                                        await appsFlyerEntryService(tData,appsflyerURL);
+                                                                       console.log("appsflyer data at deposit",tData);
+                                                                 }
+                                                                 
+                                                                } catch(appslyererrr){
+                                                                  console.log('errr in transaction for appsflyer',appslyererrr);
+                                                                }
+                                                          } else {
+                                                            try{
+                                                                let appsflyerURL = "";
+                                                                if(authUser.device_type == "Android"){
+                                                                  appsflyerURL =  config.appsFlyerAndroidUrl;
+                                                                } else {
+                                                                  appsflyerURL = config.appsFlyeriPhoneUrl;
+                                                                }
+                                                                let event_val = { 
+                                                                    "af_customer_user_id": authUser.clevertap_id || '',
+                                                                    "af_email":  authUser.email || '', 
+                                                                    "af_mobile": authUser.mobile_number || '',
+                                                                    "af_revenue": txnData.txn_amount, 
+                                                                    "af_currency": "INR", 
+                                                                    "txn_id": txnData._id || '', 
+                                                                    "clevertap_id": authUser.clevertap_id || '',
+                                                                    "appsflyer_id": authUser.appsflayer_id || '', 
+                                                                    "user_id": authUser._id || '', 
+                                                                    "coupon_id": coupon_id || '', 
+                                                                    "discount_amount": c_discount_amount
+                                                                  };
+                                                                if(authUser && authUser.appsflayer_id) {
+                                                                    var tData = {
+                                                                        "eventName": "FirstDepositS2S",
+                                                                        "appsflyer_id": authUser.appsflayer_id || '',
+                                                                        "eventCurrency": 'INR', 
+                                                                        "eventTime" : new Date(),
+                                                                        "customer_user_id": decoded['user_id'] || '',  
+                                                                        "eventValue":Json.stringify(event_val)
+                                                                        };
+                                                                        await appsFlyerEntryService(tData,appsflyerURL);
+                                                                       console.log("appsflyer data at deposit",tData);
+                                                                 }
+                                                                 
+                                                                } catch(appslyererrr){
+                                                                  console.log('errr in transaction for appsflyer',appslyererrr);
+                                                                }
                                                           }
-                                                    }catch(errrrr){
+                                                    } catch(errrrr){
                                                         console.log('first time user is coming errrr*****',errrrr);
                                                     }
 
@@ -537,39 +610,6 @@ module.exports = {
                                                 }
 
                                                 if (txn_status == true) {
-                                                      let appsflyerURL = "";
-                                                      if(authUser.device_type == "Android"){
-                                                        appsflyerURL =  config.appsFlyerAndroidUrl;
-                                                      } else {
-                                                        appsflyerURL = config.appsFlyeriPhoneUrl;
-                                                      }
-
-                                                      try{
-                                                         var tData = {
-                                                            "eventName": "MCash Deposit",
-                                                            "appsflyer_id": authUser.appsflayer_id || '',
-                                                            "eventCurrency": 'INR', 
-                                                            "eventTime" : new Date(),
-                                                            "customer_user_id": decoded['user_id'] || '',  
-                                                            "eventValue": { 
-                                                                "af_customer_user_id": authUser.clevertap_id || '',
-                                                                "email":  authUser.email || '', 
-                                                                "mobile": authUser.mobile_number || '',
-                                                                "af_revenue": txnData.txn_amount, 
-                                                                "af_currency": "INR", 
-                                                                "txn_id": txnData._id || '', 
-                                                                "clevertap_id": authUser.clevertap_id || '',
-                                                                "appsflyer_id": authUser.appsflayer_id || '', 
-                                                                "user_id": authUser._id || '', 
-                                                                "coupon_id": coupon_id || '', 
-                                                                "discount_amount": c_discount_amount
-                                                              },
-                                                            };
-                                                           var resData = await appsFlyerEntryService(tData,appsflyerURL);
-                                                           console.log("appsflyer data at deposit",tData);
-                                                        } catch(errr){
-                                                          console.log('errr in transaction for appsflyer',errr);
-                                                        }
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                                                 } else {
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
