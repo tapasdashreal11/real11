@@ -1,7 +1,6 @@
 
 const { isEmpty } = require('lodash');
 const request = require('request');
-const config = require('../../../config');
 
 const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
     return new Promise((resolve, reject) => {

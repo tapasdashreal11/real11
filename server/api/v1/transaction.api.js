@@ -555,7 +555,7 @@ module.exports = {
                                                                         "customer_user_id": decoded['user_id'] || '',  
                                                                         "eventValue":Json.stringify(event_val)
                                                                         };
-                                                                        await appsFlyerEntryService(tData,appsflyerURL);
+                                                                         appsFlyerEntryService(tData,appsflyerURL);
                                                                        console.log("appsflyer data at deposit",tData);
                                                                  }
                                                                  
@@ -593,7 +593,7 @@ module.exports = {
                                                                         "customer_user_id": decoded['user_id'] || '',  
                                                                         "eventValue":Json.stringify(event_val)
                                                                         };
-                                                                        await appsFlyerEntryService(tData,appsflyerURL);
+                                                                         appsFlyerEntryService(tData,appsflyerURL);
                                                                        console.log("appsflyer data at deposit",tData);
                                                                  }
                                                                  
@@ -1335,7 +1335,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                       "customer_user_id": decoded['user_id'] || '', 
                                       "eventValue":JSON.stringify(event_val),
                                       };
-                                     await appsFlyerEntryService(tData,appsflyerURL);
+                                      appsFlyerEntryService(tData,appsflyerURL);
                                      console.log("appsflyer data at deposit",tData);
                                 }
                               } catch(appsflyererrr){
@@ -1371,7 +1371,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                       "customer_user_id": decoded['user_id'] || '', 
                                       "eventValue":JSON.stringify(event_val),
                                       };
-                                     await appsFlyerEntryService(tData,appsflyerURL);
+                                      appsFlyerEntryService(tData,appsflyerURL);
                                      console.log("appsflyer data at deposit",tData);
                                 }
                               } catch(appsflyererrr){
