@@ -230,6 +230,7 @@ module.exports = async (req, res) => {
               "customer_user_id": insertId || '',
               "eventTime" : new Date(),
               "eventValue": { 
+                  "appsflyer_id": params.appsflayer_id || '', 
                   "af_customer_user_id": params.clevertap_id || '',
                   "af_email":  params.email || '', 
                   "af_mobile": params.mobile_number || ''
