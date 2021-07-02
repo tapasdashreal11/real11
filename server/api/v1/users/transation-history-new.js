@@ -30,7 +30,7 @@ module.exports = async (req, res, dbs) => {
 				var newArr = [];
 				
 				_.forEach(usersData, function(i, k){
-					newArr.push({
+				let tItem = {
 						"_id": i._id,
 						"sign_type": (_.indexOf([3, 11, 12, 13,23], i.added_type) >=0)? '-' : '+' ,
 						"amount": i.txn_amount.toString(),
@@ -40,10 +40,14 @@ module.exports = async (req, res, dbs) => {
 						"withdraw_commission":i.withdraw_commission || 0,
 						"txn_date": moment(i.txn_date).add('5.5', 'hours').format("YYYY-MM-DD,HH:mm:ss"),
 						"team_name": userData.team_name || "",
-						"date": moment(i.txn_date).format("YYYY-MM-DD"),
-						"total_team_joined": i.added_type == 3 ? i.total_team_joined:0,
-						"contest_entry_fee":i.contest_entry_fee
-					});
+						"date": moment(i.txn_date).format("YYYY-MM-DD")
+					}
+					if(i.added_type != 1){
+						tItem['total_team_joined'] = i.total_team_joined || 1
+						tItem['contest_entry_fee'] = i.contest_entry_fee
+					}
+					
+					newArr.push(tItem);
 
 					if(k === (usersData.length - 1)){
 						var fnData = _.chain(newArr)
