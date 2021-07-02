@@ -556,7 +556,7 @@ module.exports = {
                                                                         "eventValue":JSON.stringify(event_val)
                                                                         };
                                                                          appsFlyerEntryService(tData,appsflyerURL);
-                                                                       console.log("appsflyer data at deposit",tData);
+                                                                       
                                                                  }
                                                                  
                                                                 } catch(appslyererrr){
@@ -594,7 +594,7 @@ module.exports = {
                                                                         "eventValue":JSON.stringify(event_val)
                                                                         };
                                                                          appsFlyerEntryService(tData,appsflyerURL);
-                                                                       console.log("appsflyer data at deposit",tData);
+                                                                       
                                                                  }
                                                                  
                                                                 } catch(appslyererrr){
@@ -1336,7 +1336,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                       "eventValue":JSON.stringify(event_val),
                                       };
                                       appsFlyerEntryService(tData,appsflyerURL);
-                                     console.log("appsflyer data at deposit",tData);
+                                     
                                 }
                               } catch(appsflyererrr){
                                  console.log('errr in transaction for appsflyer',appsflyererrr);
@@ -1372,7 +1372,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                       "eventValue":JSON.stringify(event_val),
                                       };
                                       appsFlyerEntryService(tData,appsflyerURL);
-                                     console.log("appsflyer data at deposit",tData);
+                                     
                                 }
                               } catch(appsflyererrr){
                                  console.log('errr in transaction for appsflyer',appsflyererrr);
