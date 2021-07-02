@@ -553,7 +553,7 @@ module.exports = {
                                                                         "eventCurrency": 'INR', 
                                                                         "eventTime" : new Date(),
                                                                         "customer_user_id": decoded['user_id'] || '',  
-                                                                        "eventValue":Json.stringify(event_val)
+                                                                        "eventValue":JSON.stringify(event_val)
                                                                         };
                                                                          appsFlyerEntryService(tData,appsflyerURL);
                                                                        console.log("appsflyer data at deposit",tData);
@@ -591,7 +591,7 @@ module.exports = {
                                                                         "eventCurrency": 'INR', 
                                                                         "eventTime" : new Date(),
                                                                         "customer_user_id": decoded['user_id'] || '',  
-                                                                        "eventValue":Json.stringify(event_val)
+                                                                        "eventValue":JSON.stringify(event_val)
                                                                         };
                                                                          appsFlyerEntryService(tData,appsflyerURL);
                                                                        console.log("appsflyer data at deposit",tData);
