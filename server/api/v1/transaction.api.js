@@ -13,7 +13,7 @@ var sha512 = require('js-sha512');
 const paytm = require('../../../lib/paytm/checksum');
 const paytmAllInOne = require('../../../lib/paytm/PaytmChecksum')
 const request = require('request');
-// const { sendSMTPMail } = require("./common/helper.js");
+const { sendSMTPMail, sendSMTPMailTemplate } = require("./common/helper.js");
 const https = require('https');
 const _ = require('lodash');
 const redis = require('../../../lib/redis');
@@ -612,6 +612,7 @@ module.exports = {
                                                 }
 
                                                 if (txn_status == true) {
+                                                    sendSMTPMailTemplate(req, "Amount Deposite", "deposite/deposite-main.ejs", authUser.email, authUser.first_name, txnData.txn_amount, txnData._id);
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                                                 } else {
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
@@ -641,6 +642,7 @@ module.exports = {
                         let response   =   JSON.parse(result.body);
                         if(response && response.success == true && response.code == "PAYMENT_SUCCESS") {
                             await updateTransactionAllGetway(decoded, function(txn_res) {
+                                // sendSMTPMailTemplate(req, "Amount Deposite", "deposite/deposite-main.ejs", authUser.email, authUser.first_name, txnData.txn_amount, txnData._id);
                                 return res.send(txn_res);
                             });
                         } else {

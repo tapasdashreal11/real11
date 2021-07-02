@@ -292,8 +292,6 @@ const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, o
     if (requestMethod == 'POST') {
       param = req.body;
     }
-    // console.log(requestUrl, param);
-    // return false;
 
     const messageData = {
       userName: username,
@@ -310,13 +308,7 @@ const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, o
     })
       .then(result => {
         emailTemplate = result;
-        // console.log("hahahahahahahahahahha", emailTemplate)
-        // return
-        // const data = {
-        //   to: "nidhimittal@real11.com",
-        //   subject: subject,
-        //   message: emailTemplate
-        // }
+        
         var mailOptions = {
           from: config.smtp.fromEmail,
           // from: { email : config.smtp.fromEmail, name: "Real11" },
