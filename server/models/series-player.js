@@ -59,6 +59,18 @@ var seriesPlayerSchema = new Schema({
   },
   "is_lastplayed": {
     "type":  Number,default:0
+  },
+  "batting_style": {
+    "type":  String
+  },
+  "birth_place": {
+    "type":  String
+  },
+  "bowling_style": {
+    "type":  String
+  },
+  "date_of_birth": {
+    "type":  String
   }
 });
 
