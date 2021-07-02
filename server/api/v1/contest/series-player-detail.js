@@ -22,7 +22,7 @@ module.exports = {
 
             if (decoded['series_id'] && decoded['match_id'] && decoded['player_id']) {
                 let apiList = [
-                    SeriesSquad.find({'series_id': decoded["series_id"],'is_parent':true, 'parent_id':{$exists:false}}),
+                    SeriesSquad.find({'series_id': decoded["series_id"],'is_parent':true, 'parent_id':{$exists:false}},{match_id:1,localteam:1,localteam_id:1,localteam_short_name:1,visitorteam:1,visitorteam_id:1,visitorteam_short_name:1,date:1}),
                     SeriesPlayer.findOne({'series_id': decoded["series_id"], 'player_id': decoded['player_id'], sport: sport })
                 ];
                 var results = await Promise.all(apiList);
@@ -34,9 +34,7 @@ module.exports = {
                     // We fatch all match id for the series useing series records
                     let matchIds = sereiesMatches && sereiesMatches.length > 0 ? _.map(sereiesMatches,'match_id'):[]; 
                     if(matchIds && matchIds.length>0){
-                       // let playeLiveScoreData = await LiveScore.find({'player_id' :decoded['player_id'],'match_id':{$in:matchIds},'series_id': decoded["series_id"]});
-                       let pointBreakeup = await PointsBreakup.find({'player_id' :decoded['player_id'],'match_id':{$in:matchIds},'series_id': decoded["series_id"]});
-
+                       let pointBreakeup = await PointsBreakup.find({'player_id' :decoded['player_id'],'match_id':{$in:matchIds},'series_id': decoded["series_id"]},{match_id:1,total_point:1,selected_by:1});
                         if(pointBreakeup && pointBreakeup.length>0) {
                             for (const liveScoreItem of pointBreakeup) {
                                 let obj = sereiesMatches.find(o => o.match_id == liveScoreItem.match_id);
@@ -50,7 +48,6 @@ module.exports = {
                                         visitorteam_id: obj.visitorteam_id || '',
                                         visitorteam_short_name: obj.visitorteam_short_name || '',
                                         date: obj.date || '',
-                                        player_credit: obj.player_credit || '',
                                         score: pointsBreakupObj.total_point || 0,
                                         selected_by: pointsBreakupObj.selected_by || 0,
                                     }
