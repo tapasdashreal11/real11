@@ -34,11 +34,11 @@ module.exports = {
                     // We fatch all match id for the series useing series records
                     let matchIds = sereiesMatches && sereiesMatches.length > 0 ? _.map(sereiesMatches,'match_id'):[]; 
                     if(matchIds && matchIds.length>0){
-                       let playeLiveScoreData = await LiveScore.find({'player_id' :decoded['player_id'],'match_id':{$in:matchIds},'series_id': decoded["series_id"]});
+                       // let playeLiveScoreData = await LiveScore.find({'player_id' :decoded['player_id'],'match_id':{$in:matchIds},'series_id': decoded["series_id"]});
                        let pointBreakeup = await PointsBreakup.find({'player_id' :decoded['player_id'],'match_id':{$in:matchIds},'series_id': decoded["series_id"]});
 
-                        if(playeLiveScoreData && playeLiveScoreData.length>0) {
-                            for (const liveScoreItem of playeLiveScoreData) {
+                        if(pointBreakeup && pointBreakeup.length>0) {
+                            for (const liveScoreItem of pointBreakeup) {
                                 let obj = sereiesMatches.find(o => o.match_id == liveScoreItem.match_id);
                                 let pointsBreakupObj = pointBreakeup.find(o => o.match_id == liveScoreItem.match_id);
                                 if(obj && obj.match_id){
@@ -50,7 +50,8 @@ module.exports = {
                                         visitorteam_id: obj.visitorteam_id || '',
                                         visitorteam_short_name: obj.visitorteam_short_name || '',
                                         date: obj.date || '',
-                                        score: liveScoreItem.point || 0,
+                                        date: obj.player_credit || '',
+                                        score: pointsBreakupObj.total_point || 0,
                                         selected_by: pointsBreakupObj.selected_by || 0,
                                     }
                                     playedMatchData.push(data);
