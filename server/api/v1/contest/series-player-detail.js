@@ -50,7 +50,7 @@ module.exports = {
                                         visitorteam_id: obj.visitorteam_id || '',
                                         visitorteam_short_name: obj.visitorteam_short_name || '',
                                         date: obj.date || '',
-                                        date: obj.player_credit || '',
+                                        player_credit: obj.player_credit || '',
                                         score: pointsBreakupObj.total_point || 0,
                                         selected_by: pointsBreakupObj.selected_by || 0,
                                     }
