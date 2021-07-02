@@ -41,7 +41,7 @@ module.exports = async (req, res, dbs) => {
 						"txn_date": moment(i.txn_date).add('5.5', 'hours').format("YYYY-MM-DD,HH:mm:ss"),
 						"team_name": userData.team_name || "",
 						"date": moment(i.txn_date).format("YYYY-MM-DD"),
-						"total_team_joined": i.total_team_joined || 1,
+						"total_team_joined": i.total_team_joined,
 						"contest_entry_fee":i.contest_entry_fee
 					});
 
