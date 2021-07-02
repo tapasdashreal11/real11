@@ -122,6 +122,7 @@ const AdminSchema = mongoose.Schema({
     is_beginner_user:{ type:Number,default: 0 }, // default  wiil be 0 after added it will be 1
     instant_withdraw: { type: Number, enum: [1,0], default: 0 },
     media_partner_name: {type: String, default: ''},
+    user_gaid: {type: String}
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },

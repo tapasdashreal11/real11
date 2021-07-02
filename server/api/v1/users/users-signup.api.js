@@ -89,6 +89,7 @@ module.exports = async (req, res) => {
           insertData.refer_id = createUserReferal(10);
           insertData.isFirstPaymentAdded = 2;
           insertData.is_beginner_user = 1;
+          insertData.user_gaid = params.user_gaid || '';
           // insertData.bonus_amount = 50;
           if(params && params.device_id)
            insertData.device_id = params.device_id;
