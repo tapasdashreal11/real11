@@ -14,9 +14,7 @@ const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
                 "headers": {'authentication':"BUvaUbjej7PNorfc5Kmpzg",'Content-Type': 'application/json'},
                 "body":appsflyerdata
             };
-            console.log("*** bData",appsflyerdata);
             request(options, function (error,res,body) {
-                console.log("**** applyer",body);
                 return resolve(body);
             });
            

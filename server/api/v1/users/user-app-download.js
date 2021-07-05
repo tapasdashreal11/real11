@@ -4,10 +4,8 @@ module.exports = async (req, res) => {
     var response = { status: false, message: "Invalid Request", data: {} };
     const { dcode,clevertap_id } = req.params;
     if (!dcode) {
-      response["message"] = "Required fields missing";
       return res.json(response);
     }
-    console.log('dcode',dcode);
     let d_data = {};
     d_data.dcode = dcode;
     d_data.clevertap_id = clevertap_id || '';
