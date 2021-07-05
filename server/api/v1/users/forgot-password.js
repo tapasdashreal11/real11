@@ -5,7 +5,7 @@ const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 const config = require('../../../config');
-const { sendMail} = require("../common/helper");
+const { sendMail, sendSMTPMail} = require("../common/helper");
 
 module.exports = async (req, res) => {
   try {
@@ -40,7 +40,8 @@ module.exports = async (req, res) => {
           const from = config.supportEmail;
           const subject = emailTemplate.email_name;
           const message  =  emailTemplate.template;
-          sendMail(to, from, subject, message);
+          // sendMail(to, from, subject, message);
+          sendSMTPMail(to, subject, message);
         }
         
         let updatedData = {};
@@ -64,20 +65,3 @@ module.exports = async (req, res) => {
     res.send(ApiUtility.failed(error.message));
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

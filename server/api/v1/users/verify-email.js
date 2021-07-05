@@ -6,7 +6,7 @@ const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 const config = require('../../../config');
-const { sendMail } = require("../common/helper");
+const { sendMail, sendSMTPMail } = require("../common/helper");
 var help = require('../../../controllers/helpers');
 const ModelService = require("../../ModelService");
 
@@ -50,11 +50,12 @@ module.exports = {
             emailTemplate.template = emailTemplate.template.replace('{{site_name}}', user.first_name);
             emailTemplate.template = emailTemplate.template.replace('{{link}}', verifyUrl);
             const to = params.email;
-            const from = config.supportEmail;
+            // const from = config.supportEmail;
             const subject = emailTemplate.email_name;
             const message = emailTemplate.template;
 
-            sendMail(to, from, subject, message);
+            // sendMail(to, from, subject, message);
+            sendSMTPMail(to, subject, message);
           }
         }
 
