@@ -61,6 +61,7 @@ const withdrawHistory = require('./api/v1/users/withdraw-history');
 const { joinedContestList,joinedContestListUpcoming } = require('./api/v1/contest/joined-contest-list');
 const askToAakash = require('./api/v1/users/ask-to-aakash-api');
 const { favouriteContestCreate,retentionBonousCreate } = require('./api/v1/users/retantion-data-scrip');
+const userAppDownlad = require('./api/v1/users/user-app-download');
 
 const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
 const { joinedContestMatchesNew } = require('./api/v1/contest/joined-contest-matches-new');
@@ -249,6 +250,7 @@ router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth
 router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
 router.post('/api/v1/create-contest', auth.authenticate.jwtLogin, createContest);
+router.get('/api/v1/user-download/:dcode/:clevertap_id', userAppDownlad);
 
 router.get('/api/v1/contest-leaderboard/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestLeaderboardLatest);
 // router.get('/api/v1/new-contest-leaderboard/:match_id/:contest_id', auth.authenticate.jwtLogin, newLeaderboard);
