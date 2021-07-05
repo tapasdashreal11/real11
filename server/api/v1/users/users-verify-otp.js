@@ -10,7 +10,7 @@ const ejs = require('ejs');
 const path = require('path');
 
 const logger = require("../../../../utils/logger")(module);
-const { generateClientToken, sendMail, sendSMTPMail} = require("../common/helper");
+const { generateClientToken, sendSMTPMail} = require("../common/helper");
 const { RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
