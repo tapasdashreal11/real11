@@ -92,6 +92,9 @@ module.exports = async (req, res) => {
           if(params && params.user_gaid){
             insertData.user_gaid = params.user_gaid;
           }
+          if(params && params.dcode){
+            insertData.dcode = params.dcode;
+          }
           // insertData.bonus_amount = 50;
           if(params && params.device_id)
            insertData.device_id = params.device_id;
