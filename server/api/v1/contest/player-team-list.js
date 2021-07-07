@@ -79,10 +79,11 @@ module.exports = {
     previewPlayerTeamList: async (req, res) => {
         var _this = this;
         try {
-            let { match_id, series_id, team_no, player_team_id, sport } = req.params;
+            let { match_id, series_id, team_no, player_team_id, sport,cat_id } = req.params;
            
             let  user_id = req.userId;
             sport   =   parseInt(sport) || 1;
+            console.log('cat_id',cat_id);
 
             match_id = parseInt(match_id);
             series_id = parseInt(series_id);
