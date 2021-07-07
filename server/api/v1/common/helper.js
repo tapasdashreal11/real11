@@ -108,6 +108,7 @@ const validatorMiddleware = (req, res, next) => {
 
 const generateClientToken = (data, expiresIn = tokenExpiresIn) => {
   return new Promise((resolve, reject) => {
+    console.log('expiresIn',expiresIn);
     jwt.sign(data, config.tokenSecret, { expiresIn }, function (err, token) {
       if (err) {
         console.log(err);
