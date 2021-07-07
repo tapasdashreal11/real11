@@ -30,7 +30,11 @@ module.exports = {
                     // This array store all played match of plyer
                     let playedMatchData = [];
                     let sereiesMatches = results[0] ? results[0]:[];  // This will extract all series main match
-                    let playerRecordsData = results[1] ? results[1]:{}; // This will extract player data 
+                    let playerRecordsData = results[1] ? results[1]:{}; // This will extract player data
+                    if(playerRecordsData){
+                        playerRecordsData = JSON.parse(JSON.stringify(playerRecordsData));
+                        playerRecordsData['player_total_points'] =  0; 
+                    }
                     // We fatch all match id for the series useing series records
                     let matchIds = sereiesMatches && sereiesMatches.length > 0 ? _.map(sereiesMatches,'match_id'):[]; 
                     if(matchIds && matchIds.length>0){
