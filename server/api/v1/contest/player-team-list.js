@@ -83,8 +83,6 @@ module.exports = {
            
             let  user_id = req.userId;
             sport   =   parseInt(sport) || 1;
-            console.log('cat_id',cat_id);
-
             match_id = parseInt(match_id);
             series_id = parseInt(series_id);
 
@@ -120,7 +118,6 @@ module.exports = {
                         var mStatus = liveMatch.match_status;
                         // !loginUserId.equals(teamuserId) &&  mStatus == "In Progress" ||
                         if(!loginUserId.equals(teamuserId) && cat_id && !_.isUndefined(cat_id) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && ( mStatus == "In Progress" || mStatus == "Not Started") ){
-                            console.log('msadasmdamsdas');
                             return res.send(ApiUtility.failed("Please wait for a few seconds to view other teams!!"))
                          } else {
                             cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
