@@ -18,7 +18,7 @@ let currentDate  =	moment().utc().toDate();
 sgMail.setApiKey(config.sendgridApiKey);
 
 const currentDateTimeFormat = (dateTimeFormat) => moment().utc().format(dateTimeFormat);
-const tokenExpiresIn = '7200h';
+const tokenExpiresIn = '7200h'; // Expire age of jwt token
 
 const generateError = (message = '', status = 500) => {
   let error = new Error(message);
@@ -108,7 +108,6 @@ const validatorMiddleware = (req, res, next) => {
 
 const generateClientToken = (data, expiresIn = tokenExpiresIn) => {
   return new Promise((resolve, reject) => {
-    console.log('expiresIn',expiresIn);
     jwt.sign(data, config.tokenSecret, { expiresIn }, function (err, token) {
       if (err) {
         console.log(err);
