@@ -27,8 +27,6 @@ module.exports = {
                 ];
                 var results = await Promise.all(apiList);
                 if(results && results.length>0){
-
-                    
                     // This array store all played match of plyer
                     let playedMatchData = [];
                     let sereiesMatches = results[0] ? results[0]:[];  // This will extract all series main match
@@ -36,9 +34,6 @@ module.exports = {
                     let filteredMatch = [];
                     sereiesMatches.forEach( (item)=> { if(item.type == userMatchData.type) {filteredMatch.push(item);}
                     });
-
-                    console.log('filteredMatch',filteredMatch);
-
                     let playerRecordsData = results[1] ? results[1]:{}; // This will extract player data
                     if(playerRecordsData){
                         playerRecordsData = JSON.parse(JSON.stringify(playerRecordsData));
