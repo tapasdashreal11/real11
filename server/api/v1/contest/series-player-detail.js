@@ -62,7 +62,6 @@ module.exports = {
                         if(playerRecordsData && playedMatchData && playedMatchData.length>0){
                           let sArray =  _.map(playedMatchData,'score');
                           let totalScore = sArray  && sArray.length>0 ?_.sum(sArray):0;
-                          playerRecordsData = JSON.parse(JSON.stringify(playerRecordsData));
                           playerRecordsData['player_total_points'] = totalScore || 0;
                         }
                         data1.player_record = playerRecordsData || {};
