@@ -228,7 +228,8 @@ config.ludo_mqtt = {
 config.user_category = {
   beginner_cat: '600a7d84a3d2553aa779eae7',
   super_cat:'608f9b833f625d05d4529c16',
-  dimond_cat:'608f907c3f625d05d4529c0f'
+  dimond_cat:'608f907c3f625d05d4529c0f',
+  looser_cat:'60e6acade5696160409cfd59'
 }
 config.user_category_prod = {
   beginner_cat: '6013ab6f53fe1866314c58ec',

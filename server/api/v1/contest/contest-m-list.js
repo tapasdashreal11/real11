@@ -26,8 +26,7 @@ try {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
-        let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0
-        };
+        let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
         let userCoupons = [];
         let queryArray = [
             (new ModelService(MatchContest)).getMatchContestLatestWithoutCat({ status: 1 }, filter, 5)
@@ -111,11 +110,12 @@ try {
                     try{
                          newMatchContestData = _.reject(newMatchContestData, function(e) {
                             
-                            userCategory = _.has(userCategory, "is_super_user") && _.has(userCategory, "is_dimond_user") && _.has(userCategory, "is_beginner_user")?userCategory :{is_super_user : 0,is_dimond_user : 0,is_beginner_user :0};
+                            userCategory = _.has(userCategory, "is_super_user") && _.has(userCategory, "is_dimond_user") && _.has(userCategory, "is_beginner_user") && _.has(userCategory, "is_looser_user")?userCategory :{is_super_user : 0,is_dimond_user : 0,is_beginner_user :0, is_looser_user :0};
                            // if(userCategory)console.log('e*********',e.category_id,userCategory.is_beginner_user,userCategory.is_super_user);
                             return (ObjectId(e.category_id).equals(ObjectId(config.user_category.beginner_cat)) && userCategory && userCategory.is_beginner_user == 0 ) ||
                             (ObjectId(e.category_id).equals(ObjectId(config.user_category.super_cat)) && userCategory && userCategory.is_super_user == 0 ) ||
-                            (ObjectId(e.category_id).equals(ObjectId(config.user_category.dimond_cat)) && userCategory && userCategory.is_dimond_user == 0 )
+                            (ObjectId(e.category_id).equals(ObjectId(config.user_category.dimond_cat)) && userCategory && userCategory.is_dimond_user == 0 ) || 
+                            (ObjectId(e.category_id).equals(ObjectId(config.user_category.looser_cat)) && userCategory && userCategory.is_looser_user == 0 )
                         });
                     }catch(eerrrr){}
                    
