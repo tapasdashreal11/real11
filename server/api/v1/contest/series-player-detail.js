@@ -22,26 +22,35 @@ module.exports = {
 
             if (decoded['series_id'] && decoded['match_id'] && decoded['player_id']) {
                 let apiList = [
-                    SeriesSquad.find({'series_id': decoded["series_id"],'is_parent':true, 'parent_id':{$exists:false}},{match_id:1,localteam:1,localteam_id:1,localteam_short_name:1,visitorteam:1,visitorteam_id:1,visitorteam_short_name:1,date:1}),
+                    SeriesSquad.find({'series_id': decoded["series_id"],'is_parent':true, 'parent_id':{$exists:false}},{type:1,match_id:1,localteam:1,localteam_id:1,localteam_short_name:1,visitorteam:1,visitorteam_id:1,visitorteam_short_name:1,date:1}),
                     SeriesPlayer.findOne({'series_id': decoded["series_id"], 'player_id': decoded['player_id'], sport: sport })
                 ];
                 var results = await Promise.all(apiList);
                 if(results && results.length>0){
+
+                    
                     // This array store all played match of plyer
                     let playedMatchData = [];
                     let sereiesMatches = results[0] ? results[0]:[];  // This will extract all series main match
+                    const userMatchData = sereiesMatches.find(element => element.match_id == decoded['match_id']);
+                    let filteredMatch = [];
+                    sereiesMatches.forEach( (item)=> { if(item.type == userMatchData.type) {filteredMatch.push(item);}
+                    });
+
+                    console.log('filteredMatch',filteredMatch);
+
                     let playerRecordsData = results[1] ? results[1]:{}; // This will extract player data
                     if(playerRecordsData){
                         playerRecordsData = JSON.parse(JSON.stringify(playerRecordsData));
                         playerRecordsData['player_total_points'] =  0; 
                     }
                     // We fatch all match id for the series useing series records
-                    let matchIds = sereiesMatches && sereiesMatches.length > 0 ? _.map(sereiesMatches,'match_id'):[]; 
+                    let matchIds = filteredMatch && filteredMatch.length > 0 ? _.map(filteredMatch,'match_id'):[]; 
                     if(matchIds && matchIds.length>0){
                        let pointBreakeup = await PointsBreakup.find({'player_id' :decoded['player_id'],'match_id':{$in:matchIds},'series_id': decoded["series_id"]},{match_id:1,total_point:1,selected_by:1});
                         if(pointBreakeup && pointBreakeup.length>0) {
                             for (const liveScoreItem of pointBreakeup) {
-                                let obj = sereiesMatches.find(o => o.match_id == liveScoreItem.match_id);
+                                let obj = filteredMatch.find(o => o.match_id == liveScoreItem.match_id);
                                 let pointsBreakupObj = pointBreakeup.find(o => o.match_id == liveScoreItem.match_id);
                                 if(obj && obj.match_id){
                                     let data = {
@@ -52,6 +61,7 @@ module.exports = {
                                         visitorteam_id: obj.visitorteam_id || '',
                                         visitorteam_short_name: obj.visitorteam_short_name || '',
                                         date: obj.date || '',
+                                        type: obj.type || '',
                                         score: pointsBreakupObj.total_point || 0,
                                         selected_by: pointsBreakupObj.selected_by || 0,
                                     }
