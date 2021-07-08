@@ -958,7 +958,8 @@ class ModelService {
                             "notification_title":"$notification_title",
                             "match_banner":{$cond: { if: { $eq: [ "$match_banner", '' ] }, then: "", else: { $concat: [ imageurl, "/", "$match_banner" ] } }},
                             "active_giveaway":{ $ifNull: [ "$active_giveaway", false ] },
-                            "live_fantasy":{ $ifNull: [ "$custom_live_fantasy", false ] }
+                            "live_fantasy":{ $ifNull: [ "$custom_live_fantasy", false ] },
+                            "parent_id":"$parent_id"
                         }
                     }
                 ], (err, data) => {
