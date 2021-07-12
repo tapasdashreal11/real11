@@ -234,7 +234,8 @@ config.user_category = {
 config.user_category_prod = {
   beginner_cat: '6013ab6f53fe1866314c58ec',
   super_cat:'6013aba953fe1866314c58ed',
-  dimond_cat:'6013abf553fe1866314c58ee'
+  dimond_cat:'6013abf553fe1866314c58ee',
+  looser_cat:'60ebe0a81de3382a0b48cde2'
 }
 
 config.youtuber_bcode = [
