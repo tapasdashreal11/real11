@@ -588,7 +588,7 @@ module.exports = {
                                                                         "discount_amount": c_discount_amount
                                                                       };
                                                                     var tData = {
-                                                                        "eventName": "Cash Deposit",
+                                                                        "eventName": "s2sCashDeposite",
                                                                         "appsflyer_id": authUser.appsflayer_id || '',
                                                                         "eventCurrency": 'INR', 
                                                                         "eventTime" : new Date(),
@@ -1057,7 +1057,7 @@ module.exports = {
                                             "discount_amount": c_discount_amount
                                         };
                                         var tData = {
-                                            "eventName": "Cash Deposit",
+                                            "eventName": "s2sCashDeposite",
                                             "appsflyer_id": authUser.appsflayer_id || '',
                                             "eventCurrency": 'INR', 
                                             "eventTime" : new Date(),
@@ -1493,7 +1493,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                         "discount_amount": c_discount_amount
                                       };
                                     var tData = {
-                                      "eventName": "Cash Deposit",
+                                      "eventName": "s2sCashDeposite",
                                       "appsflyer_id": authUser.appsflayer_id || '',
                                       "eventCurrency": 'INR',
                                       "eventTime" : new Date(),
