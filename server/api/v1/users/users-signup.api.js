@@ -248,23 +248,26 @@ module.exports = async (req, res) => {
               
               if(_.isEmpty(params.invite_code)){
                  appsFlyerEntryService(signUpBody,appsflyerURL);
-                 let fb_event = {
-                  "data": [
-                     {
-                    "event_name": "Contact",
-                    "event_time": parseInt(new Date().getTime()/ 1000),
-                    "event_source_url": "real11.com/s2s",
-                    "opt_out": false,
-                    "event_id":Math.floor(1000000 + Math.random() * 9000000),
-                    "user_data": {
-                       "client_ip_address": userIp,
-                       "client_user_agent": "s2s",
-                      },
-                      "action_source": "website"
+                 try{
+                  let fb_event = {
+                    "data": [
+                       {
+                      "event_name": "Complete registration",
+                      "event_time": parseInt(new Date().getTime()/ 1000),
+                      "event_source_url": "real11.com/s2s",
+                      "opt_out": false,
+                      "event_id":Math.floor(1000000 + Math.random() * 9000000),
+                      "user_data": {
+                        "client_ip_address": userIp || "172.17.0.5",
+                        "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                        },
+                        "action_source": "website"
+                      }
+                      ]
                     }
-                    ]
-                  }
-                  facebookEntryService(fb_event,'https://graph.facebook.com/v11.0/560345878459615/events');
+                    facebookEntryService(fb_event,'');
+                 }catch(errfb){}
+                
               }
             }
             

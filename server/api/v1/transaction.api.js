@@ -21,6 +21,7 @@ var sha256 = require('sha256');
 const fetch = require('node-fetch');
 const { registerCustomQueryHandler } = require('puppeteer');
 const { appsFlyerEntryService } = require("./users/appsflyer-api");
+const { facebookEntryService } = require("./users/facebook-api");
 
 module.exports = {
 
@@ -356,6 +357,7 @@ module.exports = {
     updateTransaction: async (req, res) => {
         try {
             const user_id = req.userId;
+            var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
             const { gateway_name, order_id, txn_id, banktxn_id, txn_date, txn_amount, currency, coupon_id, discount_amount } = req.body;
             let decoded = {
                 user_id,
@@ -601,6 +603,29 @@ module.exports = {
                                                                   console.log('errr in transaction for appsflyer',appslyererrr);
                                                                 }
                                                           }
+                                                          try{
+                                                            let fb_event = {
+                                                               "data": [
+                                                                 {
+                                                                "event_name": "Purchase",
+                                                                "event_time": parseInt(new Date().getTime()/ 1000),
+                                                                "event_source_url": "real11.com/deposits2s",
+                                                                "opt_out": false,
+                                                                "event_id":Math.floor(1000000 + Math.random() * 9000000),
+                                                                "user_data": {
+                                                                  "client_ip_address": userIp || "172.17.0.5",
+                                                                  "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                                                                  },
+                                                                  "custom_data": {
+                                                                    "value": txnData.txn_amount,
+                                                                    "currency": "INR"
+                                                                  },
+                                                                  "action_source": "website"
+                                                                }
+                                                                ]
+                                                              }
+                                                              facebookEntryService(fb_event,'');
+                                                           }catch(errfb){}
                                                     } catch(errrrr){
                                                         console.log('first time user is coming errrr*****',errrrr);
                                                     }
@@ -1047,6 +1072,29 @@ module.exports = {
                                   console.log('errr in transaction for appsflyer',appslyererrr);
                                 }
                           }
+                          try{
+                            let fb_event = {
+                               "data": [
+                                 {
+                                "event_name": "Purchase",
+                                "event_time": parseInt(new Date().getTime()/ 1000),
+                                "event_source_url": "real11.com/deposits2s",
+                                "opt_out": false,
+                                "event_id":Math.floor(1000000 + Math.random() * 9000000),
+                                "user_data": {
+                                  "client_ip_address":"172.17.0.5",
+                                  "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                                  },
+                                  "custom_data": {
+                                    "value": txnData.txn_amount,
+                                    "currency": "INR"
+                                  },
+                                  "action_source": "website"
+                                }
+                                ]
+                              }
+                              facebookEntryService(fb_event,'');
+                           }catch(errfb){}
                     } catch(errrrr){
                         console.log('first time user is coming errrr*****',errrrr);
                     }
