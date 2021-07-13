@@ -15,6 +15,7 @@ const moment = require('moment');
 const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
 const { appsFlyerEntryService } = require("./appsflyer-api");
+const { facebookEntryService } = require("./facebook-api");
 
 // @params
 // {
@@ -247,6 +248,23 @@ module.exports = async (req, res) => {
               
               if(_.isEmpty(params.invite_code)){
                  appsFlyerEntryService(signUpBody,appsflyerURL);
+                 let fb_event = {
+                  "data": [
+                     {
+                    "event_name": "Contact",
+                    "event_time": Date.now(),
+                    "event_source_url": "real11.com/s2s/mobile",
+                    "opt_out": false,
+                    "event_id":Math.floor(1000000 + Math.random() * 9000000),
+                    "user_data": {
+                       "client_ip_address": userIp,
+                       "client_user_agent": "s2s",
+                      },
+                      "action_source": "website"
+                    }
+                    ]
+                  }
+                  facebookEntryService(fb_event,'https://graph.facebook.com/v11.0/560345878459615/events');
               }
             }
             
