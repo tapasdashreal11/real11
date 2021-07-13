@@ -252,7 +252,7 @@ module.exports = async (req, res) => {
                   "data": [
                      {
                     "event_name": "Contact",
-                    "event_time": Date.now(),
+                    "event_time": (Date.now()/ 1000),
                     "event_source_url": "real11.com/s2s/mobile",
                     "opt_out": false,
                     "event_id":Math.floor(1000000 + Math.random() * 9000000),
