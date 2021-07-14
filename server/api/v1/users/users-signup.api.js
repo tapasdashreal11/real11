@@ -61,10 +61,11 @@ module.exports = async (req, res) => {
       if (!userPhone) {
         let referal_code_detail = {};
         if(!_.isEmpty(params.invite_code)){
+          var caps_invite_code = params.invite_code.toUpperCase();
           var regCode = new RegExp(["^", params.invite_code, "$"].join(""), "i");
-          let inviteDetails = await Users.findOne({ refer_id: regCode });
+          let inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
           if(!_.isEmpty(inviteDetails)) {
-            referal_code_detail.referal_code = params.invite_code;
+            referal_code_detail.referal_code = caps_invite_code;  // params.invite_code;
             referal_code_detail.refered_by = new ObjectId(inviteDetails._id);
             referal_code_detail.user_amount = config.referral_bouns_amount;
             referal_code_detail.status = 1;
