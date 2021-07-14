@@ -173,9 +173,10 @@ module.exports = async (req, res) => {
               let userCatObj = {
                   is_super_user : 0,
                   is_dimond_user : 0,
-                  is_beginner_user :1
+                  is_beginner_user :1,
+                  is_looser_user :0
               };
-              console.log('redisKeyForUserCategory***',redisKeyForUserCategory);
+              
               redis.setRedisForUserCategory(redisKeyForUserCategory,userCatObj); 
             }
          } catch(errrrrr){
