@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
       let user = await Users.findOne({ _id: userId });
       let pdNumberMatch = await PanDetails.findOne({ pan_card: params.pan_number });
       if(pdNumberMatch && pdNumberMatch._id){
-        response["message"] = "This Pancard already exist.";
+        response["message"] = "This Pan Card is already exists.";
         return res.json(response);
       }
       if(user) {
