@@ -36,6 +36,11 @@ module.exports = async (req, res) => {
       let userId = req.userId || null;
       // const user = await (new ModelService(Users)).getUserDetail(userId);
       let user = await Users.findOne({ _id: userId });
+      let pdNumberMatch = await PanDetails.findOne({ pan_card: params.pan_number });
+      if(pdNumberMatch && pdNumberMatch._id){
+        response["message"] = "This Pancard already exist.";
+        return res.json(response);
+      }
       if(user) {
         if(user && user.status == 1) {
           let panDetail = await PanDetails.findOne({ user_id: userId });
@@ -55,7 +60,7 @@ module.exports = async (req, res) => {
           if(!panDetail) {
             await PanDetails.create(updatedData);
           } else {
-            const result = await PanDetails.update({ user_id: user._id }, { $set: updatedData });
+            const result = await PanDetails.updateOne({ user_id: user._id }, { $set: updatedData });
           }
           await Users.updateOne({ _id: userId }, { $set: {pen_verify:2} });
           await (new ModelService()).referalManageAtVerification(userId,true,false,false);
@@ -75,10 +80,10 @@ module.exports = async (req, res) => {
       response["message"] = err.message;
       return res.json(response);
     }
-   } else {
-    response["message"] = "Invalid Details";
-    return res.json(response);
-   }  
+    } else {
+      response["message"] = "Invalid Details";
+      return res.json(response);
+    }  
   } catch (error) {
     logger.error("LOGIN_ERROR", error.message);
     res.send(ApiUtility.failed(error.message));
