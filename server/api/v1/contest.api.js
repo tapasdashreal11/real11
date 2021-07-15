@@ -527,16 +527,10 @@ module.exports = {
         try {
             let data = {};
             let data1 = {};
-            //let sport = 1;
             let setting = config;
             let matchContestData = {}; 
-            const { total_team,contest_id, entry_fee, match_id , series_id,sport } = req.body;
-            let decoded = {
-                user_id: req.userId,
-                contest_id: contest_id || '',
-                entry_fee: entry_fee,
-                match_id: match_id,
-                series_id:series_id
+            const { total_team, contest_id, entry_fee, match_id , series_id, sport } = req.body;
+            let decoded = { user_id: req.userId, contest_id: contest_id || '', entry_fee: entry_fee, match_id: match_id, series_id:series_id
             }
             let match_sport = sport ? parseInt(sport) : 1;
             let total_team_number = total_team ? parseInt(total_team) : 1;
@@ -565,7 +559,6 @@ module.exports = {
                         }
                      }
                     if (matchContestData && matchContestData.usable_bonus_time) {
-                        //////console.log("matchInviteCode", matchContest, moment().isBefore(matchContest.usable_bonus_time))
                         if (moment().isBefore(matchContestData.usable_bonus_time)) {
                             useableBonusPer = matchContestData.before_time_bonus;
                         } else {
@@ -586,7 +579,6 @@ module.exports = {
                 }
                 let useAmountCal = eval((useableBonusPer / 100) * entryFee);
                 let useAmount = eval(useAmountCal * total_team_number);
-                // ////////console.log(useAmount);
                 let usableAmt = 0;
                 let extraAmount = 0;
                 let cashBalance = 0;
@@ -598,7 +590,6 @@ module.exports = {
                 let totalEntryFee = entryFee * total_team_number;
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
-                        // console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
                         let catid = matchContestData.category_id;
                         if(couponSaleData && couponSaleData.length>0){
                             couponSaleData = couponSaleData.map(item => {
@@ -610,11 +601,8 @@ module.exports = {
                             let  constestIdsData  =  _.find(couponSaleData,{category_id:ObjectId(catid)});
                             if(constestIdsData && constestIdsData.category_id){
                                let offDataArray = constestIdsData.offer_data;
-                               // console.log('constestIdsData****',constestIdsData);
                                let offDataItem = _.find(offDataArray,{amount:entryFee});
                                   if(offDataItem){
-                                   // console.log('offDataItem****',offDataItem);
-                                   
                                    userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                    userOfferAmount = userOfferAmount * totalCouponsToBeUsed;
                                    calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
@@ -624,7 +612,6 @@ module.exports = {
                              }
                            } 
                            if (rdata && entryFee>0 && userOfferAmount ==0) {
-                            // console.log('popup redis before join contest *********');
                             userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
@@ -641,8 +628,6 @@ module.exports = {
                             if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) || _.includes(offerContests,prContestId)))){
                                 calEntryFees = userOfferAmount > totalEntryFee ? 0: (totalEntryFee - userOfferAmount );
                                 retention_bonus_amount = userOfferAmount > totalEntryFee ? totalEntryFee: userOfferAmount;
-                                console.log('retention_bonus_amount**',retention_bonus_amount);
-                                
                             } else if(rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id ){
                                 userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
                                 userOfferAmount = userOfferAmount  * total_team_number;
@@ -651,8 +636,6 @@ module.exports = {
                                 is_offer_applied = true;
                             }    
                         }
-                        
-                         
                         if (userdata) {
                             if (decoded['contest_id']) {
                                 if(retention_bonus_amount > 0){
