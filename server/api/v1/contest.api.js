@@ -539,13 +539,11 @@ module.exports = {
                 series_id:series_id
             }
             let match_sport = sport ? parseInt(sport) : 1;
-            console.log('total_team****',total_team);
             let total_team_number = total_team ? parseInt(total_team) : 1;
             let match_series_id = series_id ? parseInt(series_id) : 1;
             let youtuber_code = 0;
             let is_offer_applied = false;
             let couponSaleData = [];
-            // //////console.log(req.userId);
             let userdata = await User.findOne({ _id: decoded['user_id'] })
             if (userdata) {
                 adminPer = 0; //(setting.admin_percentage) ? setting.admin_percentage : 0;
@@ -555,13 +553,13 @@ module.exports = {
                 if (decoded['contest_id']) {
                     let contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
                     const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1,expiry_date:{$gte:new Date()} });
-                    //console.log("cSaleData***",cSaleData);
+                    
                      matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                      entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                      if(cSaleData && cSaleData._id){
                         couponSaleData =cSaleData.coupon_credit > cSaleData.coupon_used ? cSaleData.coupon_contest_data:[]; 
                         if(cSaleData.coupon_credit > cSaleData.coupon_used){
-                          let couponRemainsCount   = cSaleData.coupon_used - cSaleData.coupon_credit;
+                          let couponRemainsCount   = cSaleData.coupon_credit - cSaleData.coupon_used;
                           
                           totalCouponsToBeUsed = couponRemainsCount > total_team_number ? total_team_number: couponRemainsCount;
                         }
@@ -628,7 +626,6 @@ module.exports = {
                            if (rdata && entryFee>0 && userOfferAmount ==0) {
                             // console.log('popup redis before join contest *********');
                             userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
-                            console.log('userOfferAmount**',userOfferAmount);
                             let pContestId = contest_id; //ObjectId(contest_id);
                             let offerContests = rdata.contest_ids || [];
                             let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
