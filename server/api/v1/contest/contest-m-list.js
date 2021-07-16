@@ -13,6 +13,7 @@ const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
 const config = require('./../../../config');
 const CouponSale = require("../../../models/coupon-sale");
+const Coupon = require("../../../models/coupon-sale");
 
 module.exports = async (req, res) => {
  
@@ -26,6 +27,11 @@ try {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
+        if(filter.match_id == 49241 ){
+           var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id),coupon_id:ObjectId('60f128286543d3333f7ba6df') });
+           if(checkSaleCoupon && checkSaleCoupon._id){
+           }else{await getCouponForFreeEntry('60f128286543d3333f7ba6df',user_id);}
+        }
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
         let userCoupons = [];
         let queryArray = [
@@ -207,5 +213,24 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
             }
             resolve(data)
         })
+    })
+}
+
+async function getCouponForFreeEntry(coupon_id,user_id){
+    return new Promise(async(resolve, reject) => {
+        const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
+        const cUpdatedDoc = await Coupon.findOneAndUpdate({ _id: cData._id }, { $inc: { coupon_sale_count: 1 } });
+        if (cUpdatedDoc) {
+            let couponSaleCount = cUpdatedDoc.coupon_sale_count;
+            if (cData && cData.coupon_limit > couponSaleCount) {
+                const couponDuration = cData.coupon_duration ? cData.coupon_duration:1;
+                let couponExpireDateUp =  moment().utc().add(couponDuration,'days').toDate();
+                let csaleObj = {coupon_name: cData.coupon_name, description:cData.description,coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: user_id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: couponExpireDateUp };
+                await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true});
+                redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(csaleObj || {}));
+                console.log('csaleObj******',csaleObj);
+            }
+        }
+        resolve({})
     })
 }
