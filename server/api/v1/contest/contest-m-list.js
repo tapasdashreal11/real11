@@ -28,7 +28,7 @@ try {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
-        if(filter.match_id == 49241 ){
+        if(filter.match_id == 48024 ){
            var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id),coupon_id:ObjectId('60f128286543d3333f7ba6df') });
            if(checkSaleCoupon && checkSaleCoupon._id){
            }else{await getCouponForFreeEntry('60f128286543d3333f7ba6df',user_id);}
