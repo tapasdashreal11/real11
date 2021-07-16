@@ -148,6 +148,7 @@ module.exports = async (req, res) => {
                                                     }
                                                    
                                             let totalTeamJoinedCount = contestDataArray.length;
+                                            let total_team_number = totalTeamJoinedCount;
                                             const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, sessionOpts);
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
@@ -222,7 +223,7 @@ module.exports = async (req, res) => {
                                                                     let offDataItem = _.find(offDataArray, { amount: entryFee });
                                                                     if (offDataItem) {
                                                                         if(cSaleData.coupon_credit > cSaleData.coupon_used){
-                                                                            let couponRemainsCount   = cSaleData.coupon_used - cSaleData.coupon_credit;
+                                                                            let couponRemainsCount   = cSaleData.coupon_credit - cSaleData.coupon_used;
                                                                             
                                                                             totalCouponsToBeUsed = couponRemainsCount > total_team_number ? total_team_number: couponRemainsCount;
                                                                           }
