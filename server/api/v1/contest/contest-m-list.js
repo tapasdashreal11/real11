@@ -219,7 +219,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
 async function getCouponForFreeEntry(coupon_id,user_id){
     return new Promise(async(resolve, reject) => {
         console.log({ _id: ObjectId(coupon_id), status: 1 });
-        const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
+        const cData = await Coupon.findById(coupon_id);
         console.log(cData);
         if(cData && cData._id){
             const cUpdatedDoc = await Coupon.findOneAndUpdate({ _id: cData._id }, { $inc: { coupon_sale_count: 1 } });
