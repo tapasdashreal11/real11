@@ -218,6 +218,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
 
 async function getCouponForFreeEntry(coupon_id,user_id){
     return new Promise(async(resolve, reject) => {
+        console.log({ _id: ObjectId(coupon_id), status: 1 });
         const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
         console.log(cData);
         if(cData && cData._id){
