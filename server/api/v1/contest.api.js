@@ -604,6 +604,7 @@ module.exports = {
                                let offDataItem = _.find(offDataArray,{amount:entryFee});
                                   if(offDataItem){
                                    userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
+                                   console.log('totalCouponsToBeUsed before***',totalCouponsToBeUsed,userOfferAmount);
                                    userOfferAmount = userOfferAmount * totalCouponsToBeUsed;
                                    console.log('totalCouponsToBeUsed***',totalCouponsToBeUsed,userOfferAmount);
                                    calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
