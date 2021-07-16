@@ -554,7 +554,7 @@ module.exports = {
                         couponSaleData =cSaleData.coupon_credit > cSaleData.coupon_used ? cSaleData.coupon_contest_data:[]; 
                         if(cSaleData.coupon_credit > cSaleData.coupon_used){
                           let couponRemainsCount   = cSaleData.coupon_credit - cSaleData.coupon_used;
-                          
+                          console.log('couponRemainsCount***',couponRemainsCount);
                           totalCouponsToBeUsed = couponRemainsCount > total_team_number ? total_team_number: couponRemainsCount;
                         }
                      }
