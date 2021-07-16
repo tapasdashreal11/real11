@@ -219,18 +219,22 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
 async function getCouponForFreeEntry(coupon_id,user_id){
     return new Promise(async(resolve, reject) => {
         const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
-        const cUpdatedDoc = await Coupon.findOneAndUpdate({ _id: cData._id }, { $inc: { coupon_sale_count: 1 } });
-        if (cUpdatedDoc) {
-            let couponSaleCount = cUpdatedDoc.coupon_sale_count;
-            if (cData && cData.coupon_limit > couponSaleCount) {
-                const couponDuration = cData.coupon_duration ? cData.coupon_duration:1;
-                let couponExpireDateUp =  moment().utc().add(couponDuration,'days').toDate();
-                let csaleObj = {coupon_name: cData.coupon_name, description:cData.description,coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: user_id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: couponExpireDateUp };
-                await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true});
-                redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(csaleObj || {}));
-                console.log('csaleObj******',csaleObj);
+        console.log(cData);
+        if(cData && cData._id){
+            const cUpdatedDoc = await Coupon.findOneAndUpdate({ _id: cData._id }, { $inc: { coupon_sale_count: 1 } });
+            if (cUpdatedDoc) {
+                let couponSaleCount = cUpdatedDoc.coupon_sale_count;
+                if (cData && cData.coupon_limit > couponSaleCount) {
+                    const couponDuration = cData.coupon_duration ? cData.coupon_duration:1;
+                    let couponExpireDateUp =  moment().utc().add(couponDuration,'days').toDate();
+                    let csaleObj = {coupon_name: cData.coupon_name, description:cData.description,coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: user_id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: couponExpireDateUp };
+                    await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true});
+                    redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(csaleObj || {}));
+                    console.log('csaleObj******',csaleObj);
+                }
             }
         }
+       
         resolve({})
     })
 }
