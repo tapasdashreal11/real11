@@ -605,7 +605,7 @@ module.exports = {
                                   if(offDataItem){
                                    userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                    userOfferAmount = userOfferAmount * totalCouponsToBeUsed;
-                                   console.log('totalCouponsToBeUsed***',totalCouponsToBeUsed);
+                                   console.log('totalCouponsToBeUsed***',totalCouponsToBeUsed,userOfferAmount);
                                    calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                    retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
                                   }
