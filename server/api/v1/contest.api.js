@@ -607,8 +607,8 @@ module.exports = {
                                    console.log('totalCouponsToBeUsed before***',totalCouponsToBeUsed,userOfferAmount);
                                    userOfferAmount = userOfferAmount * totalCouponsToBeUsed;
                                    console.log('totalCouponsToBeUsed***',totalCouponsToBeUsed,userOfferAmount);
-                                   calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
-                                   retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                   calEntryFees = userOfferAmount > totalEntryFee ? 0: (totalEntryFee - userOfferAmount );
+                                   retention_bonus_amount = userOfferAmount > totalEntryFee ? totalEntryFee: userOfferAmount;
                                   }
                                    
                              }
