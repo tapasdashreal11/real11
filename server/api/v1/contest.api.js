@@ -554,7 +554,7 @@ module.exports = {
                         couponSaleData =cSaleData.coupon_credit > cSaleData.coupon_used ? cSaleData.coupon_contest_data:[]; 
                         if(cSaleData.coupon_credit > cSaleData.coupon_used){
                           let couponRemainsCount   = cSaleData.coupon_credit - cSaleData.coupon_used;
-                          console.log('couponRemainsCount***',couponRemainsCount);
+                          console.log('couponRemainsCount***',couponRemainsCount,total_team_number);
                           totalCouponsToBeUsed = couponRemainsCount > total_team_number ? total_team_number: couponRemainsCount;
                         }
                      }
@@ -605,6 +605,7 @@ module.exports = {
                                   if(offDataItem){
                                    userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                    userOfferAmount = userOfferAmount * totalCouponsToBeUsed;
+                                   console.log('totalCouponsToBeUsed***',totalCouponsToBeUsed);
                                    calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                    retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
                                   }
