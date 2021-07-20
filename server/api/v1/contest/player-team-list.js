@@ -176,11 +176,13 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                 playerData[value.player_id] = value;
             }
     
-            let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: liveMatch.localteam_id, sport: sport });
+            let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport });
             let localPlayers = [];
     
             for (const value of teamData) {
-                localPlayers.push(value.player_id);
+                if(liveMatch.localteam_id == value.team_id) {
+                    localPlayers.push(value.player_id);
+                }
             }
             if (!_.isEmpty(teamData)) {
                 let captain;

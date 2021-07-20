@@ -245,8 +245,9 @@ const sendSMTPMail = (to, subject, message) => {
     }));
 
     var mailOptions = {
-      from: config.smtp.fromEmail,
+      // from: config.smtp.fromEmail,
       // from: { email : config.smtp.fromEmail, name: "Real11" },
+      from: '"Real11 Fantasy" <' + config.smtp.fromEmail + '>',
       to: to,
       subject: subject,
       text: message,
@@ -310,8 +311,9 @@ const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, o
         emailTemplate = result;
         
         var mailOptions = {
-          from: config.smtp.fromEmail,
+          // from: config.smtp.fromEmail,
           // from: { email : config.smtp.fromEmail, name: "Real11" },
+          from: '"Real11 Fantasy" <' + config.smtp.fromEmail + '>',
           to: to,
           subject: subject,
           text: emailTemplate,
