@@ -28,10 +28,10 @@ try {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
-        if(filter.match_id == 48024 ){
+        if(filter.match_id == 49410 ){
            var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id),coupon_id:ObjectId('60f128286543d3333f7ba6df') });
            if(checkSaleCoupon && checkSaleCoupon._id){
-           }else{await getCouponForFreeEntry('60f128286543d3333f7ba6df',user_id);}
+           }else{await getCouponForFreeEntry('60f7aeaa8462be71f2f54750',user_id);}
         }
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
         let userCoupons = [];
@@ -142,7 +142,6 @@ try {
                         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
                             if (data) {
                                 resObj['user_rentation_bonous'] = data;
-                                //console.log('data redis****',data,'match',match_id);
                             } else {
                                // let fileds = { match_name: 1, match_id: 1, user_id: 1, series_id: 1, is_offer_type: 1, contest_ids: 1, sport: 1, offer_amount: 1, offer_percent: 1 };
                                 let userAnalysisData = await UserAnalysis.findOne({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport });
@@ -203,7 +202,6 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
             }
             if (data == null) {
                 const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 });
-                // console.log('cSaleData from list *****',cSaleData);
                 if(cSaleData && cSaleData._id){
                     redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify(cSaleData));
                     data = JSON.stringify(cSaleData);
