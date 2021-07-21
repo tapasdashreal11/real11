@@ -236,9 +236,10 @@ module.exports = async (req, res) => {
                                                                         if(cGap ==1 || totalCouponsToBeUsed == cGap ){
                                                                             redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
                                                                             console.log('daata*****11');
-                                                                            await CouponSale.updateOne({ user_id: ObjectId(user_id) }, { $set: { status: 0 }, $inc: { coupon_used: +totalCouponsToBeUsed } });
+                                                                          let ddd = await CouponSale.updateOne({ user_id: ObjectId(user_id) }, { $set: { status: 0 }, $inc: { coupon_used: +totalCouponsToBeUsed } });
+                                                                          console.log('daata*****11',ddd);
                                                                         } else {
-                                                                            console.log('daata*****11');
+                                                                            console.log('daata*****1111',totalCouponsToBeUsed);
                                                                             await CouponSale.updateOne({ user_id: ObjectId(user_id) }, {$inc: { coupon_used: +totalCouponsToBeUsed } });
                                                                         }
                                                                         
