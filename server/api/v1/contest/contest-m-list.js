@@ -219,9 +219,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
 
 async function getCouponForFreeEntry(coupon_id,user_id){
     return new Promise(async(resolve, reject) => {
-        console.log({ _id: ObjectId(coupon_id), status: 1 });
         const cData = await Coupon.findOne({_id:ObjectId(coupon_id),status: 1 });
-        console.log(cData);
         if(cData && cData._id){
             const cUpdatedDoc = await Coupon.findOneAndUpdate({ _id: cData._id }, { $inc: { coupon_sale_count: 1 } });
             if (cUpdatedDoc) {
@@ -232,7 +230,7 @@ async function getCouponForFreeEntry(coupon_id,user_id){
                     let csaleObj = {coupon_name: cData.coupon_name, description:cData.description,coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: user_id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: couponExpireDateUp };
                     await CouponSale.findOneAndUpdate({ user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true});
                     redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(csaleObj || {}));
-                    console.log('csaleObj******',csaleObj);
+                    
                 }
             }
         }
