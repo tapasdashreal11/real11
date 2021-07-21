@@ -183,6 +183,8 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
     rePnt = await PointSystem.findOne({ 'matchType': '1' });
   } else if (mType == 'T10' || mType == 'other') {
     rePnt = await PointSystem.findOne({ 'matchType': '4' });
+  } else if (mType == 'T100') {
+    rePnt = await PointSystem.findOne({ 'matchType': '5' });
   }
 
   let teamDataArray = {}

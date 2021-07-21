@@ -202,6 +202,7 @@ class PlayerTeamService {
                     "t20": { $toBool: "$seriesplayers.t20" },
                     "t10": { $toBool: "$seriesplayers.t10" },
                     "test": { $toBool: "$seriesplayers.test" },
+                    "t100": { $toBool: "$seriesplayers.t100" },
                     "player_point": "$liveScore.point",
                     "series_point": { $cond: { if: { $ne: ["$seriesScore", ''] }, then: "$seriesScore.player_points", else: 0 } },
                     "match_type": { $toLower: "$type" },
@@ -228,7 +229,7 @@ class PlayerTeamService {
                     for (let playerData of results) {
                         // console.log(playerData.player_id,i,playerData.match_type,playerData.t20);
 
-                        if ((playerData.match_type === "t10" && playerData.t10 === true) || (playerData.match_type === "odi" && playerData.odi === true) || (playerData.match_type === "t20" && playerData.t20 === true) || (playerData.match_type === "test" && playerData.test === true)) {
+                        if ((playerData.match_type === "t10" && playerData.t10 === true) || (playerData.match_type === "odi" && playerData.odi === true) || (playerData.match_type === "t20" && playerData.t20 === true) || (playerData.match_type === "test" && playerData.test === true) || (playerData.match_type === "t100" && playerData.t100 === true)) {
 
                             if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
                             if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
@@ -548,6 +549,8 @@ class PlayerTeamService {
                     matchType = 1;
                 } else if (mType == 'T10' || mType == 'other') {
                     matchType = 4;
+                } else if (mType == 'T100') {
+                    matchType = 5;
                 }
 
                 const pointSystemData = pointSystemsData.find((item) => item.matchType == matchType)

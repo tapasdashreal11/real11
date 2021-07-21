@@ -28,19 +28,22 @@ var seriesPlayerSchema = new Schema({
     "type": String
   },
   "odi": {
-    "type": String
+    "type": Boolean
   },
   "t20": {
-    "type": String
+    "type": Boolean
   },
   "t10": {
-    "type": String
+    "type": Boolean
+  },
+  "t100": {
+    "type": Boolean
   },
   "test": {
-    "type": String
+    "type": Boolean
   },
   "BB": {
-    "type": String
+    "type": Boolean
   },
   "is_record_fatch": {
     "type": Boolean
