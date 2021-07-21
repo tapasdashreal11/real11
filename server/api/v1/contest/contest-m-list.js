@@ -31,7 +31,7 @@ try {
         if(filter.match_id == 49371 ){
            var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id),coupon_id:ObjectId('60f128286543d3333f7ba6df') });
            if(checkSaleCoupon && checkSaleCoupon._id){
-           }else{await getCouponForFreeEntry('60f7d0f78462be71f2f54daf',user_id);}
+           }else{await getCouponForFreeEntry('60f7f7098462be71f2f54f3f',user_id);}
         }
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
         let userCoupons = [];
