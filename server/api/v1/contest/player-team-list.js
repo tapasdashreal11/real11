@@ -168,15 +168,17 @@ module.exports = {
 async function cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
     try {
         let data    =   [];
-        let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
-        if (playerRecord && (playerRecord.length == 11 || playerRecord.length == 5)) {
+        // let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
+        let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport });
+        if (!_.isEmpty(teamData) && (teamData.length == 11 || teamData.length == 5)) {
     
             let playerData = {};
-            for (const value of playerRecord) {
+            for (const value of teamData) {
                 playerData[value.player_id] = value;
             }
-    
-            let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport });
+    // console.log(playerData);
+    // return false;
+            // let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport });
             let localPlayers = [];
     
             for (const value of teamData) {
@@ -215,14 +217,14 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                         if (teamValue) {
                             let playerImage = '';
                             if (teamValue) {
-                                playerImage = teamValue.image; 
+                                playerImage = teamValue.image ? teamValue.image : ''; 
                             }
     
                             let point = 0;
                             //point =  pointsArray[teamValue.player_id] ?  pointsArray[teamValue.player_id] : 0
                             // await PlayerRecord.getPlayerPoint(series_id, match_id, teamValue.player_id, captain, viceCaptain);
                             point =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["point"] ? pointsArray[teamValue.player_id]["point"] : 0;
-                            let playerRole =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["player_role"] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.playing_role;
+                            let playerRole =  pointsArray[teamValue.player_id] && pointsArray[teamValue.player_id]["player_role"] ? pointsArray[teamValue.player_id]["player_role"] : teamValue.player_role;
                             
                             let dreamPlayers = {}
     
@@ -287,18 +289,19 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
 async function footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
     try {
         let data    =   [];
-        let playerRecord = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list },team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport });
-        if (playerRecord && playerRecord.length == 11) {
+        let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list },team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport });
+        if (teamData && teamData.length == 11) {
             let playerData = {};
-            for (const value of playerRecord) {
+            for (const value of teamData) {
                 playerData[value.player_id] = value;
             }
             
-            let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: liveMatch.localteam_id });
+            // let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: liveMatch.localteam_id });
             let localPlayers = [];
-            
             for (const value of teamData) {
-                localPlayers.push(value.player_id);
+                if(value.team_id == liveMatch.localteam_id) {
+                    localPlayers.push(value.player_id);
+                }
             }
             
             if (!_.isEmpty(teamData)) {
