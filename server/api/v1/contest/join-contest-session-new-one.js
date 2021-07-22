@@ -212,7 +212,7 @@ module.exports = async (req, res) => {
                                                                 if (constestIdsData && constestIdsData.category_id) {
                                                                     let offDataArray = constestIdsData.offer_data;
                                                                     let offDataItem = _.find(offDataArray, { amount: entryFee });
-                                                                    if (offDataItem) {
+                                                                    if (offDataItem && cSaleData.coupon_credit > cSaleData.coupon_used) {
                                                                         userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                                                         calEntryFees = userOfferAmount > entryFee ? 0 : (entryFee - userOfferAmount);
                                                                         retention_bonus_amount = userOfferAmount > entryFee ? entryFee : userOfferAmount;
