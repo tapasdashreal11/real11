@@ -233,6 +233,7 @@ module.exports = async (req, res) => {
                                                                         retention_bonus_amount = userOfferAmount > totalEntryForContest ? totalEntryForContest : userOfferAmount;
                                                                         let cGap = cSaleData.coupon_credit - cSaleData.coupon_used;
                                                                         if(cGap ==1 || totalCouponsToBeUsed == cGap ){
+                                                                            console.log('data***',cSaleData);
                                                                             await CouponSale.updateOne({ _id:ObjectId(cSaleData._id)},{$inc:{coupon_used:totalCouponsToBeUsed},$set:{status:0}});
                                                                             redis.redisObj.set('my-coupons-' + user_id, JSON.stringify({}));
                                                                         } else {
