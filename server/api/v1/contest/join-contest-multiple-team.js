@@ -233,10 +233,8 @@ module.exports = async (req, res) => {
                                                                         retention_bonus_amount = userOfferAmount > totalEntryForContest ? totalEntryForContest : userOfferAmount;
                                                                         let cGap = cSaleData.coupon_credit - cSaleData.coupon_used;
                                                                         if(cGap ==1 || totalCouponsToBeUsed == cGap ){
-                                                                            console.log('data***11',cSaleData);
                                                                             let ddd = await CouponSale.updateOne({ _id:ObjectId(cSaleData._id)},{ $set: { status: 0 }, $inc :{ 'coupon_used': totalCouponsToBeUsed}});
                                                                             redis.redisObj.set('my-coupons-' + user_id, JSON.stringify({}));
-                                                                            console.log('ddd***11',ddd); 
                                                                         } else {
                                                                            await CouponSale.updateOne({ user_id: ObjectId(user_id) }, {$inc: { 'coupon_used': totalCouponsToBeUsed } });
                                                                         }
@@ -262,8 +260,8 @@ module.exports = async (req, res) => {
                                                                         if (ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))) {
                                                                             return el
                                                                         }
-                                                                    });
-                                                                }
+                                                                      });
+                                                                  }
 
                                                                 if ((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && offerContests.length > 0 && rdata.is_offer_type == 2 && (_.find(offerContests, pContestId) || _.find(offerContests, prContestId)))) {
 
