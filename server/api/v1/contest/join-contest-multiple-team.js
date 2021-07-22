@@ -236,7 +236,7 @@ module.exports = async (req, res) => {
                                                                             console.log('data***11',cSaleData);
                                                                             let ddd = await CouponSale.updateOne({ _id:ObjectId(cSaleData._id)},{ $set :{ coupon_used: 2}});
                                                                             // redis.redisObj.set('my-coupons-' + user_id, JSON.stringify({}));
-                                                                            console.log('ddd***11',ddd);
+                                                                            console.log('ddd***11',ddd); 
                                                                         } else {
                                                                            await CouponSale.updateOne({ user_id: ObjectId(user_id) }, {$inc: { coupon_used: totalCouponsToBeUsed } });
                                                                         }
