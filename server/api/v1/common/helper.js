@@ -139,15 +139,17 @@ const sendMail = (to, from, subject, message) => {
 const sendMailToDeveloper = (req, message) => {
   try {
     let emailTemplate;
-
-    let siteBaseUrl  = `${req.protocol}://${req.get('host')}`;
-    let requestUrl =    siteBaseUrl+req.url;
-    let requestMethod = req.method;
-    let userDetail = req.decoded;
-    let userToken = req.headers.token;
+    // console.log(req);
+    let siteBaseUrl  = req.protocol ? `${req.protocol}://${req.get('host')}` : "";
+    let requestUrl =   req.url ? siteBaseUrl+req.url : "live";
+    let requestMethod = req.method || "withdraw";
+    let userDetail = req.decoded || "";
+    let userToken = req.headers ? req.headers.token : '';
     let params  = {};
     if(requestMethod == 'POST') {
       params  = req.body;
+    } else if(requestMethod == 'withdraw') {
+      params  = req;
     }
     
     ejs.renderFile(path.join(__dirname, "../../../../views/email-templates/developer-mail/html.ejs"), {
@@ -170,7 +172,8 @@ const sendMailToDeveloper = (req, message) => {
       const messageObj = [
         {
           to: emailList,
-          from: config.supportEmail,
+          // from: config.supportEmail,
+          from: '"Real11 Fantasy" <' + config.supportEmail + '>',
           subject: "Development Error",
           html: emailTemplate
         },
@@ -188,7 +191,7 @@ const sendMailToDeveloper = (req, message) => {
       console.log("Error Rendering emailTemplate");
     });
   } catch(error) {
-    console.log("could not send mail.");
+    console.log("could not send mail.", error);
   }
 };
 

@@ -9,7 +9,7 @@ const logger = require("../../../../utils/logger")(module);
 var PaytmChecksum = require("../../../../lib/PaytmChecksum");
 const { TransactionTypes } = require('../../../constants/app');
 const config = require('../../../config.js');
-const { sendSMTPMail, sendNotificationFCM } = require("../common/helper.js");
+const { sendSMTPMail, sendNotificationFCM, sendMailToDeveloper } = require("../common/helper.js");
 const https = require('https');
 const { parse } = require('url');
 
@@ -176,8 +176,8 @@ module.exports = async (req, res) => {
 };
 
 async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) {
+	let withdraw_request = withdrawData;
 	try {
-		let withdraw_request = withdrawData;
 		let orderId	=	withdrawData._id;
 		if (withdraw_request) {
 			var paytmParams = {};
@@ -186,200 +186,209 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 			const deviceType = userDetail.device_type;
 			const deviceToken = userDetail.device_id;
 			// console.log(userDetail);return false;
-			if (type && type === "bank") {
-				let bankDetail = await BankDetails.findOne({ user_id: new ObjectId(userId) });
-				// console.log(bankDetail);
-				let txnDate = new Date();
-				let month = ("0" + (txnDate.getMonth() + 1)).slice(-2);
-				let date = ("0" + (txnDate.getDate())).slice(-2);
-				paytmParams["subwalletGuid"]	=	bank_subwalletGuid;
-				paytmParams["orderId"]			=	orderId;
-				paytmParams["beneficiaryAccount"]=	bankDetail.account_number;
-				paytmParams["beneficiaryIFSC"]	=	bankDetail.ifsc_code;
-				paytmParams["amount"]			=	withdraw_request.refund_amount - withdraw_request.instant_withdraw_comm;
-				paytmParams["purpose"]			=	"REIMBURSEMENT";
-				paytmParams["date"]				=	txnDate.getFullYear() + "-" + month + "-" + date;
-				paytmParams["comments"]			=	userDetail.phone;
-			} else {
-				paytmParams["subwalletGuid"]	=	subwalletGuid;
-				paytmParams["orderId"]			=	orderId;
-				paytmParams["beneficiaryPhoneNo"]=	userDetail.phone;
-				paytmParams["amount"]			=	withdraw_request.refund_amount - withdraw_request.instant_withdraw_comm;
-			}
-			var post_data	=	JSON.stringify(paytmParams);
-
-			let merchant_key=	'';
-			let mid			=	'';
-			if (type && type === "bank") {
-				merchant_key=	BANK_MERCHANT_KEY;
-				mid			=	BANK_MID;
-			} else {
-				merchant_key=	MERCHANT_KEY;
-				mid			=	MID;
-			}
-
-			try {
-				if (withdraw_request.request_status == 0) {
-					PaytmChecksum.generateSignature(post_data, merchant_key).then(function (checksum) {
-
-						let path = '';
-						if (type && type === "bank") {
-							path = '/bpay/api/v1/disburse/order/bank';
-						} else {
-							path = '/bpay/api/v1/disburse/order/wallet/gratification';
-						}
-
-						var options = {
-							hostname: hostname,
-							path: path,
-							port: 443,
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								'x-mid': mid,
-								'x-checksum': checksum,
-								'Content-Length': post_data.length
+			let bankDetail = await BankDetails.findOne({ user_id: new ObjectId(userId) });
+			if(bankDetail) {
+				if (type && type === "bank") {
+					// console.log(bankDetail);
+					let txnDate = new Date();
+					let month = ("0" + (txnDate.getMonth() + 1)).slice(-2);
+					let date = ("0" + (txnDate.getDate())).slice(-2);
+					paytmParams["subwalletGuid"]	=	bank_subwalletGuid;
+					paytmParams["orderId"]			=	orderId;
+					paytmParams["beneficiaryAccount"]=	bankDetail.account_number;
+					paytmParams["beneficiaryIFSC"]	=	bankDetail.ifsc_code;
+					paytmParams["amount"]			=	withdraw_request.refund_amount - withdraw_request.instant_withdraw_comm;
+					paytmParams["purpose"]			=	"REIMBURSEMENT";
+					paytmParams["date"]				=	txnDate.getFullYear() + "-" + month + "-" + date;
+					paytmParams["comments"]			=	userDetail.phone;
+				} else {
+					paytmParams["subwalletGuid"]	=	subwalletGuid;
+					paytmParams["orderId"]			=	orderId;
+					paytmParams["beneficiaryPhoneNo"]=	userDetail.phone;
+					paytmParams["amount"]			=	withdraw_request.refund_amount - withdraw_request.instant_withdraw_comm;
+				}
+				var post_data	=	JSON.stringify(paytmParams);
+	
+				let merchant_key=	'';
+				let mid			=	'';
+				if (type && type === "bank") {
+					merchant_key=	BANK_MERCHANT_KEY;
+					mid			=	BANK_MID;
+				} else {
+					merchant_key=	MERCHANT_KEY;
+					mid			=	MID;
+				}
+	
+				try {
+					if (withdraw_request.request_status == 0) {
+						PaytmChecksum.generateSignature(post_data, merchant_key).then(function (checksum) {
+							let path = '';
+							if (type && type === "bank") {
+								path = '/bpay/api/v1/disburse/order/bank';
+							} else {
+								path = '/bpay/api/v1/disburse/order/wallet/gratification';
 							}
-						};
-
-						var response = "";
-						var post_req = https.request(options, function (post_res) {
-							post_res.on('data', function (chunk) {
-								response += chunk;
-							});
-
-							post_res.on('end', async function () {
-								let txnAmount	=	withdraw_request.refund_amount;
-								let withdrawId	=	withdrawData._id;
-
-								let result = JSON.parse(response);
-								if (result.status == 'SUCCESS' || result.status == 'ACCEPTED') {
+	
+							var options = {
+								hostname: hostname,
+								path: path,
+								port: 443,
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									'x-mid': mid,
+									'x-checksum': checksum,
+									'Content-Length': post_data.length
+								}
+							};
+	
+							var response = "";
+							var post_req = https.request(options, function (post_res) {
+								post_res.on('data', function (chunk) {
+									response += chunk;
+								});
+	
+								post_res.on('end', async function () {
+									let txnAmount	=	withdraw_request.refund_amount;
+									let withdrawId	=	withdrawData._id;
+									
 									try {
-										withdrawStatus(orderId, merchant_key, mid, async function (res1) {
-											if (res1 && res1.status === 200) {
-												// console.log("enter to success state with status");
-												// request status 1 => confirmed request and money sent to users wallet or bank
-												let approveDate = new Date();
-												const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 1, approve_date: approveDate, message: res1.message } });
-												if (successRes) {
-													let status = TransactionTypes.TRANSACTION_CONFIRM;
-													await Transaction.saveWithdrawTransaction(userId, txnId, status, txnAmount, withdrawId, res1.data.paytmOrderId, type, approveDate, withdrawData.instant_withdraw_comm);
-
-													// await Transaction.findOneAndUpdate({ withdraw_id: new ObjectId(orderId) }, { $set: { added_type: TransactionTypes.TRANSACTION_CONFIRM, order_id: res1.data.paytmOrderId, gateway_name: params.type, approve_withdraw: approveDate } })
-													// send mail on withdraw Start
-													let to = userDetail.email;
-													// let from = 'support@real11.com';
-													// let cc = ['amityadav@real11.com, amansingh@real11.com'];
-													let subject = 'Real 11 Withdraw Request';
-													let message = '<table><tr><td>Dear user,</td></tr><tr><td>Your withdrawal request is confirmed of Rs. ' + withdraw_request.refund_amount + '/- Make sure your withdrawal details are correct. <br><br/> In case any issue please mail us on support@real11.com</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
-
-													sendSMTPMail(to, subject, message);
-													// send mail on withdraw end
-
-													// PUSH Notification
-													const notiType = '8';
-													let title = 'withdraw Request confirmed';
-													let notification = 'Your withdraw request has been confirmed';
-													if ((deviceType == 'Android') && (deviceToken != '')) {
-														sendNotificationFCM(userId, notiType, deviceToken, title, notification);
-													}
-													if ((deviceType == 'iphone') && (deviceToken != '') && (deviceToken != 'device_id')) {
-														sendNotificationFCM(userId, notiType, deviceToken, title, notification);
-													}
-													cb({"status": true, "message": "Withdraw confirmed and sent to users wallet successfully." })
-													// return res.status(201).json({ status: true, message: "Withdraw confirmed and sent to users wallet successfully." });
-												}
-											} else if (res1 && res1.status === 205) {
-												console.log("enter to pending state with status");
-												// request status 2 => request pending, whether its not sent to wallet or user's wallet not found 
-												const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 3, message: res1.message } });
-												if(successRes.nModified && successRes.nModified > 0) {
-													let status = TransactionTypes.TRANSACTION_PENDING;
-													await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
-													// PUSH Notification
-													const notiType = '8';
-													let title = 'withdraw Request initiated';
-													let notification = 'Your withdraw request has been initiated.';
-													if ((deviceType == 'Android') && (deviceToken != '')) {
-														sendNotificationFCM(userId, notiType, deviceToken, title, notification);
-													}
-													if ((deviceType == 'iphone') && (deviceToken != '') && (deviceToken != 'device_id')) {
-														sendNotificationFCM(userId, notiType, deviceToken, title, notification);
-													}
-													cb({"status": true, "message": "Withdraw in Process, please wait." })
-												}
-
-												// return res.status(409).json({ status: true, message: "Withdraw payment is procced by paytm, but stil not sent to user wallet." });
-											} else {
-												console.log("enter to fail state with status");
-												const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 2, message: res1.message } });
-												if(successRes.nModified && successRes.nModified > 0) {
-													let userWallet =  await Users.updateOne({_id: userId}, {$inc : {winning_balance : + txnAmount}});
-													if(userWallet.nModified && userWallet.nModified > 0) {
-														let status = TransactionTypes.TRANSACTION_REJECT;
-														await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
-														if(res1.message == "Account balance is low. Please add funds and try again.") {
-															cb({"status": false, "message": "Instant withdrawal service is temporarily unavailable. Please try after some time." })
-														} else {
-															cb({"status": false, "message": res1.message })
+										let result = JSON.parse(response);
+										if (result.status == 'SUCCESS' || result.status == 'ACCEPTED') {
+											try {
+												withdrawStatus(orderId, merchant_key, mid, async function (res1) {
+													if (res1 && res1.status === 200) {
+														// console.log("enter to success state with status");
+														// request status 1 => confirmed request and money sent to users wallet or bank
+														let approveDate = new Date();
+														const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 1, approve_date: approveDate, message: res1.message } });
+														if (successRes) {
+															let status = TransactionTypes.TRANSACTION_CONFIRM;
+															await Transaction.saveWithdrawTransaction(userId, txnId, status, txnAmount, withdrawId, res1.data.paytmOrderId, type, approveDate, withdrawData.instant_withdraw_comm);
+		
+															// await Transaction.findOneAndUpdate({ withdraw_id: new ObjectId(orderId) }, { $set: { added_type: TransactionTypes.TRANSACTION_CONFIRM, order_id: res1.data.paytmOrderId, gateway_name: params.type, approve_withdraw: approveDate } })
+															// send mail on withdraw Start
+															let to = userDetail.email;
+															// let from = 'support@real11.com';
+															// let cc = ['amityadav@real11.com, amansingh@real11.com'];
+															let subject = 'Real 11 Withdraw Request';
+															let message = '<table><tr><td>Dear user,</td></tr><tr><td>Your withdrawal request is confirmed of Rs. ' + withdraw_request.refund_amount + '/- Make sure your withdrawal details are correct. <br><br/> In case any issue please mail us on support@real11.com</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
+		
+															sendSMTPMail(to, subject, message);
+															// send mail on withdraw end
+		
+															// PUSH Notification
+															const notiType = '8';
+															let title = 'withdraw Request confirmed';
+															let notification = 'Your withdraw request has been confirmed';
+															if ((deviceType == 'Android') && (deviceToken != '')) {
+																sendNotificationFCM(userId, notiType, deviceToken, title, notification);
+															}
+															if ((deviceType == 'iphone') && (deviceToken != '') && (deviceToken != 'device_id')) {
+																sendNotificationFCM(userId, notiType, deviceToken, title, notification);
+															}
+															cb({"status": true, "message": "Withdraw confirmed and sent to users wallet successfully." })
+															// return res.status(201).json({ status: true, message: "Withdraw confirmed and sent to users wallet successfully." });
 														}
+													} else if (res1 && res1.status === 205) {
+														console.log("enter to pending state with status");
+														// request status 2 => request pending, whether its not sent to wallet or user's wallet not found 
+														const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 3, message: res1.message } });
+														if(successRes.nModified && successRes.nModified > 0) {
+															let status = TransactionTypes.TRANSACTION_PENDING;
+															await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
+															// PUSH Notification
+															const notiType = '8';
+															let title = 'withdraw Request initiated';
+															let notification = 'Your withdraw request has been initiated.';
+															if ((deviceType == 'Android') && (deviceToken != '')) {
+																sendNotificationFCM(userId, notiType, deviceToken, title, notification);
+															}
+															if ((deviceType == 'iphone') && (deviceToken != '') && (deviceToken != 'device_id')) {
+																sendNotificationFCM(userId, notiType, deviceToken, title, notification);
+															}
+															cb({"status": true, "message": "Withdraw in Process, please wait." })
+														}
+		
+														// return res.status(409).json({ status: true, message: "Withdraw payment is procced by paytm, but stil not sent to user wallet." });
+													} else {
+														console.log("enter to fail state with status");
+														const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 2, message: res1.message } });
+														if(successRes.nModified && successRes.nModified > 0) {
+															let userWallet =  await Users.updateOne({_id: userId}, {$inc : {winning_balance : + txnAmount}});
+															if(userWallet.nModified && userWallet.nModified > 0) {
+																let status = TransactionTypes.TRANSACTION_REJECT;
+																await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
+																if(res1.message == "Account balance is low. Please add funds and try again.") {
+																	cb({"status": false, "message": "Instant withdrawal service is temporarily unavailable. Please try after some time." })
+																} else {
+																	cb({"status": false, "message": res1.message })
+																}
+															}
+														}
+														// const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 4, message: res1.message } });
+														// console.log('error', res1.message);
+														// return res.status(409).json({ status: false, message: res1.message });
+													}
+												});
+											} catch (error) {
+												console.log("update user withdraw status == ", error);
+												let status = TransactionTypes.TRANSACTION_PENDING;
+												await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
+												cb({"status": true, "message": "Withdraw in Process, please wait." })
+												// return res.status(409).json({ status: true, message: "Withdraw confirmed, but there is something wrong to update status." });
+											}
+		
+											// return res.send(ApiUtility.success({response: result.statusMessage}));
+										} else {
+											console.log("enter to fail state", result);
+											const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 2, message: result.statusMessage } });
+											if(successRes.nModified && successRes.nModified > 0) {
+												let userWallet =  await Users.updateOne({_id: userId}, {$inc : {winning_balance : + txnAmount}});
+												if(userWallet.nModified && userWallet.nModified > 0) {
+													let status = TransactionTypes.TRANSACTION_REJECT;
+													await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
+													if(result.statusMessage == "Account balance is low. Please add funds and try again.") {
+														cb({"status": false, "message": "Instant withdrawal service is temporarily unavailable. Please try after some time." })
+													} else {
+														cb({"status": false, "message": result.statusMessage })
 													}
 												}
-												// const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 4, message: res1.message } });
-												// console.log('error', res1.message);
-												// return res.status(409).json({ status: false, message: res1.message });
-											}
-										});
-									} catch (error) {
-										console.log("update user withdraw status == ", error);
-										let status = TransactionTypes.TRANSACTION_PENDING;
-										await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
-										cb({"status": true, "message": "Withdraw in Process, please wait." })
-										// return res.status(409).json({ status: true, message: "Withdraw confirmed, but there is something wrong to update status." });
-									}
-
-									// return res.send(ApiUtility.success({response: result.statusMessage}));
-								} else {
-									console.log("enter to fail state", result);
-									const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { request_status: 2, message: result.statusMessage } });
-									if(successRes.nModified && successRes.nModified > 0) {
-										let userWallet =  await Users.updateOne({_id: userId}, {$inc : {winning_balance : + txnAmount}});
-										if(userWallet.nModified && userWallet.nModified > 0) {
-											let status = TransactionTypes.TRANSACTION_REJECT;
-											await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
-											if(res1.statusMessage == "Account balance is low. Please add funds and try again.") {
-												cb({"status": false, "message": "Instant withdrawal service is temporarily unavailable. Please try after some time." })
-											} else {
-												cb({"status": false, "message": result.statusMessage })
 											}
 										}
+									} catch(txnError) {
+										let errMsg	=	{"error":txnError.message, "err_res":response};
+										sendMailToDeveloper(withdrawData, JSON.stringify(errMsg));  //send mail to developer to debug purpose
+										const successRes = await WithdrawRequest.updateOne({ '_id': orderId }, { $set: { message: txnError.message } });
+										let status = TransactionTypes.TRANSACTION_PENDING;
+										await Transaction.saveTransaction(userId, txnId, status, withdraw_request.refund_amount, withdrawData._id);
+										cb({"status": false, "message": "Withdraw in Process, please wait." })
 									}
-								}
+								});
 							});
+							post_req.write(post_data);
+							post_req.end();
 						});
-						post_req.write(post_data);
-						post_req.end();
-					});
-				} else {
-					response["message"] = "withdraw request already perform for current order id.";
-					// return res.json(response);
-					cb({"status": false, "message": result.response["message"] })
-					// return res.status(409).json({ status: false, message: response["message"] });
-					// return res.send(ApiUtility.failed(response["message"]));
+					} else {
+						let message = "withdraw request already perform for current order id.";
+						cb({"status": false, "message": message })
+					}
+				} catch (err) {
+					console.log("Withdraw param error ===", err);
+					let status = TransactionTypes.TRANSACTION_PENDING;
+					await Transaction.saveTransaction(userId, txnId, status, withdraw_request.refund_amount, withdrawData._id);
+					cb({"status": false, "message": err.message })
+					// return res.status(409).json({ status: true, message: response["message"] });
 				}
-			} catch (err) {
-				console.log("Withdraw param error ===", err);
+			} else {
 				let status = TransactionTypes.TRANSACTION_PENDING;
 				await Transaction.saveTransaction(userId, txnId, status, withdraw_request.refund_amount, withdrawData._id);
-				cb({"status": false, "message": err.message })
-				// return res.status(409).json({ status: true, message: response["message"] });
+				let message = "Invalid bank detail..";
+				cb({"status": false, "message": message })
 			}
 		} else {
-			response["message"] = "withdraw request does not exists for current order id.";
-			// return res.json(response);
-			cb({"status": false, "message": result.response["message"] })
-			// return res.status(409).json({ status: false, message: response["message"] });
-			// return res.send(ApiUtility.failed(response));
+			let message = "withdraw request does not exists for current order id.";
+			cb({"status": false, "message": message })
 		}
 	} catch (error) {
 		logger.error("ERROR", error.message);
@@ -387,8 +396,6 @@ async function withdrawConfirm(withdrawData, type, userId, userData, txnId, cb) 
 		await Transaction.saveTransaction(userId, txnId, status, withdraw_request.refund_amount, withdrawData._id);
 		console.log("Withdraw accept error === ", error);
 		cb({"status": false, "message": error.message })
-		// return res.status(409).json({ status: false, message: error.message });
-		// return res.send(ApiUtility.failed(error.message));
 	}
 }
 
