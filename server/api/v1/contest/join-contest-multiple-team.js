@@ -253,7 +253,7 @@ module.exports = async (req, res) => {
                                                                 }) : [];
                                                                 let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id) : pContestId;
 
-                                                                let cBonus = rdata && rdata.contest_bonous ? rdata.contest_bonous : []; //config && config.contest_bonous ? config.contest_bonous:[];
+                                                                let cBonus = rdata && rdata.contest_bonous ? rdata.contest_bonous : [];
                                                                 let cBonusItem = {};
                                                                 if (rdata.is_offer_type == 3) {
                                                                     cBonusItem = cBonus.find(function (el) {
@@ -460,10 +460,32 @@ module.exports = async (req, res) => {
                                                                         } else if (userBounousData.is_offer_type == 2 && userBounousData.is_offer_repeat && userBounousData.is_offer_repeat == 2) {
                                                                             let percent = userBounousData.offer_percent ? parseFloat(userBounousData.offer_percent) : 0;
                                                                             await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
-
                                                                             //redis.userAnalysisRedisObj.del(redisKeyForRentation);
                                                                             userBounousData.offer_percent = 0;
                                                                             redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
+
+                                                                        }
+                                                                        else if (userBounousData.is_offer_type == 3 && userBounousData.is_offer_repeat && userBounousData.is_offer_repeat == 2) {
+                                                                            let percent = userBounousData.offer_percent ? parseFloat(userBounousData.offer_percent) : 0;
+                                                                            let pContestId = ObjectId(contest_id);
+                                                                            let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id) : pContestId;
+                                                                            let cBonus = userBounousData && userBounousData.contest_bonous ? userBounousData.contest_bonous : []; 
+                                                                            let c_bonous= [];
+                                                                            console.log('cBonus ***',cBonus);
+                                                                            cBonus.find(function (el) {
+                                                                                if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))) {
+                                                                                    
+                                                                                } else {
+                                                                                    c_bonous.push(e1);
+                                                                                }
+                                                                            });
+
+                                                                            console.log('c_bonous',c_bonous);
+                                                                        
+                                                                            //await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
+                                                                            //redis.userAnalysisRedisObj.del(redisKeyForRentation);
+                                                                            // userBounousData.offer_percent = 0;
+                                                                            //redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
 
                                                                         }
 

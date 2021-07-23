@@ -60,7 +60,7 @@ const { teamProfileComparision, teamProfilePaging } = require('./api/v1/users/te
 const withdrawHistory = require('./api/v1/users/withdraw-history');
 const { joinedContestList,joinedContestListUpcoming } = require('./api/v1/contest/joined-contest-list');
 const askToAakash = require('./api/v1/users/ask-to-aakash-api');
-const { favouriteContestCreate,retentionBonousCreate } = require('./api/v1/users/retantion-data-scrip');
+const { favouriteContestCreate,retentionBonousCreate,retentionBonousThreeType } = require('./api/v1/users/retantion-data-scrip');
 const userAppDownlad = require('./api/v1/users/user-app-download');
 
 const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
@@ -311,6 +311,7 @@ router.post('/api/v1/team-profile-comparision', auth.authenticate.jwtLogin, team
 router.post('/api/v1/team-profile-paging', teamProfilePaging);
 router.post('/api/v1/favouite-create', favouriteContestCreate); 
 router.post('/api/v1/retention-bonous-create', retentionBonousCreate);
+router.post('/api/v1/retention-bonous-three-create', retentionBonousThreeType);
 router.get('/api/v1/week-leaderboard-series',auth.authenticate.jwtLogin, weekLeaderBoardSeriesApi);
 router.get('/api/v1/week-leaderboard-series-data/:s_id/:w_count/:page',auth.authenticate.jwtLogin, weekLeaderBoardSeriesWeeksData);
 router.get('/api/v1/series-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, seriesLeaderBoardData);
