@@ -472,11 +472,12 @@ module.exports = async (req, res) => {
                                                                             let cBonus = userBounousData && userBounousData.contest_bonous ? userBounousData.contest_bonous : []; 
                                                                             let c_bonous= [];
                                                                             console.log('cBonus ***',cBonus);
-                                                                            cBonus.find(function (el) {
-                                                                                if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))) {
+                                                                            cBonus.find(function (e2) {
+                                                                                console.log('e1',e1);
+                                                                                if(ObjectId(e2.contest_id).equals(ObjectId(prContestId)) || ObjectId(e2.contest_id).equals(ObjectId(pContestId))) {
                                                                                     
                                                                                 } else {
-                                                                                    c_bonous.push(e1);
+                                                                                    c_bonous.push(e2);
                                                                                 }
                                                                             });
 
