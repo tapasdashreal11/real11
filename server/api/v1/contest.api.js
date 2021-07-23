@@ -629,7 +629,8 @@ module.exports = {
                                 retention_bonus_amount = userOfferAmount > totalEntryFee ? totalEntryFee: userOfferAmount;
                             } else if(rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id ){
                                 userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
-                                userOfferAmount = userOfferAmount  * total_team_number;
+                                 // userOfferAmount = userOfferAmount  * total_team_number;
+                                userOfferAmount = userOfferAmount;
                                 calEntryFees = userOfferAmount > totalEntryFee ? 0: (totalEntryFee - userOfferAmount );
                                 retention_bonus_amount = userOfferAmount > totalEntryFee ? totalEntryFee: userOfferAmount;
                                 is_offer_applied = true;
