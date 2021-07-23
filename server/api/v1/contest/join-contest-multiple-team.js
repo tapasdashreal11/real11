@@ -480,13 +480,13 @@ module.exports = async (req, res) => {
                                                                                     c_bonous.push(e2);
                                                                                 }
                                                                             });
-
+                                                                            userBounousData.contest_bonous = c_bonous;
                                                                             console.log('c_bonous',c_bonous);
                                                                         
-                                                                            //await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
+                                                                            await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $set: { "contest_bonous": c_bonous } });
                                                                             //redis.userAnalysisRedisObj.del(redisKeyForRentation);
                                                                             // userBounousData.offer_percent = 0;
-                                                                            //redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
+                                                                            redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
 
                                                                         }
 
