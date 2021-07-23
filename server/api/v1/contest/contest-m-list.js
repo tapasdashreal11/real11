@@ -28,11 +28,11 @@ try {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
-        if(filter.match_id == 49187 ){
+        if(filter.match_id == 49055 ){
            var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
            if(checkSaleCoupon && checkSaleCoupon._id){
            } else {
-              // await getCouponForFreeEntry('60f94280fbd87d159769f82d',user_id);
+               await getCouponForFreeEntry('60f94280fbd87d159769f82d',user_id);
             }
         }
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
