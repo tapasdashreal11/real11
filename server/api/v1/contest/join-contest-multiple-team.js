@@ -473,7 +473,7 @@ module.exports = async (req, res) => {
                                                                             let c_bonous= [];
                                                                             console.log('cBonus ***',cBonus);
                                                                             cBonus.find(function (e2) {
-                                                                                console.log('e1',e1);
+                                                                                console.log('e2',e2);
                                                                                 if(ObjectId(e2.contest_id).equals(ObjectId(prContestId)) || ObjectId(e2.contest_id).equals(ObjectId(pContestId))) {
                                                                                     
                                                                                 } else {
