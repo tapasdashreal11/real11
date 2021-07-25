@@ -7,6 +7,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const config = require('../../../config');
 const YoutuberUser = require("../../../models/youtuber-user");
 const UserAnalysis = require("../../../models/user-analysis");
+const Contest = require("../../../models/contest");
 const redis = require('../../../../lib/redis');
 module.exports = async (req, res) => {
 	try {
@@ -108,16 +109,23 @@ module.exports = async (req, res) => {
 									response["message"] = "You can't use this Referal Code.";
 									return res.json(response);
 								}
-								const ptcCoount = await PlayerTeamContest.find({ 'contest_id': ObjectId(contest_id), 'user_id': ObjectId(user._id), 'match_id': decoded['match_id'], 'sport': sport, 'series_id': decoded['series_id'] }).countDocuments();
-								if (ptcCoount > 0) {
-									response["message"] = "Referal Code Verified Successfully.";
-									response["status"] = true;
-									response["data"] = { refer_by_id: user._id };
-								} else {
-									response["message"] = "Referal code is not active. Referal code holder did not join this contest.";
-								}
+							   let contestData	= await Contest.findOne({_id:ObjectId(contest_id),contest_shareable:1});
+							   if(contestData && contestData._id){
+								 const ptcCoount = await PlayerTeamContest.find({ 'contest_id': ObjectId(contest_id), 'user_id': ObjectId(user._id), 'match_id': decoded['match_id'], 'sport': sport, 'series_id': decoded['series_id'] }).countDocuments();
+									if (ptcCoount > 0) {
+										response["message"] = "Referal Code Verified Successfully.";
+										response["status"] = true;
+										response["data"] = { refer_by_id: user._id };
+									} else {
+										response["message"] = "Referal code is not active. Referal code holder did not join this contest.";
+									}
 	
-								return res.json(response);
+								   return res.json(response);
+							   } else {
+								    response["message"] = "This contest is not shareable!!";
+								    return res.json(response);
+							   }
+								
 							} else {
 								response["message"] = "Wrong Referal Code, Please Try Again !";
 								return res.json(response);
