@@ -102,14 +102,15 @@ module.exports = async (req, res) => {
 								}
 							}
 						} else {
-							var regCode = new RegExp(["^", invite_code, "$"].join(""), "i");
+							// var regCode = new RegExp(["^", invite_code, "$"].join(""), "i");
+							var regCode = invite_code.toUpperCase();
 							let user = await Users.findOne({ refer_id: regCode });
 							if (user && user._id) {
 								if (ObjectId(auth_user_id).equals(ObjectId(user._id))) {
 									response["message"] = "You can't use this Referal Code.";
 									return res.json(response);
 								}
-							   let contestData	= await Contest.findOne({_id:ObjectId(contest_id),contest_shareable:1});
+							   let contestData	= await Contest.findOne({_id:ObjectId(contest_id),contest_shareable:1},{_id:1});
 							   if(contestData && contestData._id){
 								 const ptcCoount = await PlayerTeamContest.find({ 'contest_id': ObjectId(contest_id), 'user_id': ObjectId(user._id), 'match_id': decoded['match_id'], 'sport': sport, 'series_id': decoded['series_id'] }).countDocuments();
 									if (ptcCoount > 0) {
