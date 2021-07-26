@@ -238,13 +238,15 @@ module.exports = async (req, res) => {
                 "appsflyer_id": params.appsflayer_id || '', 
                 "af_customer_user_id": params.clevertap_id || '',
                 "af_email":  params.email || '', 
-                "af_mobile": params.mobile_number || ''
+                "af_mobile": params.mobile_number || '',
+                'advertising_id': params && params.user_gaid ? params.user_gaid: ''
                 };
                var signUpBody = {
                 "eventName": "SignUp",
                 "appsflyer_id": params.appsflayer_id || '', 
                 "customer_user_id": insertId || '',
                 "eventTime" : new Date(),
+                'advertising_id':params && params.user_gaid ? params.user_gaid: '',
                 "eventValue": JSON.stringify(event_val)
               };
               
