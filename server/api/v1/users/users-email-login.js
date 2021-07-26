@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		var fuserIp = req.headers['x-forwarded-for']
 
-		console.log('fuserIp', fuserIp, "userIp",userIp);
+		console.log( "userIp",userIp,'fuserIp', req.headers);
 
 		let constraints = {
 			device_id: "required",
