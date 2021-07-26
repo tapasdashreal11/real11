@@ -10,18 +10,11 @@ const { generateClientToken } = require("../common/helper");
 const { RedisKeys } = require('../../../constants/app');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const redis = require('../../../../lib/redis');
-const requestIp = require('request-ip');
 
 module.exports = async (req, res) => {
 	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		let params = req.body;
-		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-		var fuserIp = req.headers['x-forwarded-for']
-		const clientIp = requestIp.getClientIp(req); 
-
-		console.log( "userIp",userIp,'clientIp', clientIp);
-
 		let constraints = {
 			device_id: "required",
 			email: "required",
