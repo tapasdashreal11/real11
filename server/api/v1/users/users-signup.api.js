@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
       var fuserIp = req.headers['x-forwarded-for']
       const beforeHalfHrDate   = moment().add(-30, 'm').toDate();
       let userCount = await Users.find({ created: { $gt: beforeHalfHrDate }, ip_address:userIp }).countDocuments();
-       console.log('fuserIp', fuserIp, "userIp",userIp);
+      // console.log('fuserIp', fuserIp, "userIp",userIp);
       if(userCount >= 20) {
         response["message"] = "There is some technical issue, please try after some time.";
         return res.json(response);

@@ -15,7 +15,11 @@ module.exports = async (req, res) => {
 	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		let params = req.body;
-		
+		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+		var fuserIp = req.headers['x-forwarded-for']
+
+		console.log('fuserIp', fuserIp, "userIp",userIp);
+
 		let constraints = {
 			device_id: "required",
 			email: "required",
