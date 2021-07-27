@@ -613,7 +613,7 @@ module.exports = {
                                                                  {
                                                                 "event_name": "Purchase",
                                                                 "event_time": parseInt(new Date().getTime()/ 1000),
-                                                                "event_source_url": "real11.com/deposits2s",
+                                                                "event_source_url": "real11.com/deposits2s2",
                                                                 "opt_out": false,
                                                                 "event_id":Math.floor(1000000 + Math.random() * 9000000),
                                                                 "user_data": {
@@ -1089,7 +1089,7 @@ module.exports = {
                                  {
                                 "event_name": "Purchase",
                                 "event_time": parseInt(new Date().getTime()/ 1000),
-                                "event_source_url": "real11.com/deposits2s",
+                                "event_source_url": "real11.com/deposits2s2",
                                 "opt_out": false,
                                 "event_id":Math.floor(1000000 + Math.random() * 9000000),
                                 "user_data": {
