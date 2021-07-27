@@ -260,7 +260,7 @@ module.exports = async (req, res) => {
                        {
                       "event_name": "Complete registration",
                       "event_time": parseInt(new Date().getTime()/ 1000),
-                      "event_source_url": "real11.com/s2s",
+                      "event_source_url": "real11.com/s2s1",
                       "opt_out": false,
                       "event_id":Math.floor(1000000 + Math.random() * 9000000),
                       "user_data": {
