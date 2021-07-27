@@ -618,7 +618,8 @@ module.exports = {
                                                                 "event_id":Math.floor(1000000 + Math.random() * 9000000),
                                                                 "user_data": {
                                                                   "em":authUser && authUser.email ? sha256(authUser.email):null,
-                                                                  "ph":authUser && authUser.phone ? sha256(authUser.phone):null,   
+                                                                  "ph":authUser && authUser.phone ? sha256(authUser.phone):null,
+                                                                  "external_id":authUser && authUser._id ? sha256(authUser._id):null,     
                                                                   "client_ip_address": userIp || "172.17.0.5",
                                                                   "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
                                                                   },
@@ -1093,7 +1094,8 @@ module.exports = {
                                 "event_id":Math.floor(1000000 + Math.random() * 9000000),
                                 "user_data": {
                                   "em":authUser && authUser.email ? sha256(authUser.email):null,
-                                  "ph":authUser && authUser.phone ? sha256(authUser.phone):null,  
+                                  "ph":authUser && authUser.phone ? sha256(authUser.phone):null, 
+                                  "external_id":authUser && authUser._id ? sha256(authUser._id):null,   
                                   "client_ip_address": authUser && authUser.ip_address ? authUser.ip_address: "172.17.0.5",
                                   "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
                                   },

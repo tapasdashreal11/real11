@@ -50,7 +50,6 @@ module.exports = async (req, res) => {
     }
     try {
       var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-      var fuserIp = req.headers['x-forwarded-for']
       const beforeHalfHrDate   = moment().add(-30, 'm').toDate();
       let userCount = await Users.find({ created: { $gt: beforeHalfHrDate }, ip_address:userIp }).countDocuments();
       // console.log('fuserIp', fuserIp, "userIp",userIp);
@@ -266,6 +265,7 @@ module.exports = async (req, res) => {
                       "user_data": {
                         "em":params && params.email ? sha256(params.email) : null,
                         "ph":params && params.mobile_number ? sha256(params.mobile_number): null,
+                        "external_id":insertId? sha256(insertId): null,
                         "fbc":params && params.fbc_id ? params.fbc_id: null,
                         "client_ip_address": userIp || "172.17.0.5",
                         "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
