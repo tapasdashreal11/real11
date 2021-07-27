@@ -547,13 +547,15 @@ module.exports = {
                                                                         "appsflyer_id": authUser.appsflayer_id || '', 
                                                                         "user_id": authUser._id || '', 
                                                                         "coupon_id": coupon_id || '', 
-                                                                        "discount_amount": c_discount_amount
+                                                                        "discount_amount": c_discount_amount,
+                                                                        'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: ''
                                                                       };
                                                                     var tData = {
                                                                         "eventName": "FirstDepositS2S",
                                                                         "appsflyer_id": authUser.appsflayer_id || '',
                                                                         "eventCurrency": 'INR', 
                                                                         "eventTime" : new Date(),
+                                                                        'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: '',
                                                                         "customer_user_id": decoded['user_id'] || '',  
                                                                         "eventValue":JSON.stringify(event_val)
                                                                         };
@@ -585,13 +587,15 @@ module.exports = {
                                                                         "appsflyer_id": authUser.appsflayer_id || '', 
                                                                         "user_id": authUser._id || '', 
                                                                         "coupon_id": coupon_id || '', 
-                                                                        "discount_amount": c_discount_amount
+                                                                        "discount_amount": c_discount_amount,
+                                                                        'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: ''
                                                                       };
                                                                     var tData = {
                                                                         "eventName": "s2sCashDeposite",
                                                                         "appsflyer_id": authUser.appsflayer_id || '',
                                                                         "eventCurrency": 'INR', 
                                                                         "eventTime" : new Date(),
+                                                                        'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: '',
                                                                         "customer_user_id": decoded['user_id'] || '',  
                                                                         "eventValue":JSON.stringify(event_val)
                                                                         };
@@ -1018,13 +1022,15 @@ module.exports = {
                                         "appsflyer_id": authUser.appsflayer_id || '', 
                                         "user_id": authUser._id || '', 
                                         "coupon_id": coupon_id || '', 
-                                        "discount_amount": c_discount_amount
+                                        "discount_amount": c_discount_amount,
+                                        'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: ''
                                       };
                                     var tData = {
                                         "eventName": "FirstDepositS2S",
                                         "appsflyer_id": authUser.appsflayer_id || '',
                                         "eventCurrency": 'INR', 
                                         "eventTime" : new Date(),
+                                        'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: '',
                                         "customer_user_id": authUser._id || '',  
                                         "eventValue":JSON.stringify(event_val)
                                         };
@@ -1056,13 +1062,15 @@ module.exports = {
                                             "appsflyer_id": authUser.appsflayer_id || '', 
                                             "user_id": authUser._id || '', 
                                             "coupon_id": coupon_id || '', 
-                                            "discount_amount": c_discount_amount
+                                            "discount_amount": c_discount_amount,
+                                            'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: ''
                                         };
                                         var tData = {
                                             "eventName": "s2sCashDeposite",
                                             "appsflyer_id": authUser.appsflayer_id || '',
                                             "eventCurrency": 'INR', 
                                             "eventTime" : new Date(),
+                                            'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: '',
                                             "customer_user_id": authUser._id || '',  
                                             "eventValue":JSON.stringify(event_val)
                                             };

@@ -5,7 +5,6 @@ const request = require('request');
 const facebookEntryService = (fbData,fbUrl) => {
     return new Promise((resolve, reject) => {
         if(!isEmpty(fbData)){
-            console.log(fbData);
             const bData = JSON.parse(JSON.stringify(fbData));
             var options = {
                 "method": "POST",

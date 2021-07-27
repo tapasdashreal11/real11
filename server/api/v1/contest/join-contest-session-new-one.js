@@ -617,13 +617,15 @@ module.exports = async (req, res) => {
                                                                                 "match_id":  match_id || '', 
                                                                                 "sport": sport || '',
                                                                                 "contest_id": contest_id || '',
-                                                                                "team_joined": 1
+                                                                                "team_joined": 1,
+                                                                                'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: ''
                                                                                 };
                                                                             var joinContestAppslyeBd = {
                                                                               "eventName": "JoinContestS2S",
                                                                               "appsflyer_id": authUser.appsflayer_id || '', 
                                                                               "customer_user_id": authUser._id || '',
                                                                               "eventTime" : new Date(),
+                                                                              'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid: '',
                                                                               "eventValue": JSON.stringify(event_val)
                                                                             };
                                                                              appsFlyerEntryService(joinContestAppslyeBd,appsflyerURL);
