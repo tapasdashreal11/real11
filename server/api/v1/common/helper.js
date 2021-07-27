@@ -364,8 +364,6 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
        fcm.send(message, function(err, response){
           if (err) {
               console.log("Something has gone wrong with fcm",err);
-          } else {
-              console.log("Successfully sent with response", response);
           }
          });
         let notifyObj  = {
