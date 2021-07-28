@@ -576,8 +576,8 @@ module.exports = {
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
-                // let useAmountCal = eval((useableBonusPer / 100) * entryFee);
-                // let useAmount = eval(useAmountCal * total_team_number);
+                 let useAmountCal = eval((useableBonusPer / 100) * entryFee);
+                 let useAmount = eval(useAmountCal * total_team_number);
                 let usableAmt = 0;
                 let extraAmount = 0;
                 let cashBalance = 0;
@@ -654,8 +654,7 @@ module.exports = {
                                 if(retention_bonus_amount > 0 && !offerableAppled){
                                     usableAmt = 0;
                                 } else {
-                                    let useAmountCal = eval((useableBonusPer / 100) * calEntryFees);
-                                    let useAmount = eval(useAmountCal * total_team_number);
+                                    
                                     console.log('useAmount',useAmount,'calEntryFees',calEntryFees)
                                     if (useAmount > userdata.bonus_amount) {
                                         usableAmt = userdata.bonus_amount;
