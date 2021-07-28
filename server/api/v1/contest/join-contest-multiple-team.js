@@ -278,6 +278,18 @@ module.exports = async (req, res) => {
 
                                                             }
 
+                                                            if(matchContest && matchContest.is_offerable){
+                                                                let totalJoinedTeam = joinedContestWithTeamCounts;
+                                                                let calJoinTeam = total_team_number + totalJoinedTeam;
+                                                                if(matchContest.offer_after_join > totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0){
+                                                                    if(calEntryFees > 0){
+                                                                        calEntryFees = matchContest.offerable_amount > calEntryFees ? 0: (calEntryFees - matchContest.offerable_amount );
+                                                                        let totalOfferdAmount = retention_bonus_amount + matchContest.offerable_amount;
+                                                                        retention_bonus_amount = totalOfferdAmount > calEntryFees ? calEntryFees: totalOfferdAmount;
+                                                                    }
+                                                                 } 
+                                                              }
+
                                                             if (calEntryFees > 0) {
                                                                 const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
                                                                 cashAmount = paymentCal.cashAmount;

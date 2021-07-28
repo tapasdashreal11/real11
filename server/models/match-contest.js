@@ -71,6 +71,9 @@ var matchContestSchema = new Schema({
   usable_bonus_time: { type: Date },
   sport: { type: Number },
   contest: { type: Object },
+  is_offerable: { type: Number, default:0 },
+  offerable_amount: { type: Number },
+  offer_after_join: { type: Number }
 });
 
 matchContestSchema.statics.getContestsByContestIds = function(matchId, contestIds){
