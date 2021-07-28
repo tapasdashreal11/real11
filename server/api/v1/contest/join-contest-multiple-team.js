@@ -196,6 +196,7 @@ module.exports = async (req, res) => {
                                                         let totalEntryForContest = entryFee * (contestDataArray.length);
                                                         let retention_bonus_amount = 0;
                                                         let userBounousData = {};
+                                                        let offerableAppled = false;
                                                         let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
                                                         if (contestType == 'Paid') {
 
@@ -283,6 +284,7 @@ module.exports = async (req, res) => {
                                                                 let calJoinTeam = total_team_number + totalJoinedTeam;
                                                                 if(matchContest.offer_after_join > totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0){
                                                                     if(calEntryFees > 0){
+                                                                        offerableAppled = true;
                                                                         calEntryFees = matchContest.offerable_amount > calEntryFees ? 0: (calEntryFees - matchContest.offerable_amount );
                                                                         let totalOfferdAmount = retention_bonus_amount + matchContest.offerable_amount;
                                                                         retention_bonus_amount = totalOfferdAmount > calEntryFees ? calEntryFees: totalOfferdAmount;
@@ -291,7 +293,7 @@ module.exports = async (req, res) => {
                                                               }
 
                                                             if (calEntryFees > 0) {
-                                                                const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
+                                                                const paymentCal = await joinContestPaymentCalculation(offerableAppled,useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
                                                                 cashAmount = paymentCal.cashAmount;
                                                                 winAmount = paymentCal.winAmount;
                                                                 bonusAmount = paymentCal.bonusAmount;
@@ -1030,27 +1032,29 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
  * @param {*} bonusAmount 
  * @param {*} extraAmount 
  */
-async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
+async function joinContestPaymentCalculation(offerableAppled,useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
     let useAmount = (useableBonusPer / 100) * entryFee;
     let saveData = {};
     let remainingFee = 0;
     let indianDate = Date.now();
     indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
 
-    if (entryFee > 0 && authUser.bonus_amount && authUser.bonus_amount > 0 && retention_bonus_amount == 0) {
+    if (entryFee > 0 && authUser.bonus_amount && authUser.bonus_amount > 0 && (retention_bonus_amount == 0 || (retention_bonus_amount > 0 && offerableAppled))) {
         if (useAmount <= authUser.bonus_amount) {
-            remainingFee = retention_bonus_amount > 0 ? entryFee : entryFee - useAmount;
-            saveData['bonus_amount'] = retention_bonus_amount > 0 ? 0 : authUser.bonus_amount - useAmount;
-            bonusAmount = retention_bonus_amount > 0 ? 0 : useAmount;
+            remainingFee =  entryFee - useAmount;
+            saveData['bonus_amount'] =  authUser.bonus_amount - useAmount;
+            bonusAmount =  useAmount;
         } else {
-            remainingFee = retention_bonus_amount > 0 ? entryFee : entryFee - authUser.bonus_amount;
+            remainingFee =  entryFee - authUser.bonus_amount;
             saveData['bonus_amount'] = 0;
-            bonusAmount = retention_bonus_amount > 0 ? 0 : authUser.bonus_amount;
+            bonusAmount =  authUser.bonus_amount;
         }
     } else {
         remainingFee = entryFee;
     }
-    if (retention_bonus_amount > 0) bonusAmount = 0;
+    if (retention_bonus_amount > 0 && !offerableAppled ) {
+           bonusAmount = 0;
+        }
 
     let perdayExtraAmount = 0;
     if (remainingFee) {

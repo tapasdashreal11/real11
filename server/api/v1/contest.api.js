@@ -576,8 +576,8 @@ module.exports = {
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
-                let useAmountCal = eval((useableBonusPer / 100) * entryFee);
-                let useAmount = eval(useAmountCal * total_team_number);
+                // let useAmountCal = eval((useableBonusPer / 100) * entryFee);
+                // let useAmount = eval(useAmountCal * total_team_number);
                 let usableAmt = 0;
                 let extraAmount = 0;
                 let cashBalance = 0;
@@ -590,6 +590,7 @@ module.exports = {
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                         let catid = matchContestData.category_id;
+                        let offerableAppled = false;
                            if(couponSaleData && couponSaleData.length>0){
                             couponSaleData = couponSaleData.map(item => {
                                 let container = {};
@@ -641,6 +642,7 @@ module.exports = {
                             let calJoinTeam = total_team_number + totalJoinedTeam;
                             if(matchContestData.offer_after_join > totalJoinedTeam && calJoinTeam > matchContestData.offer_after_join && matchContestData.offerable_amount > 0){
                                 if(calEntryFees > 0){
+                                    offerableAppled = true;
                                     calEntryFees = matchContestData.offerable_amount > calEntryFees ? 0: (calEntryFees - matchContestData.offerable_amount );
                                     let totalOfferdAmount = retention_bonus_amount + matchContestData.offerable_amount;
                                     retention_bonus_amount = totalOfferdAmount > calEntryFees ? calEntryFees: totalOfferdAmount;
@@ -649,9 +651,11 @@ module.exports = {
                           }
                         if (userdata) {
                             if (decoded['contest_id']) {
-                                if(retention_bonus_amount > 0){
+                                if(retention_bonus_amount > 0 && !offerableAppled){
                                     usableAmt = 0;
                                 } else {
+                                    let useAmountCal = eval((useableBonusPer / 100) * calEntryFees);
+                                    let useAmount = eval(useAmountCal * total_team_number);
                                     if (useAmount > userdata.bonus_amount) {
                                         usableAmt = userdata.bonus_amount;
                                     } else {
@@ -659,7 +663,7 @@ module.exports = {
                                     }
                                 }
                                 let extraBalance = userdata.extra_amount || 0;
-                                let remainingFee = retention_bonus_amount > 0 ? calEntryFees : totalEntryFee - usableAmt;
+                                calEntryFees = retention_bonus_amount > 0 ?(offerableAppled && calEntryFees > 0 && calEntryFees > usableAmt ? calEntryFees - usableAmt: calEntryFees ): totalEntryFee - usableAmt;
         
                                 let indianDate = Date.now();
                                 indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
@@ -671,7 +675,7 @@ module.exports = {
                                         perDayExtraAmt = userdata.perday_extra_amount;
                                     }
                                     if (perDayExtraAmt < perDayLimit) {
-                                        extraAmount = (extraBalance > remainingFee) ? remainingFee : extraBalance;
+                                        extraAmount = (extraBalance > calEntryFees) ? calEntryFees : extraBalance;
                                         extraAmount = ((perDayExtraAmt + extraAmount) > perDayLimit) ? (perDayLimit - perDayExtraAmt) : extraAmount
                                     }
                                 }
