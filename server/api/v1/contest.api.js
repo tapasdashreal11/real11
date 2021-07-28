@@ -656,6 +656,7 @@ module.exports = {
                                 } else {
                                     let useAmountCal = eval((useableBonusPer / 100) * calEntryFees);
                                     let useAmount = eval(useAmountCal * total_team_number);
+                                    console.log('useAmount',useAmount,'calEntryFees',calEntryFees)
                                     if (useAmount > userdata.bonus_amount) {
                                         usableAmt = userdata.bonus_amount;
                                     } else {
