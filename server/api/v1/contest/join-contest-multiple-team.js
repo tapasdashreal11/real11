@@ -1038,6 +1038,7 @@ async function joinContestPaymentCalculation(offerableAppled,useableBonusPer, au
     let remainingFee = 0;
     let indianDate = Date.now();
     indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
+    console.log('useableBonusPer***',useableBonusPer,'entryFee',entryFee);
 
     if (entryFee > 0 && authUser.bonus_amount && authUser.bonus_amount > 0 && (retention_bonus_amount == 0 || (retention_bonus_amount > 0 && offerableAppled))) {
         if (useAmount <= authUser.bonus_amount) {
