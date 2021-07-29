@@ -642,14 +642,10 @@ module.exports = {
                             let calJoinTeam = total_team_number + totalJoinedTeam;
                             if(matchContestData.offer_after_join >= totalJoinedTeam && calJoinTeam >= matchContestData.offer_after_join && matchContestData.offerable_amount > 0){
                                 if(calEntryFees > 0){
-                                    console.log('entry **');
                                     offerableAppled = true;
                                     calEntryFees = matchContestData.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContestData.offerable_amount );
-                                    console.log('entry **',calEntryFees);
                                     let totalOfferdAmount = retention_bonus_amount + matchContestData.offerable_amount;
-                                    console.log('totalOfferdAmount **',totalOfferdAmount);
                                     retention_bonus_amount = totalOfferdAmount;
-                                    console.log('retention_bonus_amount **',retention_bonus_amount);
                                 }
                              } 
                           }
