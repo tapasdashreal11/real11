@@ -644,9 +644,12 @@ module.exports = {
                                 if(calEntryFees > 0){
                                     console.log('entry **');
                                     offerableAppled = true;
-                                    calEntryFees = matchContestData.offerable_amount > calEntryFees ? 0: (calEntryFees - matchContestData.offerable_amount );
+                                    calEntryFees = matchContestData.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContestData.offerable_amount );
+                                    console.log('entry **',calEntryFees);
                                     let totalOfferdAmount = retention_bonus_amount + matchContestData.offerable_amount;
+                                    console.log('totalOfferdAmount **',totalOfferdAmount);
                                     retention_bonus_amount = totalOfferdAmount > calEntryFees ? calEntryFees: totalOfferdAmount;
+                                    console.log('retention_bonus_amount **',retention_bonus_amount);
                                 }
                              } 
                           }
