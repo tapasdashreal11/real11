@@ -640,6 +640,7 @@ module.exports = {
                            if(matchContestData && matchContestData.is_offerable){
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
                             let calJoinTeam = total_team_number + totalJoinedTeam;
+                            console.log('calJoinTeam**',calJoinTeam,matchContestData.offer_after_join);
                             if(matchContestData.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContestData.offer_after_join && matchContestData.offerable_amount > 0){
                                 if(calEntryFees > 0){
                                     offerableAppled = true;
