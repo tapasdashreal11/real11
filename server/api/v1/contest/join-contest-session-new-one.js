@@ -265,7 +265,7 @@ module.exports = async (req, res) => {
                                                             if(matchContest && matchContest.is_offerable){
                                                                 let totalJoinedTeam = joinedContestWithTeamCounts;
                                                                 let calJoinTeam = 1 + totalJoinedTeam;
-                                                                if(matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam >= matchContest.offer_after_join && matchContest.offerable_amount > 0){
+                                                                if(matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0){
                                                                     if(calEntryFees > 0){
                                                                         offerableAppled = true;
                                                                         calEntryFees = matchContest.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContest.offerable_amount );
