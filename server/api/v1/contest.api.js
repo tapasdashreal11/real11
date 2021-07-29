@@ -645,8 +645,9 @@ module.exports = {
                                 if(calEntryFees > 0){
                                     console.log('in***');
                                     offerableAppled = true;
+                                    let recalcalEntryFees = calEntryFees;
                                     calEntryFees = matchContestData.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContestData.offerable_amount );
-                                    let offerdAmount = matchContestData.offerable_amount >= calEntryFees ? calEntryFees: matchContestData.offerable_amount;
+                                    let offerdAmount = matchContestData.offerable_amount >= recalcalEntryFees ? recalcalEntryFees: matchContestData.offerable_amount;
                                     let totalOfferdAmount = retention_bonus_amount + offerdAmount;
                                     retention_bonus_amount = totalOfferdAmount;
                                 }
