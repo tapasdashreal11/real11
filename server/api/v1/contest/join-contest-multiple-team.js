@@ -286,7 +286,8 @@ module.exports = async (req, res) => {
                                                                     if(calEntryFees > 0){
                                                                         offerableAppled = true;
                                                                         calEntryFees = matchContest.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContest.offerable_amount );
-                                                                        let totalOfferdAmount = retention_bonus_amount + matchContest.offerable_amount;
+                                                                        let offerdAmount = matchContest.offerable_amount >= calEntryFees ? calEntryFees: matchContest.offerable_amount;
+                                                                        let totalOfferdAmount = retention_bonus_amount + offerdAmount;
                                                                         retention_bonus_amount = totalOfferdAmount;
                                                                     }
                                                                  } 
