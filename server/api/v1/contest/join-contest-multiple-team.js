@@ -1040,7 +1040,7 @@ async function joinContestPaymentCalculation(offerableAppled,useableBonusPer, au
     indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
     console.log('useableBonusPer***',useableBonusPer,'entryFee',entryFee);
 
-    if (entryFee > 0 && authUser.bonus_amount && authUser.bonus_amount > 0 && (retention_bonus_amount == 0 || (retention_bonus_amount > 0 && offerableAppled))) {
+    if (entryFee > 0 && useAmount > 0 && authUser.bonus_amount && authUser.bonus_amount > 0 && (retention_bonus_amount == 0 || (retention_bonus_amount > 0 && offerableAppled))) {
         if (useAmount <= authUser.bonus_amount) {
             remainingFee =  entryFee - useAmount;
             saveData['bonus_amount'] =  authUser.bonus_amount - useAmount;
