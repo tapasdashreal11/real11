@@ -268,8 +268,8 @@ module.exports = async (req, res) => {
                                                                 if(matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam >= matchContest.offer_after_join && matchContest.offerable_amount > 0){
                                                                     if(calEntryFees > 0){
                                                                         offerableAppled = true;
-                                                                        calEntryFees = matchContestData.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContestData.offerable_amount );
-                                                                        let totalOfferdAmount = retention_bonus_amount + matchContestData.offerable_amount;
+                                                                        calEntryFees = matchContest.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContest.offerable_amount );
+                                                                        let totalOfferdAmount = retention_bonus_amount + matchContest.offerable_amount;
                                                                         retention_bonus_amount = totalOfferdAmount;
                                                                     }
                                                                  } 
