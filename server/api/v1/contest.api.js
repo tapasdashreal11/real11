@@ -648,7 +648,7 @@ module.exports = {
                                     console.log('entry **',calEntryFees);
                                     let totalOfferdAmount = retention_bonus_amount + matchContestData.offerable_amount;
                                     console.log('totalOfferdAmount **',totalOfferdAmount);
-                                    retention_bonus_amount = totalOfferdAmount > calEntryFees ? calEntryFees: totalOfferdAmount;
+                                    retention_bonus_amount = totalOfferdAmount;
                                     console.log('retention_bonus_amount **',retention_bonus_amount);
                                 }
                              } 
