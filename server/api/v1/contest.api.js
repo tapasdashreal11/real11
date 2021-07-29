@@ -654,7 +654,9 @@ module.exports = {
                                 if(retention_bonus_amount > 0 && !offerableAppled){
                                     usableAmt = 0;
                                 } else {
-                                    
+                                    if(offerableAppled){
+                                        useAmount = eval((useableBonusPer / 100) * calEntryFees);
+                                    }
                                     console.log('useAmount',useAmount,'calEntryFees',calEntryFees)
                                     if (useAmount > userdata.bonus_amount) {
                                         usableAmt = userdata.bonus_amount;
