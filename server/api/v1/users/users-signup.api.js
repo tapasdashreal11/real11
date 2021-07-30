@@ -254,6 +254,7 @@ module.exports = async (req, res) => {
               if(_.isEmpty(params.invite_code)){
                  appsFlyerEntryService(signUpBody,appsflyerURL);
                  try{
+                   console.log('insertId***',insertId);
                   let fb_event = {
                     "data": [
                        {
