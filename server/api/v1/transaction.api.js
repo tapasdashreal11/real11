@@ -637,7 +637,7 @@ module.exports = {
                                                         console.log('first time user is coming errrr*****',errrrr);
                                                     }
 
-                                                    let res = await User.update({ '_id': decoded['user_id'] }, { $set: { isFirstPaymentAdded:1,cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
+                                                    let res = await User.updateOne({ '_id': decoded['user_id'] }, { $set: { isFirstPaymentAdded:1,cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
                                                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
 
                                                     txn_status = true;
