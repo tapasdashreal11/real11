@@ -26,7 +26,6 @@ const { appsFlyerEntryService } = require("../users/appsflyer-api");
 
 module.exports = async (req, res) => {
     try {
-        console.log('join contest session new one***');
         let data1 = {};
         let startTime = Date.now();
         const user_id = req.userId;
@@ -79,7 +78,7 @@ module.exports = async (req, res) => {
                             let teamCount = team_count_number !=0 ? team_count_number : (results[5] && results[5].team_count ? results[5].team_count : 1);
                             
                             if (teamId && teamId != null && teamId != '' && ! _.isUndefined(teamId) && teamCount > 0) {
-                                // console.log(teamId);return false;
+                                
                                 let matchContest = results[4] ? results[4] : {};
                                 if (!matchContest) {
 
