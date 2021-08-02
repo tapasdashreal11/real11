@@ -257,9 +257,9 @@ module.exports = async (req, res) => {
                   let fb_event = {
                     "data": [
                        {
-                      "event_name": "Complete registration",
+                      "event_name": "Complete Registration",
                       "event_time": parseInt(new Date().getTime()/ 1000),
-                      "event_source_url": "real11.com/s2s2",
+                      "event_source_url": "real11.com/s2",
                       "opt_out": false,
                       "event_id":Math.floor(1000000 + Math.random() * 9000000),
                       "user_data": {
