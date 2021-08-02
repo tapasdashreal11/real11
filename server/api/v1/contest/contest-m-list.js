@@ -65,7 +65,7 @@ try {
                 myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : 0;
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
                  userCategory = mcResult && mcResult.length > 3 && mcResult[3] && !_.isEmpty(mcResult[3]) ? JSON.parse(mcResult[3])  : userCategory;
-                //console.log('userCategory*****',userCategory);
+                
                 userCoupons = mcResult && mcResult.length == 5 && mcResult[4] && !_.isEmpty(mcResult[4]) ? JSON.parse(mcResult[4])  : {};
                 
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
