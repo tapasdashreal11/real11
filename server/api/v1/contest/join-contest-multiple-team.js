@@ -246,7 +246,7 @@ module.exports = async (req, res) => {
                                                                         });
                                                                         cSaleData.coupon_contest_data = couponSaleData;
                                                                         await CouponSale.updateOne({ _id: ObjectId(cSaleData._id) }, { $set: { 'coupon_contest_data': couponSaleData } });
-                                                                        redis.redisObj.set('my-coupons-' + user_id, JSON.stringify({cSaleData}));
+                                                                        redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
                                                             
 
                                                                     }
