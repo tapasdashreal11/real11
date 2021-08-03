@@ -547,15 +547,11 @@ module.exports = {
                 if (decoded['contest_id']) {
                     let contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
                      const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1,expiry_date:{$gte:new Date()} });
-                    //const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1});
                      matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                      entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                      if(cSaleData && cSaleData._id){
-                        couponSaleData =cSaleData.coupon_credit > cSaleData.coupon_used ? cSaleData.coupon_contest_data:[]; 
-                        if(cSaleData.coupon_credit > cSaleData.coupon_used){
-                          let couponRemainsCount   = cSaleData.coupon_credit - cSaleData.coupon_used;
-                          totalCouponsToBeUsed = couponRemainsCount > total_team_number ? total_team_number: couponRemainsCount;
-                        }
+                        couponSaleData =cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0 ? cSaleData.coupon_contest_data:[]; 
+                        
                      }
                     if (matchContestData && matchContestData.usable_bonus_time) {
                         if (moment().isBefore(matchContestData.usable_bonus_time)) {
@@ -602,7 +598,8 @@ module.exports = {
                             if(constestIdsData && constestIdsData.category_id){
                                let offDataArray = constestIdsData.offer_data;
                                let offDataItem = _.find(offDataArray,{amount:entryFee});
-                                  if(offDataItem){
+                                  if(offDataItem && offDataItem.credit && offDataItem.credit>0){
+                                   totalCouponsToBeUsed = offDataItem.credit > total_team_number ? total_team_number: offDataItem.credit;
                                    userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
                                    userOfferAmount = userOfferAmount * totalCouponsToBeUsed;
                                    calEntryFees = userOfferAmount > totalEntryFee ? 0: (totalEntryFee - userOfferAmount );
