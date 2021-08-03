@@ -235,6 +235,7 @@ module.exports = async (req, res) => {
                                                                                let objIndex = offerDataArry.findIndex((obj => obj.amount == entryFee));
                                                                                if (offDataItem.credit == totalCouponsToBeUsed) {
                                                                                    offerDataArry[objIndex].offer = 0;
+                                                                                   offerDataArry[objIndex].amount = 0;
                                                                                    offerDataArry[objIndex].credit = 0;
                                                                                  } else {
                                                                                     offerDataArry[objIndex].credit = offDataItem.credit - totalCouponsToBeUsed;
