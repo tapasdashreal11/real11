@@ -212,9 +212,6 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
                 }
                 
             }
-            if(data && data.expiry_date){
-                console.log('data.expiry_date',data.expiry_date);
-            }
             resolve(data)
         })
     })
