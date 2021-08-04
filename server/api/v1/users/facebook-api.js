@@ -14,6 +14,7 @@ const facebookEntryService = (fbData,fbUrl) => {
                 "body":bData
             };
             request(options, function (error,res,body) {
+                console.log('test',body);
                 return resolve(body);
             });
            
