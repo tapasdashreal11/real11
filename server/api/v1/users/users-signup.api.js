@@ -278,6 +278,7 @@ module.exports = async (req, res) => {
                       }
                       ]
                     }
+                    console.log('insertId',insertId);
                     facebookEntryService(fb_event,'');
                  }catch(errfb){}
                 
