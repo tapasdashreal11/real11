@@ -275,10 +275,9 @@ module.exports = async (req, res) => {
                           "currency": "INR"
                         },
                         "action_source": "website"
-                      }
+                       }
                       ]
                     }
-                    console.log('insertData.team_name',insertData.team_name);
                     facebookEntryService(fb_event,'');
                  }catch(errfb){}
                 
