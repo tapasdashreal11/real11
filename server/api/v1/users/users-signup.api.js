@@ -256,7 +256,7 @@ module.exports = async (req, res) => {
                  try{
                   let fb_event = {
                     "data": [
-                       {
+                    {
                       "event_name": "CompleteRegistration",
                       "event_time": parseInt(new Date().getTime()/ 1000),
                       "event_source_url": "real11.com/s2",
