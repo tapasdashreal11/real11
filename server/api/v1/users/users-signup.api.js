@@ -257,7 +257,7 @@ module.exports = async (req, res) => {
                   let fb_event = {
                     "data": [
                        {
-                      "event_name": "Complete Registration",
+                      "event_name": "CompleteRegistration",
                       "event_time": parseInt(new Date().getTime()/ 1000),
                       "event_source_url": "real11.com/s2",
                       "opt_out": false,
@@ -268,6 +268,11 @@ module.exports = async (req, res) => {
                         "fbc":params && params.fbc_id ? params.fbc_id: null,
                         "client_ip_address": userIp || "172.17.0.5",
                         "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                        },
+                        "custom_data": {
+                          "value": 1,
+                          "currency": "INR",
+                          "userId":insertId
                         },
                         "action_source": "website"
                       }
