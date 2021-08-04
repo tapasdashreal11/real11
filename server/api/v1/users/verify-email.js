@@ -108,7 +108,6 @@ module.exports = {
     var response = { status: false, message: "", data: {} };
     let params = req.body;
     try {
-      console.log('api call of fcm token update***')
       let userId = req.userId || null;
        if(userId && params && params.device_id){
         await Users.findOneAndUpdate({ _id: ObjectId(userId) }, { $set: {device_id: params.device_id} });
