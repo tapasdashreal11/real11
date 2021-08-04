@@ -32,7 +32,7 @@ try {
            var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
            if(checkSaleCoupon && checkSaleCoupon._id){
            } else {
-               await getCouponForFreeEntry('60f94280fbd87d159769f82d',user_id);
+              // await getCouponForFreeEntry('60f94280fbd87d159769f82d',user_id);
             }
         }
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
@@ -211,6 +211,9 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
                     data = defaultValue;
                 }
                 
+            }
+            if(data && data.expiry_date){
+                console.log('data.expiry_date',data.expiry_date);
             }
             resolve(data)
         })
