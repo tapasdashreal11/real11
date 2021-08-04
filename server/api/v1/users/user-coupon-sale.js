@@ -122,7 +122,7 @@ module.exports = {
                                     txnEntity.local_txn_id = 'DD' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
                                     txnEntity.added_type = TransactionTypes.COUPON_PURCHASE_TXN; // Coupon purchase txn
                                     txnEntity.status = 1; // status
-                                    await Users.update({ _id: user_id }, { $inc: { cash_balance: -cashAmount, winning_balance: -winAmount } }, sessionOpts);
+                                    await Users.updateOne({ _id: user_id }, { $inc: { cash_balance: -cashAmount, winning_balance: -winAmount } }, sessionOpts);
                                     await Transaction.create([txnEntity], { session: session });
                                     await session.commitTransaction();
                                     session.endSession();
@@ -163,8 +163,9 @@ module.exports = {
                                     response.error_code = null;
                                     return res.json(response);
                                 }
-
-                                let csaleObj = {coupon_name: cData.coupon_name, description:cData.description, coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: cData.coupon_expiry };
+                                const couponDuration = cData.coupon_duration ? cData.coupon_duration:1;
+                                let couponExpireDateUp =  moment().utc().add(couponDuration,'days').toDate();
+                                let csaleObj = {coupon_name: cData.coupon_name, description:cData.description, coupon_contest_data: cData.coupon_contest_data, status: 1, user_id: uData._id, coupon_id: cData._id, coupon_used: 0, coupon_credit: cData.coupon_credit, expiry_date: couponExpireDateUp };
                                 await CouponSale.findOneAndUpdate({  user_id: ObjectId(user_id) }, csaleObj, { upsert: true, new: true, session: session });
 
                                 await session.commitTransaction();
