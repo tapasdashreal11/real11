@@ -216,6 +216,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
                 
             }
             if(data && data.expiry_date){
+                console.log('ggggggggg*****');
                 let serverTimeForalc = moment().utc().toDate();
                 console.log('data.expiry_date',data.expiry_date);
                 console.log('serverTimeForalc',serverTimeForalc);
@@ -223,6 +224,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
                     if (moment(data.expiry_date).toDate() > serverTimeForalc) {
                         console.log('log 1*******');
                      } else {
+                        console.log('log 111*******');
                         await CouponSale.findOneAndUpdate({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status:1},{$set:{status:0}});
                         redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
                         data = defaultValue;
@@ -235,6 +237,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
                 }
                 console.log('enter******final');
             }
+            console.log(typeof data);
             console.log('enter**x data',data);
             resolve(data)
         })
