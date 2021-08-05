@@ -25,7 +25,7 @@ var couponSaleSchema = new Schema({
     status: {
         type: Number, default: 1
     },
-    series: { type: Number, default: 0 },
+    series_id: { type: Number, default: 0 },
     is_private: { type: Number, default: 0 },
     is_repeat: { type: Number, default: 2 }, //default 2 for not repeatable 
     expiry_date: { type: Date },
