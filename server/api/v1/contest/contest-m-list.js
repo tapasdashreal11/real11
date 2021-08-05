@@ -149,8 +149,8 @@ try {
                              } else {
                                 console.log('innnnnn'); 
                                 resObj['user_coupons'] = {};
-                                //await CouponSale.findOneAndUpdate({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status:1},{$set:{status:0}});
-                                //redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
+                                await CouponSale.findOneAndUpdate({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status:1},{$set:{status:0}});
+                                redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
                              }
                         }catch(ee){
                             resObj['user_coupons'] = {};
