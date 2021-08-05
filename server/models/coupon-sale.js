@@ -19,13 +19,16 @@ var couponSaleSchema = new Schema({
     coupon_used: {
         type: Number, default: 0
     },
-    coupon_contest_data:{
+    coupon_contest_data: {
         type: Array, default: []
     },
     status: {
         type: Number, default: 1
     },
-    expiry_date: { type: Date},
+    series: { type: Number, default: 0 },
+    is_private: { type: Number, default: 0 },
+    is_repeat: { type: Number, default: 2 }, //default 2 for not repeatable 
+    expiry_date: { type: Date },
     create_date: {
         type: Date, default: Date.now()
     }
