@@ -202,8 +202,9 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
             if (err) { 
                 reject(defaultValue);
             }
-            console.log('enter******log');
+            console.log('enter******log',match_series_id);
             if (data == null) {
+                console.log('cSaleData null');
                 const cSaleData = await CouponSale.findOne({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status: 1 });
                 console.log('cSaleData',cSaleData);
                 if(cSaleData && cSaleData._id){
