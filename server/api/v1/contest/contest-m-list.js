@@ -47,7 +47,7 @@ try {
                 PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }).countDocuments(),
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec(),
                 getPromiseForAnalysis(redisKeyForUserCategory, "{}"),
-                getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}",user_id)
+                getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}",user_id,match_series_id)
             )
         }
         const mcResult = await Promise.all(queryArray);
@@ -196,19 +196,39 @@ async function getPromiseForAnalysis(key, defaultValue){
     })
 }
 
-async function getPromiseForUserCoupons(key, defaultValue,user_id){
+async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_id){
     return new Promise((resolve, reject) => {
         redis.redisObj.get(key, async (err, data) => {
             if (err) { 
                 reject(defaultValue);
             }
             if (data == null) {
-                const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1 });
+                const cSaleData = await CouponSale.findOne({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status: 1 });
                 if(cSaleData && cSaleData._id){
                     redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify(cSaleData));
                     data = JSON.stringify(cSaleData);
                 } else {
                     data = defaultValue;
+                }
+                
+            }
+            if(data && data.expiry_date){
+                let serverTimeForalc = moment().utc().toDate();
+                console.log('data.expiry_date',data.expiry_date);
+                console.log('serverTimeForalc',serverTimeForalc);
+                try{
+                    if (moment(data.expiry_date).toDate() > serverTimeForalc) {
+                        console.log('log 1*******');
+                     } else {
+                        await CouponSale.findOneAndUpdate({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status:1},{$set:{status:0}});
+                        redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
+                        data = defaultValue;
+                        console.log('log 2*******');
+                     }
+                } catch(ee){
+                    redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
+                    data = defaultValue;
+                    console.log('log 3*******');
                 }
                 
             }
