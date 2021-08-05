@@ -202,6 +202,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
             if (err) { 
                 reject(defaultValue);
             }
+            console.log('enter******log');
             if (data == null) {
                 const cSaleData = await CouponSale.findOne({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status: 1 });
                 console.log('cSaleData',cSaleData);
@@ -231,7 +232,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
                     data = defaultValue;
                     console.log('log 3*******');
                 }
-                
+                console.log('enter******final');
             }
             resolve(data)
         })
