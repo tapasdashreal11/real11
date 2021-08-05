@@ -20,6 +20,9 @@ var couponSaleSchema = new Schema({
     coupon_expiry :{ type: Date},
     coupon_limit :{type: Number},
     coupon_duration :{type: Number},
+    series :{type: Number,default:0},
+    is_private :{type: Number,default:0},
+    is_repeat :{type: Number,default:2}, //default 2 for not repeatable 
     createAt: {
         type: Date, default: Date.now()
     }
