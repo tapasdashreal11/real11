@@ -227,29 +227,30 @@ module.exports = async (req, res) => {
                                                                         userOfferAmount = userOfferAmount * totalCouponsToBeUsed;
                                                                         calEntryFees = userOfferAmount > totalEntryForContest ? 0 : (totalEntryForContest - userOfferAmount);
                                                                         retention_bonus_amount = userOfferAmount > totalEntryForContest ? totalEntryForContest : userOfferAmount;
-                                                                        couponSaleData = couponSaleData.map(item => {
-                                                                            let container = {};
-                                                                            let cate_id = ObjectId(item.category_id);
-                                                                            let offerDataArry  = item.offer_data;
-                                                                            if(cate_id && cate_id.equals(ObjectId(catid))){
-                                                                               let objIndex = offerDataArry.findIndex((obj => obj.amount == entryFee));
-                                                                               if (offDataItem.credit == totalCouponsToBeUsed) {
-                                                                                   offerDataArry[objIndex].offer = 0;
-                                                                                   offerDataArry[objIndex].amount = 0;
-                                                                                   offerDataArry[objIndex].credit = 0;
-                                                                                 } else {
-                                                                                    offerDataArry[objIndex].credit = offDataItem.credit - totalCouponsToBeUsed;
-                                                                                 }
-                                                                            }
-                                                                            container.category_id = cate_id;
-                                                                            container.offer_data = offerDataArry;
-                                                                            return container;
-                                                                        });
-                                                                        cSaleData.coupon_contest_data = couponSaleData;
-                                                                        await CouponSale.updateOne({ _id: ObjectId(cSaleData._id) }, { $set: { 'coupon_contest_data': couponSaleData } });
-                                                                        redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
-                                                            
-
+                                                                        if(cSaleData.is_repeat == 2){
+                                                                            couponSaleData = couponSaleData.map(item => {
+                                                                                let container = {};
+                                                                                let cate_id = ObjectId(item.category_id);
+                                                                                let offerDataArry  = item.offer_data;
+                                                                                if(cate_id && cate_id.equals(ObjectId(catid))){
+                                                                                   let objIndex = offerDataArry.findIndex((obj => obj.amount == entryFee));
+                                                                                   if (offDataItem.credit == totalCouponsToBeUsed) {
+                                                                                       offerDataArry[objIndex].offer = 0;
+                                                                                       offerDataArry[objIndex].amount = 0;
+                                                                                       offerDataArry[objIndex].credit = 0;
+                                                                                     } else {
+                                                                                        offerDataArry[objIndex].credit = offDataItem.credit - totalCouponsToBeUsed;
+                                                                                     }
+                                                                                }
+                                                                                container.category_id = cate_id;
+                                                                                container.offer_data = offerDataArry;
+                                                                                return container;
+                                                                            });
+                                                                            cSaleData.coupon_contest_data = couponSaleData;
+                                                                            await CouponSale.updateOne({ _id: ObjectId(cSaleData._id) }, { $set: { 'coupon_contest_data': couponSaleData } });
+                                                                            redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData));
+                                                                        }
+                                                                        
                                                                     }
 
                                                                 }
