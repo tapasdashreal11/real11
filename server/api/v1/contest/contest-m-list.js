@@ -141,8 +141,6 @@ try {
                     };
                     if(userCoupons && userCoupons.expiry_date){
                         let serverTimeForalc = moment().utc().toDate();
-                        console.log(' in userCoupons.expiry_date',userCoupons.expiry_date);
-                        console.log('serverTimeForalc',serverTimeForalc);
                         try{
                             if (moment(userCoupons.expiry_date).toDate() > serverTimeForalc) {
                                 resObj['user_coupons'] = userCoupons;
@@ -156,8 +154,6 @@ try {
                             resObj['user_coupons'] = {};
                         }
                         
-                    } else {
-                        resObj['user_coupons'] = {};
                     }
                     let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id +  '-' + match_sport;
                     try {
@@ -224,7 +220,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
             }
             if (data == null) {
                 console.log('cSaleData null');
-                const cSaleData = await CouponSale.findOne({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status: 1 });
+                const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1,series_id:{$in:[0,match_series_id]} });
                 console.log('cSaleData',cSaleData);
                 if(cSaleData && cSaleData._id){
                     redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify(cSaleData));
