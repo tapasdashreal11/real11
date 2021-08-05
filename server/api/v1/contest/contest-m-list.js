@@ -139,6 +139,26 @@ try {
                         user_coupons: userCoupons || {},
                         user_favourite_contest: userFavouriteContest || {}
                     };
+                    if(userCoupons && userCoupons.expiry_date){
+                        let serverTimeForalc = moment().utc().toDate();
+                        console.log(' in userCoupons.expiry_date',userCoupons.expiry_date);
+                        console.log('serverTimeForalc',serverTimeForalc);
+                        try{
+                            if (moment(userCoupons.expiry_date).toDate() > serverTimeForalc) {
+                                resObj['user_coupons'] = userCoupons;
+                             } else {
+                                console.log('innnnnn'); 
+                                resObj['user_coupons'] = {};
+                                //await CouponSale.findOneAndUpdate({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status:1},{$set:{status:0}});
+                                //redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
+                             }
+                        }catch(ee){
+                            resObj['user_coupons'] = {};
+                        }
+                        
+                    } else {
+                        resObj['user_coupons'] = {};
+                    }
                     let redisKeyForUserAnalysis = 'app-analysis-' + user_id + '-' + match_id +  '-' + match_sport;
                     try {
                         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
@@ -202,7 +222,6 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
             if (err) { 
                 reject(defaultValue);
             }
-            console.log('enter******log',match_series_id);
             if (data == null) {
                 console.log('cSaleData null');
                 const cSaleData = await CouponSale.findOne({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status: 1 });
@@ -215,30 +234,6 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
                 }
                 
             }
-            if(data && data.expiry_date){
-                console.log('ggggggggg*****');
-                let serverTimeForalc = moment().utc().toDate();
-                console.log('data.expiry_date',data.expiry_date);
-                console.log('serverTimeForalc',serverTimeForalc);
-                try{
-                    if (moment(data.expiry_date).toDate() > serverTimeForalc) {
-                        console.log('log 1*******');
-                     } else {
-                        console.log('log 111*******');
-                        await CouponSale.findOneAndUpdate({series_id:{$in:[0,match_series_id]},user_id:ObjectId(user_id),status:1},{$set:{status:0}});
-                        redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
-                        data = defaultValue;
-                        console.log('log 2*******');
-                     }
-                } catch(ee){
-                    redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify({}));
-                    data = defaultValue;
-                    console.log('log 3*******');
-                }
-                console.log('enter******final');
-            }
-            console.log(typeof data);
-            console.log('enter**x data',data);
             resolve(data)
         })
     })
