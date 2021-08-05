@@ -235,6 +235,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
                 }
                 console.log('enter******final');
             }
+            console.log('enter**x data',data);
             resolve(data)
         })
     })
