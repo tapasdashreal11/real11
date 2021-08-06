@@ -135,17 +135,17 @@ module.exports = {
       if (!matched) {
         response["message"] = "Required fields missing !";
         response["errors"] = validator.errors;
-        return res.json(response);
+        return res.json(response); 
       }
       if(params && !_.isEmpty(params.invite_code)){
         var caps_invite_code = params.invite_code.toUpperCase();
         let inviteDetails = await Users.findOne({ refer_id: caps_invite_code },{_id:1});
           if(!_.isEmpty(inviteDetails) && inviteDetails._id) {
             response["status"] = true;
-            response["message"] = "Ver.";
+            response["message"] = "Verified";
           } else {
             response["status"] = false;
-            response["message"] = "Mobile number already exists.";
+            response["message"] = "Not Valid Code";
           }
       }
       return res.json(response);
