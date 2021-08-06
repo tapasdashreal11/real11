@@ -219,9 +219,7 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id,match_series_i
                 reject(defaultValue);
             }
             if (data == null) {
-                console.log('cSaleData null');
                 const cSaleData = await CouponSale.findOne({user_id:ObjectId(user_id),status: 1,series_id:{$in:[0,match_series_id]} });
-                console.log('cSaleData',cSaleData);
                 if(cSaleData && cSaleData._id){
                     redis.redisObj.set('my-coupons-'+ user_id,JSON.stringify(cSaleData));
                     data = JSON.stringify(cSaleData);
