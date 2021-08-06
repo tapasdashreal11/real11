@@ -143,21 +143,21 @@ module.exports = {
         let ref_key = 'user-referal-' + caps_invite_code;
         redis.getRedisLogin(ref_key, async (err, data) => {
           if (data && data.status) {
-            console.log('in redis****',data);
             response["status"] = data.status == 1 ? true: false;
             response["message"] = data.status == 1 ?  "Verified":  "Not Valid Code";
             return res.json(response);
           } else {
-            console.log('not in redis****');
             let inviteDetails = await Users.findOne({ refer_id: caps_invite_code },{_id:1});
             if(!_.isEmpty(inviteDetails) && inviteDetails._id) {
+              // Valid code we set status 1
               let obj = { status : 1 };
               redis.setRedisLogin(ref_key,obj); 
               response["status"] = true;
               response["message"] = "Verified";
               return res.json(response);
             } else {
-              let obj = { status : 2 };
+              // Not valid code we set status 2
+              let obj = { status : 2 }; 
               redis.setRedisLogin(ref_key,obj);
               response["status"] = false;
               response["message"] = "Not Valid Code";
