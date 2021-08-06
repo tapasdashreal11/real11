@@ -10,6 +10,7 @@ const { sendMail, sendSMTPMail } = require("../common/helper");
 var help = require('../../../controllers/helpers');
 const ModelService = require("../../ModelService");
 const _ = require('lodash');
+const redis = require('../../../../lib/redis');
 
 module.exports = {
   verifyEmail: async (req, res) => {
@@ -139,14 +140,29 @@ module.exports = {
       }
       if(params && !_.isEmpty(params.invite_code)){
         var caps_invite_code = params.invite_code.toUpperCase();
-        let inviteDetails = await Users.findOne({ refer_id: caps_invite_code },{_id:1});
-          if(!_.isEmpty(inviteDetails) && inviteDetails._id) {
-            response["status"] = true;
-            response["message"] = "Verified";
+        let ref_key = 'user-referal-' + caps_invite_code;
+        redis.getRedisLogin(ref_key, async (err, data) => {
+          if (data && data.status) {
+            console.log('in redis****',data);
+            response["status"] = data.status == 1 ? true: false;
+            response["message"] =data.status == 1 ?  "Verified":  "Not Valid Code";;
           } else {
-            response["status"] = false;
-            response["message"] = "Not Valid Code";
+            console.log('not in redis****');
+            let inviteDetails = await Users.findOne({ refer_id: caps_invite_code },{_id:1});
+            if(!_.isEmpty(inviteDetails) && inviteDetails._id) {
+              let obj = { status : 1 };
+              redis.setRedisLogin(ref_key,obj); 
+              response["status"] = true;
+              response["message"] = "Verified";
+            } else {
+              let obj = { status : 2 };
+              redis.setRedisLogin(ref_key,obj);
+              response["status"] = false;
+              response["message"] = "Not Valid Code";
+            }
           }
+        });
+          
       }
       return res.json(response);
     } catch (error) {
