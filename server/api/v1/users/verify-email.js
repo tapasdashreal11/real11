@@ -9,6 +9,7 @@ const config = require('../../../config');
 const { sendMail, sendSMTPMail } = require("../common/helper");
 var help = require('../../../controllers/helpers');
 const ModelService = require("../../ModelService");
+const _ = require('lodash');
 
 module.exports = {
   verifyEmail: async (req, res) => {
