@@ -328,7 +328,7 @@ router.post('/api/v1/verify-email', auth.authenticate.jwtLogin, verifyEmail);
 router.get('/api/v1/verify-account-email/:verify_string', verifyAccountEmail);
 router.get('/api/v1/get_affiliate_amount', auth.authenticate.jwtLogin, getAffiliateAmount);
 router.post('/api/v1/update-fcm-token', auth.authenticate.jwtLogin, updateUserFCMToken);
-router.post('/api/v1/signup-verify-referal', auth.authenticate.jwtLogin, verifyReferal);
+router.post('/api/v1/signup-verify-referal', verifyReferal);
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
 router.post('/api/v1/update-transactions', auth.authenticate.jwtLogin, updateTransaction);
