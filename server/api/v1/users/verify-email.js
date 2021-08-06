@@ -121,5 +121,36 @@ module.exports = {
     } catch (err) {
         return res.json(response);
     }
-  }
+  },
+  verifyReferal: async (req, res) => {
+    try {
+      var response = { status: false, message: "Invalid Request", data: {} };
+      let params = req.body;
+      let constraints = {
+        invite_code: "required"
+      };
+      let validator = new Validator(params, constraints);
+      let matched = await validator.check();
+      if (!matched) {
+        response["message"] = "Required fields missing !";
+        response["errors"] = validator.errors;
+        return res.json(response);
+      }
+      if(params && !_.isEmpty(params.invite_code)){
+        var caps_invite_code = params.invite_code.toUpperCase();
+        let inviteDetails = await Users.findOne({ refer_id: caps_invite_code },{_id:1});
+          if(!_.isEmpty(inviteDetails) && inviteDetails._id) {
+            response["status"] = true;
+            response["message"] = "Ver.";
+          } else {
+            response["status"] = false;
+            response["message"] = "Mobile number already exists.";
+          }
+      }
+      return res.json(response);
+    } catch (error) {
+      logger.error("Referal code verfication error", error.message);
+      res.send(ApiUtility.failed(error.message));
+    }
+  },
 }
