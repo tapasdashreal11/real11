@@ -145,7 +145,8 @@ module.exports = {
           if (data && data.status) {
             console.log('in redis****',data);
             response["status"] = data.status == 1 ? true: false;
-            response["message"] =data.status == 1 ?  "Verified":  "Not Valid Code";;
+            response["message"] = data.status == 1 ?  "Verified":  "Not Valid Code";
+            return res.json(response);
           } else {
             console.log('not in redis****');
             let inviteDetails = await Users.findOne({ refer_id: caps_invite_code },{_id:1});
@@ -154,17 +155,21 @@ module.exports = {
               redis.setRedisLogin(ref_key,obj); 
               response["status"] = true;
               response["message"] = "Verified";
+              return res.json(response);
             } else {
               let obj = { status : 2 };
               redis.setRedisLogin(ref_key,obj);
               response["status"] = false;
               response["message"] = "Not Valid Code";
+              return res.json(response);
             }
           }
         });
           
+      } else {
+        return res.json(response);
       }
-      return res.json(response);
+      
     } catch (error) {
       logger.error("Referal code verfication error", error.message);
       res.send(ApiUtility.failed(error.message));
