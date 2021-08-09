@@ -34,10 +34,10 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
+                SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] },{time:1}),
                 PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
-                MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }),
+               // MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }),
             ];
             
             var results = await Promise.all(apiList);
@@ -56,10 +56,10 @@ module.exports = async (req, res) => {
                         } else { 
                             if (teamId && teamId != null && teamId != '' && ! _.isUndefined(teamId) && teamCount > 0) {
                                 
-                                let matchContest = results[3] ? results[3] : {};
-                                if (!matchContest) {
-                                    return res.send(ApiUtility.failed('Match Contest Not Found'));
-                                }
+                               // let matchContest = results[3] ? results[3] : {};
+                              //  if (!matchContest) {
+                                //    return res.send(ApiUtility.failed('Match Contest Not Found'));
+                               // }
                                 let contestData = results[2] ? results[2] : '';
                                 if (!contestData) {
                                     contestData = await Contest.findOne({ _id: ObjectId(contest_id) });
@@ -86,7 +86,7 @@ module.exports = async (req, res) => {
                                  }
 
                                 var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': teamId }
-                                let playerTeamRes = await PlayerTeamContest.findOne(PlayerTeamContestFilter);
+                                let playerTeamRes = await PlayerTeamContest.findOne(PlayerTeamContestFilter,{_id:1});
                                 let joinedContestWithTeamCounts = results[1] ? results[1] : 0;
                                 let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
 
