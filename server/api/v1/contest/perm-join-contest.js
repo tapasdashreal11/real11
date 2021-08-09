@@ -236,7 +236,8 @@ async function getContestCount(contest, match_id, contest_id, contestData, sessi
         
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
-                if (joinedContestCount >= contestData.contest_size) {
+                let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
+                if (joinedContestCount >= contestData.contest_size && infinteStatus) {
                     redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                     console.log('Perm Contest full****************************');
                     await session.commitTransaction();
