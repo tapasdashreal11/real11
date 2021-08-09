@@ -37,7 +37,6 @@ module.exports = async (req, res) => {
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] },{time:1}),
                 PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
-               // MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }),
             ];
             
             var results = await Promise.all(apiList);
@@ -55,11 +54,6 @@ module.exports = async (req, res) => {
                             
                         } else { 
                             if (teamId && teamId != null && teamId != '' && ! _.isUndefined(teamId) && teamCount > 0) {
-                                
-                               // let matchContest = results[3] ? results[3] : {};
-                              //  if (!matchContest) {
-                                //    return res.send(ApiUtility.failed('Match Contest Not Found'));
-                               // }
                                 let contestData = results[2] ? results[2] : '';
                                 if (!contestData) {
                                     contestData = await Contest.findOne({ _id: ObjectId(contest_id) });
@@ -70,7 +64,7 @@ module.exports = async (req, res) => {
                                     }
                                 }
                                 //let joinedContest = 0;
-                                let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();// (matchContest && matchContest.joined_users) ? matchContest.joined_users : 0
+                                let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
 
                                 var parentContestId = contestData._id;
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
