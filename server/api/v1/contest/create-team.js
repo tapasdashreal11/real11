@@ -118,7 +118,9 @@ module.exports = {
                         if (statusAdd == true) {
                             await PlayerTeam.updateOne({
                                 _id: team_id,
-                                user_id: user_id
+                                user_id: user_id,
+                                match_id: Number(match_id),
+                                sport: Number(sport)
                             }, { $set: team })
                             data1.team_id = team_id;
                             message = "Team has been updated successfully."
