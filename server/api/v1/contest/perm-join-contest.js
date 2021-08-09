@@ -180,7 +180,7 @@ module.exports = async (req, res) => {
                                             let response = {};
                                             await session.abortTransaction();
                                             session.endSession();
-                                            console.log("perm error in catch***", errorr);
+                                           // console.log("perm error in catch***", errorr);
                                             response.status = false;
                                             response.message = "This contest is full, please join other contest.";
                                             response.data = {};
