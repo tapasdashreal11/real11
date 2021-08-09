@@ -26,6 +26,7 @@ const { appsFlyerEntryService } = require("../users/appsflyer-api");
 
 module.exports = async (req, res) => {
     try {
+        console.log('hello test');
         const { team_id,team_name,user_id, team_count, contest_id, series_id, match_id, sport} = req.body;
         let match_sport = sport ? parseInt(sport) : 1;
         let decoded = {
@@ -151,6 +152,7 @@ module.exports = async (req, res) => {
                                                         
                                                         if(_.has(contest, "player_team_id") && _.has(contest, "team_count") &&  _.has(contest, "team_name") &&  contest.team_name !='' && contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0 ){
                                                             totalContestKey = await getContestCount(contest, match_id, contest_id, contestData, session, match_sport, joinedContestCount);
+                                                            return res.send(ApiUtility.failed('Join contest Successfully!!'));
                                                         } else {
                                                             await session.abortTransaction();
                                                             session.endSession();
