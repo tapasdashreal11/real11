@@ -153,7 +153,7 @@ module.exports = async (req, res) => {
                                                     contest.isPermainan = true;
                                                     contest.pid = pid || '';
                                                     contest.by_user = by_user || '';
-                                                    contest.isCreatedBy = nPTeamU.isCreatedBy;
+                                                    contest.isCreatedBy = isCreatedBy;
 
  
                                                     try {

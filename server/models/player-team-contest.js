@@ -75,6 +75,18 @@ var playerTeamContestSchema = new Schema({
   },
   points: {
     type: Number, default: 0
+  },
+  pid: {
+    type: ObjectId
+  },
+  by_user: {
+    type: ObjectId
+  },
+  isCreatedBy: {
+    type: String
+  }, 
+  isPermainan: {
+    type: Boolean
   }
 },{
   timestamps:true
