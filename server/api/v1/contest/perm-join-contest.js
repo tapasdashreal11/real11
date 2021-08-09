@@ -1,28 +1,17 @@
 const config = require('../../../config');
-const User = require('../../../models/user');
 const Contest = require('../../../models/contest');
 const SeriesSquad = require('../../../models/series-squad');
 const MatchContest = require('../../../models/match-contest');
 const PlayerTeam = require('../../../models/player-team');
 const PlayerTeamContest = require('../../../models/player-team-contest');
-const MyContestModel = require('../../../models/my-contest-model');
 const ApiUtility = require('../../api.utility');
-const Transaction = require('../../../models/transaction');
-
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
-const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
-const ModelService = require("../../ModelService");
-const asyncp = require("async");
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
-const mqtt = require('../../../../lib/mqtt');
 const db = require('../../../db');
 const { startSession } = require('mongoose');
-const UserAnalysis = require("../../../models/user-analysis");
-const ContestInvite = require("../../../models/contest-invite");
-const CouponSale = require("../../../models/coupon-sale");
-const { appsFlyerEntryService } = require("../users/appsflyer-api");
+
 
 module.exports = async (req, res) => {
     try {
@@ -194,7 +183,7 @@ module.exports = async (req, res) => {
                                             console.log("perm error in catch***", errorr);
                                             response.status = false;
                                             response.message = "This contest is full, please join other contest.";
-                                            response.data = { contest_id: MatchContestData.contest_id };
+                                            response.data = {};
                                             response.error_code = null;
                                             return res.json(response);
                                         } finally {
