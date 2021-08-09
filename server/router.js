@@ -290,7 +290,7 @@ router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtL
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
 router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
 router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); // 
-router.post('/api/v1/join-contest-new', permJoinContest); 
+router.post('/api/v1/perm-join-contest', permJoinContest); 
 router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joinContestMultipleTeam);
 router.post('/api/v1/other-games-wallet-amount', auth.authenticate.jwtLogin, otherGameContestWallet);
 router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, joinContestOtherGames);
