@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
                         let ctime = Date.now();
                         let mtime = liveMatch.time;
                         if (mtime < ctime) {
-                            redis.set('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
+                            redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                             return res.send(ApiUtility.failed('Match has been started.'));
                             
                         } else { 
@@ -87,7 +87,7 @@ module.exports = async (req, res) => {
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
 
                                 if (contestData && contestData.contest_size == parseInt(joinedContest) && infinteStatus) {
-                                    redis.set('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
+                                    redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                                     let response = {};
                                     response.status = false;
                                     response.message = "This contest is full, please join other contest.";
@@ -115,7 +115,7 @@ module.exports = async (req, res) => {
                                                 let joinedContestCount = doc.joined_users;
 
                                                 if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
-                                                    redis.set('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
+                                                    redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                                                     console.log("PREM Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
                                                     await session.abortTransaction();
                                                     session.endSession();
@@ -258,7 +258,7 @@ async function getContestCount(contest, match_id, contest_id, contestData, sessi
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
                 if (joinedContestCount == contestData.contest_size) {
-                    redis.set('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
+                    redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                     console.log('Perm Contest full****************************');
                     await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     await session.commitTransaction();
