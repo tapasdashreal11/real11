@@ -192,21 +192,11 @@ module.exports = async (req, res) => {
                                             await session.abortTransaction();
                                             session.endSession();
                                             console.log("perm error in catch***", errorr);
-                                            var MatchContestData = await MatchContest.findOne({ 'contest_id': parentContestId, match_id: parseInt(match_id), 'sport': match_sport}).sort({ _id: -1 });
-                                            if (MatchContestData && MatchContestData.joined_users && MatchContestData.joined_users > joinedContest) {
-                                                await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users:joinedContest } });
-                                                response.status = false;
-                                                response.message = "Please try again.";
-                                                response.data = { contest_id: MatchContestData.contest_id };
-                                                response.error_code = null;
-                                                return res.json(response);
-                                            } else {
-                                                response.status = false;
-                                                response.message = "This contest is full, please join other contest.";
-                                                response.data = { contest_id: MatchContestData.contest_id };
-                                                response.error_code = null;
-                                                return res.json(response);
-                                            }
+                                            response.status = false;
+                                            response.message = "This contest is full, please join other contest.";
+                                            response.data = { contest_id: MatchContestData.contest_id };
+                                            response.error_code = null;
+                                            return res.json(response);
                                         } finally {
                                             // ending the session
                                             session.endSession();
@@ -257,10 +247,9 @@ async function getContestCount(contest, match_id, contest_id, contestData, sessi
         
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
-                if (joinedContestCount == contestData.contest_size) {
+                if (joinedContestCount >= contestData.contest_size) {
                     redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                     console.log('Perm Contest full****************************');
-                    await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     await session.commitTransaction();
                     session.endSession();
                 } else {
@@ -271,7 +260,7 @@ async function getContestCount(contest, match_id, contest_id, contestData, sessi
             });
         })
     } catch (error) {
-        console.log(" perm JC eroor in catch erorr error at 800",error);  
+        console.log("perm JC eroor in catch erorr error at 800",error);  
     }
 }
 
