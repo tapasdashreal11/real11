@@ -27,7 +27,7 @@ const { appsFlyerEntryService } = require("../users/appsflyer-api");
 module.exports = async (req, res) => {
     try {
         console.log('hello test');
-        const { team_id,team_name,user_id, team_count, contest_id, series_id, match_id, sport,pid,by_user,isCreatedBy,} = req.body;
+        const { player_team_id,team_name,user_id, team_count, contest_id, series_id, match_id, sport,pid,by_user,isCreatedBy,} = req.body;
 
         console.log('req.body',req.body);
         let match_sport = sport ? parseInt(sport) : 1;
@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
         }
         var teamCount = team_count ? parseInt(team_count) : 0;
         var user_team_name = team_name ? team_name : '';
-        var teamId = team_id ? team_id : '';
+        var teamId = player_team_id ? player_team_id : '';
         var totalContestKey = 0;
         if (match_id && series_id && contest_id && user_id) {
             let indianDate = Date.now();
