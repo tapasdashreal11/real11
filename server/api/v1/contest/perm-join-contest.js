@@ -61,7 +61,9 @@ module.exports = async (req, res) => {
                         let ctime = Date.now();
                         let mtime = liveMatch.time;
                         if (mtime < ctime) {
+                            redis.set('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                             return res.send(ApiUtility.failed('Match has been started.'));
+                            
                         } else { 
                             if (teamId && teamId != null && teamId != '' && ! _.isUndefined(teamId) && teamCount > 0) {
                                 
@@ -81,29 +83,18 @@ module.exports = async (req, res) => {
                                 //let joinedContest = 0;
                                 let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();// (matchContest && matchContest.joined_users) ? matchContest.joined_users : 0
 
-                                var parentContestId = (contestData && contestData.parent_id) ? contestData.parent_id : contestData._id;
+                                var parentContestId = contestData._id;
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
 
                                 if (contestData && contestData.contest_size == parseInt(joinedContest) && infinteStatus) {
-
+                                    redis.set('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                                     let response = {};
-                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
-                                    await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
+                                    response.status = false;
+                                    response.message = "This contest is full, please join other contest.";
+                                    response.error_code = null;
+                                    return res.json(response);
 
-                                    if (MatchContestData) {
-                                        response.status = false;
-                                        response.message = "This contest is full, please join other contest.";
-                                        response.data = { contest_id: MatchContestData.contest_id };
-                                        response.error_code = null;
-                                        return res.json(response);
-                                    } else {
-                                        response.status = false;
-                                        response.message = "This contest is full, please join other contest.";
-                                        response.error_code = null;
-                                        return res.json(response);
-                                    }
-
-                                }
+                                 }
 
                                 var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': teamId }
                                 let playerTeamRes = await PlayerTeamContest.findOne(PlayerTeamContestFilter);
@@ -124,7 +115,8 @@ module.exports = async (req, res) => {
                                                 let joinedContestCount = doc.joined_users;
 
                                                 if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
-                                                    console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
+                                                    redis.set('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
+                                                    console.log("PREM Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
                                                     await session.abortTransaction();
                                                     session.endSession();
                                                     let response = {};
@@ -178,25 +170,16 @@ module.exports = async (req, res) => {
                                                     let response = {};
                                                     await session.abortTransaction();
                                                     session.endSession();
-                                                    var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
-                                                    if (MatchContestData) {
-                                                        response.status = false;
-                                                        response.message = "This contest is full, please join other contest.";
-                                                        response.data = { contest_id: MatchContestData.contest_id };
-                                                        response.error_code = null;
-                                                        return res.json(response);
-                                                    } else {
-                                                        response.status = false;
-                                                        response.message = "This contest is full, please join other contest.";
-                                                        response.error_code = null;
-                                                        return res.json(response);
-                                                    }
+                                                    response.status = false;
+                                                    response.message = "This contest is full, please join other contest.";
+                                                    response.error_code = null;
+                                                    return res.json(response);
                                                 }
 
                                             } else {
                                                 await session.abortTransaction();
                                                 session.endSession();
-                                                console.log('JC session drop at 610 *****');
+                                                console.log('perm JC session drop at 610 *****');
                                                 let response = {};
                                                 response.status = false;
                                                 response.message = "This contest is full, please join other contest.";
@@ -208,17 +191,19 @@ module.exports = async (req, res) => {
                                             let response = {};
                                             await session.abortTransaction();
                                             session.endSession();
-                                            console.log("error in catch***", errorr);
-                                            var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
-                                            if (MatchContestData) {
+                                            console.log("perm error in catch***", errorr);
+                                            var MatchContestData = await MatchContest.findOne({ 'contest_id': parentContestId, match_id: parseInt(match_id), 'sport': match_sport}).sort({ _id: -1 });
+                                            if (MatchContestData && MatchContestData.joined_users && MatchContestData.joined_users > joinedContest) {
+                                                await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users:joinedContest } });
                                                 response.status = false;
-                                                response.message = "This contest is full, please join other contest.";
+                                                response.message = "Please try again.";
                                                 response.data = { contest_id: MatchContestData.contest_id };
                                                 response.error_code = null;
                                                 return res.json(response);
                                             } else {
                                                 response.status = false;
                                                 response.message = "This contest is full, please join other contest.";
+                                                response.data = { contest_id: MatchContestData.contest_id };
                                                 response.error_code = null;
                                                 return res.json(response);
                                             }
@@ -273,6 +258,8 @@ async function getContestCount(contest, match_id, contest_id, contestData, sessi
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
                 if (joinedContestCount == contestData.contest_size) {
+                    redis.set('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
+                    console.log('Perm Contest full****************************');
                     await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     await session.commitTransaction();
                     session.endSession();
@@ -284,7 +271,7 @@ async function getContestCount(contest, match_id, contest_id, contestData, sessi
             });
         })
     } catch (error) {
-        console.log("JC eroor in catch erorr error at 800",error);  
+        console.log(" perm JC eroor in catch erorr error at 800",error);  
     }
 }
 
