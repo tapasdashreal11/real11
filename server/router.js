@@ -71,6 +71,7 @@ const  joinContestOtherGames  = require('./api/v1/contest/other-games-join-conte
 const  otherGamesCancelContest  = require('./api/v1/contest/other-games-cancel-contest');
 const  otherGamesTransationHistory  = require('./api/v1/contest/other-games-transation');
 const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
+const  permJoinContest  = require('./api/v1/contest/perm-join-contest');
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-head-to-head');
 const  joinContestMultipleTeam  = require('./api/v1/contest/join-contest-multiple-team');
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
@@ -288,7 +289,8 @@ router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, jo
 router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtLogin, joinContestWalletAmountMultiple);
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
 router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
-router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); //
+router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); // 
+router.post('/api/v1/join-contest-new', permJoinContest); 
 router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joinContestMultipleTeam);
 router.post('/api/v1/other-games-wallet-amount', auth.authenticate.jwtLogin, otherGameContestWallet);
 router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, joinContestOtherGames);
