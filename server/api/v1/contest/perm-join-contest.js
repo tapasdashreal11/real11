@@ -145,11 +145,9 @@ module.exports = async (req, res) => {
                                                     } catch (error) {
                                                         await session.abortTransaction();
                                                         session.endSession();
-                                                        console.log("join contest condition true > at line 584", error);
                                                         return res.send(ApiUtility.failed(error.message));
                                                     }
                                                 } else {
-                                                    console.log('JC Join Status is false at line 586');
                                                     let response = {};
                                                     await session.abortTransaction();
                                                     session.endSession();
@@ -162,7 +160,6 @@ module.exports = async (req, res) => {
                                             } else {
                                                 await session.abortTransaction();
                                                 session.endSession();
-                                                console.log('perm JC session drop at 610 *****');
                                                 let response = {};
                                                 response.status = false;
                                                 response.message = "This contest is full, please join other contest.";
@@ -174,7 +171,6 @@ module.exports = async (req, res) => {
                                             let response = {};
                                             await session.abortTransaction();
                                             session.endSession();
-                                           // console.log("perm error in catch***", errorr);
                                             response.status = false;
                                             response.message = "This contest is full, please join other contest.";
                                             response.data = {};
