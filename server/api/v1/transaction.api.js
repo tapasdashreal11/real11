@@ -539,7 +539,7 @@ module.exports = {
                                                                     let event_val = { 
                                                                         "af_customer_user_id": authUser.clevertap_id || '',
                                                                         "af_email":  authUser.email || '', 
-                                                                        "af_mobile": authUser.mobile_number || '',
+                                                                        "af_mobile": authUser.phone || '',
                                                                         "af_revenue": txnData.txn_amount, 
                                                                         "af_currency": "INR", 
                                                                         "txn_id": txnData._id || '', 
@@ -579,7 +579,7 @@ module.exports = {
                                                                     let event_val = { 
                                                                         "af_customer_user_id": authUser.clevertap_id || '',
                                                                         "af_email":  authUser.email || '', 
-                                                                        "af_mobile": authUser.mobile_number || '',
+                                                                        "af_mobile": authUser.phone || '',
                                                                         "af_revenue": txnData.txn_amount, 
                                                                         "af_currency": "INR", 
                                                                         "txn_id": txnData._id || '', 
@@ -1015,7 +1015,7 @@ module.exports = {
                                     let event_val = { 
                                         "af_customer_user_id": authUser.clevertap_id || '',
                                         "af_email":  authUser.email || '', 
-                                        "af_mobile": authUser.mobile_number || '',
+                                        "af_mobile": authUser.phone || '',
                                         "af_revenue": txnData.txn_amount, 
                                         "af_currency": "INR", 
                                         "txn_id": txnData._id || '', 
@@ -1055,7 +1055,7 @@ module.exports = {
                                         let event_val = { 
                                             "af_customer_user_id": authUser.clevertap_id || '',
                                             "af_email":  authUser.email || '', 
-                                            "af_mobile": authUser.mobile_number || '',
+                                            "af_mobile": authUser.phone || '',
                                             "af_revenue": txnData.txn_amount, 
                                             "af_currency": "INR", 
                                             "txn_id": txnData._id || '', 
@@ -1460,7 +1460,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                     let event_val = { 
                                         "af_customer_user_id": authUser.clevertap_id || '',
                                         "email":  authUser.email || '', 
-                                        "mobile": authUser.mobile_number || '',
+                                        "mobile": authUser.phone || '',
                                         "af_revenue": txnData.txn_amount, 
                                         "af_currency": "INR", 
                                         "txn_id": txnData._id || '', 
@@ -1496,7 +1496,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                     let event_val = { 
                                         "af_customer_user_id": authUser.clevertap_id || '',
                                         "email":  authUser.email || '', 
-                                        "mobile": authUser.mobile_number || '',
+                                        "mobile": authUser.phone || '',
                                         "af_revenue": txnData.txn_amount, 
                                         "af_currency": "INR", 
                                         "txn_id": txnData._id || '', 

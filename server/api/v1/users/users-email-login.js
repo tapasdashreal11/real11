@@ -10,11 +10,16 @@ const { generateClientToken } = require("../common/helper");
 const { RedisKeys } = require('../../../constants/app');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const redis = require('../../../../lib/redis');
+const EmailLoginIp = require("../../../models/email-login-ip");
 
 module.exports = async (req, res) => {
 	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		let params = req.body;
+		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+		console.log("request:", params, "IP:", userIp);
+		await EmailLoginIp.create({ ip: userIp });
+
 		let constraints = {
 			device_id: "required",
 			email: "required",
@@ -47,57 +52,57 @@ module.exports = async (req, res) => {
 
 		try {
 			let user = await Users.findOne({ email: params.email, password: params.password }).lean();
-			
+
 			if (user) {
-				if(user.status == 1) {
-					var finalResponse ={};
+				if (user.status == 1) {
+					var finalResponse = {};
 					finalResponse = user;
-					finalResponse["fair_play_user"]= user.user_type;
-					
+					finalResponse["fair_play_user"] = user.user_type;
+
 					let tokendata = {};
-	
-					tokendata.language	=	user.language;
-					tokendata._id		=	user._id;
-					tokendata.id		=	user._id;
-					tokendata.phone		=	user.phone;
-					tokendata.email		=	user.email;
-					await Tokens.deleteMany({"userId":ObjectId(user._id)});
+
+					tokendata.language = user.language;
+					tokendata._id = user._id;
+					tokendata.id = user._id;
+					tokendata.phone = user.phone;
+					tokendata.email = user.email;
+					await Tokens.deleteMany({ "userId": ObjectId(user._id) });
 					let token = await generateClientToken(tokendata);
-					
-	
+
+
 					await Users.updateOne({ _id: user._id }, { $set: { otp: '', otp_time: '', token: token, device_id: params.device_id, device_type: params.device_type } });
-					response["message"] = "Logged-in successfully.";         
-	
-					let tokenInsertData		=	{};
-					tokenInsertData.userId	=	new ObjectId(user._id);
-					tokenInsertData.token	=	token;
-					tokenInsertData.device_id	=	params.device_id;
-					tokenInsertData.device_type	=	params.device_type;
-					
+					response["message"] = "Logged-in successfully.";
+
+					let tokenInsertData = {};
+					tokenInsertData.userId = new ObjectId(user._id);
+					tokenInsertData.token = token;
+					tokenInsertData.device_id = params.device_id;
+					tokenInsertData.device_type = params.device_type;
+
 					finalResponse.token = token;
 
-					try{
+					try {
 						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id });
 						if (referalUser && referalUser.referal_code) {
 							finalResponse.refered_by_code = referalUser.referal_code;
 						}
-					} catch(errrrr){
-						
+					} catch (errrrr) {
+
 					}
-	
+
 					//****************Set Toen In Redis**************** */
-					var newTokenObj = {user_id : user._id, token : token}
+					var newTokenObj = { user_id: user._id, token: token }
 					redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + user._id, newTokenObj);
 					//******************************* */
-	
+
 					Tokens.create(tokenInsertData);
 					delete finalResponse.password;
 					delete finalResponse.otp;
-					delete finalResponse.user_type;  
-					
-					response["status"]	=	true;
-					response["token"]	=	token;
-					response["data"]	=	finalResponse;
+					delete finalResponse.user_type;
+
+					response["status"] = true;
+					response["token"] = token;
+					response["data"] = finalResponse;
 					return res.json(response);
 				} else {
 					response["message"] = "Please verify your phone number before email login.";
