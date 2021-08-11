@@ -74,6 +74,8 @@ var matchContestSchema = new Schema({
   is_offerable: { type: Number, default:0 },
   offerable_amount: { type: Number },
   offer_after_join: { type: Number }
+},{
+  timestamps:true
 });
 
 matchContestSchema.statics.getContestsByContestIds = function(matchId, contestIds){
