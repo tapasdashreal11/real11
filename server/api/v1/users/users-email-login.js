@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
 		let params = req.body;
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		console.log("request:", params, "IP:", userIp);
-		await EmailLoginIp.create({ ip: userIp });
+		EmailLoginIp.create({ ip: userIp });
 
 		let constraints = {
 			device_id: "required",
