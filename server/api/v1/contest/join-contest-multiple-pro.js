@@ -28,9 +28,7 @@ const { appsFlyerEntryService } = require("../users/appsflyer-api");
 module.exports = async (req, res) => {
     try {
         let data1 = {};
-        let startTime = Date.now();
         const user_id = req.userId;
-        const { } = req.params;
         const { team_data, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
