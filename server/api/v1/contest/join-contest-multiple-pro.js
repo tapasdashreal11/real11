@@ -160,6 +160,11 @@ module.exports = async (req, res) => {
                                                     response.status = false;
                                                     if (contestData.contest_size > joinedContest) {
                                                         let remainJoinTeam = contestData.contest_size - joinedContest;
+                                                        let remainteamCount   = joinedContestCount - total_team_number;
+                                                         if(remainteamCount != joinedContest){
+                                                            joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
+                                                            remainJoinTeam = contestData.contest_size - joinedContest;
+                                                          }
                                                         response.message = "Please Join with only " + remainJoinTeam + "teams";
                                                     }
 
