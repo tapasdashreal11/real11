@@ -160,6 +160,21 @@ module.exports = {
                         } catch (errr) { }
                         const insertId = user._id;
                         insertData.user_id = insertId;
+
+                        try {
+                            if(insertId){
+                              let redisKeyForUserCategory = 'user-category-' + insertId;
+                              let userCatObj = {
+                                  is_super_user : 0,
+                                  is_dimond_user : 0,
+                                  is_beginner_user :1,
+                                  is_looser_user :0
+                              };
+                              redis.setRedisForUserCategory(redisKeyForUserCategory,userCatObj); 
+                            }
+                         } catch(errrrrr){
+                          console.log('insertId*** errrr',insertId,errrrrr);
+                         }
     
                         response["status"] = true;
                         response["data"] = {user_id:insertId, email:params.email, google_id: params.google_id};
