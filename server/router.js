@@ -88,9 +88,11 @@ const  { applyContestInviteCode }  = require('./api/v1/contest/apply-contest-inv
 const  categoryContestList  = require('./api/v1/contest/category-contest-list');
 const  { otherGamesMatch }  = require('./api/v1/contest/other_games_match');
 const  { otherGameContestWallet }  = require('./api/v1/contest/other-games-wallet');
+const  otherGameWinningDis   = require('./api/v1/contest/other-games-wining-dis');
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
+const {userGoogleSignIn} = require('./api/v1/users/user-google-signup');
 const appSettingApi = require("./api/v1/common/app-settings");
 const user_offers = require("./api/v1/common/app-analysis-api");
 const { 
@@ -225,6 +227,7 @@ router.get('/',function(req,res){
 	return res.send("Welcome")
 })
 //API ROUTES//
+router.post('/api/v1/google-login', userGoogleSignIn);
 router.get('/api/v1/add_bulk_contest_match', addBulkContestMatch);
 router.post('/api/v1/email-login', loginWithEmail);
 router.post('/api/v1/addWithdrawRequest', auth.authenticate.jwtLogin, addWithdrawRequest);
@@ -297,7 +300,8 @@ router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joi
 router.post('/api/v1/other-games-wallet-amount', auth.authenticate.jwtLogin, otherGameContestWallet);
 router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, joinContestOtherGames);
 router.post('/api/v1/other-games-cancel-contest', auth.authenticate.jwtLogin, otherGamesCancelContest);
-router.get('/api/v1/other-games-transation-history', auth.authenticate.jwtLogin, otherGamesTransationHistory);
+router.get('/api/v1/other-games-transation-history', auth.authenticate.jwtLogin, otherGamesTransationHistory); 
+router.post('/api/v1/other-games-wining-dis', otherGameWinningDis);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
