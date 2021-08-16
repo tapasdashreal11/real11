@@ -508,8 +508,8 @@ module.exports = {
                         return res.json(response);
 
                     } else {
-                        response["message"] = "Mobile number already exists.";
-                        return res.json(response);
+                        var otpRes = await sendOtp(userGmailsignup);
+                        return res.json(otpRes);
                     }
                 } else {
                     return res.json(response);
