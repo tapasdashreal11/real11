@@ -262,6 +262,42 @@ module.exports = {
         }
     },
     userGoogleSignUpDetailAdd: async (req, res) => {
+         try{
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let params = req.body;
+            let constraints = { phone: "required", google_id: "required", email: "required" };
+            let validator = new Validator(params, constraints);
+            let matched = await validator.check();
+            if (!matched) {
+                response["message"] = "Required fields missing";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+            let userGmailsignup = await Users.findOne({ google_id: params.google_id, email: params.email });
+            if (userGmailsignup && userGmailsignup._id) {
+                let phone_number = userGmailsignup.phone ? userGmailsignup.phone :'';
+                if(!_.isEmpty(phone_number) && phone_number.length >1){
+                    if(_.isEqual(phone_number,phone)){
+                        var otpRes = await sendOtp(userGmailsignup);
+                        return res.json(otpRes);
+                    } else {
+                        response["message"] = "You have already registered with " + phone_number + " number on this account!!";
+                        response["errors"] = validator.errors;
+                        return res.json(response);
+                    }
+                } else {
+                    await Users.updateOne({ _id: userGmailsignup._id},{$set:{ phone: phone}});
+                    userGmailsignup['phone'] = phone;
+                    var otpRes = await sendOtp(userGmailsignup);
+                    return res.json(otpRes);
+                }
+            } else {
+                response["message"] = "Invalid data!!";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+         }catch(err){}
+
 
     }
 }
