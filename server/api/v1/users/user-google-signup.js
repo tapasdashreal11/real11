@@ -107,7 +107,6 @@ module.exports = {
                         if (params && params.dcode) {
                             insertData.dcode = params.dcode;
                         }
-                        // insertData.bonus_amount = 50;
                         if (params && params.device_id)
                             insertData.device_id = params.device_id;
     
@@ -119,8 +118,6 @@ module.exports = {
                                 appsflyerURL = config.appsFlyeriPhoneUrl;
                             }
                         }
-    
-    
                         insertData.team_name = createTeamName(params.email);
                         insertData.bonus_amount = config.referral_bouns_amount;
                         insertData.image = '';
@@ -142,7 +139,6 @@ module.exports = {
                             insertData.last_name = lastName;
     
                         }
-                        // return false;
                         var otp = Math.floor(100000 + Math.random() * 900000);
                         insertData.otp = otp;
                         let otp_time = currentDateTimeFormat("YYYY-MM-DD HH:mm:ss");
@@ -277,7 +273,7 @@ module.exports = {
             if (userGmailsignup && userGmailsignup._id) {
                 let phone_number = userGmailsignup.phone ? userGmailsignup.phone :'';
                 if(!_.isEmpty(phone_number) && phone_number.length >1){
-                    if(_.isEqual(phone_number,phone)){
+                    if(_.isEqual(phone_number,params.phone)){
                         var otpRes = await sendOtp(userGmailsignup);
                         return res.json(otpRes);
                     } else {
@@ -286,8 +282,8 @@ module.exports = {
                         return res.json(response);
                     }
                 } else {
-                    await Users.updateOne({ _id: userGmailsignup._id},{$set:{ phone: phone}});
-                    userGmailsignup['phone'] = phone;
+                    await Users.updateOne({ _id: userGmailsignup._id},{$set:{ phone: params.phone}});
+                    userGmailsignup['phone'] = params.phone;
                     var otpRes = await sendOtp(userGmailsignup);
                     return res.json(otpRes);
                 }
@@ -296,13 +292,20 @@ module.exports = {
                 response["errors"] = validator.errors;
                 return res.json(response);
             }
-         }catch(err){}
+         }catch(err){
+            console.log('update signup err',err); 
+            var response = { status: false, message: "Invalid Request", data: {} };
+            return res.json(response);
+         }
 
 
     }
 }
 
-
+/**
+ * Send otp funnction is used to send otp phone message on registered numbers
+ * @param user
+ */
 async function sendOtp(user){
                var response = {}
                let data = user;
