@@ -508,7 +508,7 @@ module.exports = {
                         return res.json(response);
 
                     } else {
-                        var otpRes = await sendOtp(userGmailsignup);
+                        var otpRes = await sendOtp(userPhone);
                         return res.json(otpRes);
                     }
                 } else {
