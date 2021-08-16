@@ -124,6 +124,8 @@ var seriesSquadSchema = new Schema({
 	live_fantasy_parent_id:{type:Number},
 	is_parent: {type:Boolean},
 	show_preview: {type:Number, enum: [1,0], default: 0},
+	local_color_code: {type: String},
+	visitor_color_code: {type: String },
 }, {
 	timestamps: true
 });
