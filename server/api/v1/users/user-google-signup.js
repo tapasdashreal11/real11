@@ -76,7 +76,7 @@ module.exports = {
                             var newTokenObj = { user_id: userGmailsignup._id, token: token }
                             redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
                             //************************************************************** */
-
+                            response["message"] = "Successfully login!!";
                             response["status"] = true;
                             response["token"] = token;
                             response["data"] = finalResponse;
