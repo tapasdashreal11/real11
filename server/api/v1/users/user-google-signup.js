@@ -512,6 +512,44 @@ module.exports = {
             response["message"] = error.message;
             return res.json(response);
         }
+    },
+    userNormalSignUpDetailUpdate: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let params = req.body;
+            let constraints = { phone: "required", password: "required", email: "required" };
+            let validator = new Validator(params, constraints);
+            let matched = await validator.check();
+            if (!matched) {
+                response["message"] = "Required fields missing";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+            let userGmailsignup = await Users.findOne({ phone: params.phone});
+            if (userGmailsignup && userGmailsignup._id) {
+                let userEmailData = await Users.findOne({ email: params.email });
+                if(userEmailData){
+                    response["message"] = "This email is already registered!!";
+                    return res.json(response);
+                } else {
+                    await Users.updateOne({ _id: userGmailsignup._id }, { $set: { password: params.password, email: params.email } });
+                    response["message"] = "Updated successfully!!";
+                    response["status"] = true;
+                    return res.json(response);
+                }
+                
+            } else {
+                response["message"] = "Invalid data!!";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+        } catch (err) {
+            console.log('update signup err', err);
+            var response = { status: false, message: "Invalid Request", data: {} };
+            return res.json(response);
+        }
+
+
     }
 }
 
