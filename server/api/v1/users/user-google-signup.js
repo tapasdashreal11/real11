@@ -588,8 +588,8 @@ async function sendOtp(user) {
     let mailMessage = "<div><h3>OTP Request</h3><p>Hi,</p><p>You One Time Password(OTP) is <b>" + otp + "</b></p><p>The password will expire in 10 minnutes if not used.</p><p>If you have not made this request, please contact our customer support immidiately.</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
     let to = data.email;
     let subject = "One Time Password (OTP) login to Real11";
-    sendSMTPMail(to, subject, mailMessage);
-    response["message"] = "Otp has been sent on you registered mail and phone number, please enter otp to complete login.";
+   if(data && data.email) sendSMTPMail(to, subject, mailMessage);
+    response["message"] = data && data.email && userMobile ? "Otp has been sent on you registered mail and phone number, please enter otp to complete login." : "Otp has been sent on you registered phone number, please enter otp to complete login.";
     await Users.updateOne({ _id: user._id }, { $set: { otp: otp, otp_time: otp_time } });
 
     response["status"] = true;
