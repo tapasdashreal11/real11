@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
 				let to	=	data.email;
 				let subject	=	"One Time Password (OTP) login to Real11";
 				
-				sendSMTPMail(to, subject, mailMessage);
+				if(data && data.email)sendSMTPMail(to, subject, mailMessage);
 
 				response["message"] = "Otp has been sent on you registered mail and phone number, please enter otp to complete login.";
 				// response["message"] = "Otp has been sent on your registered phone number, please enter otp to complete login.";

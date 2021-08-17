@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
 
 				var tokelDelMany = await Tokens.deleteMany({"userId":ObjectId(user._id)});
 				let token = await generateClientToken(tokendata);        
-				await Users.update({ _id: user._id }, { $set: { otp: '', otp_time: '', token: token, device_id: params.device_id, device_type: params.device_type,status:1 } });
+				await Users.updateOne({ _id: user._id }, { $set: { otp: '', otp_time: '', token: token, device_id: params.device_id, device_type: params.device_type,status:1 } });
 	
 				if(params.is_signup == true) {
 					console.log('enter');
