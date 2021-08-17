@@ -174,6 +174,7 @@ module.exports = async (req, res) => {
                                                     let useableBonusPer = contestData.used_bonus || 0;
                                                     let contestType = contestData.contest_type;
                                                     let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
+                                                    let isOfferused = false;
                                                     try {
                                                         let cashAmount = 0;
                                                         let winAmount = 0;
@@ -280,13 +281,14 @@ module.exports = async (req, res) => {
                                                                     userOfferAmount = userOfferAmount.toFixed(2);
                                                                     calEntryFees = userOfferAmount > totalEntryForContest ? 0 : (totalEntryForContest - userOfferAmount);
                                                                     retention_bonus_amount = userOfferAmount > totalEntryForContest ? totalEntryForContest : userOfferAmount;
-
+                                                                    isOfferused = true;
                                                                 } else if (rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id) {
                                                                     userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
                                                                     // userOfferAmount = userOfferAmount * totalTeamJoinedCount;
                                                                     userOfferAmount = userOfferAmount;
                                                                     calEntryFees = userOfferAmount > totalEntryForContest ? 0 : (totalEntryForContest - userOfferAmount);
                                                                     retention_bonus_amount = userOfferAmount > totalEntryForContest ? totalEntryForContest : userOfferAmount;
+                                                                    isOfferused = true;
                                                                 }
 
                                                             }
@@ -479,7 +481,7 @@ module.exports = async (req, res) => {
                                                                     await multipleJoinContestDetail(contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
                                                                     //await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
 
-                                                                    if (retention_bonus_amount > 0 && userBounousData && userBounousData._id) {
+                                                                    if (retention_bonus_amount > 0 && userBounousData && userBounousData._id && isOfferused) {
 
                                                                         if (userBounousData.is_offer_type == 1) {
                                                                             await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_amount": -retention_bonus_amount } });
