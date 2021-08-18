@@ -110,14 +110,13 @@ module.exports = {
       var response = { status: false, message: "Invalid Request", data: {} };
       if(userId){
         let resultContestIds = await User.findOne({_id : ObjectId(userId)}, {"affiliate_amount":1,"cash_balance":1,"winning_balance":1,"bonus_amount":1});
-        console.log('resultContestIds*****',resultContestIds);
-        resultContestIds['affiliate_amount'] = resultContestIds && resultContestIds.affiliate_amount ? parseInt(resultContestIds.affiliate_amount) : resultContestIds.affiliate_amount;
+        resultContestIds['affiliate_amount'] = resultContestIds && resultContestIds.affiliate_amount ? parseInt(resultContestIds.affiliate_amount) : 0;
         response["message"] = "Successfully";
         response["status"] = true;
         response["data"] = resultContestIds;        
       }
       return res.json(response);
-    }catch(error){
+    } catch(error){
       logger.error("ERROR", error.message);
       response["message"] = error.message;
       return res.json(response);
