@@ -55,7 +55,7 @@ const AdminSchema = mongoose.Schema({
     role_id: { type: Number, default: 2 },
     email: { type: String, unique: true },
     new_email: { type: String, default: '' },
-    phone: { type: String, unique: true },
+    phone: { type: String,default: '', unique: true },
     team_name: { type: String, default: '', unique: true },
     password: String,
     date_of_birth: { type: String, default: '' },
@@ -124,7 +124,8 @@ const AdminSchema = mongoose.Schema({
     instant_withdraw: { type: Number, enum: [1,0], default: 0 },
     media_partner_name: {type: String, default: ''},
     user_gaid: {type: String},
-    dcode: {type: String}
+    dcode: {type: String},
+    temp_phone: {type: String}
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },

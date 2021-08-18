@@ -287,7 +287,7 @@ module.exports = {
                         response["message"] = "This mobile number is already registered!!";
                         return res.json(response);
                     } else {
-                        await Users.updateOne({ _id: userGmailsignup._id }, { $set: { phone: params.phone } });
+                        await Users.updateOne({ _id: userGmailsignup._id }, { $set: { temp_phone: params.phone } });
                         userGmailsignup['phone'] = params.phone;
                         var otpRes = await sendOtp(userGmailsignup);
                         return res.json(otpRes);
@@ -349,7 +349,7 @@ module.exports = {
 
                         // now start
                         let insertData = {};
-                        insertData.phone = params.mobile_number;
+                        insertData.temp_phone = params.mobile_number;
                         insertData.language = params.language;
                         insertData.invite_code = params.invite_code;
                         insertData.clevertap_id = params.clevertap_id || '';
