@@ -8,7 +8,7 @@ const ApiUtility = require("../../api.utility");
 const config = require('../../../config');
 const ejs = require('ejs');
 const path = require('path');
-
+const _ = require('lodash');
 const logger = require("../../../../utils/logger")(module);
 const { generateClientToken, sendSMTPMail} = require("../common/helper");
 const { RedisKeys } = require('../../../constants/app');
