@@ -448,8 +448,9 @@ module.exports = {
                             await UserReferral.create(referal_code_detail);
                         }
                         response["status"] = true;
-                        response["data"] = insertData;
-
+                        response["data"] = { user_id: insertData._id, email: insertData.email, phone: params.mobile_number, google_id: insertData.google_id };
+                        response["login_success"] = false;
+                        response["otp_status"] = true;
                         // After successfully signup entery data in appsflyer
                         try {
                             if (params && params.appsflayer_id) {
