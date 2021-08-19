@@ -964,6 +964,8 @@ class ModelService {
                             "live_fantasy":{ $ifNull: [ "$custom_live_fantasy", false ] },
                             "local_color_code":{ $ifNull: [ "$local_color_code", '' ] },
                             "visitor_color_code":{ $ifNull: [ "$visitor_color_code", '' ] },
+                            "is_highlight":{ $ifNull: [ "$is_highlight", 0 ] },
+                            "winning_comment":{ $ifNull: [ "$winning_comment", '' ] },
                             "parent_id":"$parent_id"
                         }
                     }
@@ -1047,6 +1049,8 @@ class ModelService {
                             "live_fantasy":{ $ifNull: [ "$custom_live_fantasy", false ] }, 
                             "local_color_code":{ $ifNull: [ "$local_color_code", '' ] },
                             "visitor_color_code":{ $ifNull: [ "$visitor_color_code", '' ] },
+                            "is_highlight":{ $ifNull: [ "$is_highlight", 0 ] },
+                            "winning_comment":{ $ifNull: [ "$winning_comment", '' ] },
                         }
                     }
                 ], (err, data) => {
