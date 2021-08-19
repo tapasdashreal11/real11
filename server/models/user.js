@@ -55,7 +55,7 @@ const AdminSchema = mongoose.Schema({
     role_id: { type: Number, default: 2 },
     email: { type: String },
     new_email: { type: String, default: '' },
-    phone: { type: String, unique: true },
+    phone: { type: String },
     team_name: { type: String, default: '', unique: true },
     password: String,
     date_of_birth: { type: String, default: '' },
