@@ -270,6 +270,7 @@ module.exports = {
                 return res.json(response);
             }
             let userGmailsignup = await Users.findOne({ google_id: params.google_id, email: params.email }, { _id: 1, google_id: 1, email: 1, phone: 1 });
+            console.log('userGmailsignup****',userGmailsignup);
             if (userGmailsignup && userGmailsignup._id && params.phone && _.size(params.phone) > 9) {
                 let phone_number = userGmailsignup.phone ? userGmailsignup.phone : '';
                 if (!_.isEmpty(phone_number) && phone_number.length > 1) {
