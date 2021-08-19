@@ -42,6 +42,7 @@ module.exports = async (req, res) => {
 		let validator = new Validator(params, constraints, validationMessages);
 		let matched = await validator.check();
 		if (!matched) {
+			console.log('params****',params);
 			response["message"] = "Required fields missing";
 
 			let finalErrorMsg = '';
