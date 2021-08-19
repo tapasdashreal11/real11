@@ -124,7 +124,7 @@ const AdminSchema = mongoose.Schema({
     instant_withdraw: { type: Number, enum: [1,0], default: 0 },
     media_partner_name: {type: String, default: ''},
     user_gaid: {type: String},
-    dcode: {type: String},
+    dcode: {type: String}, 
     temp_phone: {type: String}
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
