@@ -450,8 +450,9 @@ module.exports = {
                             referal_code_detail.user_id = insertId;
                             await UserReferral.create(referal_code_detail);
                         }
+                        console.log('hello down****');
                         response["status"] = true;
-                        response["data"] = { _id: insertData._id,user_id: insertData._id, email: insertData.email, phone: params.mobile_number, google_id: insertData.google_id };
+                        response["data"] = { _id: user._id,user_id: user._id, email: user.email, phone: params.mobile_number, google_id: user.google_id };
                         response["login_success"] = false;
                         response["otp_status"] = true;
                         // After successfully signup entery data in appsflyer
