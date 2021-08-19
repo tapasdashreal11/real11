@@ -332,6 +332,7 @@ module.exports = {
                     return res.json(response);
                 }
                 if (params && params.mobile_number && _.size(params.mobile_number) > 9) {
+                    console.log('params***',params);
                     let userPhone = await Users.findOne({ phone: params.mobile_number }, { _id: 1, google_id: 1, email: 1, phone: 1 });
                     if (!userPhone) {
                         let referal_code_detail = {};
