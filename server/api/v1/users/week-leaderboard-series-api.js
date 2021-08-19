@@ -4,6 +4,8 @@ const SeriesLeaderboard = require("../../../models/series-leaderboard");
 const _ = require('lodash');
 const { ObjectId } = require("mongodb");
 const redis = require('../../../../lib/redis');
+const config = require('../../../config');
+var imageurl = config.imageBaseUrl;
 module.exports = {
     weekLeaderBoardSeriesApi: async (req, res) => {
         var response = { status: false, message: "Invalid Request", data: {} };
@@ -82,6 +84,9 @@ module.exports = {
                                     "team_name" : "$user_detail.team_name",
                                     "total_points" : "$total_points",
                                     "current_rank" : "$current_rank",
+                                    "win_msz":{ $ifNull: [ "$win_msz", '' ] },
+                                    "win_distribute":{ $ifNull: [ "$win_distribute", 0 ] },
+                                    "win_widget":{$cond: { if: { $ne: [ "$win_widget", '' ] }, then: { $concat: [ imageurl, "/", "$win_widget" ] }, else : ''}},
                                 }
                             }
                         ], (err, data) => {
@@ -174,6 +179,9 @@ module.exports = {
                                     "team_name" : "$user_detail.team_name",
                                     "total_points" : "$total_points",
                                     "current_rank" : "$current_rank",
+                                    "win_msz":{ $ifNull: [ "$win_msz", '' ] },
+                                    "win_distribute":{ $ifNull: [ "$win_distribute", 0 ] },
+                                    "win_widget":{$cond: { if: { $ne: [ "$win_widget", '' ] }, then: { $concat: [ imageurl, "/", "$win_widget" ] }, else : ''}},
                                 }
                             }
                         ], (err, data) => {

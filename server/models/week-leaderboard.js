@@ -41,6 +41,9 @@ var weeklyLeaderBoardSchema = new Schema({
     win_msz: {
         type: String,default:''
     },
+    win_widget: {
+        type: String,default:''
+    },
     match_ids: {
         type: Array,default:[]
     },
