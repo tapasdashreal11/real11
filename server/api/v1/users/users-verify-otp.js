@@ -66,7 +66,7 @@ module.exports = async (req, res) => {
 				tokendata.language = user.language;
 				tokendata._id = user._id;
 				tokendata.id = user._id;
-				tokendata.phone = user.phone;
+				tokendata.phone = user && user.phone ? user.phone: user.temp_phone;
 				tokendata.email = user.email;
 
 				var tokelDelMany = await Tokens.deleteMany({"userId":ObjectId(user._id)});
@@ -75,11 +75,13 @@ module.exports = async (req, res) => {
 				if(params && params.phone && user && user.temp_phone && !_.isEmpty(user.temp_phone) && _.isEqual(user.temp_phone,params.phone)&& _.isEmpty(user.phone )){
 					updateObj['phone'] = user.temp_phone;
 					updateObj['temp_phone'] = '';
+					finalResponse['phone'] = user.temp_phone;
+					console.log('***** in for phone update');
 				} 
 				      
 				await Users.updateOne({ _id: user._id }, { $set:updateObj });
 	
-				if(params.is_signup == true) {
+				if(params.is_signup == true && user && user.email) {
 					console.log('enter');
 					ejs.renderFile(path.join(__dirname, "../../../../views/email-templates/user-registration/html.ejs"), {
 						username  : user.email,
