@@ -126,6 +126,8 @@ var seriesSquadSchema = new Schema({
 	show_preview: {type:Number, enum: [1,0], default: 0},
 	local_color_code: {type: String},
 	visitor_color_code: {type: String },
+	is_highlight: {type: Number, default: 0},
+	winning_comment: {type: String, default: ""}
 }, {
 	timestamps: true
 });
