@@ -53,7 +53,7 @@ const AdminSchema = mongoose.Schema({
     first_name: { type: String, default: '' },
     last_name: { type: String, default: '' },
     role_id: { type: Number, default: 2 },
-    email: { type: String, unique: true },
+    email: { type: String },
     new_email: { type: String, default: '' },
     phone: { type: String, unique: true },
     team_name: { type: String, default: '', unique: true },
