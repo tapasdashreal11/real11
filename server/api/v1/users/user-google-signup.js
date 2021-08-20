@@ -41,7 +41,7 @@ module.exports = {
                     if (_.isEmpty(userGmailsignup.phone) || _.isUndefined(userGmailsignup.phone) || _.isNull(userGmailsignup.phone)) {
                         response["message"] = "Please enter your phone number.";
                         response["status"] = true;
-                        response["data"] = { user_id: userGmailsignup._id, email: userGmailsignup.email, google_id: userGmailsignup.google_id };
+                        response["data"] = {_id: userGmailsignup._id, user_id: userGmailsignup._id, email: userGmailsignup.email, google_id: userGmailsignup.google_id };
                         response["login_success"] = false;
                         response["otp_status"] = false;
                         return res.json(response);

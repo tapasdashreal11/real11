@@ -28,7 +28,7 @@ config.dbConnection = {
   dbName: process.env.MONGO_DB || 'real11Node',
   string: process.env.DB_PR || 'mongodb://real11:real11dev#123@ip-172-31-40-1.ap-south-1.compute.internal:27027,ip-172-31-37-102.ap-south-1.compute.internal:27027,ip-172-31-36-75.ap-south-1.compute.internal:27027/real11?authSource=admin&replicaSet=real11-mongo-rs1',
   mongoURI: process.env.DB_PR,
- mongoURIFORANALYSIS: process.env.DB_PR_ANALYSIS,  
+  mongoURIFORANALYSIS: process.env.DB_PR_ANALYSIS,  
   mysql: {
     host: process.env.DB_HOST || 'localhost',
     user: process.env.SQLDB_USER,
