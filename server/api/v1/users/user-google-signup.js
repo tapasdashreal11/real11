@@ -607,6 +607,9 @@ async function sendOtp(user) {
     response["otp_status"] = true;
     return response;
 }
+/**
+ * Generate random team/user name 
+ */
 async function getUserName()
 {
     var text = "";
