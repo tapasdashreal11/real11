@@ -253,7 +253,9 @@ module.exports = {
             }
         } catch (error) {
             logger.error("Google_ERROR", error.message);
-            response["message"] = error.message;
+            var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
+            //send mail to developer to debug purpose
+            Helper.sendMailToDeveloper(req, error.message);  
             return res.json(response);
         }
     },
@@ -303,11 +305,11 @@ module.exports = {
             }
         } catch (err) {
             console.log('update signup err', err);
-            var response = { status: false, message: "Invalid Request", data: {} };
+            var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
+            //send mail to developer to debug purpose
+            Helper.sendMailToDeveloper(req, err.message);
             return res.json(response);
         }
-
-
     },
     userSignup: async (req, res) => {
         try {
@@ -525,7 +527,9 @@ module.exports = {
             }
         } catch (error) {
             logger.error("LOGIN_ERROR", error.message);
-            response["message"] = error.message;
+            var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
+            //send mail to developer to debug purpose
+            Helper.sendMailToDeveloper(req, error.message);
             return res.json(response);
         }
     },
@@ -560,8 +564,9 @@ module.exports = {
                 return res.json(response);
             }
         } catch (err) {
-            console.log('update signup err', err);
             var response = { status: false, message: "Invalid Request", data: {} };
+             //send mail to developer to debug purpose
+             Helper.sendMailToDeveloper(req, error.message);
             return res.json(response);
         }
 
