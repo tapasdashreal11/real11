@@ -381,7 +381,7 @@ module.exports = {
                         }
                         let userName = (Math.random() + 1).toString(36).substring(2);
 
-                        insertData.team_name = userName;
+                        insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
                         insertData.bonus_amount = config.referral_bouns_amount;
                         insertData.image = '';
                         insertData.status = 0;

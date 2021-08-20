@@ -290,7 +290,7 @@ config.maxPhotoUploadSize = 2 * 1024 * 1024; // 2M
 config.sendgridApiKey = "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"; 
 config.fcmKey = process.env.FCM_KEY || "";
 
-config.developerEmail = process.env.DEVELOPER_EMAIL || 'nidhimittal@real11.com, rajatjain4061@gmail.com';
+config.developerEmail = process.env.DEVELOPER_EMAIL || 'nidhimittal@real11.com, shashijangir@real11.com';
 
 
 config.series_squad_table= 'series_squad',
