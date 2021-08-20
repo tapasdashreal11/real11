@@ -379,8 +379,7 @@ module.exports = {
                                 appsflyerURL = config.appsFlyeriPhoneUrl;
                             }
                         }
-                        let userName = (Math.random() + 1).toString(36).substring(2);
-
+                        let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
                         insertData.bonus_amount = config.referral_bouns_amount;
                         insertData.image = '';
@@ -607,4 +606,12 @@ async function sendOtp(user) {
     response["login_success"] = false;
     response["otp_status"] = true;
     return response;
+}
+async function getUserName()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for( var i=0; i < 15; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
 }
