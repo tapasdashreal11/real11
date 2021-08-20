@@ -176,6 +176,7 @@ module.exports = {
                         response["data"] = { user_id: insertId, email: params.email, google_id: params.google_id };
                         response["login_success"] = false;
                         response["otp_status"] = false;
+                        response["google_signup_status"] = true;
                         // After successfully signup entery data in appsflyer
                         try {
                             if (params && params.appsflayer_id) {
