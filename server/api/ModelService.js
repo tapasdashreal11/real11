@@ -2388,6 +2388,7 @@ class ModelService {
                 if (referalUser) {
                     let referedBy = referalUser.refered_by;
                     let refAmount = referalUser && referalUser.refered_by_amount?parseInt(referalUser.refered_by_amount):0;
+                    let forstDepostData = referalUser && referalUser.first_depo_reward_amount?parseInt(referalUser.first_depo_reward_amount):0;
                     if (referedBy) {
                        let referedUser = await Users.findOne({ '_id': referedBy, 'status': 1, 'refer_able': 1 });
                         if(referedUser && (is_pan_verified || is_email_verified || is_bank_verified)) {
@@ -2403,7 +2404,8 @@ class ModelService {
                                     added_type: TransactionTypes.FRIEND_USED_INVITE
                                 };
                                 var totalRefAmount = refAmount + bonusAmount;
-                                if(totalRefAmount<= 50){
+                                var totalRefAmountUpdated = refAmount + bonusAmoun + forstDepostData;
+                                if(totalRefAmount<= 50 ||(totalRefAmountUpdated<= 75 && forstDepostData == 25)){
                                     await Users.updateOne({ _id: referedBy}, { $inc: {bonus_amount: bonusAmount} });
                                     await ReferralCodeDetails.updateOne({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount} });
                                     data = await Transaction.create(entity); 
@@ -2439,7 +2441,8 @@ class ModelService {
                         };
                        let referedUser = await Users.findOneAndUpdate({ '_id': referedBy, 'status': 1, 'refer_able': 1 }, { $inc: {extra_amount: bonusAmount} });
                         if(referedUser) {
-                            data = await Transaction.create(entity); 
+                            data = await Transaction.create(entity);
+                            await ReferralCodeDetails.findOneAndUpdate({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount,first_depo_reward_amount: bonusAmount} }); 
                         }
                     }
                 }

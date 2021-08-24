@@ -649,8 +649,10 @@ module.exports = {
                                                 }
 
                                                 if (txn_status == true) {
+                                                  if(authUser && authUser.email)  
                                                     sendSMTPMailTemplate(req, "Amount Deposite", "deposite/deposite-main.ejs", authUser.email, authUser.first_name, txnData.txn_amount, txnData._id);
-                                                    return res.send(ApiUtility.success({}, 'Amount added successfully'));
+                                                    
+                                                  return res.send(ApiUtility.success({}, 'Amount added successfully'));
                                                 } else {
                                                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                                                 }

@@ -8,6 +8,7 @@ const AdminSchema = mongoose.Schema({
 
     referal_code: { type: String, default: '' },
     user_amount: { type: Number, default: 0 },
+    first_depo_reward_amount: { type: Number, default: 0 },
 
     refered_by_amount: { type: Number, default: 0 },
     status: { type: String, enum: [1, 0], default: 1 },
