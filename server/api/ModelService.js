@@ -2405,7 +2405,7 @@ class ModelService {
                                     added_type: TransactionTypes.FRIEND_USED_INVITE
                                 };
                                 var totalRefAmount = refAmount + bonusAmount;
-                                var totalRefAmountUpdated = refAmount + bonusAmoun + forstDepostData;
+                                var totalRefAmountUpdated = refAmount + bonusAmount + forstDepostData;
                                 if(totalRefAmount<= 50 ||(totalRefAmountUpdated<= 75 && forstDepostData == 25)){
                                     await Users.updateOne({ _id: referedBy}, { $inc: {bonus_amount: bonusAmount} });
                                     await ReferralCodeDetails.updateOne({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount} });
