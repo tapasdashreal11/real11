@@ -517,8 +517,8 @@ module.exports = {
                         return res.json(response);
 
                     } else {
-                        var otpRes = await sendOtp(userPhone);
-                        return res.json(otpRes);
+                        response['message'] = 'This number is already registered!!' 
+                        return res.json(response);
                     }
                 } else {
                     return res.json(response);
