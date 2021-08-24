@@ -124,6 +124,8 @@ module.exports = {
                                 return res.send(result);
                             });
                          }
+                    } else {
+                        return res.send(ApiUtility.failed('Something went wrong!!'));
                     }
                 } else {
                     
@@ -171,7 +173,6 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
         // let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
         let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport });
         if (!_.isEmpty(teamData) && (teamData.length == 11 || teamData.length == 5)) {
-          console.log('on************');
             let playerData = {};
             for (const value of teamData) {
                 playerData[value.player_id] = value;
