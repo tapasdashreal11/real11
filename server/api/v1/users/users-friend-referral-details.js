@@ -44,6 +44,7 @@ const logger = require("../../../../utils/logger")(module);
         let $totalEarnd = 0;
         let $toBeEarned = 0;
         let $userAmount = 0;
+        let $totalFrendFirstDepostReward = 0;
 
         async.eachSeries(user, function (data, cb) {
           if(data['user_id']) {
@@ -57,6 +58,7 @@ const logger = require("../../../../utils/logger")(module);
   
             $totalEarnd += data['refered_by_amount'] || 0.00;
             $userAmount += data['user_amount'] || 0.00;
+            $totalFrendFirstDepostReward += data['first_depo_reward_amount'] || 0.00;
   
             i++;
           }
@@ -70,6 +72,7 @@ const logger = require("../../../../utils/logger")(module);
             $finalResponse = {};
             $finalResponse['total_earnd'] = $totalEarnd;
             $finalResponse['to_be_earnd'] = $toBeEarned;
+            $finalResponse['total_friend_first_depo'] = $totalFrendFirstDepostReward;
             $finalResponse['total_fields'] = responseData.length || 0;
             $finalResponse['friend_detail'] = responseData;
 
