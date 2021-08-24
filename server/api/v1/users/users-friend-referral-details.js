@@ -52,6 +52,7 @@ const logger = require("../../../../utils/logger")(module);
             formated.team_name = (data['user_id'] && data['user_id']['team_name']) || '';
             formated.received_amount = (data['refered_by_amount']) || 0.00;
             formated.total_amount = (data['user_amount']) || 0.00;
+            formated.first_depo_reward_amount = (data['first_depo_reward_amount']) || 0.00;
             responseData[i] = formated;
   
             $totalEarnd += data['refered_by_amount'] || 0.00;

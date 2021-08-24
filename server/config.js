@@ -274,7 +274,7 @@ config.contest_bonous = [
 
 config.admin_percentage = 10.00;
 config.contest_commission = 10.00;
-config.referral_bouns_amount = 50.00;
+config.referral_bouns_amount = 75.00;
 config.min_withdraw_amount = 200.00;
 config.extra_bonus_percent_amount = 20;
 config.extra_bonus_perday_limit = 500;
