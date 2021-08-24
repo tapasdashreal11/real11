@@ -99,7 +99,7 @@ module.exports = {
                 series_id: series_id,
                 match_id: match_id,
                 sport: sport,
-            }, { localteam_id: 1,match_status:1,show_preview:1,is_parent:1,time: 1, date: 1, type: 1, visitorteam_id: 1 });
+            }, {playing_11:1, xfactors:1, localteam_id: 1,match_status:1,show_preview:1,is_parent:1,time: 1, date: 1, type: 1, visitorteam_id: 1 });
 
             if (!liveMatch) {
                 return res.send(ApiUtility.failed('Match Detail not found'));
