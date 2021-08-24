@@ -2419,6 +2419,37 @@ class ModelService {
              }
         });
     }
+    referalFirstDespostxCashReward(user_id){
+        return new Promise(async(resolve, reject) => {
+            try {
+                let referalUser = await ReferralCodeDetails.findOne({ user_id: user_id });
+                var data = {};
+                if (referalUser) {
+                    let referedBy = referalUser.refered_by;
+                    if (referedBy) {
+                        let date = new Date();
+                        let bonusAmount = 25;
+                        let entity = {
+                            user_id: referedBy,
+                            txn_amount: bonusAmount,
+                            currency: "INR",
+                            txn_date: Date.now(),
+                            local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
+                            added_type: TransactionTypes.FRIEND_FIRST_DEPOSIT_REWARD
+                        };
+                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy, 'status': 1, 'refer_able': 1 }, { $inc: {extra_amount: bonusAmount} });
+                        if(referedUser) {
+                            data = await Transaction.create(entity); 
+                        }
+                    }
+                }
+                resolve(data);
+             } catch (error) {
+                reject(err);
+                console.log("referal amount error >", error)
+             }
+        });
+    }
 }
 
 module.exports = ModelService;

@@ -22,6 +22,7 @@ const fetch = require('node-fetch');
 const { registerCustomQueryHandler } = require('puppeteer');
 const { appsFlyerEntryService } = require("./users/appsflyer-api");
 const { facebookEntryService } = require("./users/facebook-api");
+const ModelService = require("../ModelService");
 
 module.exports = {
 
@@ -528,6 +529,10 @@ module.exports = {
                                                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
                                                             Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                                                             try{
+                                                                await (new ModelService()).referalFirstDespostxCashReward(users.id);
+                                                            }catch(xcashError){}
+                                                            
+                                                            try{
                                                                 let appsflyerURL = "";
                                                                 if(authUser.device_type == "Android"){
                                                                   appsflyerURL =  config.appsFlyerAndroidUrl;
@@ -1004,6 +1009,9 @@ module.exports = {
                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + authUser._id;
                             Transaction.saveTransaction(authUser._id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                             try{
+                                await (new ModelService()).referalFirstDespostxCashReward(authUser._id);
+                            }catch(xcashError){}
+                            try{
                                 let appsflyerURL = "";
                                 if(authUser.device_type == "Android"){
                                   appsflyerURL =  config.appsFlyerAndroidUrl;
@@ -1449,6 +1457,9 @@ async function updateTransactionAllGetway(decoded, cb) {
                             let date = new Date();
                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
                             Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                            try{
+                                await (new ModelService()).referalFirstDespostxCashReward(users.id);
+                            }catch(xcashError){}
                             try{
                                 let appsflyerURL = "";
                                 if(authUser.device_type == "Android"){
