@@ -238,7 +238,23 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                             playerDetail[teamKey]['points'] = point;
                             playerDetail[teamKey]['is_local_team'] = islocalTeam;
                             playerDetail[teamKey]['in_dream_team'] = (dreamPlayers.length > 0) ? true : false;
+                            try{
+                                if (liveMatch && liveMatch.playing_11 && liveMatch.playing_11.length > 0) {
+                                    playerDetail[teamKey]['is_playing_show'] = 1;
+                                    playerDetail[teamKey]['is_playing'] = (liveMatch.playing_11.indexOf(teamValue.player_id) > -1) ? 1 : 0;
+                                } else {
+                                    playerDetail[teamKey]['is_playing_show'] = 0;
+                                    playerDetail[teamKey]['is_playing'] = 0
+                                }
+                                
+                                if (liveMatch && liveMatch.xfactors && liveMatch.xfactors.length > 0) {
+                                    playerDetail[teamKey]['is_xfactor'] = (liveMatch.xfactors.indexOf(teamValue.player_id) > -1) ? 1 : 0;
+                                } else {
+                                    playerDetail[teamKey]['is_xfactor'] = 0
+                                }
+                            }catch(preiewErr){}
                             
+
                             totalPoints +=   point;
                             
                             if (playerRole.indexOf('Wicketkeeper') > -1) {
