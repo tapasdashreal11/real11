@@ -120,6 +120,7 @@ module.exports = {
                         }
                         insertData.team_name = createTeamName(params.email);
                         insertData.bonus_amount = config.referral_bouns_amount;
+                        insertData.extra_amount = 25; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
                         insertData.avatar = 'boy.png';
@@ -383,6 +384,7 @@ module.exports = {
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
                         insertData.bonus_amount = config.referral_bouns_amount;
+                        insertData.extra_amount = 25; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
                         insertData.avatar = 'boy.png';
