@@ -2392,6 +2392,7 @@ class ModelService {
                     if (referedBy) {
                        let referedUser = await Users.findOne({ '_id': referedBy, 'status': 1, 'refer_able': 1 });
                         if(referedUser && (is_pan_verified || is_email_verified || is_bank_verified)) {
+                            console.log('email veiferd***********');
                            let bonusAmount = is_bank_verified ? 20 :( is_email_verified ? 10: ( is_pan_verified ? 20 : 0 ));
                             if(bonusAmount>0){
                               let date = new Date();
