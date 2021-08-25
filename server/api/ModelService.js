@@ -1686,7 +1686,6 @@ class ModelService {
     myContestModel(skip, limit, sort, filter, sport, type){
         return new Promise(async (resolve, reject) => {
             try{
-                console.log("my match call from service*****");
                 var serverTime2 = moment(new Date()).format(config.DateFormat.datetime);
                 var matchesFilter = []
                 let sortTime =  {};
