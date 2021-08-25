@@ -274,8 +274,7 @@ module.exports = {
                 return res.json(response);
             }
             let userGmailsignup = await Users.findOne({ google_id: params.google_id, email: params.email }, { _id: 1, google_id: 1, email: 1, phone: 1 });
-            console.log('params.phone****',params);
-            console.log('userGmailsignup****',userGmailsignup);
+            
             if (userGmailsignup && userGmailsignup._id && params.phone && _.size(params.phone) > 9) {
                 let phone_number = userGmailsignup.phone ? userGmailsignup.phone : '';
                 if (!_.isEmpty(phone_number) && phone_number.length > 1) {
@@ -336,7 +335,7 @@ module.exports = {
                     return res.json(response);
                 }
                 if (params && params.mobile_number && _.size(params.mobile_number) > 9) {
-                    console.log('params***',params);
+                    
                     let userPhone = await Users.findOne({ phone: params.mobile_number }, { _id: 1, google_id: 1, email: 1, phone: 1 });
                     if (!userPhone) {
                         let referal_code_detail = {};
@@ -454,7 +453,6 @@ module.exports = {
                             referal_code_detail.user_id = insertId;
                             await UserReferral.create(referal_code_detail);
                         }
-                        console.log('hello down****');
                         response["status"] = true;
                         response["data"] = { _id: user._id,user_id: user._id, email: user.email, phone: params.mobile_number, google_id: user.google_id };
                         response["login_success"] = false;
