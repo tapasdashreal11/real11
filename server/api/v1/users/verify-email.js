@@ -41,6 +41,11 @@ module.exports = {
         updatedData.email = params.email || null;
         updatedData.verify_string = userId;
         // updatedData.email_verified = 1;
+        let userCheck = await Users.findOne({_id: {$ne:userId},email: params.email});
+        if(userCheck && userCheck._id){
+          response["message"] = "This email is already exist to other account.";
+          return res.json(response);
+        }
 
         const result2 = await Users.updateOne({ _id: userId }, { $set: updatedData });
         if (result2 && result2.ok == 1) {
