@@ -312,7 +312,7 @@ module.exports = {
                 let joindedContestlistdata = await getPromiseUserJoinedContestList(myJoinedContestListKey);
                 if (joindedContestlistdata && joindedContestlistdata.joined_contest) {
                     // When data in redis
-                    console.log('JC List Upcoming data in reids*****');
+                   // console.log('JC List Upcoming data in reids*****');
                     let joindContesList = joindedContestlistdata.joined_contest;
                     let cIds = _.map(joindContesList, 'contest_id');
                     let mList = await MatchContest.find({ match_id: decoded['match_id'],'sport': decoded['sport'], contest_id: { $in: cIds } }, { "joined_users": 1, "contest_id": 1 });
@@ -324,7 +324,7 @@ module.exports = {
                     return res.send(ApiUtility.success(joindedContestlistdata));
                 } else {
                     //when data is not in redis
-                    console.log('JC List Upcoming data in db****');
+                    //console.log('JC List Upcoming data in db****');
                     let data1 = {};
                     let ptcData = await PlayerTeamContest.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': decoded['sport'], 'series_id': decoded['series_id'] }).exec()
                     if (ptcData && ptcData.length > 0) {
