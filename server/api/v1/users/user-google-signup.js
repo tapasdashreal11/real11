@@ -573,6 +573,37 @@ module.exports = {
         }
 
 
+    },
+    userAvtarUpdate: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let params = req.body;
+            const user_id = req.userId;
+            let constraints = { avatar: "required"};
+            let validator = new Validator(params, constraints);
+            let matched = await validator.check();
+            if (!matched) {
+                response["message"] = "Required fields missing";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+            let userGmailsignup = await Users.findOneAndUpdate({ _id: user_id }, { $set: { avatar: params.avatar} });
+            if (userGmailsignup && userGmailsignup._id) {
+                response["message"] = "Updated successfully!!";
+                response["status"] = true;
+                return res.json(response);
+
+            } else {
+                response["message"] = "Invalid data!!";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+        } catch (err) {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            return res.json(response);
+        }
+
+
     }
 }
 
