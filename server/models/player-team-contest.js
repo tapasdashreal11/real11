@@ -17,6 +17,10 @@ var playerTeamContestSchema = new Schema({
     type: String,
     default: ''
   },
+  avatar: {
+    type: String,
+    default: ''
+  },
   match_id: {
     type: Number
   },

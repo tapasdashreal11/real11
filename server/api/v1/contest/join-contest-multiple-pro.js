@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
+                User.findById(user_id).select({ "avatar": 1,"winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
                 PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
@@ -140,6 +140,7 @@ module.exports = async (req, res) => {
                                                 contest.user_id = user_id;
                                                 contest.total_amount = contestData.entry_fee;
                                                 contest.team_count = team_data_item.team_count;
+                                                contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
                                                 contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                 contest.sport = match_sport;
                                                 contestDataArray.push(contest);
