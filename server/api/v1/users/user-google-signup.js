@@ -123,7 +123,7 @@ module.exports = {
                         insertData.extra_amount = 25; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
-                        insertData.avatar = 'boy.png';
+                        insertData.avatar = 'avtar20';
                         insertData.refer_able = 1;
 
                         let full_name = params.name;
@@ -387,7 +387,7 @@ module.exports = {
                         insertData.extra_amount = 25; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
-                        insertData.avatar = 'boy.png';
+                        insertData.avatar = 'avtar20';
                         insertData.refer_able = 1;
                         let full_name = params.name;
 
