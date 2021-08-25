@@ -82,6 +82,7 @@ module.exports = {
                                 $project : {
                                     "user_id" : "$user_detail._id",
                                     "team_name" : "$user_detail.team_name",
+                                    "avatar" : "$user_detail.avatar",
                                     "total_points" : "$total_points",
                                     "current_rank" : "$current_rank",
                                     "win_msz":{ $ifNull: [ "$win_msz", '' ] },
@@ -177,6 +178,7 @@ module.exports = {
                                 $project : {
                                     "user_id" : "$user_detail._id",
                                     "team_name" : "$user_detail.team_name",
+                                    "avatar" : "$user_detail.avatar",
                                     "total_points" : "$total_points",
                                     "current_rank" : "$current_rank",
                                     "win_msz":{ $ifNull: [ "$win_msz", '' ] },

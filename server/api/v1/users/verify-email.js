@@ -91,7 +91,7 @@ module.exports = {
           return false;
         } else {
           updatedData.email_verified = 1;
-          await Users.update({ _id: userId }, { $set: updatedData });
+          await Users.updateOne({ _id: userId }, { $set: updatedData });
           await (new ModelService()).referalManageAtVerification(userId, false, true, false);
           opts.message = "Your mail has been verified successfully!";
           res.render('alert-msg', opts);
