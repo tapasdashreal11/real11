@@ -17,10 +17,7 @@ module.exports = {
     try {
       var response = { status: false, message: "Invalid Request", data: {} };
       let params = req.body;
-      let constraints = {
-        email: "required"
-      };
-
+      let constraints = { email: "required" };
       let validator = new Validator(params, constraints);
       let matched = await validator.check();
       if (!matched) {
@@ -29,18 +26,17 @@ module.exports = {
         return res.json(response);
       }
       let userId = req.userId || null;
-
       let user = await Users.findOne({ _id: userId });
-
       if (user) {
         let updatedData = {};
         let verifyStr = Buffer.from(params.email).toString('base64');
-        // let emailLink = new Date().getTime() + verifyStr;
         let emailLink = new Date().getTime() + verifyStr;
         updatedData.new_email = params.email || null;
-        updatedData.email = params.email || null;
+        if(user && user.email && !_.isEmpty(user.email)){
+        } else {
+          updatedData.email = params.email || null;
+        }
         updatedData.verify_string = userId;
-        // updatedData.email_verified = 1;
         let userCheck = await Users.findOne({_id: {$ne:userId},email: params.email});
         if(userCheck && userCheck._id) {
           response["message"] = "This email is already exist to other account.";
