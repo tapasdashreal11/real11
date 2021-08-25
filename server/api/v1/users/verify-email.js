@@ -91,6 +91,10 @@ module.exports = {
           return false;
         } else {
           updatedData.email_verified = 1;
+          if(user.email && user.new_email &&! _.isEqual(user.email,user.new_email) ){
+            updatedData.email = user.new_email || null;
+            user.google_id = null;
+          }
           await Users.updateOne({ _id: userId }, { $set: updatedData });
           await (new ModelService()).referalManageAtVerification(userId, false, true, false);
           opts.message = "Your mail has been verified successfully!";
