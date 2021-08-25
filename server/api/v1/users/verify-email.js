@@ -45,7 +45,6 @@ module.exports = {
 
         const result2 = await Users.updateOne({ _id: userId }, { $set: updatedData });
         if (result2 && result2.ok == 1) {
-          console.log('hello ****');
           let emailTemplate = await EmailTemplate.findOne({ subject: "confirm_your_account" });
           if (emailTemplate) {
             var rootUrl = `${req.protocol}://${req.get('host')}`;
