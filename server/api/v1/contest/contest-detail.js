@@ -129,7 +129,7 @@ module.exports = {
                 }
                 let aakashData  =   {};
                 if(contestDetail.amount_gadget == 'aakash') {
-                    aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1, "image": 1, "_id":1 });
+                    aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1,"avatar":1, "image": 1, "_id":1 });
                 }
                 let aakashTeams = [];
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
@@ -161,6 +161,7 @@ module.exports = {
                         teamData[teamCount] = {};
                         teamData[teamCount]['user_id'] = userTeam.user_id;
                         teamData[teamCount]['team_name'] = userTeam.team_name;
+                        teamData[teamCount]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
                         teamData[teamCount]['user_image'] = ''; //(teamUserDetail.image) ? config.imageBaseUrl + '/avetars/' + teamUserDetail.image : "";
                         teamData[teamCount]['team_no'] =  userTeam.team_count || 0;
                         teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
@@ -336,7 +337,7 @@ module.exports = {
 
             let aakashData  =   {};
             if(contestDetail.amount_gadget == 'aakash') {
-                aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1, "image": 1, "_id":1 });
+                aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1,"avatar":1, "image": 1, "_id":1 });
             }
 
             let mergedTeam = [];
@@ -383,6 +384,7 @@ module.exports = {
                     teamData[teamCount] = {};
                     teamData[teamCount]['user_id'] = userTeam.user_id;
                     teamData[teamCount]['team_name'] = userTeam.team_name || '';
+                    teamData[teamCount]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
                     teamData[teamCount]['user_image'] = '';
                     teamData[teamCount]['team_no'] = (userTeam) ? userTeam.team_count : 1;
                     teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
@@ -482,7 +484,7 @@ module.exports = {
 
                 let aakashData = {};
                 if(contestDetail.amount_gadget == 'aakash') {
-                    aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1, "image": 1, "_id":1 });
+                    aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1,"avatar":1, "image": 1, "_id":1 });
                 }
                 
                 let mergedTeam = [];
@@ -579,6 +581,7 @@ module.exports = {
                             teamData[teamCount] = {};
                             teamData[teamCount]['user_id'] = userTeam.user_id;
                             teamData[teamCount]['team_name'] = userTeam.team_name || '';
+                            teamData[teamCount]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
                             teamData[teamCount]['user_image'] = ''; //(teamUserDetail.image) ? config.imageBaseUrl + '/avetars/' + teamUserDetail.image : "";
                             teamData[teamCount]['team_no'] = userTeam.team_count || 1;
                             teamData[teamCount]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
@@ -800,7 +803,7 @@ module.exports = {
 
                 let aakashData  =   {};
                 if(contestDetail.amount_gadget == 'aakash') {
-                    aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1, "image": 1, "_id":1 });
+                    aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1,"avatar":1, "image": 1, "_id":1 });
                 }
                 let aakashTeams = [];
                 if(contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
@@ -1019,7 +1022,7 @@ module.exports = {
 
             let aakashData  =   {};
             if(contestDetail.amount_gadget == 'aakash') {
-                aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1, "image": 1, "_id":1 });
+                aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1,"avatar":1, "image": 1, "_id":1 });
             }
 
             let mergedTeam = [];
@@ -1067,7 +1070,7 @@ module.exports = {
                 if (playerTeam) {
 
                     if (!userTeam.user) {
-                        userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1, "image": 1 });
+                        userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1,"avatar":1, "image": 1 });
                     }
                    // let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
                     let winAmount = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;
@@ -1179,7 +1182,7 @@ module.exports = {
 
                 let aakashData = {};
                 if(contestDetail.amount_gadget == 'aakash') {
-                    aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1, "image": 1, "_id":1 });
+                    aakashData  =   await User.findOne({ "user_type": 101 }, { "team_name": 1,"avatar":1, "image": 1, "_id":1 });
                 }
                 
                 let mergedTeam = [];
@@ -1192,7 +1195,7 @@ module.exports = {
                 }
                 
                 if (!_.isEmpty(redisTeams)) {
-                    MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1, "image": 1 });
+                    MyUserData = await User.findOne({ _id: user_id }, { "team_name": 1,"avatar":1, "image": 1 });
 
                     myTeams = await PlayerTeamContest.getUserTeamByMatchId(match_id, contest_id, user_id, sport);
                     let allTeams = [];
@@ -1257,7 +1260,7 @@ module.exports = {
                                 if (MyUserData && user_id == userTeam.user_id) {
                                     userTeam.user = MyUserData;
                                 } else {
-                                    userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1, "image": 1 });
+                                    userTeam.user = await User.findOne({ _id: userTeam.user_id }, { "team_name": 1,"avatar":1, "image": 1 });
                                 }
                             }
                         // let winAmount = (userTeam.winning_amount) ? userTeam.winning_amount : 0;
