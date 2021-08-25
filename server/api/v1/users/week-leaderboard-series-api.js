@@ -17,7 +17,7 @@ module.exports = {
             response["status"] = true;
            } else {
             response["data"] = [];
-            response["message"] = "";
+            response["message"] = "No Data found!!";
             response["status"] = false;
            }
             
