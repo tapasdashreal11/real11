@@ -27,7 +27,7 @@ module.exports = {
                             result.my_coupons = mycouponList;
                         } else {
                             const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id) });
-                            console.log('cSaleData***********', cSaleData);
+                            // console.log('cSaleData***********', cSaleData);
                             result.my_coupons = cSaleData || {};
                             redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData || {}));
                         }
@@ -44,7 +44,7 @@ module.exports = {
                         const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1 }).sort({ _id: -1 });
                         result.coupon_list = cData || [];
                         result.my_coupons = cSaleData || {};
-                        console.log('cSaleData***', cSaleData);
+                        //console.log('cSaleData***', cSaleData);
                         redis.redisObj.set(redisKeyForVipCouponsList, JSON.stringify(cData || []));
                         redis.redisObj.set('my-coupons-' + user_id, JSON.stringify(cSaleData || {}));
                         response["data"] = result;
@@ -77,7 +77,7 @@ module.exports = {
             try {
                 const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
                 const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1, winning_balance: 1 });
-                console.log("cData******", cData);
+                //console.log("cData******", cData);
                 if (uData && uData._id && cData && cData._id) {
                     const cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), expiry_date: { $gte: new Date() } });
                     if (cSaleData && cSaleData._id && cSaleData.status == 1) {
@@ -98,7 +98,7 @@ module.exports = {
                                     let couponSaleCount = cUpdatedDoc.coupon_sale_count;
 
                                     if (cData && cData.coupon_limit < couponSaleCount) {
-                                        console.log("coupon purchase last response ----------***********", couponSaleCount);
+                                        // console.log("coupon purchase last response ----------***********", couponSaleCount);
                                         await session.abortTransaction();
                                         session.endSession();
                                         let response = {};
@@ -154,7 +154,7 @@ module.exports = {
                                 let couponSaleCount = cUpdatedDoc.coupon_sale_count;
 
                                 if (cData && cData.coupon_limit < couponSaleCount) {
-                                    console.log("coupon purchase last response ----------***********", couponSaleCount);
+                                   // console.log("coupon purchase last response ----------***********", couponSaleCount);
                                     await session.abortTransaction();
                                     session.endSession();
                                     let response = {};
@@ -219,7 +219,7 @@ module.exports = {
             try {
                 const cData = await Coupon.findOne({ _id: ObjectId(coupon_id), status: 1 });
                 const uData = await Users.findOne({ _id: ObjectId(user_id) }, { cash_balance: 1, winning_balance: 1 });
-                console.log("cData******", cData);
+                //console.log("cData******", cData);
                 let cashAmount = 0;
                 let winAmount = 0;
                 if (uData && uData._id && cData && cData._id) {
@@ -315,7 +315,6 @@ async function calCualteFee(entryFee, cash_balance, winnging_balance) {
     let remainingFee = entryFee;
     let dedCashAmount = 0;
     let dedWinngingBalance = 0;
-    console.log('cash_balance***', cash_balance, 'winnging_balance***', winnging_balance);
     if (remainingFee) {
         if (cash_balance && cash_balance > 0) {
             dedCashAmount = (cash_balance > remainingFee) ? remainingFee : cash_balance;
@@ -323,7 +322,6 @@ async function calCualteFee(entryFee, cash_balance, winnging_balance) {
         }
     }
     if (remainingFee) {
-        console.log('remainingFee***', remainingFee);
         if (winnging_balance && winnging_balance > 0) {
             dedWinngingBalance = (winnging_balance > remainingFee) ? remainingFee : winnging_balance;
             remainingFee = (winnging_balance < remainingFee) ? remainingFee - winnging_balance : 0;
