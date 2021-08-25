@@ -637,10 +637,10 @@ module.exports = {
                            if(matchContestData && matchContestData.is_offerable){
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
                             let calJoinTeam = total_team_number + totalJoinedTeam;
-                            console.log('calJoinTeam**',calJoinTeam,matchContestData.offer_after_join);
+                            //console.log('calJoinTeam**',calJoinTeam,matchContestData.offer_after_join);
                             if(matchContestData.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContestData.offer_after_join && matchContestData.offerable_amount > 0){
                                 if(calEntryFees > 0){
-                                    console.log('in***');
+                                   // console.log('in***');
                                     offerableAppled = true;
                                     let recalcalEntryFees = calEntryFees;
                                     calEntryFees = matchContestData.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContestData.offerable_amount );
@@ -658,7 +658,7 @@ module.exports = {
                                     if(offerableAppled){
                                         useAmount = eval((useableBonusPer / 100) * calEntryFees);
                                     }
-                                    console.log('useAmount',useAmount,'calEntryFees',calEntryFees,'retention_bonus_amount',retention_bonus_amount);
+                                   // console.log('useAmount',useAmount,'calEntryFees',calEntryFees,'retention_bonus_amount',retention_bonus_amount);
                                     if (useAmount > userdata.bonus_amount) {
                                         usableAmt = userdata.bonus_amount;
                                     } else {
@@ -667,7 +667,7 @@ module.exports = {
                                 }
                                 let extraBalance = userdata.extra_amount || 0;
                                 calEntryFees = retention_bonus_amount > 0 ?(offerableAppled && calEntryFees > 0 && calEntryFees >= usableAmt ? calEntryFees - usableAmt: calEntryFees ): totalEntryFee - usableAmt;
-                                console.log('calEntryFees after***',calEntryFees);
+                                //console.log('calEntryFees after***',calEntryFees);
                                 let indianDate = Date.now();
                                 indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
                                 if (extraBalance) {
