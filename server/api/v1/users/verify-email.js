@@ -38,11 +38,13 @@ module.exports = {
         // let emailLink = new Date().getTime() + verifyStr;
         let emailLink = new Date().getTime() + verifyStr;
         updatedData.new_email = params.email || null;
+        updatedData.email = params.email || null;
         updatedData.verify_string = userId;
         // updatedData.email_verified = 1;
 
-        const result2 = await Users.update({ _id: userId }, { $set: updatedData });
+        const result2 = await Users.updateOne({ _id: userId }, { $set: updatedData });
         if (result2 && result2.ok == 1) {
+          console.log('hello ****');
           let emailTemplate = await EmailTemplate.findOne({ subject: "confirm_your_account" });
           if (emailTemplate) {
             var rootUrl = `${req.protocol}://${req.get('host')}`;
