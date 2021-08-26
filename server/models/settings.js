@@ -23,7 +23,17 @@ var settingsSchema = new Schema({
 	},
 	max_team_create: {
 		type: Number
-	}
+	},
+	is_week_board: { type: Number,default:0 },
+    is_vpass: { type: Number, default:0 },
+    is_phonepe_available: { type: Number, default:0 },
+    phonepe_merchant_id: { type: String },
+    youtber_codes: { type: String },
+    contest_invite_codes: { type: String },
+    is_paytm_offer: { type: Number },
+    is_instant_withdraw: { type: Number, dafault: 0 },
+    instant_withdraw_msg: { type: String, dafault: "" },
+    leaderbord_popup_img: { type: String, default: "" },
 });
 
 module.exports = mongoose.model('settings', settingsSchema, 'settings');
