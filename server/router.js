@@ -164,15 +164,12 @@ const  { lfContestDetailNew,lfContestLeaderboard,lfLivecontestDetailLB }  = requ
 const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
-
         cb(null, playerImageDirPath);
-
     },
 
     filename: (req, file, cb) => {
         let fileName = (req.userId || 'img') + '-' + Date.now() + path.extname(file.originalname);
         cb(null, fileName);
-
     },
 
 });
