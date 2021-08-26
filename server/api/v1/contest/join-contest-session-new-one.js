@@ -482,6 +482,18 @@ module.exports = async (req, res) => {
                                                                             userBounousData.offer_percent = 0;
                                                                             redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
 
+                                                                        } else if (userBounousData.is_offer_type == 3 && userBounousData.is_offer_repeat && userBounousData.is_offer_repeat == 2) {
+                                                                            let pContestId = ObjectId(contest_id);
+                                                                            let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id) : pContestId;
+                                                                            let cBonus = userBounousData && userBounousData.contest_bonous ? userBounousData.contest_bonous : [];
+                                                                            let c_bonous = [];
+                                                                            cBonus.find(function (e2) {
+                                                                                if (ObjectId(e2.contest_id).equals(ObjectId(prContestId)) || ObjectId(e2.contest_id).equals(ObjectId(pContestId))) {
+                                                                                } else { c_bonous.push(e2); }
+                                                                            });
+                                                                            userBounousData.contest_bonous = c_bonous;
+                                                                            await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $set: { "contest_bonous": c_bonous } });
+                                                                            redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
                                                                         }
 
                                                                     }
