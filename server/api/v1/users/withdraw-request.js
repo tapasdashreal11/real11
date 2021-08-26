@@ -38,12 +38,16 @@ module.exports = async (req, res) => {
 			response["errors"] = validator.errors;
 			return res.json(response);
 		}
-		
+		let wAmount = params && params.withdraw_amount ? parseFloat(params.withdraw_amount) : 0;
+		if(wAmount < 200){
+			response["message"] = "You are under supervision of admin.Please dont do this activity!!";
+			return res.json(response);
+		}
 		try {
 			let userId = req.userId;
 		
 			let user = await Users.findOne({ _id: userId });
-			if (user) {
+			if (user && wAmount >= 200) {
 				if(user.status == 1) {
 					let winning_balance = user.winning_balance || 0;
 					let affiliate_amount = user.affiliate_amount || 0;
@@ -87,7 +91,7 @@ module.exports = async (req, res) => {
 							return res.json(response);
 						}
 					} else {
-						if (params.withdraw_amount > winning_balance) {
+						if (params.withdraw_amount > winning_balance ) {
 							response["status"] = false;
 							response["data"] = {};
 							response["message"] = "The amount you have entered is more than your total available winnings for withdrawal, please enter a realistic amount.";
@@ -161,7 +165,7 @@ module.exports = async (req, res) => {
 					return res.json(response);
 				}
 			} else {
-				response["message"] = "Invalid User id.";
+				response["message"] = "Invalid Amount.";
 				return res.json(response);
 			}
 
