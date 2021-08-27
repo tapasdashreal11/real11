@@ -5,6 +5,7 @@ var playerTeamContestSchema = new Schema({
 	prediction_id: { type: mongoose.Schema.Types.ObjectId},
 	parent_match_id: { type: Number },
 	team_name: { type: String, default:''},
+	avatar: { type: String, default:''},
 	team_count: { type: Number,default:1 },
 	match_id: { type: Number },
 	series_id: { type: Number },
