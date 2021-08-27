@@ -209,7 +209,7 @@ module.exports = {
       let user = await Users.findOne({ _id: userId });
       if (user && user._id) {
         if(user.email_verified && user.email_verified == 1){
-          response["message"] = "You are already verified with " + new_email + " account.";
+          response["message"] = "You are already verified with " + user.new_email + " account.";
           return res.json(response);
         } else {
             let updatedData = {};
