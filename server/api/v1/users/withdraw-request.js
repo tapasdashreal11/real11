@@ -40,88 +40,89 @@ module.exports = async (req, res) => {
 			response["errors"] = validator.errors;
 			return res.json(response);
 		}
-		let settingData= {};
-		let appSettingData= {};
-		redis.getRedis('app-setting', async (err, data) => {
-			if (data) {
-				settingData = data;
-			} else {
-				appSettingData = await Settings.findOne({}, { is_instant_withdraw:1, instant_withdraw_msg:1 } );
-			}
-			settingData = appSettingData;
-			// console.log(settingData.is_instant_withdraw, "ddfdddd");
-			if(settingData && settingData.is_instant_withdraw  === 1) {
-				response["message"] = settingData.instant_withdraw_msg;
-				return res.json(response);
-			}
-			let wAmount = params && params.withdraw_amount ? parseFloat(params.withdraw_amount) : 0;
-			if(wAmount < 200){
-				response["message"] = "You are under supervision of admin.Please don't do this activity!!";
-				return res.json(response);
-			}
-			try {
-				let userId = req.userId;
-			
-				let user = await Users.findOne({ _id: userId });
-				if (user && wAmount >= 200) {
-					if(user.status == 1) {
-						let winning_balance = user.winning_balance || 0;
-						let affiliate_amount = user.affiliate_amount || 0;
-						let isInstant = ((params.instant_withdraw && params.instant_withdraw == "1") || params.withdraw_amount >= 10000) ? 1 : 0; 
-						// console.log(affiliate_amount);return false;
-						// console.log('winning_balance',winning_balance);
-						if(params.wallet_type && params.wallet_type == 'affliate') {
-							if (params.withdraw_amount > affiliate_amount) {
-								response["status"] = false;
-								response["data"] = {};
-								response["message"] = "The amount you have entered is more than your total available winnings for withdrawal, please enter a realistic amount.";
-								return res.json(response);
-							} else {
-								let updatedData = {};
-								let remainingAmount	=	affiliate_amount - params.withdraw_amount;
-								updatedData.amount =	remainingAmount;
-								updatedData.refund_amount = parseFloat(params.withdraw_amount) || '';
-								updatedData.user_id = userId;
-								updatedData.type = params.type || '';
-								updatedData.email = user.email || '';
-								updatedData.wallet_type = params.wallet_type || '';
-								updatedData.is_instant = isInstant;
-								// console.log(remainingAmount);
-								
-								// let result =  await Users.update({_id: userId}, {$set : {affiliate_amount : remainingAmount}});
-								let result =  await Users.updateOne({_id: userId}, {$inc : {affiliate_amount : - parseFloat(params.withdraw_amount)}});
-								if(result) {
-									let withdrawData =  await WithdrawRequest.create(updatedData);
-									let date = new Date();
-									let joinContestTxnId	=	'JL'+ date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId;
-									let txnId = joinContestTxnId;
-									let status = TransactionTypes.TRANSACTION_PENDING;
-									let txnAmount = params.withdraw_amount;
-									let withdrawId = withdrawData._id;
-									
-									await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
-								}
-								response["message"] = "Your request has been sent successfully, you will get notified once request is approved.";
-								response["status"] = true;
-								response["data"] = {};
-								return res.json(response);
-							}
+		
+		let wAmount = params && params.withdraw_amount ? parseFloat(params.withdraw_amount) : 0;
+		if(wAmount < 200){
+			response["message"] = "You are under supervision of admin.Please don't do this activity!!";
+			return res.json(response);
+		}
+		try {
+			let userId = req.userId;
+		
+			let user = await Users.findOne({ _id: userId });
+			if (user && wAmount >= 200) {
+				if(user.status == 1) {
+					let winning_balance = user.winning_balance || 0;
+					let affiliate_amount = user.affiliate_amount || 0;
+					let isInstant = ((params.instant_withdraw && params.instant_withdraw == "1") || params.withdraw_amount >= 10000) ? 1 : 0; 
+					// console.log(affiliate_amount);return false;
+					// console.log('winning_balance',winning_balance);
+					if(params.wallet_type && params.wallet_type == 'affliate') {
+						if (params.withdraw_amount > affiliate_amount) {
+							response["status"] = false;
+							response["data"] = {};
+							response["message"] = "The amount you have entered is more than your total available winnings for withdrawal, please enter a realistic amount.";
+							return res.json(response);
 						} else {
-							if (params.withdraw_amount > winning_balance ) {
-								response["status"] = false;
-								response["data"] = {};
-								response["message"] = "The amount you have entered is more than your total available winnings for withdrawal, please enter a realistic amount.";
-								return res.json(response);
-							} else {
-								let updatedData = {};
-								let remainingAmount	=	winning_balance - params.withdraw_amount;
-								updatedData.amount =	remainingAmount;
-								updatedData.refund_amount = parseFloat(params.withdraw_amount) || '';
-								updatedData.user_id = userId;
-								updatedData.type = params.type || '';
-								updatedData.email = user.email || '';
-								updatedData.wallet_type = '';
-								updatedData.is_instant = isInstant;
+							let updatedData = {};
+							let remainingAmount	=	affiliate_amount - params.withdraw_amount;
+							updatedData.amount =	remainingAmount;
+							updatedData.refund_amount = parseFloat(params.withdraw_amount) || '';
+							updatedData.user_id = userId;
+							updatedData.type = params.type || '';
+							updatedData.email = user.email || '';
+							updatedData.wallet_type = params.wallet_type || '';
+							updatedData.is_instant = isInstant;
+							// console.log(remainingAmount);
+							
+							// let result =  await Users.update({_id: userId}, {$set : {affiliate_amount : remainingAmount}});
+							let result =  await Users.updateOne({_id: userId}, {$inc : {affiliate_amount : - parseFloat(params.withdraw_amount)}});
+							if(result) {
+								let withdrawData =  await WithdrawRequest.create(updatedData);
+								let date = new Date();
+								let joinContestTxnId	=	'JL'+ date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId;
+								let txnId = joinContestTxnId;
+								let status = TransactionTypes.TRANSACTION_PENDING;
+								let txnAmount = params.withdraw_amount;
+								let withdrawId = withdrawData._id;
+								
+								await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
+							}
+							response["message"] = "Your request has been sent successfully, you will get notified once request is approved.";
+							response["status"] = true;
+							response["data"] = {};
+							return res.json(response);
+						}
+					} else {
+						if (params.withdraw_amount > winning_balance ) {
+							response["status"] = false;
+							response["data"] = {};
+							response["message"] = "The amount you have entered is more than your total available winnings for withdrawal, please enter a realistic amount.";
+							return res.json(response);
+						} else {
+							let updatedData = {};
+							let remainingAmount	=	winning_balance - params.withdraw_amount;
+							updatedData.amount =	remainingAmount;
+							updatedData.refund_amount = parseFloat(params.withdraw_amount) || '';
+							updatedData.user_id = userId;
+							updatedData.type = params.type || '';
+							updatedData.email = user.email || '';
+							updatedData.wallet_type = '';
+							updatedData.is_instant = isInstant;
+							let settingData= {};
+							let appSettingData= {};
+							redis.getRedis('app-setting', async (err, data) => {
+								if (data) {
+									settingData = data;
+								} else {
+									appSettingData = await Settings.findOne({}, { is_instant_withdraw:1, instant_withdraw_msg:1 } );
+								}
+								settingData = appSettingData;
+								// console.log(settingData.is_instant_withdraw, "ddfdddd");
+								if(settingData && settingData.is_instant_withdraw  === 1 && params.instant_withdraw == "1") {
+									response["message"] = settingData.instant_withdraw_msg;
+									return res.json(response);
+								}
 								if(params.instant_withdraw && params.instant_withdraw == "1") {
 									let instantComm	=	0;
 									if(params.type == "bank") {
@@ -174,22 +175,22 @@ module.exports = async (req, res) => {
 									}
 									// await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
 								}
-							}
+							});
 						}
-					} else {
-						response["message"] = "Before doing withdraw, please verify your phone number.";
-						return res.json(response);
 					}
 				} else {
-					response["message"] = "Invalid Amount.";
+					response["message"] = "Before doing withdraw, please verify your phone number.";
 					return res.json(response);
 				}
-	
-			} catch (err) {
-				response["message"] = err.message;
+			} else {
+				response["message"] = "Invalid Amount.";
 				return res.json(response);
 			}
-		});
+
+		} catch (err) {
+			response["message"] = err.message;
+			return res.json(response);
+		}
 	} catch (error) {
 		logger.error("LOGIN_ERROR", error.message);
 		res.send(ApiUtility.failed(error.message));
