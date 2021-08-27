@@ -193,4 +193,44 @@ module.exports = {
       res.send(ApiUtility.failed(error.message));
     }
   },
+  verifyGmailAccount: async (req, res) => {
+    try {
+      var response = { status: false, message: "Invalid Request", data: {} };
+      let params = req.body;
+      let constraints = { email: "required",user_id: "required", google_id: "required" };
+      let validator = new Validator(params, constraints);
+      let matched = await validator.check();
+      if (!matched) {
+        response["message"] = "Required fields missing !";
+        response["errors"] = validator.errors;
+        return res.json(response);
+      }
+      let userId = req.userId || null;
+      let user = await Users.findOne({ _id: userId });
+      if (user && user._id) {
+        if(user.email_verified && user.email_verified == 1){
+          response["message"] = "You are already verified with " + new_email + " account.";
+          return res.json(response);
+        } else {
+            let updatedData = {};
+            updatedData.new_email = params.email || null;
+            updatedData.email = params.email || null;
+            updatedData.verify_string = userId;
+            updatedData.email_verified = 1;
+            updatedData.google_id = params.google_id;
+            await Users.updateOne({ _id: userId }, { $set: updatedData });
+            response["message"] = "Your email has been verified successfully!";
+            response["status"] = true;
+            return res.json(response);
+        }
+        
+      } else {
+        response["message"] = "Invalid User id.";
+        return res.json(response);
+      }
+    } catch (error) {
+      logger.error("LOGIN_ERROR", error.message);
+      res.send(ApiUtility.failed(error.message));
+    }
+  }
 }
