@@ -118,7 +118,7 @@ module.exports = async (req, res) => {
 									appSettingData = await Settings.findOne({}, { is_instant_withdraw:1, instant_withdraw_msg:1 } );
 								}
 								settingData = appSettingData;
-								console.log(settingData.is_instant_withdraw, "ddfdddd");
+								console.log(settingData, "ddfdddd");
 								if(settingData && settingData.is_instant_withdraw  === 1 && params.instant_withdraw == "1") {
 									response["message"] = settingData.instant_withdraw_msg;
 									return res.json(response);
