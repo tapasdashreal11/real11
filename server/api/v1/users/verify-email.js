@@ -212,6 +212,11 @@ module.exports = {
           response["message"] = "You are already verified with " + user.new_email + " account.";
           return res.json(response);
         } else {
+             let userCheck = await Users.findOne({_id: {$ne:userId},email: params.email});
+            if(userCheck && userCheck._id) {
+              response["message"] = "This email is already exist to other account.";
+              return res.json(response);
+            }
             let updatedData = {};
             updatedData.new_email = params.email || null;
             updatedData.email = params.email || null;
