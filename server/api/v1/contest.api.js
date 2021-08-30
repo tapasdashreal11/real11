@@ -589,7 +589,7 @@ module.exports = {
                         if(_.isEmpty(catid) || _.isUndefined(catid) || _.isNull(catid)){
                             return res.send(ApiUtility.failed("Please try again!!"));
                         }
-                        let offerableAppled = false;
+                           let offerableAppled = false;
                            if(couponSaleData && couponSaleData.length>0){
                             couponSaleData = couponSaleData.map(item => {
                                 let container = {};
