@@ -65,6 +65,7 @@ module.exports = {
             data.account_verified = false;
           }
 
+          data.is_password_set = user && user.password && !_.isEmpty(user.password) ? true:false;
           data.bank_verify = user.bank_account_verify || null;
           data.pan_verify = user.pen_verify || null;
           data.email_verify = user.email_verified || null;
