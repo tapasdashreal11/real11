@@ -585,7 +585,10 @@ module.exports = {
                 let totalEntryFee = entryFee * total_team_number;
                 try {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
-                        let catid = matchContestData.category_id;
+                        let catid =matchContestData && matchContestData.category_id ? matchContestData.category_id: '';
+                        if(_.isEmpty(catid) || _.isUndefined(catid) || _.isNull(catid)){
+                            return res.send(ApiUtility.failed("Please try again!!"));
+                        }
                         let offerableAppled = false;
                            if(couponSaleData && couponSaleData.length>0){
                             couponSaleData = couponSaleData.map(item => {
@@ -637,7 +640,6 @@ module.exports = {
                            if(matchContestData && matchContestData.is_offerable){
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
                             let calJoinTeam = total_team_number + totalJoinedTeam;
-                            //console.log('calJoinTeam**',calJoinTeam,matchContestData.offer_after_join);
                             if(matchContestData.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContestData.offer_after_join && matchContestData.offerable_amount > 0){
                                 if(calEntryFees > 0){
                                    // console.log('in***');
