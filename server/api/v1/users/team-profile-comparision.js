@@ -50,7 +50,8 @@ teamProfileComparision: async (req, res) => {
           }
           data  = {}
           data.team_name  = userData.team_name || '';
-          data.image  = '', //userData.image ? `${config.imageBaseUrl}/users/${userData.image}` : '';
+          data.image  = '';
+          data.avatar  = userData && userData.avatar ? userData.avatar:'';
           data.contest_level  = level || '';
           data.contest_finished  = userProData && userProData.contest_finished ? userProData.contest_finished : 0;
           data.total_match  = userProData && userProData.total_match ? userProData.total_match : 0;
@@ -60,7 +61,6 @@ teamProfileComparision: async (req, res) => {
           response['message'] = "Profile Comparison";
           response['data'] = data;
           response['status'] = true;
-         console.log("data is --------------------------------------------", response) 
           return res.json(response);
         } else {
           response["message"] = "It seems that your Friend has been deactivated his/her profile!";
