@@ -152,21 +152,21 @@ module.exports = {
                         const user = await Users.create(insertData);
                         try {
                             if (params && params.device_id) {
-                                Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete next step to successfully singup.');
+                                Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
                             }
                         } catch (errr) { }
                         const insertId = user._id;
                         insertData.user_id = insertId;
+                        let bank_details = {};
+                        bank_details.user_id = insertId;
+                        await BankDetails.create(bank_details);
+                        await Profile.create(bank_details);
+                        await PanDetails.create(bank_details);
 
                         try {
                             if (insertId) {
                                 let redisKeyForUserCategory = 'user-category-' + insertId;
-                                let userCatObj = {
-                                    is_super_user: 0,
-                                    is_dimond_user: 0,
-                                    is_beginner_user: 1,
-                                    is_looser_user: 0
-                                };
+                                let userCatObj = { is_super_user: 0, is_dimond_user: 0, is_beginner_user: 1, is_looser_user: 0 };
                                 redis.setRedisForUserCategory(redisKeyForUserCategory, userCatObj);
                             }
                         } catch (errrrrr) {
