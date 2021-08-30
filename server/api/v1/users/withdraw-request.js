@@ -27,6 +27,7 @@ const BANK_MID = process.env.BANK_MID;
 module.exports = async (req, res) => {
   	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
+		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		let params = req.body;
 		let constraints = {
 			withdraw_amount: "required",
@@ -72,7 +73,8 @@ module.exports = async (req, res) => {
 							updatedData.type = params.type || '';
 							updatedData.email = user.email || '';
 							updatedData.wallet_type = params.wallet_type || '';
-							updatedData.is_instant = isInstant;
+							updatedData.is_instant = isInstant; 
+							updatedData.ip_address = userIp ? userIp :""; 
 							// console.log(remainingAmount);
 							
 							// let result =  await Users.update({_id: userId}, {$set : {affiliate_amount : remainingAmount}});
@@ -109,6 +111,7 @@ module.exports = async (req, res) => {
 							updatedData.email = user.email || '';
 							updatedData.wallet_type = '';
 							updatedData.is_instant = isInstant;
+							updatedData.ip_address = userIp ? userIp :""; 
 							let settingData= {};
 							let appSettingData= {};
 							redis.getRedis('app-setting', async (err, data) => {
