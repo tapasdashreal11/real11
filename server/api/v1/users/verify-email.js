@@ -117,7 +117,7 @@ module.exports = {
     let params = req.body;
     try {
       let userId = req.userId || null;
-       if(userId && params && (params.device_id ||params.clevertap_id || params.appsflayer_id)){
+       if(userId && params && (params.device_id ||params.clevertap_id || params.appsflayer_id || params.user_gaid)){
          let user_update = {};
          if(params.device_id){
           user_update['device_id'] = params.device_id; 
@@ -128,7 +128,10 @@ module.exports = {
          if(params.appsflayer_id){
           user_update['appsflayer_id'] = params.appsflayer_id; 
          }
-        if(user_update && (user_update.device_id || user_update.clevertap_id || user_update.appsflayer_id)){
+         if(params.user_gaid){
+          user_update['user_gaid'] = params.user_gaid; 
+         }
+        if(user_update && (user_update.device_id || user_update.clevertap_id || user_update.appsflayer_id || user_update.user_gaid)){
           await Users.findOneAndUpdate({ _id: ObjectId(userId) }, { $set: user_update});
         }
         response["status"] = true;
