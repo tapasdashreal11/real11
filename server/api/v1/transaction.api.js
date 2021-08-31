@@ -636,7 +636,7 @@ module.exports = {
                                                                 }
                                                                 ]
                                                               }
-                                                              facebookEntryService(fb_event,'');
+                                                              //facebookEntryService(fb_event,'');
                                                            }catch(errfb){}
                                                     } catch(errrrr){
                                                         console.log('first time user is coming errrr*****',errrrr);
@@ -1117,7 +1117,7 @@ module.exports = {
                                 }
                                 ]
                               }
-                              facebookEntryService(fb_event,'');
+                              //facebookEntryService(fb_event,'');
                            }catch(errfb){}
                     } catch(errrrr){
                         console.log('first time user is coming errrr*****',errrrr);
