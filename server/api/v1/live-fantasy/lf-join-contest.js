@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1,"team_name":1 }),
+                User.findById(user_id).select({"avatar": 1, "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1,"team_name":1 }),
                 LFMatchContest.findOne({ 'match_id': decoded['match_id'], 'contest_id': contest_id,series_id: parseInt(series_id) }),
                 LFMatchList.findOne({ 'match_id': decoded['match_id'],  series_id: parseInt(series_id)}),
             ];
@@ -118,6 +118,7 @@ module.exports = async (req, res) => {
                                                 contest.contest_id = contest_id;
                                                 contest.user_id = user_id;
                                                 contest.team_name = authUser.team_name;
+                                                contest.avatar = authUser && authUser.avatar ? authUser.avatar:'';
                                                 contest.team_count = team_count ? parseInt(team_count):1;
                                                 contest.total_amount = contestData.entry_fee;
                                                 contest.parent_match_id = contestData && contestData.parent_match_id ? contestData.parent_match_id: parent_match_id;
