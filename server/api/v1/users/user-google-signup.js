@@ -537,6 +537,7 @@ module.exports = {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
             let params = req.body;
+            const user_id = req.userId;
             let constraints = { phone: "required", password: "required", email: "required" };
             let validator = new Validator(params, constraints);
             let matched = await validator.check();
@@ -547,7 +548,7 @@ module.exports = {
             }
             let userGmailsignup = await Users.findOne({ phone: params.phone }, { _id: 1, google_id: 1, email: 1, phone: 1 });
             if (userGmailsignup && userGmailsignup._id) {
-                let userEmailData = await Users.findOne({ email: params.email }, { _id: 1 });
+                let userEmailData = await Users.findOne({_id: {$ne:userGmailsignup._id}, email: params.email }, { _id: 1 });
                 if (userEmailData) {
                     response["message"] = "This email is already registered!!";
                     return res.json(response);
