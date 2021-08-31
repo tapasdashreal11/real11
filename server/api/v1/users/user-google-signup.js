@@ -553,6 +553,7 @@ module.exports = {
                     response["message"] = "This email is already registered!!";
                     return res.json(response);
                 } else {
+                    
                     await Users.updateOne({ _id: userGmailsignup._id }, { $set: { password: params.password, email: params.email } });
                     response["message"] = "Updated successfully!!";
                     response["status"] = true;
