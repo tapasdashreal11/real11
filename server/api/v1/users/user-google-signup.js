@@ -222,7 +222,7 @@ module.exports = {
                                                 }
                                             ]
                                         }
-                                        facebookEntryService(fb_event, '');
+                                       // facebookEntryService(fb_event, '');
                                     } catch (errfb) { }
 
                                 }
@@ -503,7 +503,7 @@ module.exports = {
                                                 }
                                             ]
                                         }
-                                        facebookEntryService(fb_event, '');
+                                      // facebookEntryService(fb_event, '');
                                     } catch (errfb) { }
 
                                 }

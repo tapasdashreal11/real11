@@ -278,7 +278,7 @@ module.exports = async (req, res) => {
                        }
                       ]
                     }
-                    facebookEntryService(fb_event,'');
+                    //facebookEntryService(fb_event,'');
                  }catch(errfb){}
                 
               }
