@@ -26,7 +26,8 @@ module.exports = {
         FIRST_DEPOSITE_BONUS: 22,
         COUPON_PURCHASE_TXN: 23,
         WEEKLY_LEADERBOARD_WIN:24,
-        FRIEND_FIRST_DEPOSIT_REWARD:25
+        FRIEND_FIRST_DEPOSIT_REWARD:25,
+        SIGNUP_BONOUS_REWARD:26
     },
     MatchStatus:{
         IN_REVIEW: 'Under Review',

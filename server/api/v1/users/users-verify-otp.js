@@ -2,6 +2,7 @@ const { ObjectId } = require('mongodb');
 
 const Tokens = require("../../../models/token");
 const Users = require("../../../models/user");
+const Transaction = require("../../../models/transaction");
 const EmailTemplate = require("../../../models/email");
 const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
@@ -11,7 +12,7 @@ const path = require('path');
 const _ = require('lodash');
 const logger = require("../../../../utils/logger")(module);
 const { generateClientToken, sendSMTPMail} = require("../common/helper");
-const { RedisKeys } = require('../../../constants/app');
+const {TransactionTypes, RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 
@@ -75,6 +76,7 @@ module.exports = async (req, res) => {
 					updateObj['phone'] = user.temp_phone;
 					updateObj['temp_phone'] = '';
 					finalResponse['phone'] = user.temp_phone;
+					await transactionAtSignupBonous(user._id);
 					console.log('***** in for phone update');
 				} 
 				      
@@ -141,3 +143,16 @@ module.exports = async (req, res) => {
 		res.send(ApiUtility.failed(error.message));
 	}
 };
+
+async function transactionAtSignupBonous(userId){
+	let date = new Date();
+	let entity = {
+		user_id: userId,
+		txn_amount: 75,
+		currency: "INR",
+		txn_date: Date.now(),
+		local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
+		added_type: TransactionTypes.SIGNUP_BONOUS_REWARD
+	};
+	await Transaction.create(entity);
+}
