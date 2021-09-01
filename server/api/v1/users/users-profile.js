@@ -44,7 +44,9 @@ module.exports = {
           data.email = user.email || '';
           data.contest_finished = userProData && userProData.contest_finished ? userProData.contest_finished : 0;
           data.total_match = userProData && userProData.total_match ? userProData.total_match : 0;
-          data.total_series = userProData && userProData.total_series ? userProData.total_series : 0;
+         // data.total_series = userProData && userProData.total_series ? userProData.total_series : 0;
+          let t_series_Counts = userProData && userProData.total_series ? userProData.total_series : 0;
+          data.total_series = userProData && userProData.series_ids  ? t_series_Counts + _.size(userProData.series_ids): t_series_Counts;
           data.series_wins = userProData && userProData.series_wins ? userProData.series_wins : 0;
           
           data.contest_level = level;

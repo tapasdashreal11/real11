@@ -60,6 +60,7 @@ const AdminSchema = mongoose.Schema({
     total_deposit: { type: Number, default: 0 },
     total_withdraw: { type: Number, default: 0 },
     total_joined_contest_amount: { type: Number, default: 0 },
+    series_ids: { type: Array, default: []},
 
     
 }, {
