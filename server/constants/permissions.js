@@ -32,7 +32,7 @@ const TransactionTypesByValues =  [
   "Coupon Purchase",
   "Weekly Leaderboard Reward",
   "Friend First Time Deposit Reward",
-  "Signup Bonous Reward",
+  "Signup Bonus Reward",
   "Signup Xtra Cash Reward"
 ];
 
