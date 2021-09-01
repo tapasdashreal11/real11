@@ -32,7 +32,6 @@ teamProfileComparision: async (req, res) => {
       
       try {
         let userProData =  await UserProfile.findOne({user_id : ObjectId(params.friend_user_id)});
-	     //console.log("data coming on profile is ----------------------------------------------------", params.friend_user_id, userProData)
         let userData =  await Users.findOne({_id : new ObjectId(params.friend_user_id), status : 1});
         if(userData) {
           
@@ -55,7 +54,9 @@ teamProfileComparision: async (req, res) => {
           data.contest_level  = level || '';
           data.contest_finished  = userProData && userProData.contest_finished ? userProData.contest_finished : 0;
           data.total_match  = userProData && userProData.total_match ? userProData.total_match : 0;
-          data.total_series  = userProData && userProData.total_series ? userProData.total_series : 0;
+         // data.total_series  = userProData && userProData.total_series ? userProData.total_series : 0;
+          let t_series_Counts = userProData && userProData.total_series ? userProData.total_series : 0;
+          data.total_series = userProData && userProData.series_ids  ? t_series_Counts + _.size(userProData.series_ids): t_series_Counts;
           data.series_wins  =  userProData && userProData.series_wins ? userProData.series_wins : 0;
 
           response['message'] = "Profile Comparison";
