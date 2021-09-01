@@ -146,13 +146,23 @@ module.exports = async (req, res) => {
 
 async function transactionAtSignupBonous(userId){
 	let date = new Date();
-	let entity = {
-		user_id: userId,
-		txn_amount: 75,
-		currency: "INR",
-		txn_date: Date.now(),
-		local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
-		added_type: TransactionTypes.SIGNUP_BONOUS_REWARD
-	};
-	await Transaction.create(entity);
+	let transaction_data =[
+		{
+			user_id: userId,
+			txn_amount: 25,
+			currency: "INR",
+			txn_date: Date.now(),
+			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
+			added_type: TransactionTypes.SIGNUP_XTRA_CASH_REWARD
+		},
+		{
+			user_id: userId,
+			txn_amount: 50,
+			currency: "INR",
+			txn_date: Date.now(),
+			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
+			added_type: TransactionTypes.SIGNUP_BONOUS_REWARD
+		}
+	]
+	await Transaction.create(transaction_data);
 }

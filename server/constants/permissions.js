@@ -32,7 +32,8 @@ const TransactionTypesByValues =  [
   "Coupon Purchase",
   "Weekly Leaderboard Reward",
   "Friend First Time Deposit Reward",
-  "Signup Bonous Reward"
+  "Signup Bonous Reward",
+  "Signup Xtra Cash Reward"
 ];
 
 module.exports = {
