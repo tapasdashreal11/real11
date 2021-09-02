@@ -4,7 +4,6 @@ const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 const { TransactionTypes } = require('../../../constants/app');
-const { sendSMTPMail, sendNotificationFCM, sendMailToDeveloper } = require("../common/helper.js");
 const { startSession } = require('mongoose');
 
 module.exports = async (req, res) => {
@@ -65,6 +64,12 @@ module.exports = async (req, res) => {
 	}
 };
 
+/**
+ * This is used to generate transaction for transfer affilate amonut into depsoit
+ * @param {*} userId 
+ * @param {*} affi_amount 
+ * @param {*} session 
+ */
 async function transAtAffilateMoneyTranser(userId,affi_amount,session){
 	let date = new Date();
 	let transaction_data =[
