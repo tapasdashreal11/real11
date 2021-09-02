@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
 			} else {
                 await session.abortTransaction();
                 session.endSession();
-				response["message"] = "Invalid User.";
+				response["message"] = user && user.is_youtuber ? "Invalid Amount": "Invalid User.";
 				return res.json(response);
 			}
 		} catch (err) {
