@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
 			if (user && pram_affi_amount >= 1 && user_affil_amount >= pram_affi_amount && user.is_youtuber) {
                let userWalletUpdate = await Users.findOneAndUpdate({ _id: userId },{$inc:{affiliate_amount:-pram_affi_amount,cash_balance:pram_affi_amount}},sessionOpts);
                if(userWalletUpdate){
-                    await transAtAffilateMoneyTranser(userId,pram_affi_amount,session);
+                    await transAtAffilateMoneyTranser(userId,pram_affi_amount,session,userIp);
                     await session.commitTransaction();
                     session.endSession();
                     response["status"] = true;
@@ -69,8 +69,9 @@ module.exports = async (req, res) => {
  * @param {*} userId 
  * @param {*} affi_amount 
  * @param {*} session 
+ * @param {*} userIp 
  */
-async function transAtAffilateMoneyTranser(userId,affi_amount,session){
+async function transAtAffilateMoneyTranser(userId,affi_amount,session,userIp){
 	let date = new Date();
 	let transaction_data =[
 		{
