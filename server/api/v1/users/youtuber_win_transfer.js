@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
                     await session.commitTransaction();
                     session.endSession();
                     response["status"] = true;
-                    response["message"] = "Amount Transfered Successfully!!";
+                    response["message"] = "Amount Transferred Successfully!!";
                     return res.json(response);
                  } else {
                     await session.abortTransaction();
