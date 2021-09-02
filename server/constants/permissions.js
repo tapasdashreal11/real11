@@ -33,7 +33,9 @@ const TransactionTypesByValues =  [
   "Weekly Leaderboard Reward",
   "Friend First Time Deposit Reward",
   "Signup Bonus Reward",
-  "Signup Xtra Cash Reward"
+  "Signup Xtra Cash Reward",
+  "Affiliate Amount In Deposit",
+  "Affiliate Amount Withdraw For Deposit",
 ];
 
 module.exports = {
