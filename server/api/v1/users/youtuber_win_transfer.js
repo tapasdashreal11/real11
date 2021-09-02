@@ -65,7 +65,7 @@ module.exports = async (req, res) => {
 };
 
 /**
- * This is used to generate transaction for transfer affilate amonut into depsoit
+ * This is used to generate transaction for transfer affilate amonut into deposit
  * @param {*} userId 
  * @param {*} affi_amount 
  * @param {*} session 
