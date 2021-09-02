@@ -259,7 +259,7 @@ router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authent
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
 router.post('/api/v1/create-contest', auth.authenticate.jwtLogin, createContest);
 router.get('/api/v1/user-download/:dcode/:clevertap_id', userAppDownlad);
-router.post('/api/v1/youtuber-affil-to-deposit', auth.authenticate.jwtLogin, youtuberAffilWinTransfer);
+router.post('/api/v1/youtuber-affiliate-to-deposit', auth.authenticate.jwtLogin, youtuberAffilWinTransfer);
 
 router.get('/api/v1/contest-leaderboard/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestLeaderboardLatest);
 // router.get('/api/v1/new-contest-leaderboard/:match_id/:contest_id', auth.authenticate.jwtLogin, newLeaderboard);

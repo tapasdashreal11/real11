@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongodb');
 const Users = require("../../../models/user");
 const Transaction = require('../../../models/transaction');
 const { Validator } = require("node-input-validator");
@@ -14,7 +13,7 @@ module.exports = async (req, res) => {
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         let params = req.body;
         let userId = req.userId;
-		let constraints = { affil_amount: "required", type: "required" };
+		let constraints = { affil_amount: "required" };
 		let validator = new Validator(params, constraints);
 		let matched = await validator.check();
 		if (!matched) {
@@ -40,7 +39,7 @@ module.exports = async (req, res) => {
                     await session.commitTransaction();
                     session.endSession();
                     response["status"] = true;
-                    response["message"] = "Amount Transfer Successfully!!";
+                    response["message"] = "Amount Transfered Successfully!!";
                     return res.json(response);
                  } else {
                     await session.abortTransaction();
