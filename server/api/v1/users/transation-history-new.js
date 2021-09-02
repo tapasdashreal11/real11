@@ -32,7 +32,7 @@ module.exports = async (req, res, dbs) => {
 				_.forEach(usersData, function(i, k){
 				let tItem = {
 						"_id": i._id,
-						"sign_type": (_.indexOf([3, 11, 13, 15, 23], i.added_type) >=0)? '-' : '+' ,
+						"sign_type": (_.indexOf([3, 11, 13, 15, 23,28,29], i.added_type) >=0)? '-' : '+' ,
 						"amount": i.txn_amount.toString(),
 						"txn_type": (i.added_type)? transaction_type[parseInt(i.added_type)] : "",
 						"transaction_id": i.local_txn_id,
