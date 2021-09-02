@@ -72,7 +72,7 @@ module.exports = async (req, res) => {
 				var tokelDelMany = await Tokens.deleteMany({"userId":ObjectId(user._id)});
 				let token = await generateClientToken(tokendata);
 				let updateObj = { otp: '', otp_time: '', token: token, device_id: params.device_id, device_type: params.device_type,status:1 } 
-				if(params && params.phone && user && user.temp_phone && !_.isEmpty(user.temp_phone) && _.isEqual(user.temp_phone,params.phone)&& _.isEmpty(user.phone )){
+				if(params && params.phone && user && user.temp_phone && user.is_beginner_user && !_.isEmpty(user.temp_phone) && _.isEqual(user.temp_phone,params.phone)&& _.isEmpty(user.phone )){
 					updateObj['phone'] = user.temp_phone;
 					updateObj['temp_phone'] = '';
 					finalResponse['phone'] = user.temp_phone;
