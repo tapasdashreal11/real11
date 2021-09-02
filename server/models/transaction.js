@@ -117,6 +117,7 @@ var transactionSchema = new Schema({
   withdraw_commission: {
     type: Number,default:0
   },
+  ip_address:{ type:String }
 });
 
 

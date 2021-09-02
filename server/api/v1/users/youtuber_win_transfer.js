@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
         session.startTransaction();
         const sessionOpts = { session, new: true };
 		try {
-            let user = await Users.findOne({ _id: userId });
+            let user = await Users.findOne({ _id: userId },{_id:1,affiliate_amount:1,is_youtuber:1});
             let user_affil_amount = user.affiliate_amount ?parseFloat(user.affiliate_amount): 0
 			if (user && pram_affi_amount >= 1 && user_affil_amount >= pram_affi_amount && user.is_youtuber) {
                let userWalletUpdate = await Users.findOneAndUpdate({ _id: userId },{$inc:{affiliate_amount:-pram_affi_amount,cash_balance:pram_affi_amount}},sessionOpts);
@@ -74,7 +74,8 @@ async function transAtAffilateMoneyTranser(userId,affi_amount,session){
 			currency: "INR",
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
-			added_type: TransactionTypes.AFFIL_AMOUNT_AT_DEPOST
+            added_type: TransactionTypes.AFFIL_AMOUNT_AT_DEPOST,
+            ip_address : userIp ? userIp : ""
 		},
 		{
 			user_id: userId,
@@ -82,7 +83,8 @@ async function transAtAffilateMoneyTranser(userId,affi_amount,session){
 			currency: "INR",
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
-			added_type: TransactionTypes.AFFIL_AMOUNT_WITHDRAWAL_FOR_DEPOST
+            added_type: TransactionTypes.AFFIL_AMOUNT_WITHDRAWAL_FOR_DEPOST,
+            ip_address : userIp ? userIp : ""
 		}
 	]
 	await Transaction.create(transaction_data,{ session: session });
