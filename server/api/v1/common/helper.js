@@ -233,109 +233,114 @@ const parseContestTeamsJoined = (joinedTeamsCount) => {
 
 const sendSMTPMail = (to, subject, message) => {
   try {
-    var transporter = nodemailer.createTransport( ({
-      tls: {
-        rejectUnauthorized: false
-      },
-      host: config.smtp.host,
-      secureConnection: false,
-      port: config.smtp.port,
-      name : "Real11",
-      auth: {
-        user: config.smtp.username,
-        pass: config.smtp.password
-        }
-    }));
-
-    var mailOptions = {
-      // from: config.smtp.fromEmail,
-      // from: { email : config.smtp.fromEmail, name: "Real11" },
-      from: '"Real11 Fantasy" <' + config.smtp.fromEmail + '>',
-      to: to,
-      subject: subject,
-      text: message,
-      html: message,
-    };
-      
-    transporter.sendMail(mailOptions, function(error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("mail sent on:", info.accepted);
-      }
-    });
-  }catch(error) {
-    // console.log(info);
-  }
-};
-const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, orderId) => {
-  try {
-    /** export mailer */
-    var transporter = nodemailer.createTransport(({
-      tls: {
-        rejectUnauthorized: false
-      },
-      host: config.smtp.host,
-      secureConnection: false,
-      port: config.smtp.port,
-      name: "Real11",
-      auth: {
-        user: config.smtp.username,
-        pass: config.smtp.password
-      }
-    }));
-    /** export mailer */
-    /** start with template */
-    let emailTemplate;
-    let siteBaseUrl = `${req.protocol}://${req.get('host')}`;
-    let requestUrl = siteBaseUrl + req.url;
-    let requestMethod = req.method;
-    const currentDate = new Date();
-
-    let param = {};
-    if (requestMethod == 'POST') {
-      param = req.body;
-    }
-
-    const messageData = {
-      userName: username,
-      depositeAmount: txnAmount,
-      orderId: orderId
-    };
-    // console.log(messageData);
-    // return
-    ejs.renderFile(path.join(__dirname, `../../../../views/email-templates/${template}`), {
-      requestUrl: requestUrl,
-      requestMethod: requestMethod,
-      messageData: messageData || '',
-      requestTime: currentDate
-    })
-      .then(result => {
-        emailTemplate = result;
-        
+    if(to && !_.isEmpty(to)){
+        var transporter = nodemailer.createTransport( ({
+          tls: {
+            rejectUnauthorized: false
+          },
+          host: config.smtp.host,
+          secureConnection: false,
+          port: config.smtp.port,
+          name : "Real11",
+          auth: {
+            user: config.smtp.username,
+            pass: config.smtp.password
+            }
+        }));
+    
         var mailOptions = {
           // from: config.smtp.fromEmail,
           // from: { email : config.smtp.fromEmail, name: "Real11" },
           from: '"Real11 Fantasy" <' + config.smtp.fromEmail + '>',
           to: to,
           subject: subject,
-          text: emailTemplate,
-          html: emailTemplate,
+          text: message,
+          html: message,
         };
-        console.log("mailOptions", mailOptions.from, mailOptions.subject, mailOptions.to);
-        transporter.sendMail(mailOptions, function (error, info) {
+          
+        transporter.sendMail(mailOptions, function(error, info) {
           if (error) {
-            console.log("send mail error ===> ", error);
+            console.log(error);
           } else {
-            console.log(info);
             console.log("mail sent on:", info.accepted);
           }
         });
-      }).catch(err => {
-        console.log("Error Rendering emailTemplate", err);
-      });
-    /** start with template */
-    /************************** */
+    }
+    
+  }catch(error) {
+    // console.log(info);
+  }
+};
+const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, orderId) => {
+  try {
+    if(to && !_.isEmpty(to)){
+      /** export mailer */
+      var transporter = nodemailer.createTransport(({
+        tls: {
+          rejectUnauthorized: false
+        },
+        host: config.smtp.host,
+        secureConnection: false,
+        port: config.smtp.port,
+        name: "Real11",
+        auth: {
+          user: config.smtp.username,
+          pass: config.smtp.password
+        }
+      }));
+      /** export mailer */
+      /** start with template */
+      let emailTemplate;
+      let siteBaseUrl = `${req.protocol}://${req.get('host')}`;
+      let requestUrl = siteBaseUrl + req.url;
+      let requestMethod = req.method;
+      const currentDate = new Date();
+
+      let param = {};
+      if (requestMethod == 'POST') {
+        param = req.body;
+      }
+
+      const messageData = {
+        userName: username,
+        depositeAmount: txnAmount,
+        orderId: orderId
+      };
+      // console.log(messageData);
+      // return
+      ejs.renderFile(path.join(__dirname, `../../../../views/email-templates/${template}`), {
+        requestUrl: requestUrl,
+        requestMethod: requestMethod,
+        messageData: messageData || '',
+        requestTime: currentDate
+      })
+        .then(result => {
+          emailTemplate = result;
+          
+          var mailOptions = {
+            // from: config.smtp.fromEmail,
+            // from: { email : config.smtp.fromEmail, name: "Real11" },
+            from: '"Real11 Fantasy" <' + config.smtp.fromEmail + '>',
+            to: to,
+            subject: subject,
+            text: emailTemplate,
+            html: emailTemplate,
+          };
+          console.log("mailOptions", mailOptions.from, mailOptions.subject, mailOptions.to);
+          transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              console.log("send mail error ===> ", error);
+            } else {
+              console.log(info);
+              console.log("mail sent on:", info.accepted);
+            }
+          });
+        }).catch(err => {
+          console.log("Error Rendering emailTemplate", err);
+        });
+      /** start with template */
+      /************************** */
+    }
   } catch (error) {
     // console.log(info);
   }

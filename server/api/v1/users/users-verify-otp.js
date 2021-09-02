@@ -82,7 +82,7 @@ module.exports = async (req, res) => {
 				      
 				await Users.updateOne({ _id: user._id }, { $set:updateObj });
 	
-				if(params.is_signup == true && user && user.email) {
+				if(params.is_signup == true && user && user.email && !_.isEmpty(user.email)) {
 					console.log('enter');
 					ejs.renderFile(path.join(__dirname, "../../../../views/email-templates/user-registration/html.ejs"), {
 						username  : user.email,
