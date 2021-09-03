@@ -201,7 +201,7 @@ async function setDataToAppsflyer(params){
             };
 
             if (!params.is_refered_by) {
-				console.log('data for not fer****',signUpBody);
+				console.log('data for not fer****',signUpBody,appsflyerURL);
                 appsFlyerEntryService(signUpBody, appsflyerURL);
             }
         }
