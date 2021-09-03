@@ -8,21 +8,10 @@ const ModelService = require("../../ModelService");
 
 module.exports = async (req, res) => {
   try {
-
-    // Data: {
-    //   "language" : "en",
-    //   "account_no" : "43754839359743875",
-    //   "ifsc_code" : "HDFC0000295",
-    //   "user_id" : "331583",
-    //   "bank_name" : "HDFC Bank",
-    //   "branch" : "COCHIN - KADAVANTHRA"
-    // }
-
-
     var response = { status: false, message: "Invalid Request", data: {} };
     let params = req.body;
-    let constraints = { 
-      account_no: "required",  
+    let constraints = {
+      account_no: "required",
       bank_name: "required",
       branch: "required",
       ifsc_code: "required"
@@ -38,31 +27,25 @@ module.exports = async (req, res) => {
 
     try {
       let userId = req.userId;
-
       let user = await Users.findOne({ _id: userId });
-      // const user = await (new ModelService(Users)).getUserDetail(userId);
-      if(user) {
+      if (user) {
         let bankDetail = await BankDetails.findOne({ user_id: userId });
         let updatedData = {};
         updatedData.account_number = params.account_no || null;
         updatedData.ifsc_code = params.ifsc_code || null;
         updatedData.bank_name = params.bank_name || null;
         updatedData.branch = params.branch || null;
-        updatedData.beneficiary_id =  null;
-        updatedData.user_id =  userId;
-
-        if(params.image){
+        updatedData.beneficiary_id = null;
+        updatedData.user_id = userId;
+        if (params.image) {
           updatedData.bank_image = params.image;
         }
-        if(!bankDetail) {
+        if (!bankDetail) {
           await BankDetails.create(updatedData);
-          
         } else {
-          const result = await BankDetails.updateOne({ user_id: user._id }, {$set : updatedData});
-          // response["message"] = "Account number already exists.";
-          // return res.json(response);
+          const result = await BankDetails.updateOne({ user_id: user._id }, { $set: updatedData });
         }
-        const result2 = await Users.update({ _id: userId }, { $set: {bank_account_verify:1} });
+        await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 1 } });
         response["message"] = "Bank detail updated successfully.";
         response["status"] = true;
         response["data"] = updatedData;
@@ -72,7 +55,7 @@ module.exports = async (req, res) => {
         return res.json(response);
       }
     } catch (err) {
-      console.log('catch',err);
+      console.log('catch', err);
       response["msg"] = err.message;
       return res.json(response);
     }
