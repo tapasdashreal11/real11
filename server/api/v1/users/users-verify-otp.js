@@ -19,14 +19,11 @@ const { appsFlyerEntryService } = require("./appsflyer-api");
 
 module.exports = async (req, res) => {
 	try {
-		// console.log('enter');
-		// return false;
 		var response = { status: false, message: "Invalid Request", data: {} };
 		let params = req.body;
 		let constraints = {
 			is_signup: "required",
 			language: "required",
-			// device_id: "required",
 			user_id: "required",
 			otp: "required",
 			device_type: "required"
@@ -108,9 +105,7 @@ module.exports = async (req, res) => {
 				tokenInsertData.token = token;
 				tokenInsertData.device_id = params.device_id;
 				tokenInsertData.device_type = params.device_type;
-
 				finalResponse.token = token;
-				// console.log(finalResponse);return false;
 				try{
 					let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id });
 					if (referalUser && referalUser.referal_code) {
@@ -146,6 +141,10 @@ module.exports = async (req, res) => {
 	}
 };
 
+/**
+ * This is used to generate the transaction for new signup user for bonous
+ * @param {*} userId 
+ */
 async function transactionAtSignupBonous(userId){
 	let date = new Date();
 	let transaction_data =[
@@ -201,7 +200,6 @@ async function setDataToAppsflyer(params){
             };
 
             if (!params.is_refered_by) {
-				console.log('data for not fer****',signUpBody,appsflyerURL);
                 appsFlyerEntryService(signUpBody, appsflyerURL);
             }
         }

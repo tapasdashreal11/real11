@@ -93,7 +93,7 @@ const  otherGameWinningDis   = require('./api/v1/contest/other-games-wining-dis'
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
-const {userGoogleSignIn,userGoogleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate} = require('./api/v1/users/user-google-signup');
+const {userGoogleSignIn,userGoogleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate,userAppleSignIn} = require('./api/v1/users/user-google-signup');
 const appSettingApi = require("./api/v1/common/app-settings");
 const user_offers = require("./api/v1/common/app-analysis-api");
 const { 
@@ -225,7 +225,8 @@ router.get('/',function(req,res){
 	return res.send("Welcome")
 })
 //API ROUTES//
-router.post('/api/v1/google-login', userGoogleSignIn);
+router.post('/api/v1/apple-login', userAppleSignIn); 
+router.post('/api/v1/google-login', userGoogleSignIn); 
 router.post('/api/v1/signup-data-upate', userGoogleSignUpDetailAdd); 
 router.post('/api/v1/user-game-signup', userSignup); 
 router.post('/api/v1/signup-email-data-update',auth.authenticate.jwtLogin, userNormalSignUpDetailUpdate); 

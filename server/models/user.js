@@ -68,6 +68,7 @@ const AdminSchema = mongoose.Schema({
     image: { type: String, default: '' },
     fb_id: { type: String, default: null },
     google_id: { type: String, default: null },
+    apple_id: { type: String, default: null },
     refer_id: { type: String, default: '' , unique: true},
     otp: String,
     otp_time: String,
