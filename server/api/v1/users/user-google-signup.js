@@ -567,6 +567,10 @@ module.exports = {
                     }
                 } else {
                     let userEmail = await Users.findOne({ apple_id: params.apple_id }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
+                   
+                    if(params && params.email && !userEmail){
+                        userEmail = await Users.findOne({ email: params.email }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
+                     }
                     if (!userEmail) {
                         let insertData = {};
                         insertData.apple_id = params.apple_id;
