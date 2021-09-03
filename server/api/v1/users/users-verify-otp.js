@@ -15,6 +15,7 @@ const { generateClientToken, sendSMTPMail} = require("../common/helper");
 const {TransactionTypes, RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
+const { appsFlyerEntryService } = require("./appsflyer-api");
 
 module.exports = async (req, res) => {
 	try {
@@ -77,6 +78,7 @@ module.exports = async (req, res) => {
 					updateObj['temp_phone'] = '';
 					finalResponse['phone'] = user.temp_phone;
 					await transactionAtSignupBonous(user._id);
+					setDataToAppsflyer(user);
 					console.log('***** in for phone update');
 				} 
 				      
@@ -165,4 +167,45 @@ async function transactionAtSignupBonous(userId){
 		}
 	]
 	await Transaction.create(transaction_data);
+}
+
+/**
+ *This is used to set data for new signup to appsflyer when user don't set any referal code
+ * @param {*} params 
+ */
+async function setDataToAppsflyer(params){
+    try {
+        let appsflyerURL = "";
+        if (params && params.device_type) {
+            if (params.device_type == "Android") {
+                appsflyerURL = config.appsFlyerAndroidUrl;
+            } else {
+                appsflyerURL = config.appsFlyeriPhoneUrl;
+            }
+        }
+        if (params && params.appsflayer_id) {
+            let event_val = {
+                "appsflyer_id": params.appsflayer_id || '',
+                "af_customer_user_id": params.clevertap_id || '',
+                "af_email": params.email || '',
+                "af_mobile": params.temp_phone || '',
+                'advertising_id': params && params.user_gaid ? params.user_gaid : ''
+            };
+            var signUpBody = {
+                "eventName": "SignUp",
+                "appsflyer_id": params.appsflayer_id || '',
+                "customer_user_id": params._id || '',
+                "eventTime": new Date(),
+                'advertising_id': params && params.user_gaid ? params.user_gaid : '',
+                "eventValue": JSON.stringify(event_val)
+            };
+
+            if (!params.is_refered_by) {
+                appsFlyerEntryService(signUpBody, appsflyerURL);
+            }
+        }
+
+    } catch (errr) {
+        console.log('errr', errr);
+    }
 }

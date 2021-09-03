@@ -125,7 +125,8 @@ const AdminSchema = mongoose.Schema({
     media_partner_name: {type: String, default: ''},
     user_gaid: {type: String},
     dcode: {type: String}, 
-    temp_phone: {type: String,default: ''}
+    temp_phone: {type: String,default: ''},
+    is_refered_by: { type: Boolean, default: false},
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },

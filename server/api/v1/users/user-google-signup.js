@@ -178,59 +178,7 @@ module.exports = {
                         response["login_success"] = false;
                         response["otp_status"] = false;
                         response["google_signup_status"] = true;
-                        // After successfully signup entery data in appsflyer
-                        try {
-                            if (params && params.appsflayer_id) {
-                                let event_val = {
-                                    "appsflyer_id": params.appsflayer_id || '',
-                                    "af_customer_user_id": params.clevertap_id || '',
-                                    "af_email": params.email || '',
-                                    'advertising_id': params && params.user_gaid ? params.user_gaid : ''
-                                };
-                                var signUpBody = {
-                                    "eventName": "SignUp",
-                                    "appsflyer_id": params.appsflayer_id || '',
-                                    "customer_user_id": insertId || '',
-                                    "eventTime": new Date(),
-                                    'advertising_id': params && params.user_gaid ? params.user_gaid : '',
-                                    "eventValue": JSON.stringify(event_val)
-                                };
-
-                                if (!_.isEmpty(params.email)) {
-                                    appsFlyerEntryService(signUpBody, appsflyerURL);
-                                    try {
-                                        let fb_event = {
-                                            "data": [
-                                                {
-                                                    "event_name": "CompleteRegistration",
-                                                    "event_time": parseInt(new Date().getTime() / 1000),
-                                                    "event_source_url": "real11.com/s2",
-                                                    "opt_out": false,
-                                                    "event_id": Math.floor(1000000 + Math.random() * 9000000),
-                                                    "user_data": {
-                                                        "em": params && params.email ? sha256(params.email) : null,
-                                                        "fbc": params && params.fbc_id ? params.fbc_id : null,
-                                                        "fn": insertData && insertData.team_name ? sha256(insertData.team_name) : null,
-                                                        "client_ip_address": userIp || "172.17.0.5",
-                                                        "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                                                    },
-                                                    "custom_data": {
-                                                        "value": 1,
-                                                        "currency": "INR"
-                                                    },
-                                                    "action_source": "website"
-                                                }
-                                            ]
-                                        }
-                                       // facebookEntryService(fb_event, '');
-                                    } catch (errfb) { }
-
-                                }
-                            }
-
-                        } catch (errr) {
-                            console.log('errr', errr);
-                        }
+                        
                         return res.json(response);
                     } else {
                         await Users.findOneAndUpdate({ _id: userEmail._id }, { $set: { google_id: params.google_id, status: 0 } });
@@ -339,6 +287,7 @@ module.exports = {
                     let userPhone = await Users.findOne({ phone: params.mobile_number }, { _id: 1, google_id: 1, email: 1, phone: 1 });
                     if (!userPhone) {
                         let referal_code_detail = {};
+                        let insertData = {};
                         if (!_.isEmpty(params.invite_code)) {
                             var caps_invite_code = params.invite_code.toUpperCase();
                             let inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
@@ -347,14 +296,13 @@ module.exports = {
                                 referal_code_detail.refered_by = new ObjectId(inviteDetails._id);
                                 referal_code_detail.user_amount = config.total_user_ref_earned;
                                 referal_code_detail.status = 1;
+                                insertData.is_refered_by = true;
                             } else {
                                 response["message"] = "Invalid invite code.";
                                 return res.json(response);
                             }
                         }
-
                         // now start
-                        let insertData = {};
                         insertData.temp_phone = params.mobile_number;
                         insertData.language = params.language;
                         insertData.invite_code = params.invite_code;
@@ -457,61 +405,6 @@ module.exports = {
                         response["data"] = { _id: user._id,user_id: user._id, email: user.email, phone: params.mobile_number, google_id: user.google_id };
                         response["login_success"] = false;
                         response["otp_status"] = true;
-                        // After successfully signup entery data in appsflyer
-                        try {
-                            if (params && params.appsflayer_id) {
-                                let event_val = {
-                                    "appsflyer_id": params.appsflayer_id || '',
-                                    "af_customer_user_id": params.clevertap_id || '',
-                                    "af_email": params.email || '',
-                                    "af_mobile": params.mobile_number || '',
-                                    'advertising_id': params && params.user_gaid ? params.user_gaid : ''
-                                };
-                                var signUpBody = {
-                                    "eventName": "SignUp",
-                                    "appsflyer_id": params.appsflayer_id || '',
-                                    "customer_user_id": insertId || '',
-                                    "eventTime": new Date(),
-                                    'advertising_id': params && params.user_gaid ? params.user_gaid : '',
-                                    "eventValue": JSON.stringify(event_val)
-                                };
-
-                                if (_.isEmpty(params.invite_code)) {
-                                    appsFlyerEntryService(signUpBody, appsflyerURL);
-                                    try {
-                                        let fb_event = {
-                                            "data": [
-                                                {
-                                                    "event_name": "CompleteRegistration",
-                                                    "event_time": parseInt(new Date().getTime() / 1000),
-                                                    "event_source_url": "real11.com/s2",
-                                                    "opt_out": false,
-                                                    "event_id": Math.floor(1000000 + Math.random() * 9000000),
-                                                    "user_data": {
-                                                        "em": params && params.email ? sha256(params.email) : null,
-                                                        "ph": params && params.mobile_number ? sha256(params.mobile_number) : null,
-                                                        "fbc": params && params.fbc_id ? params.fbc_id : null,
-                                                        "fn": insertData && insertData.team_name ? sha256(insertData.team_name) : null,
-                                                        "client_ip_address": userIp || "172.17.0.5",
-                                                        "client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                                                    },
-                                                    "custom_data": {
-                                                        "value": 1,
-                                                        "currency": "INR"
-                                                    },
-                                                    "action_source": "website"
-                                                }
-                                            ]
-                                        }
-                                      // facebookEntryService(fb_event, '');
-                                    } catch (errfb) { }
-
-                                }
-                            }
-
-                        } catch (errr) {
-                            console.log('errr', errr);
-                        }
                         return res.json(response);
 
                     } else {
@@ -604,7 +497,195 @@ module.exports = {
         }
 
 
-    }
+    },
+    userAppleSignIn: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let appsflyerURL = "";
+            let params = req.body;
+            let constraints = { apple_id: "required", email: "required" };
+            let validator = new Validator(params, constraints);
+            let matched = await validator.check();
+            if (!matched) {
+                response["message"] = "Required fields missing";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+            try {
+                var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                let userGmailsignup = await Users.findOne({ apple_id: params.apple_id, email: params.email });
+                if (userGmailsignup && userGmailsignup._id) {
+                    if (_.isEmpty(userGmailsignup.phone) || _.isUndefined(userGmailsignup.phone) || _.isNull(userGmailsignup.phone)) {
+                        response["message"] = "Please enter your phone number.";
+                        response["status"] = true;
+                        response["data"] = {_id: userGmailsignup._id, user_id: userGmailsignup._id, email: userGmailsignup.email, apple_id: userGmailsignup.apple_id };
+                        response["login_success"] = false;
+                        response["otp_status"] = false;
+                        return res.json(response);
+                    } else {
+                        if (userGmailsignup && userGmailsignup.status) {
+                            var finalResponse = {};
+                            finalResponse = userGmailsignup;
+                            finalResponse.is_youtuber = (finalResponse.is_youtuber == 1) ? true : false;
+                            let tokendata = {};
+                            tokendata.language = userGmailsignup.language || 'en';
+                            tokendata._id = userGmailsignup._id;
+                            tokendata.id = userGmailsignup._id;
+                            tokendata.phone = userGmailsignup.phone;
+                            tokendata.email = userGmailsignup.email;
+
+                            await Tokens.deleteMany({ "userId": ObjectId(userGmailsignup._id) });
+                            let token = await generateClientToken(tokendata);
+                            await Users.updateOne({ _id: userGmailsignup._id }, { $set: { otp: '', otp_time: '', token: token } });
+                            let tokenInsertData = {};
+                            tokenInsertData.userId = new ObjectId(userGmailsignup._id);
+                            tokenInsertData.token = token;
+                            tokenInsertData.device_id = params.device_id;
+                            tokenInsertData.device_type = params.device_type;
+                            finalResponse.token = token;
+
+                            Tokens.create(tokenInsertData);
+                            try {
+                                delete finalResponse.password;
+                                delete finalResponse.otp;
+                            } catch (eror) { }
+                            //****************Set Toen In Redis**************** */
+                            var newTokenObj = { user_id: userGmailsignup._id, token: token }
+                            redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
+                            //************************************************************** */
+                            response["message"] = "Successfully login!!";
+                            response["status"] = true;
+                            response["token"] = token;
+                            response["data"] = finalResponse;
+                            response["login_success"] = true;
+                            return res.json(response);
+
+                        } else {
+                            var otpRes = await sendOtp(userGmailsignup);
+                            return res.json(otpRes);
+                        }
+                    }
+                } else {
+                    let userEmail = await Users.findOne({ email: params.email }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
+                    if (!userEmail) {
+                        let insertData = {};
+                        insertData.google_id = params.google_id;
+                        insertData.email = params.email;
+                        insertData.language = params.language || 'en';
+                        insertData.invite_code = params.invite_code;
+                        insertData.clevertap_id = params.clevertap_id || '';
+                        insertData.appsflayer_id = params.appsflayer_id || '';
+                        insertData.refer_id = createUserReferal(10);
+                        insertData.isFirstPaymentAdded = 2;
+                        insertData.is_beginner_user = 1;
+                        if (params && params.user_gaid) {
+                            insertData.user_gaid = params.user_gaid;
+                        }
+                        if (params && params.dcode) {
+                            insertData.dcode = params.dcode;
+                        }
+                        if (params && params.device_id)
+                            insertData.device_id = params.device_id;
+
+                        if (params && params.device_type) {
+                            insertData.device_type = params.device_type;
+                            if (params.device_type == "Android") {
+                                appsflyerURL = config.appsFlyerAndroidUrl;
+                            } else {
+                                appsflyerURL = config.appsFlyeriPhoneUrl;
+                            }
+                        }
+                        insertData.team_name = createTeamName(params.email);
+                        insertData.bonus_amount = config.referral_bouns_amount;
+                        insertData.extra_amount = 25; // first time user signup
+                        insertData.image = '';
+                        insertData.status = 0;
+                        insertData.avatar = 'avatar20';
+                        insertData.refer_able = 1;
+
+                        let full_name = params.name;
+
+                        if (params.name && full_name != '') {
+                            full_name = full_name.split(' ');
+
+                            let firstName = full_name[0];
+                            let lastName = '';
+                            if (full_name[1]) {
+                                lastName = full_name[1];
+                            }
+                            insertData.first_name = firstName;
+                            insertData.last_name = lastName;
+
+                        }
+                        var otp = Math.floor(100000 + Math.random() * 900000);
+                        insertData.otp = otp;
+                        let otp_time = currentDateTimeFormat("YYYY-MM-DD HH:mm:ss");
+                        insertData.otp_time = otp_time;
+
+                        insertData.ip_address = userIp;
+
+                        response["message"] = "Registered successfully.Please enter your mobile number";
+
+                        const user = await Users.create(insertData);
+                        try {
+                            if (params && params.device_id) {
+                                Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
+                            }
+                        } catch (errr) { }
+                        const insertId = user._id;
+                        insertData.user_id = insertId;
+                        let bank_details = {};
+                        bank_details.user_id = insertId;
+                        await BankDetails.create(bank_details);
+                        await Profile.create(bank_details);
+                        await PanDetails.create(bank_details);
+
+                        try {
+                            if (insertId) {
+                                let redisKeyForUserCategory = 'user-category-' + insertId;
+                                let userCatObj = { is_super_user: 0, is_dimond_user: 0, is_beginner_user: 1, is_looser_user: 0 };
+                                redis.setRedisForUserCategory(redisKeyForUserCategory, userCatObj);
+                            }
+                        } catch (errrrrr) {
+                            console.log('insertId*** errrr', insertId, errrrrr);
+                        }
+
+                        response["status"] = true;
+                        response["data"] = { user_id: insertId, email: params.email, google_id: params.google_id };
+                        response["login_success"] = false;
+                        response["otp_status"] = false;
+                        response["google_signup_status"] = true;
+                        
+                        return res.json(response);
+                    } else {
+                        await Users.findOneAndUpdate({ _id: userEmail._id }, { $set: { apple_id: params.apple_id, status: 0 } });
+                        if (userEmail && userEmail.phone && !_.isEmpty(userEmail.phone)) {
+                            userEmail['google_id'] = params.apple_id;
+                            let otpRes = await sendOtp(userEmail);
+                            return res.json(otpRes);
+                        } else {
+                            response["message"] = "Please enter your phone number.";
+                            response["status"] = true;
+                            response["data"] = { user_id: userEmail._id, email: userEmail.email, apple_id: userEmail.apple_id };
+                            response["login_success"] = false;
+                            response["otp_status"] = false;
+                            return res.json(response);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.log("google signup errro", err);
+                response["message"] = "Something went wrong !!";
+                return res.json(response);
+            }
+        } catch (error) {
+            logger.error("Google_ERROR", error.message);
+            var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
+            //send mail to developer to debug purpose
+            Helper.sendMailToDeveloper(req, error.message);  
+            return res.json(response);
+        }
+    },
 }
 
 /**
@@ -636,7 +717,7 @@ async function sendOtp(user) {
     await Users.updateOne({ _id: user._id }, { $set: { otp: otp, otp_time: otp_time } });
 
     response["status"] = true;
-    response["data"] = { user_id: data._id, email: data.email, phone: data.phone, google_id: data.google_id };
+    response["data"] = { user_id: data._id, email: data.email, phone: data.phone, google_id: data.google_id, apple_id: data.apple_id };
     response["login_success"] = false;
     response["otp_status"] = true;
     return response;
@@ -652,3 +733,4 @@ async function getUserName()
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
 }
+
