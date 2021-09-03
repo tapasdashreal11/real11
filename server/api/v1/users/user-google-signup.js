@@ -512,7 +512,7 @@ module.exports = {
             try {
                 var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
                 let qury_prms = {apple_id: params.apple_id};
-                if(params && params.email) qury_prms['email'] = params.email
+               // if(params && params.email) qury_prms['email'] = params.email
                 let userGmailsignup = await Users.findOne(qury_prms);
                 if (userGmailsignup && userGmailsignup._id) {
                     if (_.isEmpty(userGmailsignup.phone) || _.isUndefined(userGmailsignup.phone) || _.isNull(userGmailsignup.phone)) {
@@ -574,7 +574,7 @@ module.exports = {
                     if (!userEmail) {
                         let insertData = {};
                         insertData.apple_id = params.apple_id;
-                        insertData.email = params.email;
+                        //insertData.email = params.email;
                         insertData.language = params.language || 'en';
                         insertData.invite_code = params.invite_code;
                         insertData.clevertap_id = params.clevertap_id || '';
