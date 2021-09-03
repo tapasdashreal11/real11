@@ -15,8 +15,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
-const { appsFlyerEntryService } = require("./appsflyer-api");
-const { facebookEntryService } = require("./facebook-api");
 var sha256 = require('sha256');
 const { RedisKeys } = require('../../../constants/app');
 
@@ -501,9 +499,8 @@ module.exports = {
     userAppleSignIn: async (req, res) => {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
-            let appsflyerURL = "";
             let params = req.body;
-            let constraints = { apple_id: "required", email: "required" };
+            let constraints = { apple_id: "required"};
             let validator = new Validator(params, constraints);
             let matched = await validator.check();
             if (!matched) {
@@ -513,7 +510,9 @@ module.exports = {
             }
             try {
                 var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-                let userGmailsignup = await Users.findOne({ apple_id: params.apple_id, email: params.email });
+                let qury_prms = {apple_id: params.apple_id};
+                if(params && params.email) qury_prms['email'] = params.email
+                let userGmailsignup = await Users.findOne(qury_prms);
                 if (userGmailsignup && userGmailsignup._id) {
                     if (_.isEmpty(userGmailsignup.phone) || _.isUndefined(userGmailsignup.phone) || _.isNull(userGmailsignup.phone)) {
                         response["message"] = "Please enter your phone number.";
@@ -532,7 +531,7 @@ module.exports = {
                             tokendata._id = userGmailsignup._id;
                             tokendata.id = userGmailsignup._id;
                             tokendata.phone = userGmailsignup.phone;
-                            tokendata.email = userGmailsignup.email;
+                            tokendata.apple_id = userGmailsignup.apple_id;
 
                             await Tokens.deleteMany({ "userId": ObjectId(userGmailsignup._id) });
                             let token = await generateClientToken(tokendata);
@@ -566,10 +565,10 @@ module.exports = {
                         }
                     }
                 } else {
-                    let userEmail = await Users.findOne({ email: params.email }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
+                    let userEmail = await Users.findOne({ apple_id: params.apple_id }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
                     if (!userEmail) {
                         let insertData = {};
-                        insertData.google_id = params.google_id;
+                        insertData.apple_id = params.apple_id;
                         insertData.email = params.email;
                         insertData.language = params.language || 'en';
                         insertData.invite_code = params.invite_code;
@@ -589,13 +588,10 @@ module.exports = {
 
                         if (params && params.device_type) {
                             insertData.device_type = params.device_type;
-                            if (params.device_type == "Android") {
-                                appsflyerURL = config.appsFlyerAndroidUrl;
-                            } else {
-                                appsflyerURL = config.appsFlyeriPhoneUrl;
-                            }
                         }
-                        insertData.team_name = createTeamName(params.email);
+
+                        let userName = await getUserName();
+                        insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
                         insertData.bonus_amount = config.referral_bouns_amount;
                         insertData.extra_amount = 25; // first time user signup
                         insertData.image = '';
@@ -651,16 +647,16 @@ module.exports = {
                         }
 
                         response["status"] = true;
-                        response["data"] = { user_id: insertId, email: params.email, google_id: params.google_id };
+                        response["data"] = { user_id: insertId, email: params.email, apple_id: params.apple_id };
                         response["login_success"] = false;
                         response["otp_status"] = false;
-                        response["google_signup_status"] = true;
+                        response["apple_signup_status"] = true;
                         
                         return res.json(response);
                     } else {
-                        await Users.findOneAndUpdate({ _id: userEmail._id }, { $set: { apple_id: params.apple_id, status: 0 } });
+                        await Users.findOneAndUpdate({ _id: userEmail._id }, { $set: {status: 0 } });
                         if (userEmail && userEmail.phone && !_.isEmpty(userEmail.phone)) {
-                            userEmail['google_id'] = params.apple_id;
+                            userEmail['apple_id'] = params.apple_id;
                             let otpRes = await sendOtp(userEmail);
                             return res.json(otpRes);
                         } else {
