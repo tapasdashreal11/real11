@@ -219,6 +219,7 @@ module.exports = {
                 response["errors"] = validator.errors;
                 return res.json(response);
             }
+
             let userGmailsignup = await Users.findOne({ google_id: params.google_id, email: params.email }, { _id: 1, google_id: 1, email: 1, phone: 1 });
             
             if (userGmailsignup && userGmailsignup._id && params.phone && _.size(params.phone) > 9) {
@@ -682,6 +683,58 @@ module.exports = {
             return res.json(response);
         }
     },
+    userAppleSignUpDetailAdd: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let params = req.body;
+            let constraints = { phone: "required", apple_id: "required" };
+            let validator = new Validator(params, constraints);
+            let matched = await validator.check();
+            if (!matched) {
+                response["message"] = "Required fields missing";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+            
+            let userGmailsignup = await Users.findOne({ apple_id: params.apple_id }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
+            
+            if (userGmailsignup && userGmailsignup._id && params.phone && _.size(params.phone) > 9) {
+                let phone_number = userGmailsignup.phone ? userGmailsignup.phone : '';
+                if (!_.isEmpty(phone_number) && phone_number.length > 1) {
+                    if (_.isEqual(phone_number, params.phone)) {
+                        var otpRes = await sendOtp(userGmailsignup);
+                        return res.json(otpRes);
+                    } else {
+                        response["message"] = "You have already registered with " + phone_number + " number on this account!!";
+                        response["errors"] = validator.errors;
+                        return res.json(response);
+                    }
+                } else {
+                    let userEmailData = await Users.findOne({ phone: params.phone }, { _id: 1 });
+                    if (userEmailData && userEmailData._id) {
+                        response["message"] = "This mobile number is already registered!!";
+                        return res.json(response);
+                    } else {
+                        await Users.updateOne({ _id: userGmailsignup._id }, { $set: { temp_phone: params.phone } });
+                        userGmailsignup['phone'] = params.phone;
+                        var otpRes = await sendOtp(userGmailsignup);
+                        return res.json(otpRes);
+                    }
+
+                }
+            } else {
+                response["message"] = "Invalid data!!";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+        } catch (err) {
+            console.log('update signup err', err);
+            var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
+            //send mail to developer to debug purpose
+            Helper.sendMailToDeveloper(req, err.message);
+            return res.json(response);
+        }
+    }
 }
 
 /**
