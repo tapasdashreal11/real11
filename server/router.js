@@ -140,7 +140,7 @@ const {
     // seriesPlayerList
 } = require('./api/v1/match.api');
 
-const notificationList = require('./api/v1/users/notification-list');
+const { notificationList,notificationRead } = require('./api/v1/users/notification-list');
 const deleteNotifications = require('./api/v1/users/delete-notification');
 const withdrawCash = require('./api/v1/users/withdraw-cash');
 const verifyBankDetails = require('./api/v1/users/verify-bank');
@@ -363,6 +363,7 @@ router.post('/api/v1/logout', auth.authenticate.jwtLogin, usersLogout);
 router.get('/api/v1/notification-list', auth.authenticate.jwtLogin, notificationList);
 router.get('/api/v1/deleteNotifications', auth.authenticate.jwtLogin, deleteNotifications);
 router.post('/upload-images-to-amazons3', amazonS3.upload_images);
+router.get('/api/v1/notification-read', auth.authenticate.jwtLogin, notificationList);
 
 // router.post('/verify-bank-detail', auth.authenticate.jwtLogin, verifyBankDetails);
 // router.post('/update-pan', auth.authenticate.jwtLogin, deleteNotifications);
