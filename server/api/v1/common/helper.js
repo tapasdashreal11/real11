@@ -349,6 +349,7 @@ const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, o
 
 const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) => {
   try {
+    console.log("sendNotificationFCM***")
     let payload     = {};
     payload.badge_count = '1';
     payload.message = notification;
@@ -381,12 +382,13 @@ const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) =
           status :  1,
           is_send:  1
         };
+        console.log('helooo*******');
         Notification.create(notifyObj, () => { });
         await NotificationMeta.findOneAndUpdate({user_id:uid}, {$inc:{notification_count:1}}, { upsert: true, new: true }).then((countsItem) => {
         });
         
       }catch(error){
-        
+        console.log('helooo*******',error);
     }
   } catch(error) {
     console.log(error);
