@@ -153,6 +153,7 @@ module.exports = {
                             if (params && params.device_id) {
                                 console.log('fsdfffffffkkkkkkk');
                                await sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
+                               console.log('hmmm***');
                             } 
                         } catch (errr) { }
                         const insertId = user._id;
