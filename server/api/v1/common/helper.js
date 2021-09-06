@@ -347,7 +347,7 @@ const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, o
   }
 };
 
-const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
+const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) => {
   try {
     let payload     = {};
     payload.badge_count = '1';
@@ -383,7 +383,7 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
         };
         Notification.create(notifyObj, () => { });
         console.log('call for fcm and count motif');
-        NotificationMeta.updateOne({user_id:uid},{$inc:{notification_count:1}},{upsert: true});
+       await NotificationMeta.updateOne({user_id:uid},{$inc:{notification_count:1}},{upsert: true});
       }catch(error){
         
     }
