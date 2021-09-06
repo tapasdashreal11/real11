@@ -2360,7 +2360,7 @@ class ModelService {
                         $project : {
                             "user_id" : "$user_detail._id",
                             "team_name" : "$user_detail.team_name",
-                            "avatar":{ $ifNull: [ "$$user_detail.avatar", '' ] },
+                            "avatar":   "$user_detail.avatar",
                             "received_amount" : "$refered_by_amount",
                             "total_amount" : "$user_amount"
                         }
