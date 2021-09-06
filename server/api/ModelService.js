@@ -2360,7 +2360,7 @@ class ModelService {
                         $project : {
                             "user_id" : "$user_detail._id",
                             "team_name" : "$user_detail.team_name",
-                            "image" : '', //{$concat : [`${config.imageBaseUrl}/`,"$user_detail.image"]},
+                            "avatar":{ $ifNull: [ "$$user_detail.avatar", '' ] },
                             "received_amount" : "$refered_by_amount",
                             "total_amount" : "$user_amount"
                         }
