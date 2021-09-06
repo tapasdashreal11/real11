@@ -152,8 +152,8 @@ module.exports = {
                             console.log('params.device_id',params.device_id);
                             if (params && params.device_id) {
                                 console.log('fsdfffffffkkkkkkk');
-                                await sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
-                            }
+                                sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
+                            } 
                         } catch (errr) { }
                         const insertId = user._id;
                         insertData.user_id = insertId;
