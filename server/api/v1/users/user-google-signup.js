@@ -379,6 +379,7 @@ module.exports = {
                         await Profile.create(bank_details);
                         await PanDetails.create(bank_details);
                         try {
+                            console.log('params.device_id at simple',params.device_id);
                             if (params && params.device_id) {
                                 Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome Bonus!!', 'Kick start your journey with 100% deposit bonus. Make your initial deposit in wallet to avail this reward.');
                             }
