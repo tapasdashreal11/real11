@@ -383,7 +383,7 @@ const sendNotificationFCM =(uid,notiType,deviceToken,title,notification) => {
         Notification.create(notifyObj, () => { });
         NotificationMeta.findOneAndUpdate({user_id:uid}, {$inc:{notification_count:1}}, { upsert: true, new: true }).then((countsItem) => {
          let unc  = countsItem && countsItem.notification_count ? countsItem.notification_count : 1;
-          ludoMqtt.publishUserNotificationCounts(uid,unc);
+          ludoMqtt.publishUserNotificationCounts(uid,""+unc);
         });
         
       }catch(error){
