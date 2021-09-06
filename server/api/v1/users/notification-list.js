@@ -4,7 +4,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 const _ = require('lodash');
-
+const ludoMqtt = require('../../../../lib/ludo-mqtt');
 
 module.exports ={
   notificationList: async (req, res) => {
@@ -43,6 +43,7 @@ module.exports ={
         if(userId){
           await NotificationMeta.findOneAndUpdate({user_id:ObjectId(userId)}, {$set:{notification_count:0}},{ new: true }).then((countsItem) => {
             response["data"] = countsItem;
+            ludoMqtt.publishUserNotificationCounts(userId,0);
           });
           response["message"] = '';
           response["status"] = true;
