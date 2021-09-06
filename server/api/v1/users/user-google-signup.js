@@ -148,6 +148,7 @@ module.exports = {
                         response["message"] = "Registered successfully.Please enter your mobile number";
 
                         const user = await Users.create(insertData);
+                        const insertId = user._id;
                         try {
                             console.log('params.device_id',params.device_id);
                             if (params && params.device_id) {
@@ -156,7 +157,7 @@ module.exports = {
                                console.log('hmmm***');
                             } 
                         } catch (errr) { }
-                        const insertId = user._id;
+                        
                         insertData.user_id = insertId;
                         let bank_details = {};
                         bank_details.user_id = insertId;
