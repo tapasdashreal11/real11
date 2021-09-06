@@ -6,22 +6,21 @@ const logger = require("../../../../utils/logger")(module);
 const _ = require('lodash');
 const ludoMqtt = require('../../../../lib/ludo-mqtt');
 
-module.exports ={
+module.exports = {
   notificationList: async (req, res) => {
     try {
-    
+
       var response = { status: false, message: "Invalid Request", data: {} };
-      let params = req.body;
       let userId = req.userId;
       try {
         let result = await Notifications.find({ user_id: ObjectId(userId) }).sort({ _id: -1 }).limit(25);
-  
+
         if (!_.isEmpty(result)) {
           response["message"] = null;
           response["status"] = true;
           response["data"] = result;
           return res.json(response);
-  
+
         } else {
           response["message"] = "No Records found.";
           return res.json(response);
@@ -40,17 +39,17 @@ module.exports ={
       var response = { status: false, message: "Invalid Request", data: {} };
       let userId = req.userId;
       try {
-        if(userId){
-          await NotificationMeta.findOneAndUpdate({user_id:ObjectId(userId)}, {$set:{notification_count:0}},{ new: true }).then((countsItem) => {
+        if (userId) {
+          await NotificationMeta.findOneAndUpdate({ user_id: ObjectId(userId) }, { $set: { notification_count: 0 } }, { new: true }).then((countsItem) => {
             response["data"] = countsItem;
-            ludoMqtt.publishUserNotificationCounts(userId,'0');
+            ludoMqtt.publishUserNotificationCounts(userId, '0');
           });
           response["message"] = '';
           response["status"] = true;
           return res.json(response);
         } else {
-         response["message"] = "Something Wrong Wrong!!";
-         return res.json(response);
+          response["message"] = "Something Wrong Wrong!!";
+          return res.json(response);
         }
       } catch (err) {
         response["message"] = err.message;
