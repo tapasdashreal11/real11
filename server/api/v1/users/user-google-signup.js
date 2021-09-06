@@ -151,6 +151,7 @@ module.exports = {
                         try {
                             console.log('params.device_id',params.device_id);
                             if (params && params.device_id) {
+                                console.log('fsdfffffffkkkkkkk');
                                 Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
                             }
                         } catch (errr) { }
