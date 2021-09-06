@@ -383,7 +383,8 @@ const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) =
         };
         Notification.create(notifyObj, () => { });
         console.log('call for fcm and count motif');
-       await NotificationMeta.updateOne({user_id:uid},{$inc:{notification_count:1}},{upsert: true});
+        await NotificationMeta.updateOne({user_id:uid},{$inc:{notification_count:1}},true, 
+        false);
       }catch(error){
         
     }
