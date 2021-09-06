@@ -149,6 +149,7 @@ module.exports = {
 
                         const user = await Users.create(insertData);
                         try {
+                            console.log('params.device_id',params.device_id);
                             if (params && params.device_id) {
                                 Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
                             }
