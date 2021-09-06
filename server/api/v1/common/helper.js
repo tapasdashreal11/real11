@@ -348,8 +348,9 @@ const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, o
 };
 
 const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) => {
+  console.log('hello***');
   try {
-    console.log("sendNotificationFCM***")
+    console.log('hello***2');
     let payload     = {};
     payload.badge_count = '1';
     payload.message = notification;
