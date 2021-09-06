@@ -42,7 +42,7 @@ module.exports ={
       let userId = req.userId;
       try {
         if(userId){
-          await NotificationMeta.findOneAndUpdate({user_id:ObjectId(userId)}, {$set:{notification_count:0}}).then((countsItem) => {
+          await NotificationMeta.findOneAndUpdate({user_id:ObjectId(userId)}, {$set:{notification_count:0}},{ new: true }).then((countsItem) => {
             response["data"] = countsItem;
           });
           response["message"] = '';
