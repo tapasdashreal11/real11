@@ -347,10 +347,8 @@ const sendSMTPMailTemplate = (req, subject, template, to, username, txnAmount, o
   }
 };
 
-const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) => {
-  console.log('hello***');
+const sendNotificationFCM =(uid,notiType,deviceToken,title,notification) => {
   try {
-    console.log('hello***2');
     let payload     = {};
     payload.badge_count = '1';
     payload.message = notification;
@@ -365,10 +363,8 @@ const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) =
         },
         data: payload,
     };
-    // console.log(message);return false;
     const fcm = new FCM(config.fcmKey);
     try{
-       // let send = fcm.send(message);
        fcm.send(message, function(err, response){
           if (err) {
               console.log("Something has gone wrong with fcm",err);
@@ -383,13 +379,11 @@ const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) =
           status :  1,
           is_send:  1
         };
-        console.log('helooo*******');
         Notification.create(notifyObj, () => { });
-        await NotificationMeta.findOneAndUpdate({user_id:uid}, {$inc:{notification_count:1}}, { upsert: true, new: true }).then((countsItem) => {
+        NotificationMeta.findOneAndUpdate({user_id:uid}, {$inc:{notification_count:1}}, { upsert: true, new: true }).then((countsItem) => {
         });
         
       }catch(error){
-        console.log('helooo*******',error);
     }
   } catch(error) {
     console.log(error);

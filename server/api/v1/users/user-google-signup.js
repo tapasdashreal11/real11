@@ -9,7 +9,7 @@ const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
 const { sendSMS } = require("./smsApi");
 const logger = require("../../../../utils/logger")(module);
-const { currentDateTimeFormat, createUserReferal, generateTransactionId,sendNotificationFCM, generateClientToken, createTeamName, sendSMTPMail } = require("../common/helper");
+const { currentDateTimeFormat, createUserReferal, generateTransactionId, generateClientToken, createTeamName, sendSMTPMail } = require("../common/helper");
 const config = require('../../../config');
 const _ = require('lodash');
 const moment = require('moment');
@@ -152,9 +152,7 @@ module.exports = {
                         try {
                             console.log('params.device_id',params.device_id);
                             if (params && params.device_id) {
-                                console.log('fsdfffffffkkkkkkk');
-                               await sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
-                               console.log('hmmm***');
+                                Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
                             } 
                         } catch (errr) { }
                         
