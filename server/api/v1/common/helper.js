@@ -11,6 +11,7 @@ const ejs = require('ejs');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const Notification = require('../../../models/notification');
+const NotificationMeta = require('../../../models/notification-meta');
 const FCM = require('fcm-push');
 // const apn = require("apn");
 
@@ -380,7 +381,8 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
           status :  1,
           is_send:  1
         };
-        Notification.create(notifyObj, () => { })
+        Notification.create(notifyObj, () => { });
+        await NotificationMeta.findOneAndUpdate({user_id:uid},{$inc:{notification_count:1}},{upsert: true});
       }catch(error){
         
     }
