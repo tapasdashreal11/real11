@@ -1,4 +1,3 @@
-const async = require('async');
 const Notifications = require("../../../models/notification");
 const NotificationMeta = require("../../../models/notification-meta");
 const ObjectId = require('mongoose').Types.ObjectId;

@@ -13,6 +13,7 @@ const nodemailer = require('nodemailer');
 const Notification = require('../../../models/notification');
 const NotificationMeta = require('../../../models/notification-meta');
 const FCM = require('fcm-push');
+const ludoMqtt = require('../../../../lib/ludo-mqtt');
 // const apn = require("apn");
 
 let currentDate  =	moment().utc().toDate();
@@ -381,6 +382,8 @@ const sendNotificationFCM =(uid,notiType,deviceToken,title,notification) => {
         };
         Notification.create(notifyObj, () => { });
         NotificationMeta.findOneAndUpdate({user_id:uid}, {$inc:{notification_count:1}}, { upsert: true, new: true }).then((countsItem) => {
+         let unc  = countsItem && countsItem.notification_count ? countsItem.notification_count : 1;
+          ludoMqtt.publishUserNotificationCounts(uid,unc);
         });
         
       }catch(error){
