@@ -385,9 +385,10 @@ const sendNotificationFCM =async (uid,notiType,deviceToken,title,notification) =
         console.log('call for fcm and count motif');
         console.log({user_id:uid},{$inc:{notification_count:1}},true, 
           false);
-        let ddd = await NotificationMeta.updateOne({user_id:uid},{$inc:{notification_count:1}},true, 
-        false);
-        console.log('ddd****',ddd);
+       await NotificationMeta.findOneAndUpdate({user_id:uid}, {$inc:{notification_count:1}}, { upsert: true, new: true }).then((MyContestModel) => {
+         console.log('sddssd***',MyContestModel);
+        });
+        
       }catch(error){
         
     }

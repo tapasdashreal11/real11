@@ -9,4 +9,4 @@ const AdminSchema = mongoose.Schema({
   notification_count: { type: Number, default: 0}
 }
 );
-module.exports = mongoose.model('notifications-meta', AdminSchema,'notifications-meta');
+module.exports = mongoose.model('notifications_meta', AdminSchema,'notifications_meta');
