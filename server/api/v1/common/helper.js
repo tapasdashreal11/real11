@@ -382,6 +382,7 @@ const sendNotificationFCM = (uid,notiType,deviceToken,title,notification) => {
           is_send:  1
         };
         Notification.create(notifyObj, () => { });
+        console.log('call for fcm and count motif');
         NotificationMeta.findOneAndUpdate({user_id:uid},{$inc:{notification_count:1}},{upsert: true});
       }catch(error){
         
