@@ -10,7 +10,7 @@ module.exports = {
     weekLeaderBoardSeriesApi: async (req, res) => {
         var response = { status: false, message: "Invalid Request", data: {} };
         try {
-           let seriesData = await Series.find({week_leaderboard:1});
+           let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1}]});
            if(seriesData && seriesData.length>0){
             response["data"] = seriesData;
             response["message"] = "";
