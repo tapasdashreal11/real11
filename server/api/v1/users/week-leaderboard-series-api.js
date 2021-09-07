@@ -17,6 +17,7 @@ module.exports = {
                  response["data"] = data;
                  response["message"] = "";
                  response["status"] = true;
+                 return res.json(response);
             } else {
                 let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1}]});
                 if(seriesData && seriesData.length>0){
