@@ -539,6 +539,9 @@ module.exports = {
             let is_offer_applied = false;
             let couponSaleData = [];
             let userdata = await User.findOne({ _id: decoded['user_id'] })
+            if(userdata.fair_play_violation && userdata.fair_play_violation ==1){
+                return res.send(ApiUtility.failed('You cannot join contest.You are under fair play violation!!'));
+            }
             if (userdata) {
                 adminPer = 0; //(setting.admin_percentage) ? setting.admin_percentage : 0;
                 let useableBonusPer = adminPer;
