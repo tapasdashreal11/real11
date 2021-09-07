@@ -157,8 +157,8 @@ module.exports = {
 	sharedContestCounts: async (req, res) => {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		try{
-			let { match_id, series_id, contest_id } = req.body;
 			const user_id = req.userId;
+			let { match_id, series_id, contest_id } = req.body;
 			if(match_id && series_id && contest_id){
 				let decoded = {
 					match_id: parseInt(match_id),
