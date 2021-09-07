@@ -156,6 +156,7 @@ module.exports = {
 	},
 	sharedContestCounts: async (req, res) => {
 		var response = { status: false, message: "Invalid Request", data: {} };
+		console.log('sassss*****');
 		try{
 			const user_id = req.userId;
 			let { match_id, series_id, contest_id } = req.body;
