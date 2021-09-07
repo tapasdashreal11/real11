@@ -333,7 +333,7 @@ router.get('/api/v1/series-leaderboard-data/:s_id/:page',auth.authenticate.jwtLo
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
 router.get('/api/v1/app-setting', appSettingApi); 
 router.post('/api/v1/verify-otp', usersVerifyOtp);
-router.post('/api/v1/check-contest-ref-count', auth.authenticate.jwtLogin, sharedContestCounts);
+router.post('/api/v1/check-contest-ref-count', sharedContestCounts);
 router.get('/api/v1/verify-rf-code/:invite_code/:contest_id/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, usersVerifyRF);
 router.get('/api/v1/bankDetails', auth.authenticate.jwtLogin, usersBankDetails);
 router.post('/api/v1/personal_details', auth.authenticate.jwtLogin, usersProfile);
