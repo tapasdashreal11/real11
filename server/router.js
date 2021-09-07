@@ -307,6 +307,7 @@ router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, join
 router.post('/api/v1/other-games-cancel-contest', auth.authenticate.jwtLogin, otherGamesCancelContest);
 router.get('/api/v1/other-games-transation-history', auth.authenticate.jwtLogin, otherGamesTransationHistory); 
 router.post('/api/v1/other-games-wining-dis', otherGameWinningDis);
+router.post('/api/v1/check-contest-ref-count',auth.authenticate.jwtLogin, sharedContestCounts);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
@@ -333,7 +334,6 @@ router.get('/api/v1/series-leaderboard-data/:s_id/:page',auth.authenticate.jwtLo
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
 router.get('/api/v1/app-setting', appSettingApi); 
 router.post('/api/v1/verify-otp', usersVerifyOtp);
-router.post('/api/v1/check-contest-ref-count', sharedContestCounts);
 router.get('/api/v1/verify-rf-code/:invite_code/:contest_id/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, usersVerifyRF);
 router.get('/api/v1/bankDetails', auth.authenticate.jwtLogin, usersBankDetails);
 router.post('/api/v1/personal_details', auth.authenticate.jwtLogin, usersProfile);
