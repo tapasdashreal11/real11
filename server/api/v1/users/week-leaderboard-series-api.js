@@ -13,8 +13,9 @@ module.exports = {
            let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1}]});
            if(seriesData && seriesData.length>0){
             let newSeriesData = seriesData.map(function(val, index){
-                val['img_path']= imageurl;
-                return val;
+                let return_data = val;
+                return_data['img_path']= imageurl;
+                return return_data;
             })
             response["data"] = newSeriesData;
             response["message"] = "";
