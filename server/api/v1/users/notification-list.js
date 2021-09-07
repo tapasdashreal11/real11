@@ -42,7 +42,8 @@ module.exports = {
         if (userId) {
           await NotificationMeta.findOneAndUpdate({ user_id: ObjectId(userId) }, { $inc: { notification_count: 1 } }, { new: true }).then((countsItem) => {
             response["data"] = countsItem;
-            ludoMqtt.publishUserNotificationCounts(userId, ""+countsItem.notification_count);
+            let cCount = countsItem.notification_count ? countsItem.notification_count:1;
+            ludoMqtt.publishUserNotificationCounts(userId, ""+cCount);
           });
           response["message"] = '';
           response["status"] = true;
