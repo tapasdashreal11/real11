@@ -10,25 +10,35 @@ module.exports = {
     weekLeaderBoardSeriesApi: async (req, res) => {
         var response = { status: false, message: "Invalid Request", data: {} };
         try {
-           let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1}]});
-           if(seriesData && seriesData.length>0){
-            
-            let newSeriesData = seriesData.map((val)=>{
-                let return_data = JSON.parse(JSON.stringify(val));
-                console.log(return_data);
-                return_data['img_path']= imageurl;
-                return return_data;
-            })
-            response["data"] = newSeriesData;
-            response["message"] = "";
-            response["status"] = true;
-           } else {
-            response["data"] = [];
-            response["message"] = "No Data found!!";
-            response["status"] = false;
-           }
-            
-           return res.json(response);
+           let redisKeyForSeriesWeekBoardMeta = 'series-week-leaderboard-meta';
+           redis.getRedisWeekLeaderboard(redisKeyForseriesLeaderBoard, async (err, data) => {
+            if (data) {
+                console.log('data**** redis');
+                 response["data"] = data;
+                 response["message"] = "";
+                 response["status"] = true;
+            } else {
+                let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1}]});
+                if(seriesData && seriesData.length>0){
+                    console.log('data**** db');
+                 let newSeriesData = seriesData.map((val)=>{
+                     let return_data = JSON.parse(JSON.stringify(val));
+                     console.log(return_data);
+                     return_data['img_path']= imageurl;
+                     return return_data;
+                 });
+                 redis.setRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, newSeriesData);
+                 response["data"] = newSeriesData;
+                 response["message"] = "";
+                 response["status"] = true;
+                } else {
+                 response["data"] = [];
+                 response["message"] = "No Data found!!";
+                 response["status"] = false;
+                }
+                return res.json(response);
+            }
+           });
         } catch (err) {
             response["msg"] = err.message;
             return res.json(response);
