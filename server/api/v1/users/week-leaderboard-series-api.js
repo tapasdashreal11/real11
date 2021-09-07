@@ -12,7 +12,11 @@ module.exports = {
         try {
            let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1}]});
            if(seriesData && seriesData.length>0){
-            response["data"] = seriesData;
+            let newSeriesData = seriesData.map(function(val, index){
+                val['img_path']= imageurl;
+                return val;
+            })
+            response["data"] = newSeriesData;
             response["message"] = "";
             response["status"] = true;
            } else {
