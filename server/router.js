@@ -46,7 +46,7 @@ const {
 } = require('./api/v1/users/reset-password');
 
 const usersVerifyOtp = require('./api/v1/users/users-verify-otp');
-const usersVerifyRF = require('./api/v1/users/user-verify-referal');
+const {usersVerifyRF,sharedContestCounts} = require('./api/v1/users/user-verify-referal');
 const {
     profile,
     getAffiliateAmount
@@ -333,6 +333,7 @@ router.get('/api/v1/series-leaderboard-data/:s_id/:page',auth.authenticate.jwtLo
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
 router.get('/api/v1/app-setting', appSettingApi); 
 router.post('/api/v1/verify-otp', usersVerifyOtp);
+router.post('/api/v1/check-contest-ref-count',auth.authenticate.jwtLogin, sharedContestCounts);
 router.get('/api/v1/verify-rf-code/:invite_code/:contest_id/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, usersVerifyRF);
 router.get('/api/v1/bankDetails', auth.authenticate.jwtLogin, usersBankDetails);
 router.post('/api/v1/personal_details', auth.authenticate.jwtLogin, usersProfile);

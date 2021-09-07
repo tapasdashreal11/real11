@@ -13,7 +13,6 @@ module.exports = {
            let redisKeyForSeriesWeekBoardMeta = 'series-week-leaderboard-meta';
            redis.getRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, async (err, data) => {
             if (data) {
-                console.log('data**** redis');
                  response["data"] = data;
                  response["message"] = "";
                  response["status"] = true;
@@ -21,7 +20,6 @@ module.exports = {
             } else {
                 let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1}]});
                 if(seriesData && seriesData.length>0){
-                    console.log('data**** db');
                  let newSeriesData = seriesData.map((val)=>{
                      let return_data = JSON.parse(JSON.stringify(val));
                      console.log(return_data);
