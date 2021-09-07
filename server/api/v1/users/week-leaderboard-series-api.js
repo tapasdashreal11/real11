@@ -11,7 +11,7 @@ module.exports = {
         var response = { status: false, message: "Invalid Request", data: {} };
         try {
            let redisKeyForSeriesWeekBoardMeta = 'series-week-leaderboard-meta';
-           redis.getRedisWeekLeaderboard(redisKeyForseriesLeaderBoard, async (err, data) => {
+           redis.getRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, async (err, data) => {
             if (data) {
                 console.log('data**** redis');
                  response["data"] = data;
