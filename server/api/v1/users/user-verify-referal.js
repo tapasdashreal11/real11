@@ -28,7 +28,6 @@ module.exports = {
 						invite_code = invite_code.toUpperCase();
 						redis.getRedis('app-setting', async (err, data) => {
 							let youtuberCode = (data.youtber_codes.replace(/\s+/g, "")).split(",");
-							// console.log(youtuberCode);
 							if (youtuberCode.indexOf(invite_code) > -1) {
 								let ytuberUserData = await YoutuberUser.findOne({ user_id: ObjectId(auth_user_id), 'sport': parseInt(sport) });
 								if (ytuberUserData) {
@@ -156,26 +155,26 @@ module.exports = {
 	},
 	sharedContestCounts: async (req, res) => {
 		var response = { status: false, message: "Invalid Request", data: {} };
-		try{
+		try {
 			const user_id = req.userId;
 			let { match_id, series_id, contest_id } = req.params;
-			if(match_id && series_id && contest_id){
+			if (match_id && series_id && contest_id) {
 				let decoded = {
 					match_id: parseInt(match_id),
 					series_id: parseInt(series_id),
 					contest_id: contest_id
 				}
-				let rfuserTotalCounts = await ContestInvite.find({ refer_by_user: user_id, use_status: 0, contest_id: contest_id, match_id:decoded['match_id'], series_id:decoded['series_id'] }).countDocuments();
+				let rfuserTotalCounts = await ContestInvite.find({ refer_by_user: user_id, use_status: 0, contest_id: contest_id, match_id: decoded['match_id'], series_id: decoded['series_id'] }).countDocuments();
 				response.status = true;
 				response.message = "";
-				response.data = { shared_counts:rfuserTotalCounts };
+				response.data = { shared_counts: rfuserTotalCounts };
 				return res.json(response);
 			} else {
 				return res.json(response);
 			}
-		} catch(error){
+		} catch (error) {
 			return res.json(response);
 		}
-		
+
 	}
 };
