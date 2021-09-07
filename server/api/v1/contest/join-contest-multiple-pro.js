@@ -847,7 +847,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                         await ContestInvite.create({ refer_code: refer_code, refer_by_user: refer_by_user, refered_user: user_id, contest_id: contest_id, match_id: match_id, series_id: series_id, sport: match_sport });
                         if (user_id) {
                             let rfuserTotalCounts = await ContestInvite.find({ refer_by_user: refer_by_user, use_status: 0, contest_id: contest_id, match_id: match_id, series_id: series_id }).countDocuments();
-                            if (rfuserTotalCounts >= 10) {
+                            if (rfuserTotalCounts >= 5) {
                                 let uAnalysisData = await UserAnalysis.findOne({ user_id: ObjectId(refer_by_user), match_id: match_id, series_id: series_id, sport: match_sport });
                                 let redisKeyForRentation = 'app-analysis-' + refer_by_user + '-' + match_id + '-' + match_sport;
                                 if (uAnalysisData && uAnalysisData._id) {
