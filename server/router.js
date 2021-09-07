@@ -307,7 +307,7 @@ router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, join
 router.post('/api/v1/other-games-cancel-contest', auth.authenticate.jwtLogin, otherGamesCancelContest);
 router.get('/api/v1/other-games-transation-history', auth.authenticate.jwtLogin, otherGamesTransationHistory); 
 router.post('/api/v1/other-games-wining-dis', otherGameWinningDis);
-router.post('/api/v1/check-contest-ref-count',auth.authenticate.jwtLogin, sharedContestCounts);
+router.get('/api/v1/check-contest-ref-count/:match_id/:series_id/:contest_id',auth.authenticate.jwtLogin, sharedContestCounts);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);

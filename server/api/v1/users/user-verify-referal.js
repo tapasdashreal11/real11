@@ -159,7 +159,7 @@ module.exports = {
 		console.log('sassss*****',response);
 		try{
 			const user_id = req.userId;
-			let { match_id, series_id, contest_id } = req.body;
+			let { match_id, series_id, contest_id } = req.params;
 			if(match_id && series_id && contest_id){
 				let decoded = {
 					match_id: parseInt(match_id),
