@@ -308,7 +308,7 @@ module.exports = {
                                     await session.abortTransaction();
                                     session.endSession();
                                     response.status = false;
-                                    response.message = "Something went wrong, please try again!!";
+                                    response.message = errorr;
                                     response.error_code = null;
                                     return res.json(response);
                                 } finally {
