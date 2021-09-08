@@ -71,6 +71,8 @@ const  joinContestNew  = require('./api/v1/contest/join-contest');
 const  joinContestOtherGames  = require('./api/v1/contest/other-games-join-contest');
 const  otherGamesCancelContest  = require('./api/v1/contest/other-games-cancel-contest');
 const  otherGamesTransationHistory  = require('./api/v1/contest/other-games-transation');
+const  {createPrivateContest}  = require('./api/v1/contest/private-contest-create');
+
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
 const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-pro');
 const  permJoinContest  = require('./api/v1/contest/perm-join-contest');
@@ -259,7 +261,7 @@ router.get('/api/v1/other-game-contest-list/:match_id/:sport',auth.authenticate.
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
-router.post('/api/v1/create-contest', auth.authenticate.jwtLogin, createContest);
+router.post('/api/v1/create-contest', auth.authenticate.jwtLogin, createPrivateContest);
 router.get('/api/v1/user-download/:dcode/:clevertap_id', userAppDownlad);
 router.post('/api/v1/youtuber-affiliate-to-deposit', auth.authenticate.jwtLogin, youtuberAffilWinTransfer);
 
