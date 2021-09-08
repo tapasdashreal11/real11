@@ -274,7 +274,7 @@ router.get('/api/v1/team-states/:series_id', auth.authenticate.jwtLogin, (req, r
         "data": []
     })
 });
-router.get('/api/v1/contest-prize-breakup/:contest_size', auth.authenticate.jwtLogin, contestPrizeBreakup);
+router.get('/api/v1/contest-prize-breakup/:contest_size/:sport?', auth.authenticate.jwtLogin, contestPrizeBreakup);
 router.get('/api/v1/contest-detail/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailLatest); // old
 router.get('/api/v1/contest-detail-new/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest); // old
 router.get('/api/v1/joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestList); //
