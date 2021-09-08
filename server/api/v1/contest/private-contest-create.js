@@ -26,7 +26,7 @@ const Helper = require('./../common/helper');
 module.exports = {
     createPrivateContest: async (req, res) => {
         try {
-            let data1 = {};
+            let data1 = {}; 
             const user_id = req.userId;
             let { contest_size, series_id, match_id, team_id, winners_count, winning_amount, entry_fee,team_count,sport } = req.body;
             var team_count_number = team_count ? parseInt(team_count) : 0;
