@@ -529,7 +529,7 @@ module.exports = {
             let data1 = {};
             let setting = config;
             let matchContestData = {}; 
-            const { total_team, contest_id, entry_fee, match_id , series_id, sport } = req.body;
+            const { total_team, contest_id, entry_fee, match_id , series_id, sport,is_private_create } = req.body;
             let decoded = { user_id: req.userId, contest_id: contest_id || '', entry_fee: entry_fee, match_id: match_id, series_id:series_id
             }
             let match_sport = sport ? parseInt(sport) : 1;
@@ -590,8 +590,12 @@ module.exports = {
                     redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                         let catid =matchContestData && matchContestData.category_id ? matchContestData.category_id: '';
                         if(_.isEmpty(catid) || _.isUndefined(catid) || _.isNull(catid)){
-                            return res.send(ApiUtility.failed("Please try again!!"));
-                        }
+                            if(is_private_create){
+                                catid = '61385d45a67c543121311a6b';
+                            } else {
+                                return res.send(ApiUtility.failed("Please try again!!"));
+                            }
+                          }
                            let offerableAppled = false;
                            if(couponSaleData && couponSaleData.length>0){
                             couponSaleData = couponSaleData.map(item => {
