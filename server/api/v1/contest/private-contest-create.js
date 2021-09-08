@@ -21,6 +21,7 @@ const db = require('../../../db');
 const { startSession } = require('mongoose');
 const { appsFlyerEntryService } = require("../users/appsflyer-api");
 const UserContestBreakup = require('../../../models/user-contest-breakup');
+const Helper = require('./../common/helper');
 
 module.exports = {
     createPrivateContest: async (req, res) => {
@@ -33,6 +34,9 @@ module.exports = {
             match_id = parseInt(match_id);
             series_id = parseInt(series_id);
             entry_fee = parseFloat(entry_fee);
+            winning_amount = parseFloat(winning_amount);
+            contest_size = parseInt(contest_size);
+            winners_count = parseInt(winners_count);
             // create contest invite code
             let inviteCode = Helper.createUserReferal(10);
             let decoded = {
