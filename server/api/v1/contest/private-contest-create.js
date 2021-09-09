@@ -26,9 +26,9 @@ const Helper = require('./../common/helper');
 module.exports = {
     createPrivateContest: async (req, res) => {
         try {
-            let data1 = {}; 
+            let data1 = {};
             const user_id = req.userId;
-            let { contest_size, series_id, match_id, team_id, winners_count, winning_amount, entry_fee,team_count,sport } = req.body;
+            let { contest_size, series_id, match_id, team_id, winners_count, winning_amount, entry_fee, team_count, sport } = req.body;
             var team_count_number = team_count ? parseInt(team_count) : 0;
             let match_sport = sport ? parseInt(sport) : 1;
             match_id = parseInt(match_id);
@@ -69,7 +69,6 @@ module.exports = {
                                 session.startTransaction();
                                 const sessionOpts = { session, new: true };
                                 try {
-                                    let contest = {};
                                     let contestSaveData = {};
                                     contestSaveData['contest_size'] = decoded['contest_size'];
                                     contestSaveData['winning_amount'] = decoded['winning_amount'];
@@ -158,12 +157,12 @@ module.exports = {
                                         let bonusAmount = 0;
                                         let extraAmount = 0;
                                         let calEntryFees = entry_fee;
-                                        const paymentCal = await joinContestPaymentCalculation(false,0, authUser, entry_fee, winAmount, cashAmount, bonusAmount, extraAmount, 0);
-                                                               
-                                         cashAmount = paymentCal.cashAmount;
-                                         winAmount = paymentCal.winAmount;
-                                         bonusAmount = paymentCal.bonusAmount;
-                                         extraAmount = paymentCal.extraAmount;
+                                        const paymentCal = await joinContestPaymentCalculation(false, 0, authUser, entry_fee, winAmount, cashAmount, bonusAmount, extraAmount, 0);
+
+                                        cashAmount = paymentCal.cashAmount;
+                                        winAmount = paymentCal.winAmount;
+                                        bonusAmount = paymentCal.bonusAmount;
+                                        extraAmount = paymentCal.extraAmount;
                                         let saveData = paymentCal.saveData;
                                         let perdayExtraAmount = paymentCal.perdayExtraAmount;
 
@@ -175,9 +174,8 @@ module.exports = {
                                             let status = TransactionTypes.JOIN_CONTEST;
                                             let txnAmount = entryFee;
                                             let withdrawId = 0;
-                                            
+
                                             if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
-                                                // Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId, contest_id, match_id);
 
                                                 let cons_cash_balance = bonusAmount;
                                                 let cons_winning_balance = winAmount;
@@ -215,15 +213,15 @@ module.exports = {
                                                         retantion_amount: 0,
                                                         currency: "INR",
                                                         txn_date: Date.now(),
-                                                        contest_entry_fee:entryFee,
-                                                        total_team_joined:1,
+                                                        contest_entry_fee: entryFee,
+                                                        total_team_joined: 1,
                                                         local_txn_id: txnId,
                                                         added_type: parseInt(status)
                                                     };
-                                                    let userBalance = await User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1})
-                                                    if(userBalance){
-                                                        if(userBalance.extra_amount < extraAmount || userBalance.cash_balance < cashAmount || userBalance.winning_balance < winAmount || userBalance.bonus_amount < bonusAmount){
-                                                            userWalletStatus = false;
+                                                    let userBalance = await User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1 })
+                                                    if (userBalance) {
+                                                        if (userBalance.extra_amount < extraAmount || userBalance.cash_balance < cashAmount || userBalance.winning_balance < winAmount || userBalance.bonus_amount < bonusAmount) {
+                                                           
                                                             await session.abortTransaction();
                                                             session.endSession();
                                                             return res.send(ApiUtility.failed("Please try again."));
@@ -233,7 +231,7 @@ module.exports = {
 
                                                     if (walletRes && walletRes.nModified > 0) {
                                                         await Transaction.create([entity], { session: session });
-                                                        userWalletStatus = true;
+                                                       
                                                         let contest = {};
                                                         let newContestId = new ObjectId();
                                                         contest._id = newContestId;
@@ -258,17 +256,42 @@ module.exports = {
                                                             "match_status": 'Not Started',
                                                             "total_contest": 1
                                                         }
-                                                        await MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true }).then((MyContestModel) => {
-                                                           
-                                                        });
-                                                       await saveJoinContestPrivateDetail (decoded,bonusAmount,winAmount,cashAmount,newContestId,result, extraAmount,match_sport,session);
-                                                       await session.commitTransaction();
-                                                       session.endSession();
-                                                       //******************************last response*******************
+                                                        let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
+                                                        try{
+                                                            redis.getRedis(redisKey, (err, data) => {
+                                                                if (data) {
+                                                                    let userContests = data;
+                                                                    userContests.push(decoded['contest_id']);
+                                                                    data = userContests;
+                                                                } else {
+                                                                    data = [contest_id];
+                                                                }
+                                                                var uniqueContestIds = data.filter((value, index, self) => {
+                                                                    return self.indexOf(value) === index;
+                                                                });
+                                                                newMyModelobj['total_contest'] = uniqueContestIds && uniqueContestIds.length ? uniqueContestIds.length : 1; 
+                                                                redis.setRedis(redisKey, data);
+                                                            });
+                                                         } catch(errredis){
+
+                                                         }
+                                                        
+                                                        
+                                                        await MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true });
+                                                        await saveJoinContestPrivateDetail(decoded, bonusAmount, winAmount, cashAmount, newContestId, result, extraAmount, match_sport, session);
+                                                        await session.commitTransaction();
+                                                        session.endSession();
+                                                        setAppsflyerData(authUser, match_id, match_sport, decoded['contest_id']);
+                                                        let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
+                                                        redis.setRedisMyMatches(myJoinedContestListKey, {});
+                                                        //******************************last response*******************
                                                         data1.invite_code = inviteCode;
-                                                        return res.send(ApiUtility.success(data1, 'You have created contest successfully. Now share with your friends!!')); 
+                                                        data1.match_id = match_id;
+                                                        data1.series_id = series_id;
+                                                        data1.match_name = seriesMatch.visitorteam + " vs " + seriesMatch.localteam;
+                                                        data1.match_time = seriesMatch.time;
+                                                        return res.send(ApiUtility.success(data1, 'You have created your private contest successfully. Now share with your friends!!'));
                                                     } else {
-                                                        userWalletStatus = false;
                                                         await session.abortTransaction();
                                                         session.endSession();
                                                         return res.send(ApiUtility.failed("Something went wrong, Please try again."));
@@ -298,7 +321,7 @@ module.exports = {
                                             session.endSession();
                                             return res.send(ApiUtility.failed('something went wrong!!'));
                                         }
-                                        
+
                                     } else {
                                         await session.abortTransaction();
                                         session.endSession();
@@ -308,7 +331,7 @@ module.exports = {
 
                                 } catch (errorr) {
                                     let response = {};
-                                    console.log('errorr',errorr)
+                                    console.log('errorr', errorr)
                                     await session.abortTransaction();
                                     session.endSession();
                                     response.status = false;
@@ -433,38 +456,84 @@ async function joinContestPaymentCalculation(offerableAppled, useableBonusPer, a
     return { 'winAmount': winAmount, 'cashAmount': cashAmount, 'bonusAmount': bonusAmount, 'extraAmount': extraAmount, 'saveData': saveData, 'perdayExtraAmount': perdayExtraAmount };
 
 }
-
-async function saveJoinContestPrivateDetail (decoded,bonusAmount,winAmount,cashAmount,playerTeamContestId,contestData, extraAmount,match_sport,session) {
+/**
+ * This is used for join contest detail
+ * @param {*} decoded 
+ * @param {*} bonusAmount 
+ * @param {*} winAmount 
+ * @param {*} cashAmount 
+ * @param {*} playerTeamContestId 
+ * @param {*} contestData 
+ * @param {*} extraAmount 
+ * @param {*} match_sport 
+ * @param {*} session 
+ */
+async function saveJoinContestPrivateDetail(decoded, bonusAmount, winAmount, cashAmount, playerTeamContestId, contestData, extraAmount, match_sport, session) {
     console.log("22222***************")
-    let surpriseAmount  = extraAmount || 0;
+    let surpriseAmount = extraAmount || 0;
     let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
 
     let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
     let winningAmount = contestData.winning_amount;
     let contestSize = contestData.contest_size;
     let comission = 0;
-    if(adminComission && adminComission > 0) {
-      const profitAmount = Math.ceil((winningAmount * adminComission) / 100);
-      let entryfee = contestData.entry_fee;
-      comission = (profitAmount / contestSize);
-      comission = Math.round(comission,2);
+    if (adminComission && adminComission > 0) {
+        const profitAmount = Math.ceil((winningAmount * adminComission) / 100);
+        let entryfee = contestData.entry_fee;
+        comission = (profitAmount / contestSize);
+        comission = Math.round(comission, 2);
     } else {
-      comission = 0;
+        comission = 0;
     }
-  
-    let saveEntity	=	{};
-    saveEntity.user_id		=	decoded['user_id'];
-    saveEntity.contest_id		=	decoded['contest_id'];
-    saveEntity.series_id		=	decoded['series_id'];
-    saveEntity.match_id		=	decoded['match_id'];
+
+    let saveEntity = {};
+    saveEntity.user_id = decoded['user_id'];
+    saveEntity.contest_id = decoded['contest_id'];
+    saveEntity.series_id = decoded['series_id'];
+    saveEntity.match_id = decoded['match_id'];
     saveEntity.sport = match_sport;
-    saveEntity.bonus_amount	=	bonusAmount;
-    saveEntity.winning_amount	=	winAmount;
-    saveEntity.deposit_cash	=	cashAmount;
-    saveEntity.extra_amount	=	surpriseAmount;
-    saveEntity.total_amount   =	totalAmount;
-    saveEntity.admin_comission= comission ? parseFloat(comission):0;
-    saveEntity.player_team_contest_id=	playerTeamContestId;
+    saveEntity.bonus_amount = bonusAmount;
+    saveEntity.winning_amount = winAmount;
+    saveEntity.deposit_cash = cashAmount;
+    saveEntity.extra_amount = surpriseAmount;
+    saveEntity.total_amount = totalAmount;
+    saveEntity.admin_comission = comission ? parseFloat(comission) : 0;
+    saveEntity.player_team_contest_id = playerTeamContestId;
     saveEntity.retention_bonus = 0;
-    await JoinContestDetail.create([saveEntity],{ session: session });
-  }
+    await JoinContestDetail.create([saveEntity], { session: session });
+}
+/**
+ * This is used to set data to appsflyr event to create private contest by user
+ * @param {*} authUser 
+ * @param {*} match_id 
+ * @param {*} sport 
+ * @param {*} contest_id 
+ */
+async function setAppsflyerData(authUser, match_id, sport, contest_id) {
+    try {
+        if (authUser && authUser.appsflayer_id) {
+            let appsflyerURL = config.appsFlyerAndroidUrl;
+            let event_val = {
+                "appsflyer_id": authUser.appsflayer_id || '',
+                "af_customer_user_id": authUser.clevertap_id || '',
+                "match_id": match_id || '',
+                "sport": sport || '',
+                "contest_id": contest_id || '',
+                "team_joined": 1,
+                'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid : ''
+            };
+            var joinContestAppslyeBd = {
+                "eventName": "PrivateContestCreateS2S",
+                "appsflyer_id": authUser.appsflayer_id || '',
+                "customer_user_id": authUser._id || '',
+                "eventTime": new Date(),
+                'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid : '',
+                "eventValue": JSON.stringify(event_val)
+            };
+            appsFlyerEntryService(joinContestAppslyeBd, appsflyerURL);
+        }
+
+    } catch (appserr) {
+        console.log('appserr at private create contest', appserr);
+    }
+}
