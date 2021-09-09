@@ -257,7 +257,7 @@ module.exports = {
                                                             "total_contest": 1
                                                         }
                                                         let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
-                                                        try{
+                                                        try {
                                                             redis.getRedis(redisKey, async(err, data) => {
                                                                 console.log('redisKey',redisKey);
                                                                 if (data) {
@@ -265,17 +265,18 @@ module.exports = {
                                                                     userContests.push(decoded['contest_id']);
                                                                     data = userContests;
                                                                 } else {
-                                                                    data = [contest_id];
+                                                                    data = [decoded['contest_id']];
                                                                 }
                                                                 var uniqueContestIds = data.filter((value, index, self) => {
                                                                     return self.indexOf(value) === index;
                                                                 });
                                                                 newMyModelobj['total_contest'] = uniqueContestIds && uniqueContestIds.length ? uniqueContestIds.length : 1; 
                                                                 await MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, {session: session , upsert: true, new: true });
+                                                                console.log('data****',data);
                                                                 redis.setRedis(redisKey, data);
                                                             });
                                                          } catch(errredis){
-
+                                                          console.log('errredis',errredis);
                                                          }
                                                         
                                                         
