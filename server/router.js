@@ -261,7 +261,7 @@ router.get('/api/v1/other-game-contest-list/:match_id/:sport',auth.authenticate.
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
-router.post('/api/v1/create-contest', auth.authenticate.jwtLogin, createPrivateContest);
+router.post('/api/v1/create-contest', createPrivateContest);
 router.get('/api/v1/user-download/:dcode/:clevertap_id', userAppDownlad);
 router.post('/api/v1/youtuber-affiliate-to-deposit', auth.authenticate.jwtLogin, youtuberAffilWinTransfer);
 

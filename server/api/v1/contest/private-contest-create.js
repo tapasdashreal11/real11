@@ -34,6 +34,7 @@ module.exports = {
             match_id = parseInt(match_id);
             series_id = parseInt(series_id);
             entry_fee = parseFloat(entry_fee);
+            entryFee = parseFloat(entry_fee);
             winning_amount = parseFloat(winning_amount);
             contest_size = parseInt(contest_size);
             winners_count = parseInt(winners_count);
@@ -50,14 +51,14 @@ module.exports = {
                 entry_fee
             }
             let currentDate = moment().utc().toDate();
+            let indianDate = Date.now();
+            indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             if (decoded) {
                 let commission = config.contest_commission;
                 if (decoded['user_id'] && decoded['contest_size'] && decoded['series_id'] && decoded['match_id'] && decoded['team_id'] && decoded['winners_count']) {
                     let authUser = await User.findOne({ '_id': decoded['user_id'] });
                     if (authUser) {
                         let seriesMatch = await SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'series_id': decoded['series_id'] });
-
-
                         if (seriesMatch && seriesMatch._id) {
                             let ctime = Date.now();
                             let mtime = seriesMatch.time;
@@ -69,32 +70,33 @@ module.exports = {
                                 const sessionOpts = { session, new: true };
                                 try {
                                     let contest = {};
-                                    let saveData = {};
-                                    saveData['contest_size'] = decoded['contest_size'];
-                                    saveData['winning_amount'] = decoded['winning_amount'];
-                                    saveData['entry_fee'] = decoded['entry_fee'];
-                                    saveData['admin_comission'] = commission;
-                                    saveData['contest_type'] = (decoded['winning_amount'] > 0) ? 'Paid' : 'Free';
-                                    saveData['multiple_team'] = (decoded['join_multiple'] == 'yes') ? 'yes' : '0';
-                                    saveData['maximum_team_size'] = (decoded['join_multiple'] == 'yes') ? 9 : 1;
-                                    saveData['used_bonus'] = 0;
-                                    saveData['is_private'] = 1;
-                                    saveData['is_auto_create'] = 0;
-                                    saveData['auto_create'] = 'no';
-                                    saveData['confirmed_winning'] = 'no';
-                                    saveData['amount_gadget'] = 'false';
-                                    saveData['infinite_contest_size'] = 0;
-                                    saveData['contest_shareable'] = 0;
-                                    saveData['category_id'] = '61385d45a67c543121311a6b';
-                                    saveData['contest_name'] = decoded['contest_name'];
-                                    saveData['user_id'] = decoded['user_id'];
+                                    let contestSaveData = {};
+                                    contestSaveData['contest_size'] = decoded['contest_size'];
+                                    contestSaveData['winning_amount'] = decoded['winning_amount'];
+                                    contestSaveData['entry_fee'] = decoded['entry_fee'];
+                                    contestSaveData['admin_comission'] = commission;
+                                    contestSaveData['contest_type'] = (decoded['winning_amount'] > 0) ? 'Paid' : 'Free';
+                                    contestSaveData['multiple_team'] = (decoded['join_multiple'] == 'yes') ? 'yes' : 'no';
+                                    contestSaveData['maximum_team_size'] = (decoded['join_multiple'] == 'yes') ? 9 : 1;
+                                    contestSaveData['used_bonus'] = 0;
+                                    contestSaveData['is_private'] = 1;
+                                    contestSaveData['status'] = 1;
+                                    contestSaveData['is_auto_create'] = 0;
+                                    contestSaveData['auto_create'] = 'no';
+                                    contestSaveData['confirmed_winning'] = 'no';
+                                    contestSaveData['amount_gadget'] = 'false';
+                                    contestSaveData['infinite_contest_size'] = 0;
+                                    contestSaveData['contest_shareable'] = 0;
+                                    contestSaveData['category_id'] = '61385d45a67c543121311a6b';
+                                    contestSaveData['contest_name'] = decoded['contest_name'];
+                                    contestSaveData['user_id'] = decoded['user_id'];
 
                                     // contest price breakup
                                     if (decoded['winning_amount'] > 0) {
                                         let prizeBreakup = await UserContestBreakup.find({ "contest_size_start": { $lte: decoded['contest_size'] }, "contest_size_end": { $gte: decoded['contest_size'] }, winner: decoded['winners_count'] }).sort({ winner: 1 });
                                         let breakpArr = [];
                                         if (prizeBreakup) {
-                                            saveData['price_breakup'] = 1;
+                                            contestSaveData['price_breakup'] = 1;
                                             let key = 0;
                                             for (const breakup of prizeBreakup) {
                                                 breakpArr[key] = {};
@@ -114,10 +116,10 @@ module.exports = {
                                                 key++;
                                             }
                                         }
-                                        saveData['breakup'] = breakpArr;
+                                        contestSaveData['breakup'] = breakpArr;
                                     }
                                     // save contest with no category_id
-                                    const newDataC = await Contest.create([saveData], { session: session });
+                                    const newDataC = await Contest.create([contestSaveData], { session: session });
                                     var result = newDataC && newDataC.length > 0 ? newDataC[0] : {};
                                     if (result && result._id) {
                                         decoded['contest_id'] = result._id;
@@ -147,7 +149,7 @@ module.exports = {
                                             matchContest['sport'] = 1;
                                             matchContest['category_seq'] = 1;
                                             matchContest['is_private'] = 1;
-                                            matchContest['contest'] = saveData;
+                                            matchContest['contest'] = contestSaveData;
                                             matchContest['contest_id'] = result._id;;
                                             await MatchContest.create([matchContest], { session: session });
                                         }
@@ -240,6 +242,7 @@ module.exports = {
                                                         contest.series_id = series_id;
                                                         contest.contest_id = decoded['contest_id'];
                                                         contest.user_id = user_id;
+                                                        contest.sport = match_sport;
                                                         contest.total_amount = calEntryFees;
                                                         contest.team_count = team_count_number;
                                                         contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
@@ -305,6 +308,7 @@ module.exports = {
 
                                 } catch (errorr) {
                                     let response = {};
+                                    console.log('errorr',errorr)
                                     await session.abortTransaction();
                                     session.endSession();
                                     response.status = false;
