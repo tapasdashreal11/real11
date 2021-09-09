@@ -287,6 +287,12 @@ module.exports = {
                                                         setAppsflyerData(authUser, match_id, match_sport, decoded['contest_id']);
                                                         let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
                                                         redis.setRedisMyMatches(myJoinedContestListKey, {});
+                                                        try{
+                                                            redis.redisObj.get('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id, (err, data) => {
+                                                                let count = (data) ? parseInt(data) : 1;
+                                                                redis.redisObj.del('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id);
+                                                            });
+                                                        }catch(er){}
                                                         //******************************last response*******************
                                                         data1.invite_code = inviteCode;
                                                         data1.match_id = match_id;
