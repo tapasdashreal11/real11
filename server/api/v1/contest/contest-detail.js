@@ -285,9 +285,9 @@ module.exports = {
                 let contestData = {
                     match_status: (reviewMatch) ? reviewMatch.status : '',
                     prize_money: prizeMoney,
-                    usable_bonus_time: matchInviteCode.usable_bonus_time,
-                    before_time_bonus: matchInviteCode.before_time_bonus,
-                    after_time_bonus: matchInviteCode.after_time_bonus,
+                    usable_bonus_time: matchInviteCode && matchInviteCode.usable_bonus_time ? matchInviteCode.usable_bonus_time : null,
+                    before_time_bonus: matchInviteCode && matchInviteCode.before_time_bonus ? matchInviteCode.before_time_bonus : 0,
+                    after_time_bonus: matchInviteCode && matchInviteCode.after_time_bonus ? matchInviteCode.after_time_bonus : 0,
                     confirm_winning: winComfimed.toString(),
                     total_teams: totalTeams,
                     entry_fee: entryfee,
