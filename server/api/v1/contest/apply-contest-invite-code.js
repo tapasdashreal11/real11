@@ -59,6 +59,7 @@ module.exports = {
                         ])
                     }
                     if (contestMatch && contestMatch.length === 1) {
+                        console.log('contestMatch',contestMatch);
                         redis.setRedis("contest-invite-conde-"+ ddinvite_code, contestMatch);
                         contestMatch = contestMatch[0]
                         let authUser = await User.findOne({ '_id': decoded['user_id'] });
