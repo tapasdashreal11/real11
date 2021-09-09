@@ -5,7 +5,8 @@ const request = require('request');
 const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
     return new Promise((resolve, reject) => {
         if(!isEmpty(appsflyerdata)){
-            const bData = JSON.parse(JSON.stringify(appsflyerdata));
+            //const bData = JSON.parse(JSON.stringify(appsflyerdata));
+            console.log('appsflyerdata',appsflyerdata);
             var options = {
                 "method": "POST",
                 "url": appsflyerUrl, 

@@ -258,7 +258,8 @@ module.exports = {
                                                         }
                                                         let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
                                                         try{
-                                                            redis.getRedis(redisKey, (err, data) => {
+                                                            redis.getRedis(redisKey, async(err, data) => {
+                                                                console.log('redisKey',redisKey);
                                                                 if (data) {
                                                                     let userContests = data;
                                                                     userContests.push(decoded['contest_id']);
@@ -270,6 +271,7 @@ module.exports = {
                                                                     return self.indexOf(value) === index;
                                                                 });
                                                                 newMyModelobj['total_contest'] = uniqueContestIds && uniqueContestIds.length ? uniqueContestIds.length : 1; 
+                                                                await MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, {session: session , upsert: true, new: true });
                                                                 redis.setRedis(redisKey, data);
                                                             });
                                                          } catch(errredis){
@@ -277,7 +279,7 @@ module.exports = {
                                                          }
                                                         
                                                         
-                                                        await MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, { upsert: true, new: true });
+                                                        
                                                         await saveJoinContestPrivateDetail(decoded, bonusAmount, winAmount, cashAmount, newContestId, result, extraAmount, match_sport, session);
                                                         await session.commitTransaction();
                                                         session.endSession();
