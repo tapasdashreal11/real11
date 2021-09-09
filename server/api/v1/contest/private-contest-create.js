@@ -292,6 +292,8 @@ module.exports = {
                                                                 let count = (data) ? parseInt(data) : 1;
                                                                 redis.redisObj.del('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id);
                                                             });
+                                                            let matchContestUserKey = RedisKeys.MY_MATCHES_LIST + user_id + "_" + match_sport;
+                                                            redis.setRedisMyMatches(matchContestUserKey, {});
                                                         }catch(er){}
                                                         //******************************last response*******************
                                                         data1.invite_code = inviteCode;
