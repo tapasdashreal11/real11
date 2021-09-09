@@ -291,10 +291,11 @@ module.exports = {
                                                         data1.invite_code = inviteCode;
                                                         data1.match_id = match_id;
                                                         data1.series_id = series_id;
-                                                        data1.match_name = seriesMatch.visitorteam + " vs " + seriesMatch.localteam;
+                                                        data1.match_name = seriesMatch.visitorteam_short_name + " vs " + seriesMatch.localteam_short_name;
                                                         data1.match_time = seriesMatch.time;
                                                         data1.entry_fee = entryFee;
                                                         data1.contest_size = contest_size;
+                                                        data1.contest_id = decoded['contest_id'];
                                                         return res.send(ApiUtility.success(data1, 'You have created your private contest successfully. Now share with your friends!!'));
                                                     } else {
                                                         await session.abortTransaction();
