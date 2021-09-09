@@ -259,7 +259,6 @@ module.exports = {
                                                         let redisKey = 'user-contest-joinedContestIds-' + user_id + '-' + match_id + '-' + match_sport;
                                                         try {
                                                             redis.getRedis(redisKey, async(err, data) => {
-                                                                console.log('redisKey',redisKey);
                                                                 if (data) {
                                                                     let userContests = data;
                                                                     userContests.push(decoded['contest_id']);
@@ -272,11 +271,10 @@ module.exports = {
                                                                 });
                                                                 newMyModelobj['total_contest'] = uniqueContestIds && uniqueContestIds.length ? uniqueContestIds.length : 1; 
                                                                 await MyContestModel.findOneAndUpdate({ match_id: match_id, sport: match_sport, user_id: user_id }, newMyModelobj, {session: session , upsert: true, new: true });
-                                                                console.log('data****',data);
                                                                 redis.setRedis(redisKey, data);
                                                             });
                                                          } catch(errredis){
-                                                          console.log('errredis',errredis);
+                                                          
                                                          }
                                                         
                                                         
