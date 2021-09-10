@@ -120,13 +120,13 @@ var contestSchema = new Schema({
     }]
   },
   user_contest: {
-    "type": [{
+    "type": {
       user_id :ObjectId,
       series_id:Number,
       match_id:Number,
       contest_name: String,
       invite_code: String,
-    }] 
+    } 
   },
   "user_created":{
     "type":Number,
