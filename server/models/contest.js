@@ -124,9 +124,14 @@ var contestSchema = new Schema({
       user_id :ObjectId,
       series_id:Number,
       match_id:Number,
-      contest_name: String
+      contest_name: String,
+      invite_code: String,
     }] 
-  }
+  },
+  "user_created":{
+    "type":Number,
+    default:0
+  },
 });
 
 contestSchema.statics.getContestsIdsByCategoryIds = function(categoryIds){

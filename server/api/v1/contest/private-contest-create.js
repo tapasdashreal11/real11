@@ -28,7 +28,7 @@ module.exports = {
         try {
             let data1 = {};
             const user_id = req.userId;
-            let { contest_size, series_id, match_id, team_id, winners_count, winning_amount, entry_fee, team_count, sport } = req.body;
+            let {contest_name, contest_size, series_id, match_id, team_id, winners_count, winning_amount, entry_fee, team_count, sport } = req.body;
             var team_count_number = team_count ? parseInt(team_count) : 0;
             let match_sport = sport ? parseInt(sport) : 1;
             match_id = parseInt(match_id);
@@ -86,9 +86,9 @@ module.exports = {
                                     contestSaveData['amount_gadget'] = 'false';
                                     contestSaveData['infinite_contest_size'] = 0;
                                     contestSaveData['contest_shareable'] = 0;
+                                    contestSaveData['user_created'] = 1;
                                     contestSaveData['category_id'] = config && config.private_category && config.private_category.id ? config.private_category.id :'';
-                                    contestSaveData['contest_name'] = decoded['contest_name'];
-                                    contestSaveData['user_id'] = decoded['user_id'];
+                                    contestSaveData['user_contest']= [{'invite_code':inviteCode,'user_id': decoded['user_id'],'series_id':series_id,'match_id':match_id,'contest_name':contest_name}] 
 
                                     // contest price breakup
                                     if (decoded['winning_amount'] > 0) {
