@@ -35,7 +35,7 @@ module.exports = {
                                 matchContesComplete['series_squad'] = seriesSqad;
                                 contestMatch = matchContesComplete
                                 redis.setRedis(inviteCodeRedisKey, contestMatch);
-                                redis.expire(inviteCodeRedisKey, 7200000); // will expire in 2 hours
+                                redis.expire(inviteCodeRedisKey, 3600000); // will expire in 2 hours
                             } else {
                                 return res.send(ApiUtility.failed('Something went wrong!!'));
                             }
