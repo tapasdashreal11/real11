@@ -625,7 +625,7 @@ module.exports = {
                             let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
                             let cBonus =  rdata && rdata.contest_bonous?rdata.contest_bonous:[];  //config && config.contest_bonous ? config.contest_bonous:[];
                             let cBonusItem = {};
-                            if(rdata.is_offer_type == 3){
+                            if(rdata.is_offer_type == 3 && cBonus){
                                 cBonusItem =  cBonus.find(function(el){
                                     if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))){
                                         return el
