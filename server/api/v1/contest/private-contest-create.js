@@ -497,7 +497,6 @@ async function joinContestPaymentCalculation(offerableAppled, useableBonusPer, a
  * @param {*} session 
  */
 async function saveJoinContestPrivateDetail(decoded, bonusAmount, winAmount, cashAmount, playerTeamContestId, contestData, extraAmount, match_sport, session) {
-    console.log("22222***************")
     let surpriseAmount = extraAmount || 0;
     let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
 
