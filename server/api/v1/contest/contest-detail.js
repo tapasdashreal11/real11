@@ -309,6 +309,7 @@ module.exports = {
                     maximum_team_size: multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
                     contest_shareable : contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,	
                     category_id:contestDetail && contestDetail.category_id ?contestDetail.category_id:'',
+                    user_contest:contestDetail && contestDetail.user_contest ?contestDetail.user_contest:{},
                     category_name:matchContestDetail && matchContestDetail.category_name ?matchContestDetail.category_name:'',
                     my_teams: myTeamsCount || 0,
                     is_offerable : matchContestDetail && matchContestDetail.is_offerable && matchContestDetail.is_offerable == 1 ? true: false ,
