@@ -25,6 +25,7 @@ module.exports = {
                 if (invite_code && !_.isEmpty(invite_code)) {
                     let ddinvite_code = decoded['invite_code'].toUpperCase();
                     let contestMatch = await getRedisContestCodeData(ddinvite_code);
+                    let inviteCodeRedisKey = "contest-invite-code-" + ddinvite_code;
                     if (!contestMatch || contestMatch == false) {
                         let matchContes = await MatchContest.findOne({ 'invite_code': ddinvite_code, is_full: 0 }, { _id: 1, 'contest.contest_size': 1, 'contest.category_id': 1, 'contest.contest_type': 1, contest_id: 1, category_id: 1, series_id: 1, match_id: 1, localteam_id: 1, visitorteam_id: 1, localteam: 1, visitorteam: 1, sport: 1 });
                         if (matchContes && matchContes._id) {
@@ -33,7 +34,8 @@ module.exports = {
                                 let matchContesComplete = JSON.parse(JSON.stringify(matchContes))
                                 matchContesComplete['series_squad'] = seriesSqad;
                                 contestMatch = matchContesComplete
-                                redis.setRedis("contest-invite-code-" + ddinvite_code, contestMatch);
+                                redis.setRedis(inviteCodeRedisKey, contestMatch);
+                                redis.expire(inviteCodeRedisKey, 7200000); // will expire in 2 hours
                             } else {
                                 return res.send(ApiUtility.failed('Something went wrong!!'));
                             }
