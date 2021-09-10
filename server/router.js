@@ -318,9 +318,9 @@ router.post('/api/v1/generate-paytm-checksum', auth.authenticate.jwtLogin, gener
 router.post('/api/v1/create-transaction-id', auth.authenticate.jwtLogin, createTransactionId);
 router.get('/api/v1/joined-contest-matches/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatchesNew);
 router.get('/api/v1/joined-contest-matches-new/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatchesNew);
-router.get('/api/v1/apply-contest-invite-code/:invite_code', auth.authenticate.jwtLogin, applyContestInviteCode);
+router.get('/api/v1/apply-contest-invite-code/:invite_code',auth.authenticate.jwtLogin, applyContestInviteCode);
 router.get('/api/v1/get-match-list/:sport?', redis.cacheMiddle, matchList);
-router.get('/api/v1/other-match-list', otherGamesMatch); 
+router.get('/api/v1/other-match-list', otherGamesMatch);
 router.get('/api/v1/five-over-match-list/:pmatch_id/:sport', fiveOverliveFantasyMatchList);
 router.get('/api/v1/get-match-detail/:match_id/:sport/:series_id',  redis.cacheMiddle);
 router.post('/api/v1/team-profile-comparision', auth.authenticate.jwtLogin, teamProfileComparision);
