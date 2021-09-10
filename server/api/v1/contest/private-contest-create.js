@@ -8,7 +8,7 @@ const MyContestModel = require('../../../models/my-contest-model');
 const ApiUtility = require('../../api.utility');
 const Transaction = require('../../../models/transaction');
 const JoinContestDetail = require('../../../models/join-contest-detail');
-
+const { Validator } = require("node-input-validator");
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
@@ -29,6 +29,15 @@ module.exports = {
             let data1 = {};
             const user_id = req.userId;
             let {contest_name, contest_size, series_id, match_id, team_id, winners_count, winning_amount, entry_fee, team_count, sport } = req.body;
+            let params = req.body;
+            let constraints = { contest_name: "required", contest_size: "required",series_id: "required",match_id: "required",team_id: "required",winners_count: "required",winning_amount: "required",team_count: "required" };
+            let validator = new Validator(params, constraints);
+            let matched = await validator.check();
+            if (!matched) {
+                response["message"] = "Required fields missing";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
             var team_count_number = team_count ? parseInt(team_count) : 0;
             let match_sport = sport ? parseInt(sport) : 1;
             match_id = parseInt(match_id);
