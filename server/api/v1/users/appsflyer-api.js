@@ -6,7 +6,6 @@ const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
     return new Promise((resolve, reject) => {
         if(!isEmpty(appsflyerdata)){
             //const bData = JSON.parse(JSON.stringify(appsflyerdata));
-            console.log('appsflyerdata',appsflyerdata);
             var options = {
                 "method": "POST",
                 "url": appsflyerUrl, 
@@ -15,7 +14,6 @@ const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
                 "body":appsflyerdata
             };
             request(options, function (error,res,body) {
-                console.log('body',body);
                 return resolve(body);
             });
            
