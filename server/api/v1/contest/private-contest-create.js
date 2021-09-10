@@ -86,7 +86,7 @@ module.exports = {
                                     contestSaveData['amount_gadget'] = 'false';
                                     contestSaveData['infinite_contest_size'] = 0;
                                     contestSaveData['contest_shareable'] = 0;
-                                    contestSaveData['category_id'] = '61385d45a67c543121311a6b';
+                                    contestSaveData['category_id'] = config && config.private_category && config.private_category.id ? config.private_category.id :'';
                                     contestSaveData['contest_name'] = decoded['contest_name'];
                                     contestSaveData['user_id'] = decoded['user_id'];
 
@@ -142,9 +142,9 @@ module.exports = {
                                             matchContest['is_offerable'] = 0;
                                             matchContest['match_id'] = seriesMatch.match_id;
                                             matchContest['series_id'] = seriesMatch.series_id;
-                                            matchContest['category_id'] = '61385d45a67c543121311a6b';
-                                            matchContest['category_name'] = 'Freind Private Contest';
-                                            matchContest['category_description'] = 'Join with your friends';
+                                            matchContest['category_id'] = config && config.private_category && config.private_category.id ? config.private_category.id :'';
+                                            matchContest['category_name'] = config && config.private_category && config.private_category.cat_name ? config.private_category.cat_name :'';
+                                            matchContest['category_description'] = config && config.private_category && config.private_category.cat_des ? config.private_category.cat_des :'';
                                             matchContest['sport'] = 1;
                                             matchContest['category_seq'] = 1;
                                             matchContest['is_private'] = 1;
@@ -245,7 +245,14 @@ module.exports = {
                                                         contest.team_count = team_count_number;
                                                         contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                         contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
-                                                        await PlayerTeamContest.create([contest], { session: session });
+                                                        if(_.has(contest, "player_team_id") && _.has(contest, "team_count") &&  _.has(contest, "team_name") &&  contest.team_name !='' && contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0 ){
+                                                            await PlayerTeamContest.create([contest], { session: session });
+                                                        } else {
+                                                            await session.abortTransaction();
+                                                            session.endSession();
+                                                            return res.send(ApiUtility.failed("Player team not found. Please try again!!"));
+                                                        }
+                                                        
                                                         var newMyModelobj = {
                                                             'match_id': match_id,
                                                             "series_id": series_id,

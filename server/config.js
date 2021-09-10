@@ -238,6 +238,11 @@ config.user_category_prod = {
   looser_cat:'60ebe0a81de3382a0b48cde2'
 }
 
+config.private_category = {
+  id: '61385d45a67c543121311a6b',
+  cat_name:'Friend Private Contest',
+  cat_des:'Join with your friends'
+}
 config.youtuber_bcode = [
   {'code':'NM333','name':'shashi','applied':true},
   {'code':'FC111','name':'fcg','applied':true},
