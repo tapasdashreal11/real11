@@ -88,7 +88,7 @@ module.exports = {
                                     contestSaveData['contest_shareable'] = 0;
                                     contestSaveData['user_created'] = 1;
                                     contestSaveData['category_id'] = config && config.private_category && config.private_category.id ? config.private_category.id :'';
-                                    contestSaveData['user_contest']= {'invite_code':inviteCode,'user_id': decoded['user_id'],'series_id':series_id,'match_id':match_id,'contest_name':contest_name};
+                                    contestSaveData['user_contest']= {'invite_code':inviteCode,'user_id': decoded['user_id'],'match_id':match_id,'contest_name':contest_name};
 
                                     // contest price breakup
                                     if (decoded['winning_amount'] > 0) {
