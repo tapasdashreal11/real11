@@ -1,6 +1,7 @@
 const config = require('../../../config');
 const User = require('../../../models/user');
 const MatchContest = require('../../../models/match-contest');
+const SeriesSquad = require('../../../models/series-squad');
 const PlayerTeam = require('../../../models/player-team');
 const PlayerTeamContest = require('../../../models/player-team-contest');
 const ApiUtility = require('../../api.utility');
@@ -26,11 +27,27 @@ module.exports = {
             if (decoded) {
                 if (decoded['invite_code'] && decoded['user_id']) {
                     let ddinvite_code = decoded['invite_code'].toUpperCase();
-                    // console.log('enter');
                     let contestMatch =   await getRedisContestCodeData(ddinvite_code);
 
                     if(!contestMatch || contestMatch == false) {
                        // var regCode = new RegExp(["^", decoded['invite_code'], "$"].join(""), "i");
+                       
+                      let matchContes = await MatchContest.findOne({'invite_code': ddinvite_code, is_full:1 });
+                       if(matchContes && matchContes._id){
+                        let seriesSqad = await SeriesSquad.findOne({'match_id': matchContes.match_id, sport: matchContes.sport });
+                          if(seriesSqad && seriesSqad._id){
+                            matchContes.series_squad = seriesSqad;
+                            console.log('matchContes',matchContes);
+                            return false;
+                          } else {
+                            return res.send(ApiUtility.failed('Something went wrong!!'));
+                          }
+                          
+                       } else {
+                         return res.send(ApiUtility.failed('The unique code looks invalid! Please check again.'));
+                       }
+
+                      
                         contestMatch = await MatchContest.aggregate([
                             {
                                 $match: { 'invite_code': ddinvite_code,is_full:{$ne:1} }
