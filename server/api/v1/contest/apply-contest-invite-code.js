@@ -33,7 +33,7 @@ module.exports = {
                                 let matchContesComplete = JSON.parse(JSON.stringify(matchContes))
                                 matchContesComplete['series_squad'] = seriesSqad;
                                 contestMatch = matchContesComplete
-                                redis.setRedis("contest-invite-conde-" + ddinvite_code, contestMatch);
+                                redis.setRedis("contest-invite-code-" + ddinvite_code, contestMatch);
                             } else {
                                 return res.send(ApiUtility.failed('Something went wrong!!'));
                             }
@@ -155,7 +155,7 @@ module.exports = {
                             }
                             // console.log(contestMatch);return false
                             if (contestMatch && contestMatch.length === 1) {
-                                redis.setRedis("contest-invite-conde-" + toLower(decoded['invite_code']), contestMatch);
+                                redis.setRedis("contest-invite-code-" + toLower(decoded['invite_code']), contestMatch);
                                 contestMatch = contestMatch[0]
                                 let authUser = await User.findOne({ '_id': decoded['user_id'] });
                                 if (authUser) {
@@ -264,7 +264,7 @@ module.exports = {
 
 
                     //   if (contestMatch && contestMatch.length === 1) {
-                    //       redis.setRedis("contest-invite-conde-"+ toLower(decoded['invite_code']), contestMatch);
+                    //       redis.setRedis("contest-invite-code-"+ toLower(decoded['invite_code']), contestMatch);
                     //       contestMatch = contestMatch[0]
                     //       let authUser = await User.findOne({ '_id': decoded['user_id'] });
                     //       if (authUser) {
@@ -352,7 +352,7 @@ module.exports = {
 async function getRedisContestCodeData(inviteCode) {
     try {
         return new Promise(async (resolve, reject) => {
-            let redisKey = 'contest-invite-conde-' + inviteCode;
+            let redisKey = 'contest-invite-code-' + inviteCode;
             await redis.getRedis(redisKey, function (err, contestData) {
                 if (contestData) {
                     return resolve(contestData);
