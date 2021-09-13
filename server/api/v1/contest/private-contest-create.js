@@ -125,9 +125,9 @@ module.exports = {
                                             }
                                         }
                                         if(breakpArr && breakpArr.length>0){
-                                           // breakpArr = _.sortBy(breakpArr,[function(o) { return o.startRank; }]);
+                                            breakpArr = _.sortBy(breakpArr,[function(o) { return o.startRank; }]);
                                         }
-                                        
+                                        console.log('breakpArr',breakpArr);
                                         contestSaveData['breakup'] = breakpArr;
                                     }
                                     // save contest with no category_id
