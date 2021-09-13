@@ -152,7 +152,7 @@ module.exports = {
                         try {
                             console.log('params.device_id',params.device_id);
                             if (params && params.device_id) {
-                                Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
+                                Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome Bonus!!', 'Kick start your journey with 100% deposit bonus. Make your initial deposit in wallet to avail this reward.');
                             } 
                         } catch (errr) { }
                         
@@ -633,7 +633,7 @@ module.exports = {
                         const user = await Users.create(insertData);
                         try {
                             if (params && params.device_id) {
-                                Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome !!', 'Complete the next steps to successfully singup.');
+                                Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome Bonus!!', 'Kick start your journey with 100% deposit bonus. Make your initial deposit in wallet to avail this reward.');
                             }
                         } catch (errr) { }
                         const insertId = user._id;
