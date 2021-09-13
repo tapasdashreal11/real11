@@ -88,11 +88,12 @@ const  createTeamName = ($userName = null) => {
 const createUserReferal = ($length) => {
   $string		=	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ9630125478';
     $strShuffled=	shuffle($string);
-    
     $referCode	= $strShuffled.substr(1, $length);
-
-		
-		return $referCode + new Date().getUTCMilliseconds().toString();
+		if($length ==6){
+      return $referCode + new Date().getUTCMilliseconds().toString();
+    }else{
+      return $referCode;
+    }
 };
 
 
