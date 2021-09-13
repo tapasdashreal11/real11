@@ -591,7 +591,7 @@ module.exports = {
                         let catid =matchContestData && matchContestData.category_id ? matchContestData.category_id: '';
                         if(_.isEmpty(catid) || _.isUndefined(catid) || _.isNull(catid)){
                             if(is_private_create){
-                                catid = '61385d45a67c543121311a6b';
+                                catid = config && config.private_category && config.private_category.id ? config.private_category.id :'';
                             } else {
                                 return res.send(ApiUtility.failed("Please try again!!"));
                             }
@@ -660,7 +660,7 @@ module.exports = {
                              } 
                           }
                         if (userdata) {
-                            if (decoded['contest_id']) {
+                            if (decoded['contest_id'] || is_private_create) {
                                 if(retention_bonus_amount > 0 && !offerableAppled){
                                     usableAmt = 0;
                                 } else {
