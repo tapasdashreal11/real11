@@ -56,6 +56,7 @@ module.exports = {
                         if (isAfter) {
                             return res.send(ApiUtility.failed('Match has been started.'));
                         }
+                        console.log('seriesSquad***',seriesSquad);
                         matchData['series_id'] = contestMatch.series_id;
                         matchData['match_id'] = contestMatch.match_id;
                         matchData['match_type'] = seriesSquad && seriesSquad.live_fantasy_parent_id && !seriesSquad.is_parent  ? "live-fantasy" : 'main';
