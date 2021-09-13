@@ -124,9 +124,13 @@ module.exports = {
           } else {
             userData['account_verified'] = false;
           }
+          userData['cash_balance'] = user && user.cash_balance ? user.cash_balance : 0;
+          userData['winning_balance'] = user && user.winning_balance ? user.winning_balance :0 ;
+          userData['bonus_amount'] = user && user.bonus_amount ? user.bonus_amount :0 ;
+          userData['affiliate_amount'] = user && user.affiliate_amount ? parseInt(user.affiliate_amount) : 0;
+          userData['_id'] = user._id ;
           userData['is_profile_complete'] = is_profile_complete;
           userData['fair_play_violation'] = (user.fair_play_violation == 1) ? true : false;
-          userData['affiliate_amount'] = user && user.affiliate_amount ? parseInt(user.affiliate_amount) : 0;
           response["message"] = "Successfully";
           response["status"] = true;
           response["data"] = userData;
