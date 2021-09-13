@@ -125,7 +125,7 @@ module.exports = {
                                             }
                                         }
                                         if(breakpArr && breakpArr.length>0){
-                                            breakpArr = _.sortBy(breakpArr,[function(o) { return o.startRank; }]);
+                                           // breakpArr = _.sortBy(breakpArr,[function(o) { return o.startRank; }]);
                                         }
                                         
                                         contestSaveData['breakup'] = breakpArr;
