@@ -80,7 +80,6 @@ module.exports = async (req, res) => {
 					await transactionAtSignupBonous(user._id);
 					setDataToAppsflyer(user);
 					setFacebookEventAtSingup(user,userIp);
-					console.log('***** in for phone update');
 				} 
 				      
 				await Users.updateOne({ _id: user._id }, { $set:updateObj });
@@ -226,7 +225,7 @@ async function setFacebookEventAtSingup(params,userIp){
 				{
 					"event_name": "CompleteRegistration",
 					"event_time": parseInt(new Date().getTime() / 1000),
-					"event_source_url": "real11.com/s2",
+					"event_source_url": "real11.com/s2s",
 					"opt_out": false,
 					"event_id": Math.floor(1000000 + Math.random() * 9000000),
 					"user_data": {
