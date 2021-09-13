@@ -92,7 +92,7 @@ const createUserReferal = ($length) => {
     $referCode	= $strShuffled.substr(1, $length);
 
 		
-		return $referCode;
+		return $referCode + new Date().getUTCMilliseconds().toString();
 };
 
 

@@ -48,7 +48,7 @@ module.exports = {
             contest_size = parseInt(contest_size);
             winners_count = parseInt(winners_count);
             // create contest invite code
-            let inviteCode = Helper.createUserReferal(10);
+            let inviteCode = Helper.createUserReferal(6);
             let decoded = {
                 contest_size,
                 series_id,
