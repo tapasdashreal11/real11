@@ -130,6 +130,7 @@ module.exports = {
           response["message"] = "Successfully";
           response["status"] = true;
           response["data"] = userData;
+          return res.json(response);
         } else {
           response["message"] = "Invalid User!!";
           return res.json(response);
