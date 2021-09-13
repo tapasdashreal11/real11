@@ -16,10 +16,13 @@ const {TransactionTypes, RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const { appsFlyerEntryService } = require("./appsflyer-api");
+var sha256 = require('sha256');
+const { facebookEntryService } = require("./facebook-api");
 
 module.exports = async (req, res) => {
 	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
+		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		let params = req.body;
 		let constraints = {
 			is_signup: "required",
@@ -76,6 +79,7 @@ module.exports = async (req, res) => {
 					finalResponse['phone'] = user.temp_phone;
 					await transactionAtSignupBonous(user._id);
 					setDataToAppsflyer(user);
+					setFacebookEventAtSingup(user,userIp);
 					console.log('***** in for phone update');
 				} 
 				      
@@ -200,11 +204,43 @@ async function setDataToAppsflyer(params){
             };
 
             if (!params.is_refered_by) {
-                appsFlyerEntryService(signUpBody, appsflyerURL);
+				appsFlyerEntryService(signUpBody, appsflyerURL);
+				
             }
         }
 
     } catch (errr) {
         console.log('errr', errr);
     }
+}
+
+async function setFacebookEventAtSingup(params,userIp){
+    try {
+		let fb_event = {
+			"data": [
+				{
+					"event_name": "CompleteRegistration",
+					"event_time": parseInt(new Date().getTime() / 1000),
+					"event_source_url": "real11.com/s2",
+					"opt_out": false,
+					"event_id": Math.floor(1000000 + Math.random() * 9000000),
+					"user_data": {
+						"em": params && params.email ? sha256(params.email) : null,
+						"ph": params && params.temp_phone ? sha256(params.temp_phone) : null,
+						"fbc": params && params.fbc_id ? params.fbc_id : null,
+						"fn": params && params.team_name ? sha256(params.team_name) : null,
+						"client_ip_address": userIp ? userIp: "172.17.0.5",
+						"client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+					},
+					"custom_data": {
+						"value": 1,
+						"currency": "INR"
+					},
+					"action_source": "app"
+				}
+			]
+		}
+	   facebookEntryService(fb_event, '');
+	} catch (errfb) { }
+
 }
