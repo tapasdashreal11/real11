@@ -58,7 +58,7 @@ module.exports = {
                         }
                         matchData['series_id'] = contestMatch.series_id;
                         matchData['match_id'] = contestMatch.match_id;
-                        matchData['match_type'] = seriesSquad && seriesSquad.live_fantasy_parent_id &&  !seriesSquad.is_parent  ? "live-fantasy" : "main";
+                        matchData['match_filter'] = seriesSquad && seriesSquad.live_fantasy_parent_id &&  !seriesSquad.is_parent  ? "live-fantasy" : "main";
                         matchData['series_name'] = seriesSquad && seriesSquad.series_name ? seriesSquad.series_name : '';
                         matchData['local_team_id'] = contestMatch.localteam_id;
                         matchData['local_team_name'] = seriesSquad && seriesSquad.localteam_short_name ? seriesSquad.localteam_short_name : contestMatch.localteam;
