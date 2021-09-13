@@ -29,7 +29,7 @@ module.exports = {
                     if (!contestMatch || contestMatch == false) {
                         let matchContes = await MatchContest.findOne({ 'invite_code': ddinvite_code, is_full: 0 }, { _id: 1, 'contest.contest_size': 1, 'contest.category_id': 1, 'contest.contest_type': 1, contest_id: 1, category_id: 1, series_id: 1, match_id: 1, localteam_id: 1, visitorteam_id: 1, localteam: 1, visitorteam: 1, sport: 1 });
                         if (matchContes && matchContes._id) {
-                            let seriesSqad = await SeriesSquad.findOne({ 'match_id': matchContes.match_id, sport: matchContes.sport }, { _id: 1, time: 1, date: 1, contest_count: 1, series_name: 1, localteam_short_name: 1, visitorteam_short_name: 1, match_id: 1 });
+                            let seriesSqad = await SeriesSquad.findOne({ 'match_id': matchContes.match_id, sport: matchContes.sport }, { _id: 1,live_fantasy_parent_id: 1, is_parent: 1, time: 1, date: 1, contest_count: 1, series_name: 1, localteam_short_name: 1, visitorteam_short_name: 1, match_id: 1 });
                             if (seriesSqad && seriesSqad._id) {
                                 let matchContesComplete = JSON.parse(JSON.stringify(matchContes))
                                 matchContesComplete['series_squad'] = seriesSqad;
@@ -58,12 +58,13 @@ module.exports = {
                         }
                         matchData['series_id'] = contestMatch.series_id;
                         matchData['match_id'] = contestMatch.match_id;
-                        matchData['series_name'] = seriesSquad.series_name ? seriesSquad.series_name : '';
+                        matchData['match_type'] = seriesSquad && seriesSquad.live_fantasy_parent_id && !seriesSquad.is_parent  ? "live-fantasy" : 'main';
+                        matchData['series_name'] = seriesSquad && seriesSquad.series_name ? seriesSquad.series_name : '';
                         matchData['local_team_id'] = contestMatch.localteam_id;
-                        matchData['local_team_name'] = seriesSquad.localteam_short_name ? seriesSquad.localteam_short_name : contestMatch.localteam;
+                        matchData['local_team_name'] = seriesSquad && seriesSquad.localteam_short_name ? seriesSquad.localteam_short_name : contestMatch.localteam;
                         matchData['local_team_flag'] = localTeamFlag;
                         matchData['visitor_team_id'] = contestMatch.visitorteam_id;
-                        matchData['visitor_team_name'] = seriesSquad.visitorteam_short_name ? seriesSquad.visitorteam_short_name : contestMatch.visitorteam;
+                        matchData['visitor_team_name'] = seriesSquad && seriesSquad.visitorteam_short_name ? seriesSquad.visitorteam_short_name : contestMatch.visitorteam;
                         matchData['visitor_team_flag'] = visitorTeamFlag;
                         matchData['star_date'] = finalDate;
                         matchData['star_time'] = finalTime;
