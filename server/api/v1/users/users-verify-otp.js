@@ -214,6 +214,11 @@ async function setDataToAppsflyer(params){
     }
 }
 
+/**
+ * Set Faceook event for new singup
+ * @param {*} params 
+ * @param {*} userIp 
+ */
 async function setFacebookEventAtSingup(params,userIp){
     try {
 		let fb_event = {
