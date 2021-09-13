@@ -40,10 +40,10 @@ module.exports = {
       let userId = req.userId;
       try {
         if (userId) {
-          await NotificationMeta.findOneAndUpdate({ user_id: ObjectId(userId) }, { $inc: { notification_count: 1 } }, { new: true }).then((countsItem) => {
+            await NotificationMeta.findOneAndUpdate({ user_id: ObjectId(userId) }, { $set: { notification_count: 0 } }, { new: true }).then((countsItem) => {
             response["data"] = countsItem;
-            let cCount = countsItem && countsItem.notification_count ? countsItem.notification_count:1;
-            ludoMqtt.publishUserNotificationCounts(userId, ""+cCount);
+            let cCount = 0;
+            ludoMqtt.publishUserNotificationCounts(userId, "" + cCount);
           });
           response["message"] = '';
           response["status"] = true;
