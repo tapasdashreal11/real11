@@ -221,6 +221,7 @@ class ModelService {
                                         "is_offerable": {$cond: { if: { $eq: [ "$$sec.is_offerable", 1 ] }, then: true, else: false }},
                                         "offer_after_join":{ $ifNull: [ "$$sec.offer_after_join", 0 ] },
                                         "offerable_amount":{ $ifNull: [ "$$sec.offerable_amount", 0 ] },
+                                        "expect_entry_fee":{ $ifNull: [ "$$sec.expect_entry_fee", 0 ] },
                                         "teams_joined": "$$sec.joined_users",
                                         "total_teams": "$$sec.contest.contest_size",
                                         "total_winners": { $arrayElemAt: [ "$$sec.contest.breakup", -1 ] },

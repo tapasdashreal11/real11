@@ -73,7 +73,8 @@ var matchContestSchema = new Schema({
   contest: { type: Object },
   is_offerable: { type: Number, default:0 },
   offerable_amount: { type: Number },
-  offer_after_join: { type: Number }
+  offer_after_join: { type: Number },
+  expect_entry_fee: { type: Number },
 },{
   timestamps:true
 });
