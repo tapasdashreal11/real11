@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
         if(contest_id && match_id && user_id){
            let ptcItem  = await OtherGamesPtc.findOne({_id:ptc_id});
            if(ptcItem && ptcItem._id){
-            const doc = await OtherGamesContest.findOneAndUpdate({ 'match_id': decoded['match_id'],'is_full':0, 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: -1 },$set: { is_full: 0 } });
+            const doc = await OtherGamesContest.findOneAndUpdate({ 'match_id': decoded['match_id'],'is_full':0, 'sport': match_sport,'joined_users':{$gt:0} ,'contest_id': contest_id }, { $inc: { joined_users: -1 },$set: { is_full: 0 } });
             if(doc){
                 await OtherGamesPtc.updateOne({_id:ptc_id},{$set:{is_deleted:1}});
                 
