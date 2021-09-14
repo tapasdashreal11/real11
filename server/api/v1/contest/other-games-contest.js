@@ -159,6 +159,11 @@ async function getPromiseForUserCoupons(key, defaultValue,user_id){
     })
 }
 
+/**
+ * This is used to get all contest for other games
+ * @param {*} filter 
+ * @param {*} is_all 
+ */
 async function getContestListForOthergames(filter,is_all){
     is_all = false;
     return new Promise((resolve, reject) => {
