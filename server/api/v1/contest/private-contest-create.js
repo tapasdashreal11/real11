@@ -113,8 +113,19 @@ module.exports = {
                                                 let prizeMoney = (winnigAmount / 100) * percent;
                                                 let priceRange = breakup.rank.split("-");
                                                 console.log('priceRange',priceRange);
-                                                let startRank = (priceRange[1]) ? priceRange[1] : 0;
-                                                let endRank = (priceRange[3]) ? priceRange[3] : priceRange[1];
+                                                let startRank = 0;
+                                                let endRank = 0;
+                                                if(priceRange && priceRange.length ==2){
+                                                   let startRankData  = priceRange[0].split(" ");
+                                                   startRank  = (startRankData[1]) ? startRankData[1] :0;
+                                                   endRank = (priceRange[1]) ? priceRange[1] : priceRange[1];
+                                                }else{
+                                                    let startRankData  = priceRange[0].split(" ");
+                                                   startRank  = (startRankData[1]) ? startRankData[1] :0;
+                                                   endRank = (startRankData[1]) ? startRankData[1] :0;
+                                                }
+                                               // let startRank = (priceRange[0]) ? priceRange[0] : 0;
+                                               // let endRank = (priceRange[1]) ? priceRange[1] : priceRange[1];
                                                 breakpArr[key].name = breakup.rank;
                                                 breakpArr[key].startRank = startRank ? parseInt(startRank):startRank;
                                                 breakpArr[key].endRank = endRank ? parseInt(endRank): endRank;
