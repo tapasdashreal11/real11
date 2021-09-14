@@ -291,6 +291,7 @@ module.exports = {
                     confirm_winning: winComfimed.toString(),
                     total_teams: totalTeams,
                     entry_fee: entryfee,
+                    expect_entry_fee : matchContestDetail && matchContestDetail.expect_entry_fee ? matchContestDetail.expect_entry_fee : 0,
                     invite_code: inviteCode,
                     join_multiple_teams: multipleTeam,
                     is_gadget: gadgetLeague,
