@@ -112,7 +112,6 @@ module.exports = {
                                                 let percent = breakup.percent_prize;
                                                 let prizeMoney = (winnigAmount / 100) * percent;
                                                 let priceRange = breakup.rank.split("-");
-                                                console.log('priceRange',priceRange);
                                                 let startRank = 0;
                                                 let endRank = 0;
                                                 if(priceRange && priceRange.length ==2){
