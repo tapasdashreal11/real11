@@ -21,14 +21,10 @@ const CouponSale = require("../../../models/coupon-sale");
 
 module.exports = async (req, res) => {
     try {
-        const user_id =  "5f306f588ca80a10802ec53d" //req.userId;
+        const user_id = req.userId;
         const { contest_id, match_id, sport, rank_data } = req.body;
         let match_sport = sport ? parseInt(sport) : 3;
-        let decoded = {
-            match_id: parseInt(match_id),
-            contest_id: contest_id,
-            user_id: user_id
-        }
+        let decoded = { match_id: parseInt(match_id),contest_id: contest_id,user_id: user_id };
 
         var PlayerTeamContestFilter = { 'contest_id': contest_id, 'match_id': decoded['match_id'], is_deleted: 0, winning_amount_notification: 0 }
         let playerTeamRes = await OtherGamesPtc.find(PlayerTeamContestFilter);
@@ -42,10 +38,9 @@ module.exports = async (req, res) => {
                    let rankData = rank_data.map(ri => {
                        let retutnData = {};
                        retutnData['user_id'] = ObjectId(ri.user_id);
-                       retutnData['rank:'] = parseInt(ri.rank);
+                       retutnData['rank'] = parseInt(ri.rank);
                        return retutnData;
                     });
-                   console.log('rankData',rankData,'rank_data',rank_data);
                     let oPTCuserItem = _.find(rankData, { user_id: contestTeam.user_id});
                      console.log('oPTCuserItem',oPTCuserItem,'contestTeam',contestTeam);
                     if (oPTCuserItem && oPTCuserItem.user_id) {
@@ -56,34 +51,39 @@ module.exports = async (req, res) => {
                         let rankItem = _.find(breakup, { startRank: oPTCuserItem.rank });
                         if (rankItem) {
                             let priceWin = rankItem.price_each;
-                            await User.updateOne({ _id: oPTCuserItem.user_id }, { $inc: { winning_balance: parseFloat(priceWin) } })
+                            if(priceWin>0) await User.updateOne({ _id: oPTCuserItem.user_id }, { $inc: { winning_balance: parseFloat(priceWin) } })
                             win_amount = priceWin;
                             pricewin_amount = priceWin;
+                            await setTransaction(decoded,contestTeam,txnId,pricewin_amount,oPTCuserItem);
                         }
-                        await Transaction.create({
-                            "match_id": decoded['match_id'],
-                            "contest_id": contestTeam.contest_id,
-                            "local_txn_id": txnId,
-                            "txn_date": new Date(),
-                            "txn_amount": pricewin_amount,
-                            "currency": "INR",
-                            "added_type": 4,
-                            "status": 1,
-                            "created": new Date(),
-                            "user_id": oPTCuserItem.user_id,
-                            "txn_id": "",
-                        });
+                        
                         await OtherGamesPtc.updateOne({ _id: contestTeam._id }, { $set: { "price_win": pricewin_amount, "winning_amount": win_amount, "rank": rank, "winning_amount_distributed": 1, "winning_amount_notification": 1 } });
                     }
                 }
                 return res.send(ApiUtility.success("Winning distributed successfully."));
+            } else {
+                return res.send(ApiUtility.failed("Something went wrong!!"));
             }
         } else {
             return res.send(ApiUtility.failed("Something went wrong!!"));
         }
-
-
     } catch (error) {
         return res.send(ApiUtility.failed(error.message));
     }
+}
+/**
+ * Set Transaction when win distrubute
+ * @param {*} decoded 
+ * @param {*} contestTeam 
+ * @param {*} txnId 
+ * @param {*} pricewin_amount 
+ * @param {*} oPTCuserItem 
+ */
+async function setTransaction(decoded,contestTeam,txnId,pricewin_amount,oPTCuserItem){
+    await Transaction.create({"match_id": decoded['match_id'],"contest_id": contestTeam.contest_id,"local_txn_id": txnId,"txn_date": new Date(),"txn_amount": pricewin_amount,"currency": "INR","added_type": 4,
+    "status": 1,
+    "created": new Date(),
+    "user_id": oPTCuserItem.user_id,
+    "txn_id": "",
+   });
 }
