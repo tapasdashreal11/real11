@@ -15,7 +15,7 @@ const facebookEntryService = (fbData,fbUrl) => {
                 "body":bData
             };
             request(options, function (error,res,body) {
-                UserFbTrack.create({fbtrace_id:body.fbtrace_id,events_received:body.events_received});
+                UserFbTrack.create({fbtrace_id:body.fbtrace_id,events_received:body.events_received,events_obj:bData});
                 return resolve(body);
             });
            
