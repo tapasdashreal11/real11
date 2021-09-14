@@ -26,5 +26,9 @@ var otherGamesPtcSchema = new Schema({
 		admin_comission: {type: Number,default:0},
 		retention_bonus:{type: Number,default:0}
 	}
+},{
+    timestamps: { createdAt: 'created', updatedAt: 'modified' },
+    toObject: { getters: true, setters: true },
+    toJSON: { getters: true, setters: true }
 });
 module.exports = mongoose.model('other_games_ptc', otherGamesPtcSchema, 'other_games_ptc');

@@ -45,6 +45,10 @@ var transactionSchema = new Schema({
 		type: Boolean,
 		default: true
 	}
+},{
+    timestamps: { createdAt: 'created', updatedAt: 'modified' },
+    toObject: { getters: true, setters: true },
+    toJSON: { getters: true, setters: true }
 });
 
 module.exports = mongoose.model('other_games_transaction', transactionSchema, 'other_games_transaction');
