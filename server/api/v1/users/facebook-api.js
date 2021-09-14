@@ -1,6 +1,7 @@
 
 const { isEmpty } = require('lodash');
 const request = require('request');
+const UserFbTrack = require("../../../models/user-fb-track");
 
 const facebookEntryService = (fbData,fbUrl) => {
     return new Promise((resolve, reject) => {
@@ -14,7 +15,7 @@ const facebookEntryService = (fbData,fbUrl) => {
                 "body":bData
             };
             request(options, function (error,res,body) {
-                console.log('body',body,'res',res);
+                UserFbTrack.create({fbtrace_id:body.fbtrace_id,events_received:body.events_received});
                 return resolve(body);
             });
            
