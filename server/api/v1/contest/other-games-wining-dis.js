@@ -5,7 +5,6 @@ const Transaction = require('../../../models/other-games-transaction');
 const OtherGamesPtc = require('../../../models/other-games-ptc');
 const OtherGamesContest = require('../../../models/other_games_contest');
 const OtherGames = require('../../../models/other_game');
-const LFMyContestModel = require('../../../models/live-fantasy/lf-my-contest-model');
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
@@ -14,10 +13,6 @@ const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const ludoMqtt = require('../../../../lib/ludo-mqtt');
 const { startSession } = require('mongoose');
-const UserAnalysis = require("../../../models/user-analysis");
-const ContestInvite = require("../../../models/contest-invite");
-const CouponSale = require("../../../models/coupon-sale");
-
 
 module.exports = async (req, res) => {
     try {
