@@ -55,7 +55,10 @@ module.exports = async (req, res) => {
                         await OtherGamesPtc.updateOne({ _id: contestTeam._id }, { $set: { "price_win": pricewin_amount, "winning_amount": win_amount, "rank": rank, "winning_amount_distributed": 1, "winning_amount_notification": 1 } });
                     }
                 }
-                return res.send(ApiUtility.success("Winning distributed successfully."));
+                let response = {};
+                response.status = true;
+                response.message = "Winning distributed successfully!!";
+                return res.json(response);
             } else {
                 return res.send(ApiUtility.failed("Something went wrong!!"));
             }
