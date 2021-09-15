@@ -632,7 +632,7 @@ module.exports = {
                                                                     "value": txnData.txn_amount,
                                                                     "currency": "INR"
                                                                   },
-                                                                  "action_source": "website"
+                                                                  "action_source": "app"
                                                                 }
                                                                 ]
                                                               }
@@ -1122,7 +1122,7 @@ module.exports = {
                                     "value": txnData.txn_amount,
                                     "currency": "INR"
                                   },
-                                  "action_source": "website"
+                                  "action_source": "app"
                                 }
                                 ]
                               }
