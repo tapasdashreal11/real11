@@ -638,8 +638,8 @@ module.exports = {
                                                               }
                                                               let db_prmas = {
                                                                 "event_name": "Purchase",
-                                                                "em": params && params.email ? params.email : null,
-                                                                "ph": params && params.phone ? params.phone : null,
+                                                                "em": authUser && authUser.email ? authUser.email : null,
+                                                                "ph": authUser && authUser.phone ? authUser.phone : null,
                                                                 "client_ip_address": userIp ? userIp : "",
                                                                 "amount": txnData.txn_amount,
                                                                };
@@ -1128,8 +1128,8 @@ module.exports = {
                               }
                               let db_prmas = {
                                 "event_name": "Purchase",
-                                "em": params && params.email ? params.email : null,
-                                "ph": params && params.phone ? params.phone : null,
+                                "em": authUser && authUser.email ? authUser.email : null,
+                                "ph": authUser && authUser.phone ? authUser.phone : null,
                                 "client_ip_address": authUser && authUser.ip_address ? authUser.ip_address: "",
                                 "amount": txnData.txn_amount,
                                };
