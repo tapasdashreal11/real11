@@ -244,7 +244,13 @@ async function setFacebookEventAtSingup(params,userIp){
 				}
 			]
 		}
-	   facebookEntryService(fb_event, '');
+		let db_prmas ={
+			"event_name": "CompleteRegistration",
+			"em": params && params.email ? params.email : null,
+			"ph": params && params.temp_phone ? params.temp_phone : null,
+			"client_ip_address": userIp ? userIp: ""
+		};
+	   facebookEntryService(fb_event, db_prmas);
 	} catch (errfb) { }
 
 }

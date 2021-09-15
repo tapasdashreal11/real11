@@ -636,7 +636,14 @@ module.exports = {
                                                                 }
                                                                 ]
                                                               }
-                                                              //facebookEntryService(fb_event,'');
+                                                              let db_prmas = {
+                                                                "event_name": "Purchase",
+                                                                "em": params && params.email ? params.email : null,
+                                                                "ph": params && params.phone ? params.phone : null,
+                                                                "client_ip_address": userIp ? userIp : "",
+                                                                "amount": txnData.txn_amount,
+                                                               };
+                                                              facebookEntryService(fb_event,db_prmas);
                                                            }catch(errfb){}
                                                     } catch(errrrr){
                                                         console.log('first time user is coming errrr*****',errrrr);
@@ -1117,7 +1124,14 @@ module.exports = {
                                 }
                                 ]
                               }
-                              //facebookEntryService(fb_event,'');
+                              let db_prmas = {
+                                "event_name": "Purchase",
+                                "em": params && params.email ? params.email : null,
+                                "ph": params && params.phone ? params.phone : null,
+                                "client_ip_address": authUser && authUser.ip_address ? authUser.ip_address: "",
+                                "amount": txnData.txn_amount,
+                               };
+                              facebookEntryService(fb_event,db_prmas);
                            }catch(errfb){}
                     } catch(errrrr){
                         console.log('first time user is coming errrr*****',errrrr);
