@@ -644,7 +644,9 @@ module.exports = {
                                                                 "amount": txnData.txn_amount,
                                                                };
                                                               facebookEntryService(fb_event,db_prmas);
-                                                           }catch(errfb){}
+                                                           }catch(errfb){
+                                                            console.log('fb errrr at trnsac*****',errfb);
+                                                           }
                                                     } catch(errrrr){
                                                         console.log('first time user is coming errrr*****',errrrr);
                                                     }
@@ -1132,7 +1134,9 @@ module.exports = {
                                 "amount": txnData.txn_amount,
                                };
                               facebookEntryService(fb_event,db_prmas);
-                           }catch(errfb){}
+                           }catch(errfb){
+                            console.log('fb errrr at trnsac*****',errfb);
+                           }
                     } catch(errrrr){
                         console.log('first time user is coming errrr*****',errrrr);
                     }
