@@ -703,6 +703,7 @@ module.exports = {
                         data['calculated_entry_fee'] = (calEntryFees && _.isNumber(calEntryFees)) ? parseFloat(calEntryFees.toFixed(2)) : 0;
                         data['usable_bonus_percent'] = 0; //is_offer_applied;
                         data['is_offer_applied'] = is_offer_applied;
+                        data['item_fee'] =  entryFee;
                         data1 = data;
                         res.send(ApiUtility.success(data1)); 
                     });
