@@ -232,7 +232,6 @@ async function setFacebookEventAtSingup(params,userIp){
 					"user_data": {
 						"em": params && params.email ? sha256(params.email) : null,
 						"ph": params && params.temp_phone ? sha256(params.temp_phone) : null,
-						"fn": params && params.team_name ? sha256(params.team_name) : null,
 						"external_id":params && params._id ? params._id:null,
 						"client_ip_address": userIp ? userIp: "172.17.0.5",
 						"client_user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
