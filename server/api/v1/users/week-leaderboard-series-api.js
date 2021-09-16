@@ -23,7 +23,7 @@ module.exports = {
                  let newSeriesData = seriesData.map((val)=>{
                      let return_data = JSON.parse(JSON.stringify(val));
                      console.log(return_data);
-                     return_data['img_path']= imageurl;
+                     return_data['img_path']= imageurl+"/";
                      return return_data;
                  });
                  redis.setRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, newSeriesData);
