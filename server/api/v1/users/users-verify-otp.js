@@ -252,7 +252,6 @@ async function setFacebookEventAtSingup(params,userIp){
 			"ph": params && params.temp_phone ? params.temp_phone : null,
 			"client_ip_address": userIp ? userIp: ""
 		};
-		console.log('params._id',params._id);
 	   facebookEntryService(fb_event, db_prmas);
 	} catch (errfb) { 
 		console.log('error in fb***8',errfb);
