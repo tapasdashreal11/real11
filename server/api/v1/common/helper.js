@@ -382,6 +382,9 @@ const sendNotificationFCM =(uid,notiType,deviceToken,title,notification) => {
           is_send:  1
         };
         Notification.create(notifyObj, () => { });
+        try{
+
+        }catch(mqttErrq){}
         NotificationMeta.findOneAndUpdate({user_id:uid}, {$inc:{notification_count:1}}, { upsert: true, new: true }).then((countsItem) => {
          let unc  = countsItem && countsItem.notification_count ? countsItem.notification_count : 1;
           ludoMqtt.publishUserNotificationCounts(uid,""+unc);
