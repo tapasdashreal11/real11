@@ -48,7 +48,7 @@ module.exports = {
             contest_size = parseInt(contest_size);
             winners_count = parseInt(winners_count);
             // create contest invite code
-            return res.send(ApiUtility.failed('Temporary stop this activity.'));
+           // return res.send(ApiUtility.failed('Temporary stop this activity.'));
             let inviteCode = Helper.createUserReferal(6);
             let decoded = {
                 contest_size,
