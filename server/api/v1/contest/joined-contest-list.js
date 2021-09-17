@@ -498,6 +498,7 @@ module.exports = {
                                     contest[contestKey] = {};
                                     contest[contestKey]['confirm_winning'] = winComfimed.toString();
                                     contest[contestKey]['is_gadget'] = isGadget;
+                                    contest[contestKey]['user_created'] = contestValue && contestValue.contest && contestValue.contest.user_created ? contestValue.contest.user_created:0;
                                     contest[contestKey]['user_contest'] = contestValue && contestValue.contest && contestValue.contest.user_contest ? contestValue.contest.user_contest:{};
                                     contest[contestKey]['entry_fee'] = contestValue.contest.entry_fee;
                                     contest[contestKey]['prize_money'] = contestValue.contest.winning_amount;
