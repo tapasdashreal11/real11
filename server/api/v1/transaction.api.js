@@ -521,13 +521,16 @@ module.exports = {
                                                 if (txnData && Number(txnData.txn_amount) == Number(response.txnAmount)) {
                                                     users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
                                                     try{
-                                                        if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
+                                                        if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2){
                                                             let amountAdded  = parseFloat(txnData.txn_amount);
                                                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
-                                                            users.bonus_amount = parseFloat(users.bonus_amount)+ (finalAmount);
                                                             let date = new Date();
                                                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
-                                                            Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                                                            if(isCouponUsed == 0){
+                                                                users.bonus_amount = parseFloat(users.bonus_amount)+ (finalAmount);
+                                                                Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                                                            }
+                                                            
                                                             try{
                                                                 await (new ModelService()).referalFirstDespostxCashReward(users.id);
                                                             }catch(xcashError){}
@@ -1012,13 +1015,16 @@ module.exports = {
                     }
                     
                     try{
-                        if(authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 2 && isCouponUsed == 0){
+                        if(authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 2){
                             let amountAdded  = parseFloat(txnData.txn_amount);
                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
-                            authUser.bonus_amount = parseFloat(authUser.bonus_amount)+ (finalAmount);
+                            
                             let date = new Date();
                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + authUser._id;
-                            Transaction.saveTransaction(authUser._id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                            if(isCouponUsed == 0){
+                                authUser.bonus_amount = parseFloat(authUser.bonus_amount)+ (finalAmount);
+                                Transaction.saveTransaction(authUser._id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                            }
                             try{
                                 await (new ModelService()).referalFirstDespostxCashReward(authUser._id);
                             }catch(xcashError){}
@@ -1470,13 +1476,16 @@ async function updateTransactionAllGetway(decoded, cb) {
                 if (txnData) {
                     users.cash_balance = parseFloat(users.cash_balance) + parseFloat(txnData.txn_amount);
                     try{
-                        if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 && isCouponUsed == 0){
+                        if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 ){
                             let amountAdded  = parseFloat(txnData.txn_amount);
                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
-                            users.bonus_amount = parseFloat(users.bonus_amount)+ (finalAmount);
+                            
                             let date = new Date();
                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
-                            Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                            if(isCouponUsed == 0){
+                                users.bonus_amount = parseFloat(users.bonus_amount)+ (finalAmount);
+                                Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
+                            }
                             try{
                                 await (new ModelService()).referalFirstDespostxCashReward(users.id);
                             }catch(xcashError){}
