@@ -100,6 +100,7 @@ module.exports = {
                                     "avatar" : "$user_detail.avatar",
                                     "total_points" : "$total_points",
                                     "current_rank" : "$current_rank",
+                                    "gadget_name":{ $ifNull: [ "$gadget_name", '' ] },
                                     "win_msz":{ $ifNull: [ "$win_msz", '' ] },
                                     "win_distribute":{ $ifNull: [ "$win_distribute", 0 ] },
                                     "win_widget":{$cond: { if: { $ne: [ "$win_widget", '' ] }, then: { $concat: [ imageurl, "/", "$win_widget" ] }, else : ''}},
