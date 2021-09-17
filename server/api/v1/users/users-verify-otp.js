@@ -169,7 +169,7 @@ async function transactionAtSignupBonous(userId,rf_xtra_amount){
 		},
 		{
 			user_id: userId,
-			txn_amount: 50,
+			txn_amount: rf_xtra_amount,
 			currency: "INR",
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,

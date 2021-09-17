@@ -90,6 +90,7 @@ module.exports = {
                     let userEmail = await Users.findOne({ email: params.email }, { _id: 1, google_id: 1, email: 1, phone: 1 });
                     if (!userEmail) {
                         let insertData = {};
+                        let rf_xtra_amount = 50;
                         insertData.google_id = params.google_id;
                         insertData.email = params.email;
                         insertData.language = params.language || 'en';
@@ -117,8 +118,8 @@ module.exports = {
                             }
                         }
                         insertData.team_name = createTeamName(params.email);
-                        insertData.bonus_amount = config.referral_bouns_amount;
-                        insertData.extra_amount = 25; // first time user signup
+                        insertData.bonus_amount = rf_xtra_amount; //config.referral_bouns_amount;
+                        insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
                         insertData.avatar = 'avatar20';
@@ -335,7 +336,7 @@ module.exports = {
                         }
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
-                        insertData.bonus_amount = config.referral_bouns_amount;
+                        insertData.bonus_amount = rf_xtra_amount; // config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
@@ -580,6 +581,7 @@ module.exports = {
                      }
                     if (!userEmail) {
                         let insertData = {};
+                        let rf_xtra_amount = 50;
                         insertData.apple_id = params.apple_id;
                         //insertData.email = params.email;
                         insertData.language = params.language || 'en';
@@ -604,8 +606,8 @@ module.exports = {
 
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
-                        insertData.bonus_amount = config.referral_bouns_amount;
-                        insertData.extra_amount = 25; // first time user signup
+                        insertData.bonus_amount = rf_xtra_amount;
+                        insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
                         insertData.avatar = 'avatar20';
