@@ -495,6 +495,7 @@ module.exports = {
                                         return a + b;
                                     }, 0);
 
+                                    console.log('contestValue***',contestValue);
                                     contest[contestKey] = {};
                                     contest[contestKey]['confirm_winning'] = winComfimed.toString();
                                     contest[contestKey]['is_gadget'] = isGadget;
@@ -504,7 +505,7 @@ module.exports = {
                                     contest[contestKey]['category_id'] = contestValue.contest.category_id;
                                     contest[contestKey]['contest_id'] = contestValue.doc.contest_id;
                                     contest[contestKey]['total_winners'] = customBreakup,
-                                        contest[contestKey]['teams_joined'] = joinedTeamCount;
+                                    contest[contestKey]['teams_joined'] = joinedTeamCount;
                                     contest[contestKey]['is_joined'] = (teamsJoined) ? true : false;
                                     contest[contestKey]['multiple_team'] = (contestValue.contest.multiple_team && contestValue.contest.multiple_team == 'yes') ? true : false;
                                     contest[contestKey]['invite_code'] = (inviteCode) ? inviteCode.invite_code : '';
