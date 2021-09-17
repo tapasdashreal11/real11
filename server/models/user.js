@@ -127,6 +127,7 @@ const AdminSchema = mongoose.Schema({
     user_gaid: {type: String},
     dcode: {type: String}, 
     temp_phone: {type: String,default: ''},
+    temp_email: {type: String},
     is_refered_by: { type: Boolean, default: false},
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },

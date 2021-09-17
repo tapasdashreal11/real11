@@ -323,6 +323,9 @@ module.exports = {
                         if (params && params.dcode) {
                             insertData.dcode = params.dcode;
                         }
+                        if (params && params.temp_email) {
+                            insertData.temp_email = params.temp_email;
+                        }
                         if (params && params.device_id)
                             insertData.device_id = params.device_id;
 
