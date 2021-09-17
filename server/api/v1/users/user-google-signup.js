@@ -289,6 +289,7 @@ module.exports = {
                     if (!userPhone) {
                         let referal_code_detail = {};
                         let insertData = {};
+                        let rf_xtra_amount = 50;
                         if (!_.isEmpty(params.invite_code)) {
                             var caps_invite_code = params.invite_code.toUpperCase();
                             let inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
@@ -298,6 +299,9 @@ module.exports = {
                                 referal_code_detail.user_amount = config.total_user_ref_earned;
                                 referal_code_detail.status = 1;
                                 insertData.is_refered_by = true;
+                                if (caps_invite_code && _.isEqual(caps_invite_code,"XYZABC")) {
+                                    rf_xtra_amount = 100;
+                                }
                             } else {
                                 response["message"] = "Invalid invite code.";
                                 return res.json(response);
@@ -332,7 +336,7 @@ module.exports = {
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
                         insertData.bonus_amount = config.referral_bouns_amount;
-                        insertData.extra_amount = 25; // first time user signup
+                        insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
                         insertData.avatar = 'avatar20';

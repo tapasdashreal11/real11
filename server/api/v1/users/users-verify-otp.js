@@ -77,7 +77,14 @@ module.exports = async (req, res) => {
 					updateObj['phone'] = user.temp_phone;
 					updateObj['temp_phone'] = '';
 					finalResponse['phone'] = user.temp_phone;
-					await transactionAtSignupBonous(user._id);
+					let rf_xtra_amount = 50;
+					try{
+						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id },{referal_code:1});
+						if (referalUser && referalUser.referal_code && _.isEqual(referalUser.referal_code,"XYZABC")) {
+							rf_xtra_amount = 100;
+						}
+					}catch(errrrr){}
+					await transactionAtSignupBonous(user._id,rf_xtra_amount);
 					setDataToAppsflyer(user);
 					setFacebookEventAtSingup(user,userIp);
 				} 
@@ -147,13 +154,14 @@ module.exports = async (req, res) => {
 /**
  * This is used to generate the transaction for new signup user for bonous
  * @param {*} userId 
+ * @param {*} rf_xtra_amount 
  */
-async function transactionAtSignupBonous(userId){
+async function transactionAtSignupBonous(userId,rf_xtra_amount){
 	let date = new Date();
 	let transaction_data =[
 		{
 			user_id: userId,
-			txn_amount: 25,
+			txn_amount: rf_xtra_amount,
 			currency: "INR",
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
