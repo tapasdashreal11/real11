@@ -35,6 +35,9 @@ var seriesLeaderBoardSchema = new Schema({
     win_widget: {
         type: String,default:''
     },
+    gadget_name: {
+        type: String,default:''
+    },
     sport: {
         type: Number,
     },
