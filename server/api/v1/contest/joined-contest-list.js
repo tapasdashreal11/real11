@@ -510,7 +510,7 @@ module.exports = {
                                     contest[contestKey]['teams_joined'] = joinedTeamCount;
                                     contest[contestKey]['is_joined'] = (teamsJoined) ? true : false;
                                     contest[contestKey]['multiple_team'] = (contestValue.contest.multiple_team && contestValue.contest.multiple_team == 'yes') ? true : false;
-                                    contest[contestKey]['invite_code'] = (inviteCode) ? inviteCode.invite_code : '';
+                                    contest[contestKey]['invite_code'] = (contestValue.invite_code) ? contestValue.invite_code : '';
                                     contest[contestKey]['breakup_detail'] = customPrice;
                                     contest[contestKey]['my_team_ids'] = myTeamIds;
                                     contest[contestKey]['team_number'] = myTeamNo;
