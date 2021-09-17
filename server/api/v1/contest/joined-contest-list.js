@@ -495,7 +495,6 @@ module.exports = {
                                     let totalWinningAmount = winningAmt.reduce(function (a, b) {
                                         return a + b;
                                     }, 0);
-                                    console.log('inviteCode***',inviteCode);
                                     contest[contestKey] = {};
                                     contest[contestKey]['confirm_winning'] = winComfimed.toString();
                                     contest[contestKey]['is_gadget'] = isGadget;
