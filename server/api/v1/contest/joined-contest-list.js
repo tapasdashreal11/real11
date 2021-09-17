@@ -495,10 +495,10 @@ module.exports = {
                                         return a + b;
                                     }, 0);
 
-                                    console.log('contestValue***',contestValue);
                                     contest[contestKey] = {};
                                     contest[contestKey]['confirm_winning'] = winComfimed.toString();
                                     contest[contestKey]['is_gadget'] = isGadget;
+                                    contest[contestKey]['user_contest'] = contestValue && contestValue.contest && contestValue.contest.user_contest ? contestValue.contest.user_contest:{};
                                     contest[contestKey]['entry_fee'] = contestValue.contest.entry_fee;
                                     contest[contestKey]['prize_money'] = contestValue.contest.winning_amount;
                                     contest[contestKey]['total_teams'] = contestValue.contest.contest_size;
