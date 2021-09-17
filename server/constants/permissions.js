@@ -36,7 +36,8 @@ const TransactionTypesByValues =  [
   "Signup Xtra Cash Reward",
   "Affiliate Amount In Deposit",
   "Affiliate Amount Withdraw In Deposit",
-  "Won free-giveaway In Deposite"
+  "Won free-giveaway In Deposite",
+  "Series Leaderboard Reward"
 ];
 
 module.exports = {

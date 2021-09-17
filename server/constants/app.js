@@ -31,7 +31,8 @@ module.exports = {
         SIGNUP_XTRA_CASH_REWARD:27,
         AFFIL_AMOUNT_AT_DEPOST:28,
         AFFIL_AMOUNT_WITHDRAWAL_FOR_DEPOST:29,
-        WON_CONTEST_FREEGIVEAWAY :30
+        WON_CONTEST_FREEGIVEAWAY :30,
+        SERIES_LEADERBOARD_WIN:31
     },
     MatchStatus:{
         IN_REVIEW: 'Under Review',
