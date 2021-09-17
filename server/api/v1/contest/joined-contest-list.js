@@ -352,6 +352,7 @@ module.exports = {
                                     joinObj._id = ptcDataItem.contest_id;
                                     joinObj.player_team = ptObj;
                                     joinObj.contest = contstObj.contest || {};
+                                    joinObj.invite_code = contstObj.invite_code ? contstObj.invite_code : '';
                                     ptcDataItem.player_team = ptObj;
                                     ptcDataItem.contest = contstObj.contest || {};
                                     joinObj.doc = ptcDataItem;
@@ -494,7 +495,7 @@ module.exports = {
                                     let totalWinningAmount = winningAmt.reduce(function (a, b) {
                                         return a + b;
                                     }, 0);
-
+                                    console.log('inviteCode***',inviteCode);
                                     contest[contestKey] = {};
                                     contest[contestKey]['confirm_winning'] = winComfimed.toString();
                                     contest[contestKey]['is_gadget'] = isGadget;
