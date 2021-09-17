@@ -50,7 +50,7 @@ module.exports = {
         let v_limit = 500;
         const user_id = req.userId;
         let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count+'-'+v_page;
-        console.log(redisKeyForWeekLeaderBorad,'**v_skip**',v_skip);
+        
         let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0}
         try { 
             if(user_id && s_id && w_count){
@@ -62,7 +62,6 @@ module.exports = {
                 redis.getRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, async (err, data) => {
                     if (data) {
                         let finalData = mergedTeam = [...[myTeamData], ...data];
-                        console.log('data from redis****');
                         response["data"] = finalData;
                         response["message"] = "";
                         response["status"] = true;
@@ -112,7 +111,6 @@ module.exports = {
                             }
                             if (!err) {
                                 if(data && data.length>0){
-                                    console.log('data from db****');
                                     redis.setRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, data);
                                     let finalData = mergedTeam = [...[myTeamData], ...data];
                                     response["data"] = finalData;
@@ -147,7 +145,6 @@ module.exports = {
         let v_limit = 500;
         const user_id = req.userId;
         let redisKeyForseriesLeaderBoard = 'series-leaderboard-user-data-' + s_id +'-'+v_page;
-       // console.log(redisKeyForseriesLeaderBoard,'**series_skip**',v_skip);
         let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0}
         try { 
             if(user_id && s_id){
@@ -159,7 +156,6 @@ module.exports = {
                 redis.getRedisWeekLeaderboard(redisKeyForseriesLeaderBoard, async (err, data) => {
                     if (data) {
                         let finalData = mergedTeam = [...[myTeamData], ...data];
-                       // console.log('data from redis****');
                         response["data"] = finalData;
                         response["message"] = "";
                         response["status"] = true;
@@ -209,7 +205,6 @@ module.exports = {
                             }
                             if (!err) {
                                 if(data && data.length>0){
-                                    //console.log('data from db****');
                                     redis.setRedisWeekLeaderboard(redisKeyForseriesLeaderBoard, data);
                                     let finalData = mergedTeam = [...[myTeamData], ...data];
                                     response["data"] = finalData;
