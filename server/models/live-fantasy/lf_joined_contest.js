@@ -36,5 +36,7 @@ var playerTeamContestSchema = new Schema({
 		admin_comission: {type: Number,default:0},
 		retention_bonus:{type: Number,default:0}
 	}
+},{
+	timestamps:true
 });
 module.exports = mongoose.model('lf_joined_contest', playerTeamContestSchema, 'lf_joined_contest');
