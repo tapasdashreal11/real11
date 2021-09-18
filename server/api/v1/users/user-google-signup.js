@@ -300,7 +300,7 @@ module.exports = {
                                 referal_code_detail.user_amount = config.total_user_ref_earned;
                                 referal_code_detail.status = 1;
                                 insertData.is_refered_by = true;
-                                if (caps_invite_code && _.isEqual(caps_invite_code,"XYZABC")) {
+                                if (caps_invite_code && _.isEqual(caps_invite_code,"FREE200")) {
                                     rf_xtra_amount = 100;
                                 }
                             } else {

@@ -80,7 +80,7 @@ module.exports = async (req, res) => {
 					let rf_xtra_amount = 50;
 					try{
 						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id },{referal_code:1});
-						if (referalUser && referalUser.referal_code && _.isEqual(referalUser.referal_code,"XYZABC")) {
+						if (referalUser && referalUser.referal_code && _.isEqual(referalUser.referal_code,"FREE200")) {
 							rf_xtra_amount = 100;
 						}
 					}catch(errrrr){}
