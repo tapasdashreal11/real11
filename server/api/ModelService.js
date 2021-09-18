@@ -2405,7 +2405,7 @@ class ModelService {
                                 };
                                 var totalRefAmount = refAmount + bonusAmount;
                                 var totalRefAmountUpdated = refAmount + bonusAmount + forstDepostData;
-                                if(totalRefAmount<= 50 ||(totalRefAmountUpdated<= 75 && forstDepostData == 25)){
+                                if(totalRefAmount<= 50 ||(totalRefAmountUpdated<= 100 && forstDepostData == 50)){
                                     await Users.updateOne({ _id: referedBy}, { $inc: {bonus_amount: bonusAmount} });
                                     await ReferralCodeDetails.updateOne({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount} });
                                     data = await Transaction.create(entity); 
