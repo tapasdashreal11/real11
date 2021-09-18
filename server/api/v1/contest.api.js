@@ -575,8 +575,8 @@ module.exports = {
                 } else {
                     entryFee = decoded['entry_fee'];
                 }
-                 let useAmountCal = eval((useableBonusPer / 100) * entryFee);
-                 let useAmount = eval(useAmountCal * total_team_number);
+                let useAmountCal = eval((useableBonusPer / 100) * entryFee);
+                let useAmount = eval(useAmountCal * total_team_number);
                 let usableAmt = 0;
                 let extraAmount = 0;
                 let cashBalance = 0;
@@ -698,7 +698,7 @@ module.exports = {
                         data['winning_balance'] = (winningBalance) ? winningBalance : 0;
                         data['usable_bonus'] = usableAmt ? parseFloat(usableAmt.toFixed(2)) : 0;
                         data['extra_amount'] = extraAmount ? parseFloat(extraAmount.toFixed(2)) : 0;
-                        data['entry_fee'] = (totalEntryFee) ? parseInt(totalEntryFee) : 0;
+                        data['entry_fee'] = (totalEntryFee) ? parseFloat(totalEntryFee) : 0;
                         data['user_offer_amount'] = (retention_bonus_amount) ? parseFloat(retention_bonus_amount.toFixed(2)) : 0;
                         data['calculated_entry_fee'] = (calEntryFees && _.isNumber(calEntryFees)) ? parseFloat(calEntryFees.toFixed(2)) : 0;
                         data['usable_bonus_percent'] = 0; //is_offer_applied;
