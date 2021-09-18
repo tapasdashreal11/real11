@@ -238,7 +238,7 @@ async function setFacebookEventAtSingup(params,userIp){
 					"opt_out": false,
 					"event_id": Math.floor(1000000 + Math.random() * 9000000),
 					"user_data": {
-						"em": params && params.email ? sha256(params.email) : null,
+						"em": params && params.email ? sha256(params.email) : (params && params.temp_email ?sha256(params.temp_email):null),
 						"ph": params && params.temp_phone ? sha256(params.temp_phone) : null,
 						"external_id":params && params._id ? params._id:null,
 						"client_ip_address": userIp ? userIp: "172.17.0.5",
