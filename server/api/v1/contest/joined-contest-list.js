@@ -321,6 +321,9 @@ module.exports = {
                         const mcObj = mList.find(element => element.contest_id.equals(ObjectId(cId)));
                         jclist.teams_joined = mcObj && mcObj.joined_users ? mcObj.joined_users : 0;
                     }
+                    let myTeams = await PlayerTeam.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'] }).countDocuments();
+                    joindedContestlistdata['my_team_count']=myTeams;
+                    joindedContestlistdata['my_teams']=myTeams;
                     return res.send(ApiUtility.success(joindedContestlistdata));
                 } else {
                     //when data is not in redis
