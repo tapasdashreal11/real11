@@ -312,7 +312,6 @@ module.exports = {
                 let joindedContestlistdata = await getPromiseUserJoinedContestList(myJoinedContestListKey);
                 if (joindedContestlistdata && joindedContestlistdata.joined_contest) {
                     // When data in redis
-                   // console.log('JC List Upcoming data in reids*****');
                     let joindContesList = joindedContestlistdata.joined_contest;
                     let cIds = _.map(joindContesList, 'contest_id');
                     let mList = await MatchContest.find({ match_id: decoded['match_id'],'sport': decoded['sport'], contest_id: { $in: cIds } }, { "joined_users": 1, "contest_id": 1 });
@@ -322,8 +321,8 @@ module.exports = {
                         jclist.teams_joined = mcObj && mcObj.joined_users ? mcObj.joined_users : 0;
                     }
                     let myTeams = await PlayerTeam.find({ 'user_id': decoded['user_id'], 'match_id': decoded['match_id'] }).countDocuments();
-                    joindedContestlistdata['my_team_count']=myTeams;
-                    joindedContestlistdata['my_teams']=myTeams;
+                    joindedContestlistdata['my_team_count']= myTeams;
+                    joindedContestlistdata['my_teams']= myTeams;
                     return res.send(ApiUtility.success(joindedContestlistdata));
                 } else {
                     //when data is not in redis
