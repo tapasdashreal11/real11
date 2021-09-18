@@ -32,7 +32,7 @@ try {
            var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
            if(checkSaleCoupon && checkSaleCoupon._id){
            } else {
-               await getCouponForFreeEntry('6145838df251716f40f35e9d',user_id);
+               await getCouponForFreeEntry('61458c048523421b225c8af2',user_id);
             }
         }
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
