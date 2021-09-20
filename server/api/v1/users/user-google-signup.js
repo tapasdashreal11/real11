@@ -308,7 +308,8 @@ module.exports = {
                                  let incObj = {ref_counter:1};
                                 if(refral_counters > refral_counters_used && diffRef>1){
                                     incObj['ref_counter_used'] =2;
-                                    ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:10},{});
+                                    console.log("counter data****");
+                                    ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:2});
                                     sendEmailToAdmin(caps_invite_code);
                                  }
                                  await Users.findOneAndUpdate({_id:inviteDetails._id},{$inc:incObj});
@@ -812,6 +813,7 @@ async function getUserName()
 }
 
 async function sendEmailToAdmin(refer_id){
+    console.log("emai send to admin")
     let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hi Admin,</p><p>This Referal Id <b>" + refer_id + "</b>has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
     let to = "shashijangir@real11.com";
     let subject = "User Referal At Signup";
