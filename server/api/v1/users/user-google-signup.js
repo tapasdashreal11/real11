@@ -814,7 +814,7 @@ async function getUserName()
 
 async function sendEmailToAdmin(refer_id){
     console.log("emai send to admin")
-    let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hi Admin,</p><p>This Referal Id <b>" + refer_id + "</b>has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
+    let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hello Admin,</p><p>This Referal Id <b>" + refer_id + "</b> has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
     let to = "shashijangir@real11.com";
     let subject = "User Referal At Signup";
     sendSMTPMail(to, subject, mailMessage);
