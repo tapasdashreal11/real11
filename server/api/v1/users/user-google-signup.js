@@ -17,6 +17,7 @@ const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
 var sha256 = require('sha256');
 const { RedisKeys } = require('../../../constants/app');
+const ReferalUsersAminMetaData = require("../../../models/ref-user-admin-meta");
 
 module.exports = {
     userGoogleSignIn: async (req, res) => {
@@ -300,6 +301,17 @@ module.exports = {
                                 referal_code_detail.user_amount = 100; //config.total_user_ref_earned;
                                 referal_code_detail.status = 1;
                                 insertData.is_refered_by = true;
+                                //ReferalUsersAminMetaData.findOneAndUpdate({_id:inviteDetails._id},{})
+                                 let refral_counters = inviteDetails.ref_counter ? inviteDetails.ref_counter:0;
+                                 let refral_counters_used = inviteDetails.ref_counter_used ? inviteDetails.ref_counter_used :0;
+                                 let diffRef = refral_counters - refral_counters_used;
+                                 let incObj = {ref_counter:1};
+                                if(refral_counters > refral_counters_used && diffRef>8){
+                                    incObj['ref_counter_used'] =10;
+                                    ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:10},{});
+                                    sendEmailToAdmin(caps_invite_code);
+                                 }
+                                Users.findOneAndUpdate({_id:inviteDetails._id},{$inc:incObj})
                                 if (caps_invite_code && _.isEqual(caps_invite_code,"IPL200")) {
                                     rf_xtra_amount = 100;
                                 }
@@ -799,3 +811,9 @@ async function getUserName()
     return text;
 }
 
+async function sendEmailToAdmin(refer_id){
+    let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hi Admin,</p><p>This Referal Id <b>" + refer_id + "</b>has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
+    let to = "shashijangir@real11.com";
+    let subject = "User Referal At Signup";
+    sendSMTPMail(to, subject, mailMessage);
+}
