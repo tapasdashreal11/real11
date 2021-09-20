@@ -306,10 +306,9 @@ module.exports = {
                                  let refral_counters_used = inviteDetails.ref_counter_used ? inviteDetails.ref_counter_used :0;
                                  let diffRef = refral_counters - refral_counters_used;
                                  let incObj = {ref_counter:1};
-                                if(refral_counters > refral_counters_used && diffRef>1){
-                                    incObj['ref_counter_used'] =2;
-                                    console.log("counter data****");
-                                    ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:2});
+                                if(refral_counters > refral_counters_used && diffRef>9){
+                                    incObj['ref_counter_used'] =10;
+                                    ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:10});
                                     sendEmailToAdmin(caps_invite_code);
                                  }
                                  await Users.findOneAndUpdate({_id:inviteDetails._id},{$inc:incObj});

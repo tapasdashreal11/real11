@@ -2430,7 +2430,7 @@ class ModelService {
                     let referedBy = referalUser.refered_by;
                     if (referedBy) {
                         let date = new Date();
-                        let bonusAmount = 50;
+                        let bonusAmount = 10;
                         let entity = {
                             user_id: referedBy,
                             txn_amount: bonusAmount,
