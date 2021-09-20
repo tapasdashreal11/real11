@@ -64,7 +64,7 @@ module.exports = async (req, res) => {
           }
           await Users.updateOne({ _id: userId }, { $set: {pen_verify:2} });
           await (new ModelService()).referalManageAtVerification(userId,true,false,false);
-          let typeOfReward = TransactionTypes.FRIEND_PAN_VERIFY_REWARD;
+          let typeOfReward = TransactionTypes.FRIEND_PAN_VERIFY_XCASH_REWARD;
           await (new ModelService()).referalxCashRewardAtPanVerify(userId,typeOfReward,20);
           response["message"] = "Pan card detail updated successfully.";
           response["status"] = true;

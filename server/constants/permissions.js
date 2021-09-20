@@ -38,7 +38,8 @@ const TransactionTypesByValues =  [
   "Affiliate Amount Withdraw In Deposit",
   "Won free-giveaway In Deposite",
   "Series Leaderboard Reward",
-  "Friend Pan Verify Reward"
+  "Friend Pan Verify Xtra Cash Reward",
+  "Friend Bank Verify Xtra Cash Reward"
 ];
 
 module.exports = {
