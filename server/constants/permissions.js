@@ -37,7 +37,8 @@ const TransactionTypesByValues =  [
   "Affiliate Amount In Deposit",
   "Affiliate Amount Withdraw In Deposit",
   "Won free-giveaway In Deposite",
-  "Series Leaderboard Reward"
+  "Series Leaderboard Reward",
+  "Friend Pan Verify Reward"
 ];
 
 module.exports = {
