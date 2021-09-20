@@ -311,9 +311,7 @@ module.exports = {
                                     ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:10},{});
                                     sendEmailToAdmin(caps_invite_code);
                                  }
-                                 console.log("incObj",incObj);
-                                let ddd = await Users.findOneAndUpdate({_id:inviteDetails._id},{$inc:incObj});
-                                console.log("ddd",ddd)
+                                 await Users.findOneAndUpdate({_id:inviteDetails._id},{$inc:incObj});
                                 if (caps_invite_code && _.isEqual(caps_invite_code,"IPL200")) {
                                     rf_xtra_amount = 100;
                                 }
