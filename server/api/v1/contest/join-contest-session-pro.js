@@ -298,7 +298,7 @@ module.exports = async (req, res) => {
 
                                                             if (calEntryFees > 0) {
 
-                                                                const paymentCal = await joinContestPaymentCalculation(offerableAppled, useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
+                                                                const paymentCal = await joinContestPaymentCalculation(contestData.contest_size,offerableAppled, useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
 
                                                                 cashAmount = paymentCal.cashAmount;
                                                                 winAmount = paymentCal.winAmount;
@@ -1080,7 +1080,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
  * @param {*} bonusAmount 
  * @param {*} extraAmount 
  */
-async function joinContestPaymentCalculation(offerableAppled, useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
+async function joinContestPaymentCalculation(contest_size,offerableAppled, useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
     let useAmount = (useableBonusPer / 100) * entryFee;
     let saveData = {};
     let remainingFee = 0;
@@ -1108,7 +1108,7 @@ async function joinContestPaymentCalculation(offerableAppled, useableBonusPer, a
     if (remainingFee) {
         let extraBalance = authUser.extra_amount || 0;
         let extraBal = 0;
-        if (extraBalance && extraBalance > 0) {
+        if (extraBalance && extraBalance > 0 && contest_size > 24) {
             let perDayExtraAmt = 0;
             let perDayLimit = config.extra_bonus_perday_limit;
             if (String(authUser.extra_amount_date) == String(indianDate)) {

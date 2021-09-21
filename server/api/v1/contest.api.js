@@ -529,6 +529,7 @@ module.exports = {
             let data1 = {};
             let setting = config;
             let matchContestData = {}; 
+            let contestSize = 2;
             const { total_team, contest_id, entry_fee, match_id , series_id, sport,is_private_create } = req.body;
             let decoded = { user_id: req.userId, contest_id: contest_id || '', entry_fee: entry_fee, match_id: match_id, series_id:series_id
             }
@@ -552,6 +553,7 @@ module.exports = {
                      const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1,expiry_date:{$gte:new Date()} });
                      matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                      entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
+                     contestSize = (contestData && contestData.contest_size) ? contestData.contest_size : 2;
                      if(cSaleData && cSaleData._id){
                         couponSaleData =cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0 ? cSaleData.coupon_contest_data:[]; 
                         
@@ -677,7 +679,7 @@ module.exports = {
                                 calEntryFees = retention_bonus_amount > 0 ?(offerableAppled && calEntryFees > 0 && calEntryFees >= usableAmt ? calEntryFees - usableAmt: calEntryFees ): totalEntryFee - usableAmt;
                                 let indianDate = Date.now();
                                 indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
-                                if (extraBalance) {
+                                if (extraBalance && contestSize > 24) {
                                     let perDayExtraAmt = 0;
                                     let perDayLimit = config.extra_bonus_perday_limit;
         
