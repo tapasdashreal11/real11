@@ -315,7 +315,8 @@ module.exports = async (req, res) => {
                                                               }
 
                                                             if (calEntryFees > 0) {
-                                                                const paymentCal = await joinContestPaymentCalculation(contestData.contest_size,offerableAppled,useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
+                                                                let contestSizeCal = (contestData && contestData.contest_size) ? (contestData.contest_size) :(contestData.infinite_contest_size ? 100 : 2);
+                                                                const paymentCal = await joinContestPaymentCalculation(contestSizeCal,offerableAppled,useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
                                                                 cashAmount = paymentCal.cashAmount;
                                                                 winAmount = paymentCal.winAmount;
                                                                 bonusAmount = paymentCal.bonusAmount;

@@ -553,8 +553,8 @@ module.exports = {
                      const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1,expiry_date:{$gte:new Date()} });
                      matchContestData = await MatchContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                      entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
-                     contestSize = (contestData && contestData.contest_size) ? contestData.contest_size : 2;
-                     console.log('contestData.contest_size***',contestData.contest_size);
+                     contestSize = (contestData && contestData.contest_size) ? (contestData.contest_size) :(contestData.infinite_contest_size ? 100 : 2);
+                    
                      if(cSaleData && cSaleData._id){
                         couponSaleData =cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0 ? cSaleData.coupon_contest_data:[]; 
                         
