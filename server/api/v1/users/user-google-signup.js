@@ -302,16 +302,18 @@ module.exports = {
                                 referal_code_detail.status = 1;
                                 insertData.is_refered_by = true;
                                 //ReferalUsersAminMetaData.findOneAndUpdate({_id:inviteDetails._id},{})
-                                 let refral_counters = inviteDetails.ref_counter ? inviteDetails.ref_counter:0;
-                                 let refral_counters_used = inviteDetails.ref_counter_used ? inviteDetails.ref_counter_used :0;
-                                 let diffRef = refral_counters - refral_counters_used;
-                                 let incObj = {ref_counter:1};
-                                if(refral_counters > refral_counters_used && diffRef>9){
-                                    incObj['ref_counter_used'] =10;
-                                    ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:10});
-                                    sendEmailToAdmin(caps_invite_code);
-                                 }
-                                 await Users.findOneAndUpdate({_id:inviteDetails._id},{$inc:incObj});
+                                if(inviteDetails && !inviteDetails.is_youtuber){
+                                    let refral_counters = inviteDetails.ref_counter ? inviteDetails.ref_counter:0;
+                                    let refral_counters_used = inviteDetails.ref_counter_used ? inviteDetails.ref_counter_used :0;
+                                    let diffRef = refral_counters - refral_counters_used;
+                                    let incObj = {ref_counter:1};
+                                   if(refral_counters > refral_counters_used && diffRef>9){
+                                       incObj['ref_counter_used'] =10;
+                                       ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:10});
+                                       sendEmailToAdmin(caps_invite_code);
+                                    }
+                                    await Users.findOneAndUpdate({_id:inviteDetails._id},{$inc:incObj});
+                                }
                                 if (caps_invite_code && _.isEqual(caps_invite_code,"IPL200")) {
                                     rf_xtra_amount = 100;
                                 }
