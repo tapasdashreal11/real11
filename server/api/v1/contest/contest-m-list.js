@@ -28,7 +28,7 @@ try {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
-        if(filter.match_id == 49528 ){
+        if(filter.match_id == 49529 ){
            var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
            if(checkSaleCoupon && checkSaleCoupon._id){
            } else {
