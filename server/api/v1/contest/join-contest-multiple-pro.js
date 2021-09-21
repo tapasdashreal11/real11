@@ -1099,7 +1099,7 @@ async function joinContestPaymentCalculation(contest_size,offerableAppled,useabl
         let extraBalance = authUser.extra_amount || 0;
 
         let extraBal = 0;
-        if (extraBalance && extraBalance > 0 && contest_size > 24) {
+        if (extraBalance && extraBalance > 0 && contest_size > 25) {
             let perDayExtraAmt = 0;
             let perDayLimit = config.extra_bonus_perday_limit;
             if (String(authUser.extra_amount_date) == String(indianDate)) {

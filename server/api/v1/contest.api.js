@@ -680,7 +680,7 @@ module.exports = {
                                 calEntryFees = retention_bonus_amount > 0 ?(offerableAppled && calEntryFees > 0 && calEntryFees >= usableAmt ? calEntryFees - usableAmt: calEntryFees ): totalEntryFee - usableAmt;
                                 let indianDate = Date.now();
                                 indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
-                                if (extraBalance && contestSize > 24) {
+                                if (extraBalance && contestSize > 25) {
                                     let perDayExtraAmt = 0;
                                     let perDayLimit = config.extra_bonus_perday_limit;
         
