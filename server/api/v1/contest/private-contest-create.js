@@ -474,7 +474,7 @@ async function joinContestPaymentCalculation(contest_size,offerableAppled, useab
             }
         } else {
             // remainingFee = entryFee;
-            saveData['extra_amount'] = extraBal;
+            saveData['extra_amount'] = extraBal; 
         }
         saveData['perday_extra_amount'] = perdayExtraAmount;
         saveData['extra_amount'] = extraBal;
