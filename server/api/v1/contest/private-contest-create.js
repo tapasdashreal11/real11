@@ -185,7 +185,7 @@ module.exports = {
                                         let bonusAmount = 0;
                                         let extraAmount = 0;
                                         let calEntryFees = entry_fee;
-                                        const paymentCal = await joinContestPaymentCalculation(false, 0, authUser, entry_fee, winAmount, cashAmount, bonusAmount, extraAmount, 0);
+                                        const paymentCal = await joinContestPaymentCalculation(contest_size,false, 0, authUser, entry_fee, winAmount, cashAmount, bonusAmount, extraAmount, 0);
 
                                         cashAmount = paymentCal.cashAmount;
                                         winAmount = paymentCal.winAmount;
