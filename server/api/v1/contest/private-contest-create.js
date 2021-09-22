@@ -422,7 +422,7 @@ module.exports = {
  * @param {*} bonusAmount 
  * @param {*} extraAmount 
  */
-async function joinContestPaymentCalculation(offerableAppled, useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
+async function joinContestPaymentCalculation(contest_size,offerableAppled, useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
     let useAmount = (useableBonusPer / 100) * entryFee;
     let saveData = {};
     let remainingFee = 0;
@@ -450,7 +450,7 @@ async function joinContestPaymentCalculation(offerableAppled, useableBonusPer, a
     if (remainingFee) {
         let extraBalance = authUser.extra_amount || 0;
         let extraBal = 0;
-        if (extraBalance && extraBalance > 0) {
+        if (extraBalance && extraBalance > 0 && contest_size >25) {
             let perDayExtraAmt = 0;
             let perDayLimit = config.extra_bonus_perday_limit;
             if (String(authUser.extra_amount_date) == String(indianDate)) {
