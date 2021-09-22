@@ -577,6 +577,10 @@ module.exports = {
                     data['contest_shareable'] = contestData && contestData.contest_shareable ? contestData.contest_shareable : 0;
                 } else {
                     entryFee = decoded['entry_fee'];
+                    if(entryFee>0){
+                        entryFee =  Math.ceil(entryFee);
+                    }
+                    
                 }
                 let useAmountCal = eval((useableBonusPer / 100) * entryFee);
                 let useAmount = eval(useAmountCal * total_team_number);
