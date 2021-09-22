@@ -29,6 +29,9 @@ var otherGamesContest = new Schema({
         type: Number,
         default: 0
     },
+    conf_room_id: {
+        type: String
+    },
     category_name: { type: String, default: '' },
     category_description: { type: String, default: '' },
     category_seq: { type: Number },
