@@ -33,7 +33,7 @@ module.exports = {
             console.log(error);
             res.send(ApiUtility.failed(error.message));
         }
-    },
+    }
 }
 
 /**
