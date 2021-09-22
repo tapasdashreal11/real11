@@ -49,7 +49,7 @@ module.exports = {
             winners_count = parseInt(winners_count);
             if(entryFee>0){
                 entryFee =  Math.ceil(entryFee);
-                entry_fee =  Math.ceil(entry_fee);
+                entry_fee =  Math.ceil(entry_fee); 
             }
             // create contest invite code
            // return res.send(ApiUtility.failed('Temporary stop this activity.'));
