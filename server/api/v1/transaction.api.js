@@ -929,7 +929,7 @@ module.exports = {
                 const verifyKey =   await verifyPhonePeTokenKey(bodyResponse);
                 const responseAmount    =   txnData.txn_amount * 100;
                 if(verifyKey == xVerifyString && txnAmount == responseAmount) {
-                    await module.exports.updateTransactionFromWebhook(transactionId, gateway);
+                    await module.exports.updateTransactionFromWebhook(transactionId, gateway, (txnAmount/100));
                     cb({"message":"Amount Added successfully.", "status": true});
                 } else {
                     cb({"message": "Token or amount not verified.", "status": false})
