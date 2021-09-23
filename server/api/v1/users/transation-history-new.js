@@ -44,7 +44,7 @@ module.exports = async (req, res, dbs) => {
 					}
 					if(_.indexOf([3, 11, 12, 13,23], i.added_type) >=0){
 						tItem['total_team_joined'] = i.total_team_joined || 1
-						tItem['contest_entry_fee'] = i.contest_entry_fee
+						tItem['contest_entry_fee'] = i && i.contest_entry_fee ? parseInt(i.contest_entry_fee):0;
 					}
 					
 					newArr.push(tItem);
