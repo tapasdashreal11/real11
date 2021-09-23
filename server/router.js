@@ -97,7 +97,7 @@ const  otherGameWinningDis   = require('./api/v1/contest/other-games-wining-dis'
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
-const {userGoogleSignIn,userGoogleSignUpDetailAdd,userAppleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate,userAppleSignIn} = require('./api/v1/users/user-google-signup');
+const {userGoogleSignIn,userGoogleSignUpDetailAdd,userAppleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate,userAppleSignIn,userAddInFairPlayViolation} = require('./api/v1/users/user-google-signup');
 const appSettingApi = require("./api/v1/common/app-settings");
 const user_offers = require("./api/v1/common/app-analysis-api");
 const { 
@@ -232,7 +232,8 @@ router.get('/',function(req,res){
 router.post('/api/v1/apple-login', userAppleSignIn); 
 router.post('/api/v1/google-login', userGoogleSignIn); 
 router.post('/api/v1/signup-data-upate', userGoogleSignUpDetailAdd); 
-router.post('/api/v1/apple-signup-data-upate', userAppleSignUpDetailAdd); 
+router.post('/api/v1/apple-signup-data-upate', userAppleSignUpDetailAdd);  
+router.post('/api/v1/user-add-in-fairplay', userAddInFairPlayViolation);
 router.post('/api/v1/user-game-signup', userSignup); 
 router.post('/api/v1/signup-email-data-update',auth.authenticate.jwtLogin, userNormalSignUpDetailUpdate); 
 router.post('/api/v1/user-avtar-update',auth.authenticate.jwtLogin, userAvtarUpdate); 

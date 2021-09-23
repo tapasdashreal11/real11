@@ -764,6 +764,36 @@ module.exports = {
             Helper.sendMailToDeveloper(req, err.message);
             return res.json(response);
         }
+    },
+    userAddInFairPlayViolation: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let params = req.body;
+            let constraints = { user_gaid: "required" };
+            let validator = new Validator(params, constraints);
+            let matched = await validator.check();
+            if (!matched) {
+                response["message"] = "Required fields missing";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+            
+            let userGaids = await Users.find({ user_gaid: params.user_gaid }, { _id: 1 });
+            
+            if (userGaids && userGaids.length>5) {
+                await Users.updateMany({ user_gaid: params.user_gaid }, { $set: {fair_play_violation:1} });
+                response["message"] = "Done";
+                response["status"] = true;
+                return res.json(response);
+             } else {
+                response["message"] = "Invalid data!!";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+        } catch (err) {
+            var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
+            return res.json(response);
+        }
     }
 }
 
