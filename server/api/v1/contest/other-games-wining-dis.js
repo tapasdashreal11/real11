@@ -28,7 +28,10 @@ module.exports = async (req, res) => {
             let contestData = matchContestData.contest;
             var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
             let breakup = contestData.breakup ? contestData.breakup : [];
+            console.log('playerContestData',playerContestData);
+            console.log('playerContestData',contestData);
             if (playerContestData && playerContestData.length > 0 ) {
+                console.log('fsdfsdfsdfsd***')
                 for (const contestTeam of playerContestData) {
                    let rankData = rank_data.map(ri => {
                        let retutnData = {};
@@ -60,7 +63,7 @@ module.exports = async (req, res) => {
                 response.message = "Winning distributed successfully!!";
                 return res.json(response);
             } else {
-                return res.send(ApiUtility.failed("Something went wrong!!"));
+                return res.send(ApiUtility.failed("Something went wrong!!!"));
             }
         } else {
             return res.send(ApiUtility.failed("Something went wrong!!"));
