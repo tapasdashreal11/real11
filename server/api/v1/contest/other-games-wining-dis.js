@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
             let contestData = matchContestData.contest;
             var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
             let breakup = contestData.breakup ? contestData.breakup : [];
-            if (playerContestData && playerContestData.length > 0) {
+            if (playerContestData && playerContestData.length > 0 ) {
                 for (const contestTeam of playerContestData) {
                    let rankData = rank_data.map(ri => {
                        let retutnData = {};
@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
                         const txnId = (new Date()).getTime() + contestTeam.user_id;
                         let win_amount = 0;
                         let pricewin_amount = 0;
-                        let rankItem = _.find(breakup, { startRank: oPTCuserItem.rank });
+                        let rankItem = breakup && breakup.length>0 ?  _.find(breakup, { startRank: oPTCuserItem.rank }):{};
                         if (rankItem) {
                             let priceWin = rankItem.price_each;
                             if(priceWin>0) await User.updateOne({ _id: oPTCuserItem.user_id }, { $inc: { winning_balance: parseFloat(priceWin) } })
