@@ -28,10 +28,7 @@ module.exports = async (req, res) => {
             let contestData = matchContestData.contest;
             var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
             let breakup = contestData.breakup ? contestData.breakup : [];
-            console.log('playerContestData',playerContestData);
-            console.log('playerContestData',contestData);
             if (playerContestData && playerContestData.length > 0 ) {
-                console.log('fsdfsdfsdfsd***')
                 for (const contestTeam of playerContestData) {
                    let rankData = rank_data.map(ri => {
                        let retutnData = {};
@@ -40,18 +37,17 @@ module.exports = async (req, res) => {
                        return retutnData;
                     });
                     let oPTCuserItem = _.find(rankData, { user_id: contestTeam.user_id});
-                     console.log('oPTCuserItem',oPTCuserItem,'contestTeam',contestTeam);
                     if (oPTCuserItem && oPTCuserItem.user_id) {
                         let rank = oPTCuserItem.rank ? oPTCuserItem.rank : 0;
                         const txnId = (new Date()).getTime() + contestTeam.user_id;
                         let win_amount = 0;
                         let pricewin_amount = 0;
                         let rankItem = breakup && breakup.length>0 ?  _.find(breakup, { startRank: oPTCuserItem.rank }):{};
-                        if (rankItem) {
+                        if (rankItem && breakup && breakup.length>0) {
                             let priceWin = rankItem.price_each;
                             if(priceWin>0) await User.updateOne({ _id: oPTCuserItem.user_id }, { $inc: { winning_balance: parseFloat(priceWin) } })
-                            win_amount = priceWin;
-                            pricewin_amount = priceWin;
+                             win_amount = priceWin;
+                             pricewin_amount = priceWin;
                             await setTransaction(decoded,contestTeam,txnId,pricewin_amount,oPTCuserItem);
                         }
                         
