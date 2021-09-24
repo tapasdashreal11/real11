@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const refUserAdminMeta = mongoose.Schema({
     user_id: { type: String },
     refer_id: { type: String },
-    ref_count: { type: Number }
+    ref_count: { type: Number },
+    email: { type: String },
+    phone: { type: String }
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },

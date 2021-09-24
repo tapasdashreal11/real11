@@ -40,7 +40,7 @@ module.exports = {
                     if (_.isEmpty(userGmailsignup.phone) || _.isUndefined(userGmailsignup.phone) || _.isNull(userGmailsignup.phone)) {
                         response["message"] = "Please enter your phone number.";
                         response["status"] = true;
-                        response["data"] = {_id: userGmailsignup._id, user_id: userGmailsignup._id, email: userGmailsignup.email, google_id: userGmailsignup.google_id };
+                        response["data"] = { _id: userGmailsignup._id, user_id: userGmailsignup._id, email: userGmailsignup.email, google_id: userGmailsignup.google_id };
                         response["login_success"] = false;
                         response["otp_status"] = false;
                         return res.json(response);
@@ -152,12 +152,12 @@ module.exports = {
                         const user = await Users.create(insertData);
                         const insertId = user._id;
                         try {
-                            
+
                             if (params && params.device_id) {
                                 Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome Bonus!!', 'Kick start your journey with 100% deposit bonus. Make your initial deposit in wallet to avail this reward.');
-                            } 
+                            }
                         } catch (errr) { }
-                        
+
                         insertData.user_id = insertId;
                         let bank_details = {};
                         bank_details.user_id = insertId;
@@ -180,7 +180,7 @@ module.exports = {
                         response["login_success"] = false;
                         response["otp_status"] = false;
                         response["google_signup_status"] = true;
-                        
+
                         return res.json(response);
                     } else {
                         await Users.findOneAndUpdate({ _id: userEmail._id }, { $set: { google_id: params.google_id, status: 0 } });
@@ -207,7 +207,7 @@ module.exports = {
             logger.error("Google_ERROR", error.message);
             var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
             //send mail to developer to debug purpose
-            Helper.sendMailToDeveloper(req, error.message);  
+            Helper.sendMailToDeveloper(req, error.message);
             return res.json(response);
         }
     },
@@ -225,7 +225,7 @@ module.exports = {
             }
 
             let userGmailsignup = await Users.findOne({ google_id: params.google_id, email: params.email }, { _id: 1, google_id: 1, email: 1, phone: 1 });
-            
+
             if (userGmailsignup && userGmailsignup._id && params.phone && _.size(params.phone) > 9) {
                 let phone_number = userGmailsignup.phone ? userGmailsignup.phone : '';
                 if (!_.isEmpty(phone_number) && phone_number.length > 1) {
@@ -286,7 +286,7 @@ module.exports = {
                     return res.json(response);
                 }
                 if (params && params.mobile_number && _.size(params.mobile_number) > 9) {
-                    
+
                     let userPhone = await Users.findOne({ phone: params.mobile_number }, { _id: 1, google_id: 1, email: 1, phone: 1 });
                     if (!userPhone) {
                         let referal_code_detail = {};
@@ -302,19 +302,21 @@ module.exports = {
                                 referal_code_detail.status = 1;
                                 insertData.is_refered_by = true;
                                 //ReferalUsersAminMetaData.findOneAndUpdate({_id:inviteDetails._id},{})
-                                if(inviteDetails && !inviteDetails.is_youtuber){
-                                    let refral_counters = inviteDetails.ref_counter ? inviteDetails.ref_counter:0;
-                                    let refral_counters_used = inviteDetails.ref_counter_used ? inviteDetails.ref_counter_used :0;
+                                if (inviteDetails && !inviteDetails.is_youtuber) {
+                                    let refral_counters = inviteDetails.ref_counter ? inviteDetails.ref_counter : 0;
+                                    let refral_counters_used = inviteDetails.ref_counter_used ? inviteDetails.ref_counter_used : 0;
                                     let diffRef = refral_counters - refral_counters_used;
-                                    let incObj = {ref_counter:1};
-                                   if(refral_counters > refral_counters_used && diffRef>9){
-                                       incObj['ref_counter_used'] =10;
-                                       ReferalUsersAminMetaData.create({user_id:inviteDetails._id,refer_id:caps_invite_code,ref_count:10});
-                                       sendEmailToAdmin(caps_invite_code);
+                                    let incObj = { ref_counter: 1 };
+                                    if (refral_counters > refral_counters_used && diffRef > 9) {
+                                        incObj['ref_counter_used'] = 10;
+                                        let email = inviteDetails && inviteDetails.email ? inviteDetails.email : '';
+                                        let phone = inviteDetails && inviteDetails.phone ? inviteDetails.phone : '';
+                                        ReferalUsersAminMetaData.create({ email: email, phone: phone, user_id: inviteDetails._id, refer_id: caps_invite_code, ref_count: 10 });
+                                        sendEmailToAdmin(caps_invite_code, email, phone);
                                     }
-                                    await Users.findOneAndUpdate({_id:inviteDetails._id},{$inc:incObj});
+                                    await Users.findOneAndUpdate({ _id: inviteDetails._id }, { $inc: incObj });
                                 }
-                                if (caps_invite_code && _.isEqual(caps_invite_code,"IPL200")) {
+                                if (caps_invite_code && _.isEqual(caps_invite_code, "IPL200")) {
                                     rf_xtra_amount = 100;
                                 }
                             } else {
@@ -352,7 +354,7 @@ module.exports = {
                             }
                         }
                         let userName = await getUserName();
-                        insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
+                        insertData.team_name = userName + new Date().getUTCMilliseconds().toString();
                         insertData.bonus_amount = rf_xtra_amount; // config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
@@ -402,7 +404,7 @@ module.exports = {
                         await Profile.create(bank_details);
                         await PanDetails.create(bank_details);
                         try {
-            
+
                             if (params && params.device_id) {
                                 Helper.sendNotificationFCM(insertId, 12, params.device_id, 'Welcome Bonus!!', 'Kick start your journey with 100% deposit bonus. Make your initial deposit in wallet to avail this reward.');
                             }
@@ -426,13 +428,13 @@ module.exports = {
                             await UserReferral.create(referal_code_detail);
                         }
                         response["status"] = true;
-                        response["data"] = { _id: user._id,user_id: user._id, email: user.email, phone: params.mobile_number, google_id: user.google_id };
+                        response["data"] = { _id: user._id, user_id: user._id, email: user.email, phone: params.mobile_number, google_id: user.google_id };
                         response["login_success"] = false;
                         response["otp_status"] = true;
                         return res.json(response);
 
                     } else {
-                        response['message'] = 'This number is already registered!!' 
+                        response['message'] = 'This number is already registered!!'
                         return res.json(response);
                     }
                 } else {
@@ -465,12 +467,12 @@ module.exports = {
             }
             let userGmailsignup = await Users.findOne({ phone: params.phone }, { _id: 1, google_id: 1, email: 1, phone: 1 });
             if (userGmailsignup && userGmailsignup._id) {
-                let userEmailData = await Users.findOne({_id: {$ne:userGmailsignup._id}, email: params.email }, { _id: 1 });
+                let userEmailData = await Users.findOne({ _id: { $ne: userGmailsignup._id }, email: params.email }, { _id: 1 });
                 if (userEmailData) {
                     response["message"] = "This email is already registered!!";
                     return res.json(response);
                 } else {
-                    
+
                     await Users.updateOne({ _id: userGmailsignup._id }, { $set: { password: params.password, email: params.email } });
                     response["message"] = "Updated successfully!!";
                     response["status"] = true;
@@ -484,8 +486,8 @@ module.exports = {
             }
         } catch (err) {
             var response = { status: false, message: "Invalid Request", data: {} };
-             //send mail to developer to debug purpose
-             Helper.sendMailToDeveloper(req, error.message);
+            //send mail to developer to debug purpose
+            Helper.sendMailToDeveloper(req, error.message);
             return res.json(response);
         }
 
@@ -496,7 +498,7 @@ module.exports = {
             var response = { status: false, message: "Invalid Request", data: {} };
             let params = req.body;
             const user_id = req.userId;
-            let constraints = { avatar: "required"};
+            let constraints = { avatar: "required" };
             let validator = new Validator(params, constraints);
             let matched = await validator.check();
             if (!matched) {
@@ -504,7 +506,7 @@ module.exports = {
                 response["errors"] = validator.errors;
                 return res.json(response);
             }
-            let userGmailsignup = await Users.findOneAndUpdate({ _id: user_id }, { $set: { avatar: params.avatar} });
+            let userGmailsignup = await Users.findOneAndUpdate({ _id: user_id }, { $set: { avatar: params.avatar } });
             if (userGmailsignup && userGmailsignup._id) {
                 response["message"] = "Updated successfully!!";
                 response["status"] = true;
@@ -526,7 +528,7 @@ module.exports = {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
             let params = req.body;
-            let constraints = { apple_id: "required"};
+            let constraints = { apple_id: "required" };
             let validator = new Validator(params, constraints);
             let matched = await validator.check();
             if (!matched) {
@@ -536,14 +538,14 @@ module.exports = {
             }
             try {
                 var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-                let qury_prms = {apple_id: params.apple_id};
-               // if(params && params.email) qury_prms['email'] = params.email
+                let qury_prms = { apple_id: params.apple_id };
+                // if(params && params.email) qury_prms['email'] = params.email
                 let userGmailsignup = await Users.findOne(qury_prms);
                 if (userGmailsignup && userGmailsignup._id) {
                     if (_.isEmpty(userGmailsignup.phone) || _.isUndefined(userGmailsignup.phone) || _.isNull(userGmailsignup.phone)) {
                         response["message"] = "Please enter your phone number.";
                         response["status"] = true;
-                        response["data"] = {_id: userGmailsignup._id, user_id: userGmailsignup._id, email: userGmailsignup.email, apple_id: userGmailsignup.apple_id };
+                        response["data"] = { _id: userGmailsignup._id, user_id: userGmailsignup._id, email: userGmailsignup.email, apple_id: userGmailsignup.apple_id };
                         response["login_success"] = false;
                         response["otp_status"] = false;
                         return res.json(response);
@@ -592,10 +594,10 @@ module.exports = {
                     }
                 } else {
                     let userEmail = await Users.findOne({ apple_id: params.apple_id }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
-                   
-                    if(params && params.email && !userEmail){
+
+                    if (params && params.email && !userEmail) {
                         userEmail = await Users.findOne({ email: params.email }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
-                     }
+                    }
                     if (!userEmail) {
                         let insertData = {};
                         let rf_xtra_amount = 50;
@@ -622,7 +624,7 @@ module.exports = {
                         }
 
                         let userName = await getUserName();
-                        insertData.team_name = userName + new Date().getUTCMilliseconds().toString() ;
+                        insertData.team_name = userName + new Date().getUTCMilliseconds().toString();
                         insertData.bonus_amount = rf_xtra_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
@@ -682,10 +684,10 @@ module.exports = {
                         response["login_success"] = false;
                         response["otp_status"] = false;
                         response["apple_signup_status"] = true;
-                        
+
                         return res.json(response);
                     } else {
-                        await Users.findOneAndUpdate({ _id: userEmail._id }, { $set: {status: 0 } });
+                        await Users.findOneAndUpdate({ _id: userEmail._id }, { $set: { status: 0 } });
                         if (userEmail && userEmail.phone && !_.isEmpty(userEmail.phone)) {
                             userEmail['apple_id'] = params.apple_id;
                             let otpRes = await sendOtp(userEmail);
@@ -709,7 +711,7 @@ module.exports = {
             logger.error("Google_ERROR", error.message);
             var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
             //send mail to developer to debug purpose
-            Helper.sendMailToDeveloper(req, error.message);  
+            Helper.sendMailToDeveloper(req, error.message);
             return res.json(response);
         }
     },
@@ -725,9 +727,9 @@ module.exports = {
                 response["errors"] = validator.errors;
                 return res.json(response);
             }
-            
+
             let userGmailsignup = await Users.findOne({ apple_id: params.apple_id }, { _id: 1, apple_id: 1, email: 1, phone: 1 });
-            
+
             if (userGmailsignup && userGmailsignup._id && params.phone && _.size(params.phone) > 9) {
                 let phone_number = userGmailsignup.phone ? userGmailsignup.phone : '';
                 if (!_.isEmpty(phone_number) && phone_number.length > 1) {
@@ -777,15 +779,15 @@ module.exports = {
                 response["errors"] = validator.errors;
                 return res.json(response);
             }
-            
+
             let userGaids = await Users.find({ user_gaid: params.user_gaid }, { _id: 1 });
-            
-            if (userGaids && userGaids.length>5) {
-                await Users.updateMany({ user_gaid: params.user_gaid }, { $set: {fair_play_violation:1} });
+
+            if (userGaids && userGaids.length > 5) {
+                await Users.updateMany({ user_gaid: params.user_gaid }, { $set: { fair_play_violation: 1 } });
                 response["message"] = "Done";
                 response["status"] = true;
                 return res.json(response);
-             } else {
+            } else {
                 response["message"] = "Invalid data!!";
                 response["errors"] = validator.errors;
                 return res.json(response);
@@ -834,18 +836,17 @@ async function sendOtp(user) {
 /**
  * Generate random team/user name 
  */
-async function getUserName()
-{
+async function getUserName() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for( var i=0; i < 10; i++ )
+    for (var i = 0; i < 10; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
 }
 
-async function sendEmailToAdmin(refer_id){
-    let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hello Admin,</p><p>This Referal Id <b>" + refer_id + "</b> has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
+async function sendEmailToAdmin(refer_id, email, phone) {
+    let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hello Admin,</p><p>This Referal Id <b>" + refer_id + " phone " + phone + "  " + email + "</b> has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
     let to = "amityadav@real11.com";
-    let subject = "User Signup via Referal code "+refer_id;
+    let subject = "User Signup via Referal code " + refer_id + " other info " + email + " " + phone;
     sendSMTPMail(to, subject, mailMessage);
 }
