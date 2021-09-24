@@ -33,7 +33,8 @@ var settingsSchema = new Schema({
     is_paytm_offer: { type: Number },
     is_instant_withdraw: { type: Number, dafault: 0 },
     instant_withdraw_msg: { type: String, dafault: "" },
-    leaderbord_popup_img: { type: String, default: "" },
+	leaderbord_popup_img: { type: String, default: "" },
+	match_id: { type: Number, dafault: 0 },
 });
 
 module.exports = mongoose.model('settings', settingsSchema, 'settings');

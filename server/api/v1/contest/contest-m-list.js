@@ -14,6 +14,7 @@ const Helper = require('./../common/helper');
 const config = require('./../../../config');
 const CouponSale = require("../../../models/coupon-sale");
 const Coupon = require("../../../models/coupon");
+const AppSettings = require("../../../models/settings");
 const moment = require('moment');
 
 module.exports = async (req, res) => {
@@ -28,13 +29,20 @@ try {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
-        if(filter.match_id == 49531 ){
-           var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
-           if(checkSaleCoupon && checkSaleCoupon._id){
-           } else {
-               await getCouponForFreeEntry('61458c048523421b225c8af2',user_id);
-            }
+        try{
+            let appSData = await getPromiseForAppSetting('app-setting',"{}");
+            let dataItem = appSData ?  JSON.parse(appSData) :{};
+            if(dataItem && dataItem.match_id && filter.match_id == parseInt(dataItem.match_id) ){
+                var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
+                if(checkSaleCoupon && checkSaleCoupon._id){
+                } else {
+                    await getCouponForFreeEntry('61458c048523421b225c8af2',user_id);
+                }
+             }
+        } catch(errorapp){
+            console.log('apply coupon in contest list api***',errorapp);
         }
+        
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
         let userCoupons = [];
         let queryArray = [
@@ -250,5 +258,24 @@ async function getCouponForFreeEntry(coupon_id,user_id){
             }
         }
         resolve({})
+    })
+}
+
+async function getPromiseForAppSetting(key, defaultValue){
+    return new Promise((resolve, reject) => {
+        redis.redisObj.get(key, async (err, data) => {
+            if (err) { 
+                reject(defaultValue);
+            }
+            if (data == null) {
+                const appSettingData = await AppSettings.findOne({status: 1},{_id:1,match_id:1});
+                if(appSettingData && appSettingData._id){
+                    data = JSON.stringify(appSettingData);
+                } else {
+                    data = defaultValue;
+                }
+            }
+            resolve(data)
+        })
     })
 }
