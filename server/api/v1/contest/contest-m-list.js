@@ -32,6 +32,7 @@ try {
         try{
             let appSData = await getPromiseForAppSetting('app-setting',"{}");
             let dataItem = appSData ?  JSON.parse(appSData) :{};
+            console.log('appSData**',appSData);
             if(dataItem && dataItem.match_id && filter.match_id == parseInt(dataItem.match_id) ){
                 var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
                 if(checkSaleCoupon && checkSaleCoupon._id){
