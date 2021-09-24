@@ -269,8 +269,9 @@ async function getPromiseForAppSetting(key, defaultValue){
             if (err) { 
                 reject(defaultValue);
             }
+            console.log('data in cache**',data);
             if (data == null) {
-                const appSettingData = await AppSettings.findOne({status: 1},{_id:1,match_id:1});
+                const appSettingData = await AppSettings.findOne({},{_id:1,match_id:1});
                 if(appSettingData && appSettingData._id){
                     data = JSON.stringify(appSettingData);
                 } else {
