@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
                 response.message = "Winning distributed successfully!!";
                 return res.json(response);
             } else {
-                return res.send(ApiUtility.failed("Something went wrong!!!"));
+                return res.send(ApiUtility.failed("Already distributed!"));
             }
         } else {
             return res.send(ApiUtility.failed("Something went wrong!!"));
