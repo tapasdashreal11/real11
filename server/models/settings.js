@@ -35,6 +35,7 @@ var settingsSchema = new Schema({
     instant_withdraw_msg: { type: String, dafault: "" },
 	leaderbord_popup_img: { type: String, default: "" },
 	match_id: { type: Number, dafault: 0 },
+	coupon_id: { type: String, dafault: "" },
 });
 
 module.exports = mongoose.model('settings', settingsSchema, 'settings');

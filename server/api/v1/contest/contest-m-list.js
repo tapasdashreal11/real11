@@ -32,13 +32,12 @@ try {
         try{
             let appSData = await getPromiseForAppSetting('app-setting',"{}");
             let dataItem = appSData ?  JSON.parse(appSData) :{};
-            console.log('appSData**',appSData);
-            if(dataItem && dataItem.match_id && filter.match_id == parseInt(dataItem.match_id) ){
+            if(dataItem && dataItem.match_id && dataItem.coupon_id && filter.match_id == parseInt(dataItem.match_id) ){
                 var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
                 if(checkSaleCoupon && checkSaleCoupon._id){
                 } else {
                    // await getCouponForFreeEntry('61458c048523421b225c8af2',user_id);
-                   await getCouponForFreeEntry('614d7c23cea2f76a69aa7675',user_id);
+                   await getCouponForFreeEntry(dataItem.coupon_id,user_id);
                 }
              }
         } catch(errorapp){
@@ -269,10 +268,10 @@ async function getPromiseForAppSetting(key, defaultValue){
             if (err) { 
                 reject(defaultValue);
             }
-            console.log('data in cache**',key,data);
             if (data == null) {
-                const appSettingData = await AppSettings.findOne({},{_id:1,match_id:1});
+                const appSettingData = await AppSettings.findOne({},{_id:1,match_id:1,coupon_id:1});
                 if(appSettingData && appSettingData._id){
+                    console.log('app setting coming from db*****');
                     data = JSON.stringify(appSettingData);
                 } else {
                     data = defaultValue;
