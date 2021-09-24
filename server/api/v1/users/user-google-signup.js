@@ -845,9 +845,9 @@ async function getUserName() {
 }
 
 async function sendEmailToAdmin(refer_id, email, phone) {
-    let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hello Admin,</p><p>This Referal Id <b>" + refer_id + " phone " + phone + "  " + email + "</b> has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
-   // let to = "amityadav@real11.com";
-    let to = "shashijangir@real11.com";
+    let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hello Admin,</p><p>This Referal Id <b>" + refer_id + " phone " + phone + " email " + email + "</b> has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
+    let to = "amityadav@real11.com";
+   // let to = "shashijangir@real11.com";
     let subject = "User Signup via Referal code " + refer_id + " other info " + email + " " + phone;
     sendSMTPMail(to, subject, mailMessage);
 }

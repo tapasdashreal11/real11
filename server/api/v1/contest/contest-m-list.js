@@ -36,7 +36,8 @@ try {
                 var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
                 if(checkSaleCoupon && checkSaleCoupon._id){
                 } else {
-                    await getCouponForFreeEntry('61458c048523421b225c8af2',user_id);
+                   // await getCouponForFreeEntry('61458c048523421b225c8af2',user_id);
+                   await getCouponForFreeEntry('614d7c23cea2f76a69aa7675',user_id);
                 }
              }
         } catch(errorapp){
