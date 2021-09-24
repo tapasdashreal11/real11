@@ -269,7 +269,7 @@ async function getPromiseForAppSetting(key, defaultValue){
             if (err) { 
                 reject(defaultValue);
             }
-            console.log('data in cache**',data);
+            console.log('data in cache**',key,data);
             if (data == null) {
                 const appSettingData = await AppSettings.findOne({},{_id:1,match_id:1});
                 if(appSettingData && appSettingData._id){
