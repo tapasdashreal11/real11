@@ -2439,8 +2439,7 @@ class ModelService {
                             local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
                             added_type: TransactionTypes.FRIEND_FIRST_DEPOSIT_REWARD
                         };
-                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':{$in:[false,0]} }, { $inc: {extra_amount: bonusAmount} });
-                       console.log('referedUser',referedUser); 
+                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} });
                        if(referedUser) {
                             data = await Transaction.create(entity);
                             await ReferralCodeDetails.findOneAndUpdate({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount,first_depo_reward_amount: bonusAmount} }); 
@@ -2472,8 +2471,7 @@ class ModelService {
                             local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
                             added_type: trnsaction_type
                         };
-                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':{$ne:1} }, { $inc: {extra_amount: bonusAmount} });
-                       console.log('referedUser in pan',referedUser);  
+                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} });
                        if(referedUser) {
                             data = await Transaction.create(entity);
                             await ReferralCodeDetails.findOneAndUpdate({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount,first_depo_reward_amount: bonusAmount} }); 

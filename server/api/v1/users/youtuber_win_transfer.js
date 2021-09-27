@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
 		try {
             let user = await Users.findOne({ _id: userId },{_id:1,affiliate_amount:1,is_youtuber:1});
             let user_affil_amount = user.affiliate_amount ?parseFloat(user.affiliate_amount): 0
-			if (user && pram_affi_amount >= 1 && user_affil_amount >= pram_affi_amount && user.is_youtuber) {
+			if (user && pram_affi_amount >= 1 && user_affil_amount >= pram_affi_amount && user.is_youtuber && user.is_youtuber == 1) {
                let userWalletUpdate = await Users.findOneAndUpdate({ _id: userId },{$inc:{affiliate_amount:-pram_affi_amount,cash_balance:pram_affi_amount}},sessionOpts);
                if(userWalletUpdate){
                     await transAtAffilateMoneyTranser(userId,pram_affi_amount,session,userIp);

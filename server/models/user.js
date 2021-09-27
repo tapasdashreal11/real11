@@ -99,7 +99,7 @@ const AdminSchema = mongoose.Schema({
     verify_string: String,
     sms_notify: { type: Boolean, default: 1 },
     auth_token: { type: String, default: '' },
-    is_youtuber: { type: Boolean, default: 0 },
+    is_youtuber: { type: Number, default: 0 },
     bonus_type: { type: Number, default: 0 },
     bonus_percent: { type: Number, default: 0 },
     // refer_able: { type: Boolean, default: 1 },
