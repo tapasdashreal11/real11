@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
 		try {
 			let userId = req.userId;
 		
-			let user = await Users.findOne({ _id: userId });
+			let user = await Users.findOne({ _id: userId,fair_play_violation:0 });
 			if (user && wAmount >= 200) {
 				if(user.status == 1) {
 					let winning_balance = user.winning_balance || 0;
@@ -185,7 +185,7 @@ module.exports = async (req, res) => {
 					return res.json(response);
 				}
 			} else {
-				response["message"] = "Invalid Amount.";
+				response["message"] = "Invalid Data.";
 				return res.json(response);
 			}
 
