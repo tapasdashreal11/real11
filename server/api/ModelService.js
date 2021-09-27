@@ -2472,7 +2472,7 @@ class ModelService {
                             local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
                             added_type: trnsaction_type
                         };
-                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':{$in:[false,0]} }, { $inc: {extra_amount: bonusAmount} });
+                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':{$ne:1} }, { $inc: {extra_amount: bonusAmount} });
                        console.log('referedUser in pan',referedUser);  
                        if(referedUser) {
                             data = await Transaction.create(entity);
