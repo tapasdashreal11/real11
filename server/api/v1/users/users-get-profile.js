@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
 
     try {
       let user = await Users.findOne({ _id: params.user_id }).select(
-        "_id phone user_id city bonous_percent type full_name first_name last_name team_name date_of_birth gender country state postal_code address image fb_id google_id refer_id cash_balance winning_balance bonus_amount reward_level status is_updated email_verified sms_notify total_balance is_youtuber bonus_type bonus_percent referal_code_detail refer_able avatar email extra_amount bank_account_verify pen_verify change_bank_req"
+        "_id phone user_id city fair_play_violation bonous_percent type full_name first_name last_name team_name date_of_birth gender country state postal_code address image fb_id google_id refer_id cash_balance winning_balance bonus_amount reward_level status is_updated email_verified sms_notify total_balance is_youtuber bonus_type bonus_percent referal_code_detail refer_able avatar email extra_amount bank_account_verify pen_verify change_bank_req"
       );
       if (user) {
         const userData = rowTextToJson(user);
@@ -39,6 +39,7 @@ module.exports = async (req, res) => {
         data.pincode = userData.postal_code;
         data.dob = userData.date_of_birth || '';
         data.change_bank_req = userData && userData.change_bank_req ? userData.change_bank_req: false ;
+        data.fair_play_violation = user && user.fair_play_violation && user.fair_play_violation == 1 ? true : false;
 
         delete data.postal_code;
         response["message"] = "Successfully";
