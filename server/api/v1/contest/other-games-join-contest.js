@@ -34,7 +34,6 @@ module.exports = async (req, res) => {
             user_id: user_id
         }
         if (match_id && contest_id && user_id) {
-            console.log('hello');
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
@@ -56,7 +55,7 @@ module.exports = async (req, res) => {
                             var parentContestId = (matchContest && matchContest.parent_contest_id) ? matchContest.parent_contest_id : matchContest.contest_id;
                             var PlayerTeamContestFilter = { 'contest_id': contest_id,'user_id': user_id, 'match_id': decoded['match_id'],is_deleted:0}
                             let playerTeamRes = await OtherGamesPtc.findOne(PlayerTeamContestFilter);
-                            console.log('fsfsfsfsf*** 1',playerTeamRes);
+                        
                             if(playerTeamRes){
                                 return res.send(ApiUtility.failed("Already Joined Contest."));
                              } else {
