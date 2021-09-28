@@ -31,8 +31,10 @@ module.exports = async (req, res) => {
         data.total_balance = userData.total_balance ? userData.total_balance.toFixed(2) : 0;
         if(user.bank_account_verify== 2 && user.pen_verify==2 && user.email_verified == 1){
           data.account_verified = true;
+          data.is_profile_complete = true;
         } else {
           data.account_verified = false;
+          data.is_profile_complete = false;
         }
 
         data.name = userData.first_name + userData.last_name;
