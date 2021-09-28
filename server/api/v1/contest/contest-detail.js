@@ -97,6 +97,8 @@ module.exports = {
             if (reviewMatch == "In Progress") {
                 contestData = await redis.getRedis(contestDataAPIKey);
             }
+            let seriesSqadData = await SeriesSquad.findOne({match_id:parseInt(match_id),sport:sport});
+            
             if (!contestData) {
                 // let contestDetail = await Contest.findOne({ _id: contest_id });
                 let matchContestDetail = await MatchContest.findOne({ contest_id: contest_id ,match_id:parseInt(match_id),sport:sport});
@@ -319,6 +321,9 @@ module.exports = {
                 }
                 if (reviewMatch == "In Progress") {
                     redis.setRedis(contestDataAPIKey, contestData)
+                }
+                if(seriesSqadData && seriesSqadData.is_parent){
+                    contestData['match_inning_number']   = seriesSqadData.inning_number &&  seriesSqadData.inning_number == 2 ? 2 : 1;
                 }
                 return res.send(ApiUtility.success(contestData));
             }
