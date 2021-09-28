@@ -21,6 +21,27 @@ var playerTeamSchema = new Schema({
   "vice_captain": {
     "type": Number
   },
+  "one_five_x": {
+    "type": Number,default:0
+  },
+  "two_x": {
+    "type": Number,default:0
+  },
+  "three_x": {
+    "type": Number,default:0
+  },
+  "four_x": {
+    "type": Number,default:0
+  },
+  "five_x": {
+    "type": Number,default:0
+  },
+  "x_system": {
+    "type": Number,default:0
+  },
+  "x_counter": {
+    "type": Number,default:2
+  },
   "substitute": {
     "type": "String"
   },

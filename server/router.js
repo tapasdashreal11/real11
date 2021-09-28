@@ -134,6 +134,7 @@ const { matchList,fiveOverliveFantasyMatchList } = require('./api/v1/contest/mat
 const { playerList, playerListn } = require('./api/v1/contest/player-list');
 const { playerTeamList, previewPlayerTeamList,playerTeamListn } = require('./api/v1/contest/player-team-list');
 const { createTeam } = require('./api/v1/contest/create-team');
+const { createTeamNew } = require('./api/v1/contest/create-team-new');
 const { seriesPlayerList } = require('./api/v1/contest/series-player-list');
 const { seriesPlayerDetail } = require('./api/v1/contest/series-player-detail');
 const {
@@ -299,7 +300,8 @@ router.get('/api/v1/player-team-listn/:series_id/:match_id/:user_id?/:sport?/:te
 router.get('/api/v1/player-list/:series_id/:match_id/:sport?', playerList);
 router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListn);
 router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, leaderboard);
-router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
+//router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
+router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtLogin, joinContestWalletAmountMultiple);
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
