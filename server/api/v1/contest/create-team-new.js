@@ -15,12 +15,12 @@ module.exports = {
 
     createTeamNew: async (req, res) => {
         let {
-            series_id, player_id, captain, match_id, vice_captain, sport, team_id, team_count, x_system, one_five_x, two_x, three_x, four_x, five_x
+            series_id, player_id, captain, match_id, vice_captain, sport, team_id, team_count, xm_system, one_five_x, two_x, three_x, four_x, five_x
         } = req.body
         let user_id = req.userId;
         sport = parseInt(sport) || 1;
         let data1 = {}, message = "";
-        let x_system = (x_system && (x_system == 1)) ? 1 : 0;
+        let x_system = (xm_system && (xm_system == 1)) ? 1 : 0;
         try {
             if (x_system == 0 && (!series_id || !player_id || !captain || !match_id || !vice_captain || !sport)) {
                 return res.send(ApiUtility.failed('Please send proper data'));
