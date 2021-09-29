@@ -967,7 +967,8 @@ class ModelService {
                             "visitor_color_code":{ $ifNull: [ "$visitor_color_code", '' ] },
                             "is_highlight":{ $ifNull: [ "$is_highlight", 0 ] },
                             "winning_comment":{ $ifNull: [ "$winning_comment", '' ] },
-                            "parent_id":"$parent_id"
+                            "parent_id":"$parent_id",
+                            "inning_number":{ $ifNull: [ "$inning_number", '' ] }
                         }
                     }
                 ], (err, data) => {
