@@ -100,7 +100,7 @@ module.exports = {
             let matchKey = 'match-list-' + sport;
             let macthList = await getMatchList(matchKey, "{}");
             let seriesSqadData = {};
-            if (macthList) {
+            if (macthList && !_.isEmpty(macthList)) {
                 console.log('data ***',macthList);
                 let matchListData = JSON.parse(macthList);
                 if (matchListData && matchListData.data && matchListData.data.upcoming_match) {
