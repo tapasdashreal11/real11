@@ -181,6 +181,9 @@ module.exports = {
                             let percent = (winningAmount / 100) * parseFloat(commission);
                             let finalWinAmt = parseFloat(percent) + parseFloat(winningAmount);
                             entryFee = finalWinAmt / contetSize;
+                            if(entryFee>0){
+                                entryFee =  Math.ceil(entryFee);
+                            }
                         }
 
                         data1.entry_fee = entryFee;

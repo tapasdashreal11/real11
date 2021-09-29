@@ -97,7 +97,7 @@ module.exports = {
             if (reviewMatch == "In Progress") {
                 contestData = await redis.getRedis(contestDataAPIKey);
             }
-            let seriesSqadData = await SeriesSquad.findOne({match_id:parseInt(match_id),sport:sport});
+            let seriesSqadData = await SeriesSquad.findOne({match_id:parseInt(match_id),sport:sport},{match_id:1,inning_number:1,is_parent:1});
             
             if (!contestData) {
                 // let contestDetail = await Contest.findOne({ _id: contest_id });
