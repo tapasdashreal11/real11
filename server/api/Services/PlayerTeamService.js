@@ -209,6 +209,11 @@ class PlayerTeamService {
                     "selected_by": '0%',
                     "captain_selected": '0%',
                     "vice_captain_selected": '0%',
+                    "one_five_x_selected": '0%',
+                    "two_x_selected": '0%',
+                    "three_x_selected": '0%',
+                    "four_x_selected": '0%',
+                    "five_x_selected": '0%',
                     "player_record": "$playerRecord",
                     "is_last_played": "$seriesplayers.is_lastplayed",     //,
                     "playing_11": 1,
@@ -254,6 +259,12 @@ class PlayerTeamService {
                                 playerData.selected_by = (playerStats[playerData.player_id]["selectedBy"] && playerStats[playerData.player_id]["selectedBy"] != "NaN") ? `${playerStats[playerData.player_id]["selectedBy"]}%` : "0%";
                                 playerData.captain_selected = (playerStats[playerData.player_id]["captainSelected"] && playerStats[playerData.player_id]["captainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["captainSelected"]}%` : "0%";
                                 playerData.vice_captain_selected = (playerStats[playerData.player_id]["viceCaptainSelected"] && playerStats[playerData.player_id]["viceCaptainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["viceCaptainSelected"]}%` : "0%";
+
+                                playerData.one_five_x_selected = (playerStats[playerData.player_id]["oneFivexSelected"] && playerStats[playerData.player_id]["oneFivexSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["oneFivexSelected"]}%` : "0%";
+                                playerData.two_x_selected = (playerStats[playerData.player_id]["twoxSelected"] && playerStats[playerData.player_id]["twoxSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["twoxSelected"]}%` : "0%";
+                                playerData.three_x_selected = (playerStats[playerData.player_id]["threexSelected"] && playerStats[playerData.player_id]["threexSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["threexSelected"]}%` : "0%";
+                                playerData.four_x_selected = (playerStats[playerData.player_id]["fourxSelected"] && playerStats[playerData.player_id]["fourxSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["fourxSelected"]}%` : "0%";
+                                playerData.five_x_selected = (playerStats[playerData.player_id]["fivexSelected"] && playerStats[playerData.player_id]["fivexSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["fivexSelected"]}%` : "0%";
                             }
                             resultNew.push(playerData);
                         }
