@@ -101,7 +101,7 @@ module.exports = {
             let macthList = await getMatchList(matchKey, "{}");
             let seriesSqadData = {};
             if (macthList) {
-                console.log('data ***'macthList);
+                console.log('data ***',macthList);
                 let matchListData = JSON.parse(macthList);
                 if (matchListData && matchListData.data && matchListData.data.upcoming_match) {
                     const lst = JSON.parse(JSON.stringify(matchListData.data.upcoming_match));
