@@ -24,7 +24,7 @@ module.exports = {
         try {
             if (x_system == 0 && (!series_id || !player_id || !captain || !match_id || !vice_captain || !sport)) {
                 return res.send(ApiUtility.failed('Please send proper data'));
-            } else if (x_system == 1 && (!series_id || !player_id || !one_five_x || !two_x || !three_x || !four_x || !five_x || !match_id || !sport)) {
+            } else if (x_system == 1 && (!series_id || !player_id || !one_five_x || !two_x || !three_x  || !match_id || !sport)) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             }
             let liveMatch = await SeriesSquad.findOne({ match_id: match_id, series_id: series_id, sport: sport });
