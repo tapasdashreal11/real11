@@ -282,14 +282,12 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                 data[key]['total_point'] = totalPoints;
                 data[key]['captain_player_id'] = captain;
                 data[key]['vice_captain_player_id'] = viceCaptain;
-
-                data[key]['one_five_x'] = result.one_five_x;
-                data[key]['two_x'] = result.two_x;;
-                data[key]['three_x'] = result.three_x;;
-                data[key]['four_x'] = result.four_x;;
-                data[key]['five_x'] = result.five_x;;
-                data[key]['x_counter'] = result.x_counter;;
-
+                if(result && result.one_five_x) data[key]['one_five_x'] = result.one_five_x;
+                if(result && result.two_x) data[key]['two_x'] = result.two_x;
+                if(result && result.three_x) data[key]['three_x'] = result.three_x;
+                if(result && result.four_x)  data[key]['four_x'] = result.four_x;
+                if(result && result.five_x) data[key]['five_x'] = result.five_x;
+                if(result && result.x_counter) data[key]['x_counter'] = result.x_counter;
                 data[key]['total_bowler'] = totalBowler;
                 data[key]['total_batsman'] = totalBatsman;
                 data[key]['total_wicketkeeper'] = totalWicketkeeper;
