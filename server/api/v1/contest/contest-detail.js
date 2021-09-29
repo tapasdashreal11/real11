@@ -98,9 +98,10 @@ module.exports = {
                 contestData = await redis.getRedis(contestDataAPIKey);
             }
             let matchKey = 'match-list-' + sport;
-            let macthList = getMatchList(matchKey, "{}");
+            let macthList = await getMatchList(matchKey, "{}");
             let seriesSqadData = {};
             if (macthList) {
+                console.log('data ***'macthList);
                 let matchListData = JSON.parse(macthList);
                 if (matchListData && matchListData.data && matchListData.data.upcoming_match) {
                     const lst = JSON.parse(JSON.stringify(matchListData.data.upcoming_match));
