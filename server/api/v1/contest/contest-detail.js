@@ -106,7 +106,7 @@ module.exports = {
                 if (matchListData && matchListData.data && matchListData.data.upcoming_match) {
                     const lst = JSON.parse(JSON.stringify(matchListData.data.upcoming_match));
                     let cdataRsp = _.find(lst, { 'match_id': parseInt(match_id), 'sport': parseInt(sport) });
-                    console.log('cdataRsp',cdataRsp);
+                    console.log('cdataRsp',lst);
                     if(cdataRsp && cdataRsp.match_id){
                         seriesSqadData = cdataRsp;
                         console.log('data from redis for match list in contest detail ***');
