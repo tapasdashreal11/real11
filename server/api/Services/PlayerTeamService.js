@@ -601,6 +601,14 @@ class PlayerTeamService {
                     'total_point': playerTeamRecord[index].points,
                     'captain_player_id': playerTeamRecord[index].captain,
                     'vice_captain_player_id': playerTeamRecord[index].vice_captain,
+
+                    'one_five_x': playerTeamRecord[index].one_five_x,
+                    'two_x': playerTeamRecord[index].two_x,
+                    'three_x': playerTeamRecord[index].three_x,
+                    'four_x': playerTeamRecord[index].four_x,
+                    'five_x': playerTeamRecord[index].five_x,
+                    'x_counter': playerTeamRecord[index].x_counter,
+
                     'total_bowler': totalBowler,
                     'total_batsman': totalBatsman,
                     'total_wicketkeeper': totalWicketkeeper,
