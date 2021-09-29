@@ -101,13 +101,14 @@ module.exports = {
             let macthList = await getMatchList(matchKey, "{}");
             let seriesSqadData = {};
             if (macthList && !_.isEmpty(macthList)) {
-                console.log('data ***',macthList);
+               
                 let matchListData = JSON.parse(macthList);
                 if (matchListData && matchListData.data && matchListData.data.upcoming_match) {
                     const lst = JSON.parse(JSON.stringify(matchListData.data.upcoming_match));
-                    cdataRsp = _.find(lst, { 'match_id': parseInt(match_id), 'sport': parseInt(sport) });
+                    let cdataRsp = _.find(lst, { 'match_id': parseInt(match_id), 'sport': parseInt(sport) });
                     if(cdataRsp && cdataRsp.match_id){
-                        seriesSqadData = cdataRsp
+                        seriesSqadData = cdataRsp;
+                        console.log('data from redis for match list in contest detail ***');
                     }else{
                         console.log('data from db in detail for match 1**');
                         seriesSqadData = await SeriesSquad.findOne({ match_id: parseInt(match_id), sport: sport }, { match_id: 1, inning_number: 1, is_parent: 1 });
