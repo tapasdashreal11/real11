@@ -70,6 +70,9 @@ module.exports = {
                         matchData['star_time'] = finalTime;
                         matchData['total_contest'] = totalContest ? totalContest : 0;
                         matchData['sport'] = contestMatch.sport;
+                        if(seriesSquad && seriesSquad.inning_number){
+                            matchData['inning_number'] = seriesSquad.inning_number;
+                        }
                         if (contestMatch.contest) {
                             matchData['contest_id'] = contestMatch.contest_id;
                             matchData['category_id'] = contestMatch.category_id;
