@@ -769,7 +769,7 @@ module.exports = {
                                 contest[contestKey]['points_earned'] = (contestValue.doc && contestValue.doc.points) ? contestValue.doc.points : 0;
                                 contest[contestKey]['my_rank'] = contestValue.doc.rank;
                                 contest[contestKey]['is_winner'] = isWinner;
-                                contest[contestKey]['winning_amount'] = totalWinningAmount;
+                                contest[contestKey]['winning_amount'] = totalWinningAmount ?  parseFloat(totalWinningAmount).toFixed(2) :  totalWinningAmount;
                                 contest[contestKey]['use_bonus'] = useBonus;
                                 contest[contestKey]['is_infinite'] = (contestValue.contest.infinite_contest_size == 1) ? true : false;
                                 contest[contestKey]['infinite_breakup'] = finiteBreakupDetail;
