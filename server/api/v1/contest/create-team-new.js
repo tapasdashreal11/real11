@@ -38,6 +38,8 @@ module.exports = {
                 if (liveMatch.live_fantasy_parent_id) {
                     if (playerIds.length != 5)
                         return res.send(ApiUtility.failed('Please select only 5 players!!'));
+                    else if (x_system == 1 && (!one_five_x || !two_x || !three_x  || !four_x || !five_x))
+                        return res.send(ApiUtility.failed('Please Select Properly X System!!'));    
 
                 } else {
                     if (sport === 1) {
