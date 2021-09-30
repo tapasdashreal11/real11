@@ -83,12 +83,7 @@ module.exports = {
         try {
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
-            let decoded = {
-                match_id: parseInt(match_id),
-                contest_id: contest_id,
-                user_id: user_id,
-                sport: parseInt(sport) || 1,
-            }
+            let decoded = { match_id: parseInt(match_id),contest_id: contest_id,user_id: user_id,sport: parseInt(sport) || 1,};
             sport = parseInt(sport) || 1;
             let reviewStatus = '';
             let contestDataAPIKey = RedisKeys.getContestDetailAPIKey(match_id, contest_id);
@@ -104,21 +99,15 @@ module.exports = {
                 let matchListData = JSON.parse(macthList);
                 if (matchListData && matchListData.data && matchListData.data.upcoming_match) {
                     const lst = JSON.parse(JSON.stringify(matchListData.data.upcoming_match));
-                    let cdataRsp = _.find(lst, { 'match_id': parseInt(match_id)});
-                    if(cdataRsp && cdataRsp.match_id){
+                    let cdataRsp = _.find(lst, { 'match_id': parseInt(match_id) });
+                    if (cdataRsp && cdataRsp.match_id)
                         seriesSqadData = cdataRsp;
-                        console.log('data from redis for match list in contest detail ***');
-                    }else{
-                        console.log('data from db in detail for match 1**');
+                    else
                         seriesSqadData = await SeriesSquad.findOne({ match_id: parseInt(match_id), sport: sport }, { match_id: 1, inning_number: 1, is_parent: 1 });
-                    }
-
                 } else {
-                    console.log('data from db in detail for match 2**');
                     seriesSqadData = await SeriesSquad.findOne({ match_id: parseInt(match_id), sport: sport }, { match_id: 1, inning_number: 1, is_parent: 1 });
                 }
             } else {
-                console.log('data from db in detail for match 3**');
                 seriesSqadData = await SeriesSquad.findOne({ match_id: parseInt(match_id), sport: sport }, { match_id: 1, inning_number: 1, is_parent: 1 });
             }
 
