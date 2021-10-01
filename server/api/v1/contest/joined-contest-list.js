@@ -10,8 +10,6 @@ const { MatchStatus } = require('../../../constants/app');
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const { ObjectId } = require('mongodb');
-// const mqtt = require('../../../../lib/mqtt');
-// const Helper = require('./../common/helper');
 
 module.exports = {
     joinedContestListOld: async (req, res) => {
