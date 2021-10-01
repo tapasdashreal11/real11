@@ -210,7 +210,7 @@ function myContestModel(skip, limit, sort, filter, sport, type){
                             total_contest : myMatchItem.total_contest,
                             match_filter : _.has(sItem, "is_parent") ? (sItem.is_parent ? "FULL":(sItem.live_fantasy_parent_id ? "LIVE":"FULL")):(sItem.live_fantasy_parent_id ?"LIVE":"FULL") 
                         }
-                        if(sItem && sItem.inning_number){
+                        if(sItem && sItem.inning_number && sItem.is_parent){
                             ddItem['inning_number'] = sItem.inning_number;
                         }
                         data.push(ddItem);
