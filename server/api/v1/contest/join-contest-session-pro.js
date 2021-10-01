@@ -622,6 +622,9 @@ module.exports = async (req, res) => {
                                                                                                 "match_filter": _.has(data, "is_parent") ? (data.is_parent ? "FULL" : (data.live_fantasy_parent_id ? "LIVE" : "FULL")) : (data.live_fantasy_parent_id ? "LIVE" : "FULL")
                                                                                                 // "total_contest": totalContestKey
                                                                                             };
+                                                                                            if(data && data.inning_number){
+                                                                                                newLiveArray['inning_number'] = data.inning_number;
+                                                                                            }
 
                                                                                             if (totalContestKey > 0) {
                                                                                                 newLiveArray['total_contest'] = totalContestKey;
