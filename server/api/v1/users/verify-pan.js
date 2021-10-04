@@ -65,7 +65,7 @@ module.exports = async (req, res) => {
           await Users.updateOne({ _id: userId }, { $set: {pen_verify:2} });
           await (new ModelService()).referalManageAtVerification(userId,true,false,false);
           let typeOfReward = TransactionTypes.FRIEND_PAN_VERIFY_XCASH_REWARD;
-          await (new ModelService()).referalxCashRewardAtPanVerify(userId,typeOfReward,20);
+          await (new ModelService()).referalxCashRewardAtPanVerify(userId,typeOfReward,10);
           if(user && user.extra_amount <= 10){
             await transactionAtPanVerfiy(userId);
           }

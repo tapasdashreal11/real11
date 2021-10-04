@@ -2431,7 +2431,7 @@ class ModelService {
                     let referedBy = referalUser.refered_by;
                     if (referedBy) {
                         let date = new Date();
-                        let bonusAmount = 10;
+                        let bonusAmount = 5;
                         let transaction_data =[
                             {
                                 user_id: referedBy,
