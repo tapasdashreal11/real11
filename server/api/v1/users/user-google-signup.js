@@ -91,7 +91,7 @@ module.exports = {
                     let userEmail = await Users.findOne({ email: params.email }, { _id: 1, google_id: 1, email: 1, phone: 1 });
                     if (!userEmail) {
                         let insertData = {};
-                        let rf_xtra_amount = 50;
+                        let rf_xtra_amount = 0;
                         insertData.google_id = params.google_id;
                         insertData.email = params.email;
                         insertData.language = params.language || 'en';
@@ -119,7 +119,7 @@ module.exports = {
                             }
                         }
                         insertData.team_name = createTeamName(params.email);
-                        insertData.bonus_amount = rf_xtra_amount; //config.referral_bouns_amount;
+                        insertData.bonus_amount = config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
@@ -291,7 +291,7 @@ module.exports = {
                     if (!userPhone) {
                         let referal_code_detail = {};
                         let insertData = {};
-                        let rf_xtra_amount = 50;
+                        let rf_xtra_amount = 0;
                         if (!_.isEmpty(params.invite_code)) {
                             var caps_invite_code = params.invite_code.toUpperCase();
                             let inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
@@ -317,7 +317,7 @@ module.exports = {
                                     await Users.findOneAndUpdate({ _id: inviteDetails._id }, { $inc: incObj });
                                 }
                                 if (caps_invite_code && _.isEqual(caps_invite_code, "IPL200")) {
-                                    rf_xtra_amount = 100;
+                                    rf_xtra_amount = 0;
                                 }
                             } else {
                                 response["message"] = "Invalid invite code.";
@@ -355,7 +355,7 @@ module.exports = {
                         }
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString();
-                        insertData.bonus_amount = rf_xtra_amount; // config.referral_bouns_amount;
+                        insertData.bonus_amount =  config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
@@ -600,7 +600,7 @@ module.exports = {
                     }
                     if (!userEmail) {
                         let insertData = {};
-                        let rf_xtra_amount = 50;
+                        let rf_xtra_amount = 0;
                         insertData.apple_id = params.apple_id;
                         //insertData.email = params.email;
                         insertData.language = params.language || 'en';
@@ -625,7 +625,7 @@ module.exports = {
 
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString();
-                        insertData.bonus_amount = rf_xtra_amount;
+                        insertData.bonus_amount = config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;

@@ -39,7 +39,8 @@ const TransactionTypesByValues =  [
   "Won free-giveaway In Deposite",
   "Series Leaderboard Reward",
   "Friend Pan Verify Xtra Cash Reward",
-  "Friend Bank Verify Xtra Cash Reward"
+  "Friend Bank Verify Xtra Cash Reward",
+  "First Deposite Xtra Cash Reward"
 ];
 
 module.exports = {

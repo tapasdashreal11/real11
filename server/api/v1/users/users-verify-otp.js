@@ -1,5 +1,4 @@
 const { ObjectId } = require('mongodb');
-
 const Tokens = require("../../../models/token");
 const Users = require("../../../models/user");
 const Transaction = require("../../../models/transaction");
@@ -77,13 +76,14 @@ module.exports = async (req, res) => {
 					updateObj['phone'] = user.temp_phone;
 					updateObj['temp_phone'] = '';
 					finalResponse['phone'] = user.temp_phone;
-					let rf_xtra_amount = 50;
+					let rf_xtra_amount = config.referral_bouns_amount;
 					try{
 						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id },{referal_code:1});
 						if (referalUser && referalUser.referal_code && _.isEqual(referalUser.referal_code,"IPL200")) {
-							rf_xtra_amount = 100;
+							//rf_xtra_amount = 100;
 						}
 					}catch(errrrr){}
+					
 					await transactionAtSignupBonous(user._id,rf_xtra_amount);
 					setDataToAppsflyer(user);
 					setFacebookEventAtSingup(user,userIp);
@@ -159,14 +159,6 @@ module.exports = async (req, res) => {
 async function transactionAtSignupBonous(userId,rf_xtra_amount){
 	let date = new Date();
 	let transaction_data =[
-		{
-			user_id: userId,
-			txn_amount: rf_xtra_amount,
-			currency: "INR",
-			txn_date: Date.now(),
-			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
-			added_type: TransactionTypes.SIGNUP_XTRA_CASH_REWARD
-		},
 		{
 			user_id: userId,
 			txn_amount: rf_xtra_amount,

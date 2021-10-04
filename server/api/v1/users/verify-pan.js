@@ -66,6 +66,9 @@ module.exports = async (req, res) => {
           await (new ModelService()).referalManageAtVerification(userId,true,false,false);
           let typeOfReward = TransactionTypes.FRIEND_PAN_VERIFY_XCASH_REWARD;
           await (new ModelService()).referalxCashRewardAtPanVerify(userId,typeOfReward,20);
+          if(user && user.extra_amount >=10){
+            await transactionAtPanVerfiy(userId);
+          }
           response["message"] = "Pan card detail updated successfully.";
           response["status"] = true;
           response["data"] = updatedData;
@@ -91,3 +94,20 @@ module.exports = async (req, res) => {
     res.send(ApiUtility.failed(error.message));
   }
 };
+
+
+async function transactionAtPanVerfiy(userId){
+	let date = new Date();
+	let transaction_data =[
+		{
+      user_id: userId,
+      txn_amount: 10,
+      currency: "INR",
+      txn_date: Date.now(),
+      local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
+      added_type: TransactionTypes.SIGNUP_XTRA_CASH_REWARD
+    }
+	]
+  await Transaction.create(transaction_data);
+  await Users.updateOne({ _id: userId }, { $inc: {extra_amount:10} });
+}

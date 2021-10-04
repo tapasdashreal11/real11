@@ -524,6 +524,11 @@ module.exports = {
                                                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2){
                                                             let amountAdded  = parseFloat(txnData.txn_amount);
                                                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
+                                                            let isxrtaAmountTrasaction = false;
+                                                            if(users && users.extra_amount >=15){
+                                                                users.extra_amount = parseFloat(users.extra_amount) + 10;
+                                                                isxrtaAmountTrasaction = true;
+                                                            }
                                                             let date = new Date();
                                                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
                                                             if(isCouponUsed == 0){
@@ -532,7 +537,7 @@ module.exports = {
                                                             }
                                                             
                                                             try{
-                                                                await (new ModelService()).referalFirstDespostxCashReward(users.id);
+                                                                await (new ModelService()).referalFirstDespostxCashReward(users.id,isxrtaAmountTrasaction);
                                                             }catch(xcashError){}
                                                             
                                                             try{
@@ -1018,7 +1023,11 @@ module.exports = {
                         if(authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 2){
                             let amountAdded  = parseFloat(txnData.txn_amount);
                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
-                            
+                            let isxrtaAmountTrasaction = false;
+                            if(authUser && authUser.extra_amount >=15){
+                                authUser.extra_amount = parseFloat(authUser.extra_amount) + 10;
+                                isxrtaAmountTrasaction = true;
+                            }
                             let date = new Date();
                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + authUser._id;
                             if(isCouponUsed == 0){
@@ -1026,7 +1035,7 @@ module.exports = {
                                 Transaction.saveTransaction(authUser._id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                             }
                             try{
-                                await (new ModelService()).referalFirstDespostxCashReward(authUser._id);
+                                await (new ModelService()).referalFirstDespostxCashReward(authUser._id,isxrtaAmountTrasaction);
                             }catch(xcashError){}
                             try{
                                 let appsflyerURL = "";
@@ -1479,6 +1488,11 @@ async function updateTransactionAllGetway(decoded, cb) {
                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 ){
                             let amountAdded  = parseFloat(txnData.txn_amount);
                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
+                            let isxrtaAmountTrasaction = false;
+                            if(users && users.extra_amount >=15){
+                                users.extra_amount = parseFloat(users.extra_amount) + 10;
+                                isxrtaAmountTrasaction = true;
+                            }
                             
                             let date = new Date();
                             let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
@@ -1487,7 +1501,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                 Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                             }
                             try{
-                                await (new ModelService()).referalFirstDespostxCashReward(users.id);
+                                await (new ModelService()).referalFirstDespostxCashReward(users.id,isxrtaAmountTrasaction);
                             }catch(xcashError){}
                             try{
                                 let appsflyerURL = "";

@@ -2422,7 +2422,7 @@ class ModelService {
              }
         });
     }
-    referalFirstDespostxCashReward(user_id){
+    referalFirstDespostxCashReward(user_id,isxrtaAmountTrasaction){
         return new Promise(async(resolve, reject) => {
             try {
                 let referalUser = await ReferralCodeDetails.findOne({ user_id: user_id });
@@ -2432,20 +2432,44 @@ class ModelService {
                     if (referedBy) {
                         let date = new Date();
                         let bonusAmount = 10;
-                        let entity = {
-                            user_id: referedBy,
-                            txn_amount: bonusAmount,
-                            currency: "INR",
-                            txn_date: Date.now(),
-                            local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
-                            added_type: TransactionTypes.FRIEND_FIRST_DEPOSIT_REWARD
-                        };
+                        let transaction_data =[
+                            {
+                                user_id: referedBy,
+                                txn_amount: bonusAmount,
+                                currency: "INR",
+                                txn_date: Date.now(),
+                                local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
+                                added_type: TransactionTypes.FRIEND_FIRST_DEPOSIT_REWARD
+                            }
+                        ]
+                        if(isxrtaAmountTrasaction){
+                            transaction_data.push({
+                                user_id: user_id,
+                                txn_amount: 10,
+                                currency: "INR",
+                                txn_date: Date.now(),
+                                local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
+                                added_type: TransactionTypes.FIRST_DEPOSITE_XCASH_REWARD
+                              });
+                        }
                        let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} });
                        if(referedUser) {
-                            data = await Transaction.create(entity);
+                            data = await Transaction.create(transaction_data);
                             await ReferralCodeDetails.findOneAndUpdate({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount,first_depo_reward_amount: bonusAmount} }); 
                         }
                     }
+                }else{
+                    // In this case when user is not refered by any one so add first deposit extra cash
+                    if(isxrtaAmountTrasaction){
+                        let date = new Date();
+                        let transaction_data =[
+                            { user_id: user_id,txn_amount: 10,currency: "INR",txn_date: Date.now(),local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
+                             added_type: TransactionTypes.FIRST_DEPOSITE_XCASH_REWARD
+                            }
+                        ]
+                       await Transaction.create(transaction_data);
+                    }
+                      
                 }
                 resolve(data);
              } catch (error) {
