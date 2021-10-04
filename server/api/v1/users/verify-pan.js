@@ -66,7 +66,7 @@ module.exports = async (req, res) => {
           await (new ModelService()).referalManageAtVerification(userId,true,false,false);
           let typeOfReward = TransactionTypes.FRIEND_PAN_VERIFY_XCASH_REWARD;
           await (new ModelService()).referalxCashRewardAtPanVerify(userId,typeOfReward,20);
-          if(user && user.extra_amount >=10){
+          if(user && user.extra_amount <= 10){
             console.log('pan if ***');
             await transactionAtPanVerfiy(userId);
           } else  console.log('user.extra_amount ***',user.extra_amount);
