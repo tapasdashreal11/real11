@@ -2445,7 +2445,7 @@ class ModelService {
                         if(isxrtaAmountTrasaction){
                             transaction_data.push({
                                 user_id: user_id,
-                                txn_amount: 10,
+                                txn_amount: 5,
                                 currency: "INR",
                                 txn_date: Date.now(),
                                 local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
@@ -2463,7 +2463,7 @@ class ModelService {
                     if(isxrtaAmountTrasaction){
                         let date = new Date();
                         let transaction_data =[
-                            { user_id: user_id,txn_amount: 10,currency: "INR",txn_date: Date.now(),local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
+                            { user_id: user_id,txn_amount: 5,currency: "INR",txn_date: Date.now(),local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
                              added_type: TransactionTypes.FIRST_DEPOSITE_XCASH_REWARD
                             }
                         ]
