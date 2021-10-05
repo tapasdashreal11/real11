@@ -298,7 +298,7 @@ module.exports = {
                             if (!_.isEmpty(inviteDetails)) {
                                 referal_code_detail.referal_code = caps_invite_code;
                                 referal_code_detail.refered_by = new ObjectId(inviteDetails._id);
-                                referal_code_detail.user_amount = 100; //config.total_user_ref_earned;
+                                referal_code_detail.user_amount = 75; //config.total_user_ref_earned;
                                 referal_code_detail.status = 1;
                                 insertData.is_refered_by = true;
                                 //ReferalUsersAminMetaData.findOneAndUpdate({_id:inviteDetails._id},{})
