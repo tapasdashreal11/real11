@@ -41,7 +41,8 @@ const TransactionTypesByValues =  [
   "Friend Pan Verify Xtra Cash Reward",
   "Friend Bank Verify Xtra Cash Reward",
   "First Deposite Xtra Cash Reward",
-  "User Bank Verify Xtra Cash Reward"
+  "User Bank Verify Xtra Cash Reward",
+  "REAL11 Code Signup Xtra Cash Reward"
 ];
 
 module.exports = {

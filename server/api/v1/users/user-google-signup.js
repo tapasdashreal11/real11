@@ -294,7 +294,15 @@ module.exports = {
                         let rf_xtra_amount = 0;
                         if (!_.isEmpty(params.invite_code)) {
                             var caps_invite_code = params.invite_code.toUpperCase();
-                            let inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
+                            let real11Code = caps_invite_code.substring(0, 3);
+                            let inviteDetails = {};
+                            if(real11Code == "REL"){
+                                 inviteDetails = await Users.findOne({ refer_id: "IPL200" });
+                                 referal_code_detail.sub_referal_code = "IPL200";
+                            }else{
+                                 inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
+                            }
+                            //let inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
                             if (!_.isEmpty(inviteDetails)) {
                                 referal_code_detail.referal_code = caps_invite_code;
                                 referal_code_detail.refered_by = new ObjectId(inviteDetails._id);
@@ -316,8 +324,8 @@ module.exports = {
                                     }
                                     await Users.findOneAndUpdate({ _id: inviteDetails._id }, { $inc: incObj });
                                 }
-                                if (caps_invite_code && _.isEqual(caps_invite_code, "IPL200")) {
-                                    rf_xtra_amount = 0;
+                                if (referal_code_detail && referal_code_detail.sub_referal_code && _.isEqual(referal_code_detail.sub_referal_code, "IPL200")) {
+                                    rf_xtra_amount = 75;
                                 }
                             } else {
                                 response["message"] = "Invalid invite code.";

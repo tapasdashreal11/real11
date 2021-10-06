@@ -14,6 +14,7 @@ const { generateClientToken, sendSMTPMail} = require("../common/helper");
 const {TransactionTypes, RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
+const Real11ReferalCodeModel = require('../../../models/real-ref-code-model');
 const { appsFlyerEntryService } = require("./appsflyer-api");
 var sha256 = require('sha256');
 const { facebookEntryService } = require("./facebook-api");
@@ -61,6 +62,7 @@ module.exports = async (req, res) => {
 			if (user) {
 				var finalResponse ={};
 				finalResponse = user;
+				let responseMsz = "Otp verified successfully.";
 				finalResponse.is_youtuber = (finalResponse.is_youtuber == 1) ? true : false;
 				let tokendata = {};
 				tokendata.language = user.language;
@@ -76,15 +78,23 @@ module.exports = async (req, res) => {
 					updateObj['phone'] = user.temp_phone;
 					updateObj['temp_phone'] = '';
 					finalResponse['phone'] = user.temp_phone;
-					let rf_xtra_amount = config.referral_bouns_amount;
+					let rf_bonous_amount = config.referral_bouns_amount;
+					let rf_xtra_amount = 0;
 					try{
-						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id },{referal_code:1});
-						if (referalUser && referalUser.referal_code && _.isEqual(referalUser.referal_code,"IPL200")) {
-							//rf_xtra_amount = 100;
+						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id },{referal_code:1,sub_referal_code:1});
+						if (referalUser && referalUser.sub_referal_code && _.isEqual(referalUser.sub_referal_code,"IPL200")) {
+							let realRefData = await Real11ReferalCodeModel.findOneAndUpdate({referal_code:referalUser.referal_code,use_status:1},{ $set: { use_status: 2 } }, { new: true });
+							 if(realRefData && realRefData._id){
+								rf_xtra_amount = 75;
+								responseMsz = "Otp verified successfully!!"
+							 } else {
+								responseMsz = "Otp verified successfully.Your applied referal code has been out!!"
+                               if(user && user.extra_amount>0)updateObj['extra_amount'] = 0;
+							}
 						}
 					}catch(errrrr){}
 					
-					await transactionAtSignupBonous(user._id,rf_xtra_amount);
+					await transactionAtSignupBonous(user._id,rf_bonous_amount,rf_xtra_amount);
 					setDataToAppsflyer(user);
 					setFacebookEventAtSingup(user,userIp);
 				} 
@@ -108,7 +118,7 @@ module.exports = async (req, res) => {
 					});
 				}
 				
-				response["message"] = "Otp verified successfully.";
+				response["message"] = responseMsz;
 
 				let tokenInsertData = {};
 				tokenInsertData.userId = new ObjectId(user._id);
@@ -154,20 +164,31 @@ module.exports = async (req, res) => {
 /**
  * This is used to generate the transaction for new signup user for bonous
  * @param {*} userId 
+ * @param {*} rf_bonous_amount 
  * @param {*} rf_xtra_amount 
  */
-async function transactionAtSignupBonous(userId,rf_xtra_amount){
+async function transactionAtSignupBonous(userId,rf_bonous_amount,rf_xtra_amount){
 	let date = new Date();
 	let transaction_data =[
 		{
 			user_id: userId,
-			txn_amount: rf_xtra_amount,
+			txn_amount: rf_bonous_amount,
 			currency: "INR",
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
 			added_type: TransactionTypes.SIGNUP_BONOUS_REWARD
 		}
 	]
+	if(rf_xtra_amount>0){
+		transaction_data.push({
+			user_id: userId,
+			txn_amount: rf_xtra_amount,
+			currency: "INR",
+			txn_date: Date.now(),
+			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
+			added_type: TransactionTypes.REAL_CODE_SIGNUP_XCASH_REWARD
+		});
+	}
 	await Transaction.create(transaction_data);
 }
 

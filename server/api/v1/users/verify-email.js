@@ -11,6 +11,7 @@ var help = require('../../../controllers/helpers');
 const ModelService = require("../../ModelService");
 const _ = require('lodash');
 const redis = require('../../../../lib/redis');
+const Real11ReferalCodeModel = require('../../../models/real-ref-code-model');
 
 module.exports = {
   verifyEmail: async (req, res) => {
@@ -161,6 +162,15 @@ module.exports = {
       }
       if(params && !_.isEmpty(params.invite_code)){
         var caps_invite_code = params.invite_code.toUpperCase();
+        let real11Code = caps_invite_code.substring(0, 3);
+        if(real11Code == "REL"){
+          let realRefData = await Real11ReferalCodeModel.findOne({referal_code:caps_invite_code,use_status:1});
+          if(realRefData && realRefData._id){
+            response["status"] = true;
+            response["message"] = "Verified";
+            return res.json(response);
+           }
+         }
         let ref_key = 'user-referal-' + caps_invite_code;
         redis.getRedisLogin(ref_key, async (err, data) => {
           if (data && data.status) {
@@ -241,5 +251,53 @@ module.exports = {
       logger.error("LOGIN_ERROR", error.message);
       res.send(ApiUtility.failed(error.message));
     }
+  },
+  realRefCodeGenerate: async (req, res) => {
+    try {
+      var response = { status: false, message: "Invalid Request", data: {} };
+      let params = req.body;
+      if(params && !_.isEmpty(params.sub_referal_code)){
+        var caps_invite_code = params.sub_referal_code.toUpperCase();
+        let realRefArray = [];
+        let refCount = Real11ReferalCodeModel.find({sub_referal_code:caps_invite_code,status:1}).count();
+        if(refCount >100000){
+          response["message"] = "Already Created!";
+          response["status"] = false; 
+          return res.json(response);
+        }else{
+          for (let index = 0; index < 200000; index++) {
+            let cc = generateRef();
+           // console.log('cc****',cc);
+            let obj = {
+             referal_code : "REL"+cc,
+             sub_referal_code : caps_invite_code
+            } 
+            realRefArray.push(obj);
+          }
+          if(realRefArray && realRefArray.length == 200000)
+          await Real11ReferalCodeModel.insertMany(realRefArray, { ordered: false })
+          response["message"] = "Successfully Done !";
+          response["status"] = true; 
+          return res.json(response);
+        }
+         
+          
+      } else {
+        return res.json(response);
+      }
+      
+    } catch (error) {
+      logger.error("Referal code verfication error", error.message);
+      res.send(ApiUtility.failed(error.message));
+    }
   }
+
+}
+
+ function generateRef() {
+  var text = "";
+  var possible = "01BCDEFGHI23456789AJKLMNOPQRSTUVWXYZ";
+  for (var i = 0; i < 7; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  return text;
 }

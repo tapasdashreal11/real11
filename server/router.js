@@ -151,7 +151,7 @@ const withdrawCash = require('./api/v1/users/withdraw-cash');
 const verifyBankDetails = require('./api/v1/users/verify-bank');
 const verifyPanDetails = require('./api/v1/users/verify-pan');
 const addWithdrawRequest = require('./api/v1/users/withdraw-request');
-const {verifyReferal, verifyEmail, verifyAccountEmail ,updateUserFCMToken,verifyGmailAccount} = require('./api/v1/users/verify-email');
+const {realRefCodeGenerate,verifyReferal, verifyEmail, verifyAccountEmail ,updateUserFCMToken,verifyGmailAccount} = require('./api/v1/users/verify-email');
 // const { newLeaderboard } = require('./api/v1/leaderboard');
 const paytmController = require('./controllers/paytm-controller');
 
@@ -353,6 +353,7 @@ router.get('/api/v1/get_affiliate_amount', auth.authenticate.jwtLogin, getAffili
 router.post('/api/v1/update-fcm-token', auth.authenticate.jwtLogin, updateUserFCMToken);
 router.post('/api/v1/signup-verify-referal', verifyReferal);
 router.post('/api/v1/verify-gmail',auth.authenticate.jwtLogin,verifyGmailAccount);
+router.post('/api/v1/referal-code-generate', realRefCodeGenerate);
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
 router.post('/api/v1/update-transactions', auth.authenticate.jwtLogin, updateTransaction);
