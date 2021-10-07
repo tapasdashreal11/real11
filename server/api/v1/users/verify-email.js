@@ -267,7 +267,6 @@ module.exports = {
         }else{
           for (let index = 0; index < 200000; index++) {
             let cc = generateRef();
-           // console.log('cc****',cc);
             let obj = {
              referal_code : "REL"+cc,
              sub_referal_code : caps_invite_code

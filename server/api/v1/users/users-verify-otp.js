@@ -83,7 +83,7 @@ module.exports = async (req, res) => {
 					try{
 						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id },{referal_code:1,sub_referal_code:1});
 						if (referalUser && referalUser.sub_referal_code && _.isEqual(referalUser.sub_referal_code,"IPL200")) {
-							let realRefData = await Real11ReferalCodeModel.findOneAndUpdate({referal_code:referalUser.referal_code,use_status:1},{ $set: { use_status: 2 } }, { new: true });
+							let realRefData = await Real11ReferalCodeModel.findOneAndUpdate({referal_code:referalUser.referal_code,use_status:1},{ $set: { use_status: 2,user_id:user._id} }, { new: true });
 							 if(realRefData && realRefData._id){
 								rf_xtra_amount = 75;
 								responseMsz = "Otp verified successfully!!"
