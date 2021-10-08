@@ -215,4 +215,52 @@ playerRecordSchema.statics.getPlayerPointPreview = async function (series_id, ma
   return teamDataArray
 }
 
+playerRecordSchema.statics.getPlayerPointPreviewForXSystem = async function (series_id, match_id, player_ids,three_x, two_x, one_five_x, type, sport) {
+  let point = 0;
+  let mType = type;
+  let rePnt = {};
+  let record = await LiveScore.aggregate([
+    {
+      $match: {'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport}
+    },
+    {
+      $group: {
+        "_id":"$player_id",
+        "point": {$sum: "$point"},
+        "match_type": {$first: "$match_type"},
+        "player_name": {$first: "$player_name"},
+        "player_id": {$first: "$player_id"},
+        "player_role": {$first: "$player_role"},
+      }
+    },
+    { $sort: { _id: -1 } }
+  ]);
+
+  let teamDataArray = {}
+
+  if (record) {
+    for (let i = 0; i < record.length; i++) {
+
+      recordItem = JSON.parse(JSON.stringify(record[i]));
+      point = (recordItem['point']) ? parseFloat(recordItem['point']) : 0;
+
+      if (three_x == record[i].player_id) {
+        point = point * 3;
+      }
+      if (two_x == record[i].player_id) {
+        point = point * 2;
+      }
+      if (one_five_x == record[i].player_id) {
+        point = point * 1.5;
+      }
+
+      //teamDataArray[recordItem.player_id] = point;
+      teamDataArray[recordItem.player_id] = [];
+      teamDataArray[recordItem.player_id]["point"]  =  point;
+      teamDataArray[recordItem.player_id]["player_role"]  = recordItem['player_role'] ? recordItem['player_role'] : '';
+    }
+  }
+  return teamDataArray
+}
+
 module.exports = mongoose.model('player_record', playerRecordSchema, 'player_record');

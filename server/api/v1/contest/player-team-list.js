@@ -209,9 +209,14 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                 if (result.players && result.players.length > 0) {
                     let playerTeamDetails = result.players;
                     let teamKey = 0;
-                    
+                    let pointsArray = []
                     // Get players Points 
-                    let pointsArray = await PlayerRecord.getPlayerPointPreview(series_id, match_id, player_list, captain, viceCaptain, liveMatch.type, sport);
+                    if(result && result.x_counter && result.x_counter == 3 && result.one_five_x &&  result.two_x &&  result.three_x){
+                        pointsArray = await PlayerRecord.getPlayerPointPreviewForXSystem(series_id, match_id, player_list, result.three_x, result.two_x, result.one_five_x, liveMatch.type, sport);
+                    }else{
+                         pointsArray = await PlayerRecord.getPlayerPointPreview(series_id, match_id, player_list, captain, viceCaptain, liveMatch.type, sport);
+                    }
+                    
                     
                     for (let teamValue of playerTeamDetails) {
                         teamValue = playerData[teamValue];
