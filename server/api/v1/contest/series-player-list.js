@@ -98,7 +98,7 @@ async function cricketPreview(decoded, liveScore, cb) {
         player_list.push(value.player_id);
     }
     
-    playerRecord = await PlayerRecord.find({ 'player_id': { $in: player_list }, sport: sport });
+    playerRecord = await PlayerRecord.find({ 'series_id': decoded["series_id"], 'player_id': { $in: player_list }, sport: sport });
     
     let playerData = {};
     for (const value of playerRecord) {
@@ -266,7 +266,7 @@ async function cricketPreview(decoded, liveScore, cb) {
             
             result.push({
                 'player_id': row.player_id,
-                'player_role': val ? val.playing_role : '',
+                'player_role': row && row.playing_role ? row.player_role : val.playing_role,
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
                 'player_credit': val['player_credit'],
@@ -302,7 +302,7 @@ async function footabllPreview(decoded, liveScore, cb) {
         player_list.push(value.player_id);
     }
     
-    playerRecord = await SeriesPlayer.find({ 'player_id': { $in: player_list }, 'sport': sport });
+    playerRecord = await SeriesPlayer.find({ 'series_id': decoded["series_id"], 'player_id': { $in: player_list }, 'sport': sport });
     let playerData = {};
     for (const value of playerRecord) {
         playerData[value.player_id] = value;
@@ -466,7 +466,7 @@ async function footabllPreview(decoded, liveScore, cb) {
             let dreamPlayers = undefined;//DreamTeams.find().where(['series_id':series_id,'match_id':match_id,'player_id':row.playerId]).first();
             result.push({
                 'player_id': row.player_id,
-                'player_role': val.player_role,
+                'player_role': row && row.player_role ? row.player_role : val.player_role,
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
                 'player_credit': val && val['player_credit'] ? val['player_credit'].toString() : '0',
