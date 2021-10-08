@@ -15,6 +15,7 @@ const {TransactionTypes, RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const Real11ReferalCodeModel = require('../../../models/real-ref-code-model');
+const UserGaidModel = require('../../../models/user-gaid-model');
 const { appsFlyerEntryService } = require("./appsflyer-api");
 var sha256 = require('sha256');
 const { facebookEntryService } = require("./facebook-api");
@@ -70,10 +71,26 @@ module.exports = async (req, res) => {
 				tokendata.id = user._id;
 				tokendata.phone = user && user.phone ? user.phone: user.temp_phone;
 				tokendata.email = user.email;
-
+				
 				var tokelDelMany = await Tokens.deleteMany({"userId":ObjectId(user._id)});
 				let token = await generateClientToken(tokendata);
 				let updateObj = { otp: '', otp_time: '', token: token, device_id: params.device_id, device_type: params.device_type,status:1 } 
+				try{
+					if(user.user_gaid){
+						let userGaidData = await UserGaidModel.findOne({user_gaid:user.user_gaid});
+						if(userGaidData && userGaidData._id){
+							if(!user.xtra_cash_block && userGaidData.counter > 5){
+								if(params && params.phone && user && user.temp_phone && user.is_beginner_user && !_.isEmpty(user.temp_phone) && _.isEqual(user.temp_phone,params.phone)&& _.isEmpty(user.phone )){
+								  await UserGaidModel.findOneUpdate({user_gaid:user.user_gaid},{$inc:{counter:1}});
+								}
+								updateObj['xtra_cash_block'] = 1;
+								updateObj['bonus_amount_block'] = 1;
+							}
+						} else {
+							await UserGaidModel.create([{user_gaid:user.user_gaid,counter:1}]);
+						}
+					}
+				}catch(err_gaid){}
 				if(params && params.phone && user && user.temp_phone && user.is_beginner_user && !_.isEmpty(user.temp_phone) && _.isEqual(user.temp_phone,params.phone)&& _.isEmpty(user.phone )){
 					updateObj['phone'] = user.temp_phone;
 					updateObj['temp_phone'] = '';
