@@ -213,6 +213,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                     // Get players Points 
                     if(result && result.x_counter && result.x_counter == 3 && result.one_five_x &&  result.two_x &&  result.three_x){
                         pointsArray = await PlayerRecord.getPlayerPointPreviewForXSystem(series_id, match_id, player_list, result.three_x, result.two_x, result.one_five_x, liveMatch.type, sport);
+                        console.log('pointsArray***',pointsArray);
                     }else{
                          pointsArray = await PlayerRecord.getPlayerPointPreview(series_id, match_id, player_list, captain, viceCaptain, liveMatch.type, sport);
                     }
