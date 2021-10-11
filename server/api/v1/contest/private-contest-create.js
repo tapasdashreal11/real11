@@ -450,7 +450,7 @@ async function joinContestPaymentCalculation(contest_size,offerableAppled, useab
     if (remainingFee) {
         let extraBalance = authUser.extra_amount || 0;
         let extraBal = 0;
-        if (extraBalance && extraBalance > 0 && contest_size >25) {
+        if (extraBalance && extraBalance > 0 && contest_size >25 && !authUser.xtra_cash_block) {
             let perDayExtraAmt = 0;
             let perDayLimit = config.extra_bonus_perday_limit;
             if (String(authUser.extra_amount_date) == String(indianDate)) {
