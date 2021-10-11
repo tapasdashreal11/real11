@@ -79,8 +79,9 @@ module.exports = async (req, res) => {
 					if(user.user_gaid){
 						let userGaidData = await UserGaidModel.findOne({user_gaid:user.user_gaid});
 						if(userGaidData && userGaidData._id){
-							console.log("test ***");
+							console.log("test ***",user,"params",params);
 							if(params && params.phone && user && user.temp_phone && user.is_beginner_user && !_.isEmpty(user.temp_phone) && _.isEqual(user.temp_phone,params.phone)&& _.isEmpty(user.phone )){
+								console.log("test test 222222222222222222***");
 								await UserGaidModel.findOneUpdate({user_gaid:user.user_gaid},{$inc:{counter:1}});
 								console.log("test 222222222222222222***");
 							  }
