@@ -84,6 +84,8 @@ module.exports = {
           data.withdraw_message = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
           data.deposite_message = "Rupay cardholders, please use paytm payment gateway for better success rate.";
           data.change_bank_req = user && user.change_bank_req ? user.change_bank_req : false;
+          data.xtra_cash_block = user && user.xtra_cash_block ? true : false;
+          data.bonus_amount_block = user && user.bonus_amount_block ? true : false;
 
           delete data.profile;
           delete data.created;
