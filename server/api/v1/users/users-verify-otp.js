@@ -79,10 +79,10 @@ module.exports = async (req, res) => {
 					if(user.user_gaid){
 						let userGaidData = await UserGaidModel.findOne({user_gaid:user.user_gaid});
 						if(userGaidData && userGaidData._id){
+							if(params && params.phone && user && user.temp_phone && user.is_beginner_user && !_.isEmpty(user.temp_phone) && _.isEqual(user.temp_phone,params.phone)&& _.isEmpty(user.phone )){
+								await UserGaidModel.findOneUpdate({user_gaid:user.user_gaid},{$inc:{counter:1}});
+							  }
 							if(!user.xtra_cash_block && userGaidData.counter > 5){
-								if(params && params.phone && user && user.temp_phone && user.is_beginner_user && !_.isEmpty(user.temp_phone) && _.isEqual(user.temp_phone,params.phone)&& _.isEmpty(user.phone )){
-								  await UserGaidModel.findOneUpdate({user_gaid:user.user_gaid},{$inc:{counter:1}});
-								}
 								updateObj['xtra_cash_block'] = 1;
 								updateObj['bonus_amount_block'] = 1;
 							}
