@@ -74,6 +74,7 @@ const  otherGamesTransationHistory  = require('./api/v1/contest/other-games-tran
 const  {createPrivateContest}  = require('./api/v1/contest/private-contest-create');
 const  {gameZopMatchList}  = require('./api/v1/contest/other-gamezop-match');
 const  gameZopContestList = require('./api/v1/contest/other-gamezop-contest');
+const  gamezopJoinContest  = require('./api/v1/contest/other-gamezop-joincontest');
 
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
 const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-pro');
@@ -316,7 +317,8 @@ router.get('/api/v1/other-games-transation-history', auth.authenticate.jwtLogin,
 router.post('/api/v1/other-games-wining-dis', otherGameWinningDis);
 router.get('/api/v1/check-contest-ref-count/:match_id/:series_id/:contest_id',auth.authenticate.jwtLogin, sharedContestCounts);
 router.get('/api/v1/gamezop-match-list', gameZopMatchList);
-router.get('/api/v1/gamezop-contest-list/:match_id', gameZopContestList);  
+router.get('/api/v1/gamezop-contest-list/:match_id', gameZopContestList);
+router.post('/api/v1/gamezop-games-join-contest', gamezopJoinContest);  
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
