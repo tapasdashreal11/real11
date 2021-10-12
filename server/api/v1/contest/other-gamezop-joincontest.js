@@ -330,7 +330,7 @@ module.exports = async (req, res) => {
                                                            console.log("roomDetails",roomDetails);
                                                            let encodeData = encodeURIComponent(btoa(JSON.stringify(roomDetails)));
                                                             data1.player_data = ptcList || [];
-                                                            data1.game_url ="https://www.gamezop.com/g/NyM_JGWcx?id=3472&roomDetails="+encodeData;
+                                                            data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&roomDetails="+encodeData;
                                                             return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                             
                                                         } catch (error) {
