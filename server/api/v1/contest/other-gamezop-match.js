@@ -10,25 +10,28 @@ module.exports = {
         try {
             let data = {};
                let otherGamesMatch = await getGameZopMatchList();
-               let filtered_array = _.filter(
-                otherGamesMatch.games, function(o) {
-                    if(_.isEqual(o.code,"SkkV6MJD51Q") || _.isEqual(o.code,"SkhljT2fdgb") || _.isEqual(o.code,"41DxMOkGZ5g")){
-                        let itemObj = o;
-                          /* if(_.isEqual(o.code,"SkkV6MJD51Q"))
-                           itemObj.match_id = 112;*/
-                           if(_.isEqual(o.code,"SkhljT2fdgb"))
-                            itemObj.match_id = 111;
-                          /* if(_.isEqual(o.code,"41DxMOkGZ5g"))
-                           itemObj.match_id = 113;  */
-                        return itemObj;
-                    }
-                 }
-                 );
-                data.total = filtered_array.length;
-                data.other_games = filtered_array; 
-                data.server_time = moment(new Date()).format(config.DateFormat.datetime);
-                var successObj = ApiUtility.success(data);
-                res.send(successObj);
+               if(otherGamesMatch && otherGamesMatch.games){
+                let filtered_array = _.filter(
+                    otherGamesMatch.games, function(o) {
+                        if(_.isEqual(o.code,"SkhljT2fdgb")){
+                                let itemObj = o;
+                                itemObj.match_id = 111;
+                            return itemObj;
+                        }
+                     }
+                     );
+                    data.total = filtered_array.length;
+                    data.other_games = filtered_array; 
+                    data.server_time = moment(new Date()).format(config.DateFormat.datetime);
+                    var successObj = ApiUtility.success(data);
+                    res.send(successObj);
+               } else {
+                    data.total = 0;
+                    data.other_games = []; 
+                    data.server_time = moment(new Date()).format(config.DateFormat.datetime);
+                    var successObj = ApiUtility.success(data);
+                    res.send(successObj);
+               }
         } catch (error) {
             console.log(error);
             res.send(ApiUtility.failed(error.message));
