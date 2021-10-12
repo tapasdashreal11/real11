@@ -17,7 +17,7 @@ const btoa = require('btoa');
 module.exports = async (req, res) => {
     try {
         let data1 = {};
-        const user_id = "612e250c2fe8a64b838bc7ea"; // req.userId;
+        const user_id = req.userId;
         const {contest_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';

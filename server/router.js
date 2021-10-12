@@ -318,7 +318,7 @@ router.post('/api/v1/other-games-wining-dis', otherGameWinningDis);
 router.get('/api/v1/check-contest-ref-count/:match_id/:series_id/:contest_id',auth.authenticate.jwtLogin, sharedContestCounts);
 router.get('/api/v1/gamezop-match-list', gameZopMatchList);
 router.get('/api/v1/gamezop-contest-list/:match_id', gameZopContestList);
-router.post('/api/v1/gamezop-games-join-contest', gamezopJoinContest);  
+router.post('/api/v1/gamezop-games-join-contest',auth.authenticate.jwtLogin, gamezopJoinContest);  
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
