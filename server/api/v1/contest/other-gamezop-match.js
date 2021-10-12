@@ -16,6 +16,7 @@ module.exports = {
                         if(_.isEqual(o.code,"SkhljT2fdgb")){
                                 let itemObj = o;
                                 itemObj.match_id = 111;
+                                itemObj.match_img = "";
                             return itemObj;
                         }
                      }

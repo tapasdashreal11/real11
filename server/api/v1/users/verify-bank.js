@@ -45,7 +45,8 @@ module.exports = async (req, res) => {
         } else {
           const result = await BankDetails.updateOne({ user_id: user._id }, { $set: updatedData });
         }
-        await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 1 } });
+        let currentDate = Date.now();
+        await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 1, bank_request_date:currentDate} });
         response["message"] = "Bank detail updated successfully.";
         response["status"] = true;
         response["data"] = updatedData;

@@ -132,7 +132,8 @@ const AdminSchema = mongoose.Schema({
     ref_counter: { type: Number, enum: [1,0], default: 0 },
     ref_counter_used: { type: Number, enum: [1,0], default: 0 },
     xtra_cash_block: { type: Number, enum: [1,0], default: 0 },
-    bonus_amount_block: { type: Number, enum: [1,0], default: 0 }
+    bonus_amount_block: { type: Number, enum: [1,0], default: 0 },
+    bank_request_date: {type: Date}
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },
