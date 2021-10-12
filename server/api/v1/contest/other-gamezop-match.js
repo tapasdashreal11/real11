@@ -14,12 +14,12 @@ module.exports = {
                 otherGamesMatch.games, function(o) {
                     if(_.isEqual(o.code,"SkkV6MJD51Q") || _.isEqual(o.code,"SkhljT2fdgb") || _.isEqual(o.code,"41DxMOkGZ5g")){
                         let itemObj = o;
-                        if(_.isEqual(o.code,"SkkV6MJD51Q"))
-                           itemObj.match_id = 112;
+                          /* if(_.isEqual(o.code,"SkkV6MJD51Q"))
+                           itemObj.match_id = 112;*/
                            if(_.isEqual(o.code,"SkhljT2fdgb"))
-                           itemObj.match_id = 111;
-                           if(_.isEqual(o.code,"41DxMOkGZ5g"))
-                           itemObj.match_id = 113;  
+                            itemObj.match_id = 111;
+                          /* if(_.isEqual(o.code,"41DxMOkGZ5g"))
+                           itemObj.match_id = 113;  */
                         return itemObj;
                     }
                  }
@@ -43,7 +43,7 @@ async function getGameZopMatchList() {
     return new Promise((resolve, reject) => {
         var options = {
             "method": "GET",
-            "url": "https://pub.gamezop.com/v3/games?id=peSLSV&lang=en",
+            "url": "https://pub.gamezop.com/v3/games?id=3472&lang=en",
             "json": true,
             "headers": {'Content-Type': 'application/json'}
         };
