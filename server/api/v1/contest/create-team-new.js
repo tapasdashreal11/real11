@@ -22,6 +22,7 @@ module.exports = {
         let data1 = {}, message = "";
         let x_system = (xm_system && (xm_system == 1)) ? 1 : 0;
         try {
+            
             if (x_system == 0 && (!series_id || !player_id || !captain || !match_id || !vice_captain || !sport)) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             } else if (x_system == 1 && (!series_id || !player_id || !one_five_x || !two_x || !three_x  || !match_id || !sport)) {
@@ -32,10 +33,17 @@ module.exports = {
                 if (liveMatch.time < Date.now() && req.body.teamType != 55) {
                     return res.send(ApiUtility.failed('Match Already Closed'));
                 }
+                if (x_system == 1 && (!liveMatch.is_parent || liveMatch.inning_number !=2)){
+                    return res.send(ApiUtility.failed('Something went wrong!!!'));
+                }
+
                 // let wk = 0, bat = 0, bowl = 0, ar = 0;
                 let playerIds = player_id;
                 let teamString = playerIds.sort().join("|");
                 if (liveMatch.live_fantasy_parent_id) {
+                    if (x_system == 1){
+                        return res.send(ApiUtility.failed('Please Select Properly!!'));  
+                    }
                     if (playerIds.length != 5)
                         return res.send(ApiUtility.failed('Please select only 5 players!!'));
                     else if (x_system == 1 && (!one_five_x || !two_x || !three_x  || !four_x || !five_x))
