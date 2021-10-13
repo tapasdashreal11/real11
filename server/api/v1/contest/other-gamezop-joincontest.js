@@ -603,9 +603,6 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
 
 }
 
-
-
-
 async function calculateAdminComission(contestData){
   let adminComission = contestData.admin_comission || 0;
   let winningAmount = contestData.winning_amount || 0;
