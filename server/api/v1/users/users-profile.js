@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongodb');
 const Profile = require("../../../models/user-profile");
+const BankDetails = require("../../../models/user-bank-details");
 const User = require("../../../models/user");
 const PlayerTeamContest = require('../../../models/player-team-contest');
 const ReferralCodeDetails = require("../../../models/user-referral-code-details");
@@ -8,6 +9,7 @@ const logger = require("../../../../utils/logger")(module);
 const { rowTextToJson } = require("../common/helper");
 const ModelService = require("../../ModelService");
 const _ = require("lodash");
+var ifsc = require('ifsc');
 
 module.exports = {
   profile: async (req, res) => {
@@ -63,6 +65,14 @@ module.exports = {
 
           if (user.bank_account_verify == 2 && user.pen_verify == 2 && user.email_verified == 1) {
             data.account_verified = true;
+            try{
+              let bankDetail = await BankDetails.findOne({ user_id: userId });
+              if(bankDetail && bankDetail.ifsc_code){}
+              ifsc.fetchDetails(bankDetail.ifsc_code).then(function(res) {
+                console.log(res.STATE);
+              });
+            }catch(errorIfsc){}
+
           } else {
             data.account_verified = false;
           }
