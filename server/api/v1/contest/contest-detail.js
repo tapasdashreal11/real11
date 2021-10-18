@@ -237,6 +237,7 @@ module.exports = {
                 multipleTeam = (contestDetail.multiple_team && contestDetail.multiple_team == 'yes') ? true : false;
                 gadgetLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'gadget') ? true : false;
                 aakashLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'aakash') ? true : false;
+                multiplierLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'multiplier') ? true : false;
                 let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
                 let is_joined = (myTeamIds.length > 0) ? true : false;
 
@@ -321,6 +322,7 @@ module.exports = {
                     is_infinite: (contestDetail.infinite_contest_size == 1) ? true : false,
                     infinite_breakup: finiteBreakupDetail,
                     is_aakash_team: aakashLeague,
+                    is_multiplier: multiplierLeague,
                     maximum_team_size: multipleTeam && contestDetail.maximum_team_size ? contestDetail.maximum_team_size : 1,
                     contest_shareable: contestDetail && contestDetail.contest_shareable ? contestDetail.contest_shareable : 0,
                     category_id: contestDetail && contestDetail.category_id ? contestDetail.category_id : '',
@@ -666,7 +668,7 @@ module.exports = {
                 multipleTeam = (contestDetail.multiple_team && contestDetail.multiple_team == 'yes') ? true : false;
                 gadgetLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'gadget') ? true : false;
                 aakashLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'aakash') ? true : false;
-
+                multiplierLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'multiplier') ? true : false;
                 let is_joined = (myTeamIds.length > 0) ? true : false;
 
                 let bonusAmount = 0; //config.admin_percentage;
@@ -750,6 +752,7 @@ module.exports = {
                     is_infinite: (contestDetail.infinite_contest_size == 1) ? true : false,
                     infinite_breakup: finiteBreakupDetail,
                     is_aakash_team: aakashLeague,
+                    is_multiplier: multiplierLeague,
                     category_id: matchContestDetail.category_id || ''
                 }
 
