@@ -11,6 +11,7 @@ const { rowTextToJson,sendSMTPMail } = require("../common/helper");
 const ModelService = require("../../ModelService");
 const _ = require("lodash");
 var ifsc = require('ifsc');
+const redis = require('../../../../lib/redis');
 
 module.exports = {
   profile: async (req, res) => {
