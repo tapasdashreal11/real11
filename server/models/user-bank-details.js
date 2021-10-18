@@ -15,6 +15,7 @@ const AdminSchema = mongoose.Schema({
     bank_image: { type: String, default: null },    
     beneficiary_id: { type: String, default: null },
     is_verified: { type: String, enum: [1,0], default: 0 },
+    api_verified: { type: Number, enum: [1,0], default: 1 },
     
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },

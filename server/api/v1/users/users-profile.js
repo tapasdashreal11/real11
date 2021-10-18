@@ -1,12 +1,13 @@
 const { ObjectId } = require('mongodb');
 const Profile = require("../../../models/user-profile");
 const BankDetails = require("../../../models/user-bank-details");
+const BankDetailsUnverified = require("../../../models/user-bank-deatial-unverified");
 const User = require("../../../models/user");
 const PlayerTeamContest = require('../../../models/player-team-contest');
 const ReferralCodeDetails = require("../../../models/user-referral-code-details");
 const { Validator } = require("node-input-validator");
 const logger = require("../../../../utils/logger")(module);
-const { rowTextToJson } = require("../common/helper");
+const { rowTextToJson,sendSMTPMail } = require("../common/helper");
 const ModelService = require("../../ModelService");
 const _ = require("lodash");
 var ifsc = require('ifsc');
@@ -67,11 +68,33 @@ module.exports = {
             data.account_verified = true;
             try{
               let bankDetail = await BankDetails.findOne({ user_id: userId });
-              if(bankDetail && bankDetail.ifsc_code){}
-              ifsc.fetchDetails(bankDetail.ifsc_code).then(function(res) {
-                console.log(res.STATE);
-              });
-            }catch(errorIfsc){}
+              if(bankDetail && bankDetail.ifsc_code && bankDetail.api_verified && bankDetail.api_verified == 1 ){
+                ifsc.fetchDetails(bankDetail.ifsc_code).then(async function(res) {
+                  let appSData = await getPromiseForAppSetting('app-setting',"{}");
+                  let dataItem = appSData ?  JSON.parse(appSData) :{};
+                  if(dataItem && dataItem.state_name_list && res && res.STATE && user.email){
+                    if(dataItem.state_name_list.toUpperCase().includes(res.STATE)){
+                      await User.findOneAndUpdate({ _id: userId },{$set:{bank_account_verify:0,bank_reject_reason:"Your state is banned as per govt policy"}});
+                      let updatedData = {};
+                      updatedData.account_number = bankDetail.account_number || null;
+                      updatedData.ifsc_code = bankDetail.ifsc_code || null;
+                      updatedData.bank_name = bankDetail.bank_name || null;
+                      updatedData.branch = bankDetail.branch || null;
+                      updatedData.user_id =bankDetail.user_id;
+                      updatedData.bank_image = bankDetail.bank_image;
+                      await BankDetailsUnverified.create(updatedData);
+                      await BankDetails.deleteOne({ user_id: userId });
+                      sendEmailToAdmin(user.email);
+                    } else {
+                      await BankDetails.findOneAndUpdate({ user_id: userId },{$set:{api_verified:2}});
+                    }
+                   }
+                });
+              }
+              
+            }catch(errorIfsc){
+              console.log('errorIfsc check at profile *****',errorIfsc);
+            }
 
           } else {
             data.account_verified = false;
@@ -159,3 +182,30 @@ module.exports = {
     }
   }
 };
+
+async function getPromiseForAppSetting(key, defaultValue){
+  return new Promise((resolve, reject) => {
+      redis.redisObj.get(key, async (err, data) => {
+          if (err) { 
+              reject(defaultValue);
+          }
+          if (data == null) {
+              const appSettingData = await AppSettings.findOne({});
+              if(appSettingData && appSettingData._id){
+                  console.log('app setting coming from db*****');
+                  data = JSON.stringify(appSettingData);
+              } else {
+                  data = defaultValue;
+              }
+          }
+          resolve(data)
+      })
+  })
+}
+
+async function sendEmailToAdmin(to1) {
+  let mailMessage = "<div><h3>Dear User</h3><p>You Bank has been unverified due to some Govt policy,</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
+  let to = "shashijangir@real11.com";
+  let subject = "Bank unverified";
+  sendSMTPMail(to, subject, mailMessage);
+}
