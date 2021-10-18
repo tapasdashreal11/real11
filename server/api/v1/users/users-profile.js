@@ -1,6 +1,7 @@
 const { ObjectId } = require('mongodb');
 const Profile = require("../../../models/user-profile");
 const BankDetails = require("../../../models/user-bank-details");
+const AppSettings = require("../../../models/settings");
 const BankDetailsUnverified = require("../../../models/user-bank-deatial-unverified");
 const User = require("../../../models/user");
 const PlayerTeamContest = require('../../../models/player-team-contest');
