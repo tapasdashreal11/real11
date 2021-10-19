@@ -305,12 +305,8 @@ module.exports = async (req, res) => {
                                                             contest.bonus_amount = bonusAmount;
                                                             contest.sport = match_sport;
                                                             let getCountKey = 0;
-                                                            console.log('fsfsfsfsf*** 555555555');
-                                                            
-                                                            console.log('fsfsfsfsf*** 56');
                                                             let playerTeamContestId = newContestId;
                                                             totalContestKey = await getContestCount(matchContest,contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
-                                                            console.log('fsfsfsfsf*** totalContestKey',totalContestKey);
                                                             let ptcList = await OtherGamesPtc.find({match_id:match_id, contest_id:contest_id,is_deleted:0},{user_id:1,team_name:1,contest_id:1,match_id:1,_id:1}).sort({_id:-1})
                                                             let uniqCode = '_' + Math.random().toString(36).substr(2, 9);
                                                             const roomDetails = {
@@ -324,7 +320,7 @@ module.exports = async (req, res) => {
                                                                 minPlayers: 2,
                                                                 maxWait: 60,
                                                                 rounds: 1,
-                                                                cta: "BRIDGE.postMessage",
+                                                                cta: "BRIDGE",
                                                                 text: "go_home"
                                                         }
                                                            console.log("roomDetails",roomDetails);
