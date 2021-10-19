@@ -324,7 +324,7 @@ module.exports = async (req, res) => {
                                                                 minPlayers: 2,
                                                                 maxWait: 60,
                                                                 rounds: 1,
-                                                                cta: "AndroidBridge.updateState",
+                                                                cta: "BRIDGE.postMessage",
                                                                 text: "go_home"
                                                         }
                                                            console.log("roomDetails",roomDetails);

@@ -206,8 +206,8 @@ async function getPromiseForAppSetting(key, defaultValue){
 }
 
 async function sendEmailToAdmin(to1) {
-  let mailMessage = "<div><h3>Dear User</h3><p>You Bank has been unverified due to some Govt policy,</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
+  let mailMessage = "<div><h3>Dear User</h3><p>Unfortunately, because of the ban of fantasy sports in the states of Assam, Andhra Pradesh, Karnataka, Nagaland, Odisha, Sikkim and Telengana, we won’t be able to verify your bank details in these restricted areas.Sorry for the inconvenience.,</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
   let to = "shashijangir@real11.com";
-  let subject = "Bank unverified";
+  let subject = "Bank unverified!!";
   sendSMTPMail(to, subject, mailMessage);
 }
