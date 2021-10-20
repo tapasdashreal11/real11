@@ -17,6 +17,7 @@ module.exports = async (req, res) => {
         let constraints = { roomId: "required", status: "required",players: "required" };
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
+        var apiKey = req.headers['api-key']; 
         let decoded = { match_id: 111 };
         let match_sport = 3;
         if (!matched) {
@@ -24,35 +25,43 @@ module.exports = async (req, res) => {
             response["matchId"] = "";
             return res.json(response);
         }
-        let playersIds = players.map(s => ObjectId(s));
-        let ptcData = await OtherGamesPtc.find({contest_id:ObjectId(roomId),user_id:{$in:playersIds},is_deleted:0});
-        if(status=='MATCH_FOUND'){
-            
-             if(ptcData && ptcData.length>0){
-                if(ptcData.length == playersIds.length ){
-                    let zop_match_id = await generateZopMatchId();
-                    response["success"] = true;
-                    response["matchId"] = zop_match_id;
-                     await OtherGamesPtc.updateMany({contest_id:ObjectId(roomId),user_id:{$in:playersIds},is_deleted:0},{$set:{zop_match_id:zop_match_id}});
-                    return res.json(response);
-                } else {
-                    await refundAmountProcess(ptcData,decoded,roomId,match_sport);
-                    response["success"] = true;
+        if(_.isEqual(apiKey,config.gamezop_api_key)){
+            let playersIds = players.map(s => ObjectId(s));
+            let ptcData = await OtherGamesPtc.find({contest_id:ObjectId(roomId),user_id:{$in:playersIds},is_deleted:0});
+            if(status=='MATCH_FOUND'){
+                
+                 if(ptcData && ptcData.length>0){
+                    if(ptcData.length == playersIds.length ){
+                        let zop_match_id = await generateZopMatchId();
+                        response["success"] = true;
+                        response["matchId"] = zop_match_id;
+                         await OtherGamesPtc.updateMany({contest_id:ObjectId(roomId),user_id:{$in:playersIds},is_deleted:0},{$set:{zop_match_id:zop_match_id}});
+                        return res.json(response);
+                    } else {
+                        await refundAmountProcess(ptcData,decoded,roomId,match_sport);
+                        response["success"] = true;
+                        response["matchId"] = "";
+                        return res.json(response);
+                    }
+                 } else {
+                    response["success"] = false;
                     response["matchId"] = "";
                     return res.json(response);
-                }
-             } else {
-                response["success"] = false;
+                 }
+            } else if(status=='NO_MATCH_FOUND'){
+                console.log("enter refund****");
+                await refundAmountProcess(ptcData,decoded,roomId,match_sport);
+                response["success"] = true;
                 response["matchId"] = "";
                 return res.json(response);
-             }
-        } else if(status=='NO_MATCH_FOUND'){
-            console.log("enter refund****");
-            await refundAmountProcess(ptcData,decoded,roomId,match_sport);
-            response["success"] = true;
-            response["matchId"] = "";
+            }
+        }else {
+            let response = {};
+            response["success"] = false;
+            response["message"] = "Wrong api key!!";
             return res.json(response);
         }
+        
     } catch (error) {
         let response = {};
         console.log("error",error);

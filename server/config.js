@@ -109,6 +109,7 @@ config.google = {
   "maps_key": process.env.GOOGLE_MAP_API_KEY, // "AIzaSyA6c7T6R-2o_IKhRzZdvrhDu7qRyZPm_ek"
 };
 
+config.gamezop_api_key = "c9fe3d98-3197-11ec-8d3d-0242ac130003";
 
 config.email = {
   feedback: 'rajatjain4061@gmail.com'
