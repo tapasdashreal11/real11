@@ -42,7 +42,7 @@ module.exports = async (req, res) => {
                     return res.json(response);
                 }
              } else {
-                response["success"] = true;
+                response["success"] = false;
                 response["matchId"] = "";
                 return res.json(response);
              }
@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
     } catch (error) {
         let response = {};
         console.log("error",error);
-        response["success"] = true;
+        response["success"] = false;
         response["matchId"] = "";
         return res.json(response);
     }
@@ -76,7 +76,6 @@ async function refundAmountProcess(ptcData,decoded,roomId,match_sport){
         let transactionData = [];
         let joineduser = ptcData.length ? ptcData.length : 0
         const doc = await OtherGamesContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'joined_users': { $gt: 0 }, 'contest_id': ObjectId(roomId) }, { $inc: { joined_users: -joineduser }, $set: { is_full: 0 } });
-        console.log("doc**",doc);
         for (const ptcItems of ptcData) {
             let ptcItem = JSON.parse(JSON.stringify(ptcItems));
             const txnId = (new Date()).getTime() + ptcItem.user_id;
@@ -103,7 +102,7 @@ async function refundAmountProcess(ptcData,decoded,roomId,match_sport){
         }
         if(transactionData && transactionData.length>0){
             console.log("***transactionData",transactionData);
-            await OtherGameTransaction.create(transactionData);
+            await OtherGameTransaction.insertMany(transactionData, { ordered: false });
         }
     }
 }
