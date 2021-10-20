@@ -18,6 +18,7 @@ var otherGamesPtcSchema = new Schema({
 	user_score: { type: Object,default:{} },
 	price_win: { type: Number,default:0 },
 	zop_match_id: { type: Number },
+	game_code: { type: String},
 	join_contest_detail: {
 		deduct_bonus_amount: {type: Number,default:0},
 		deduct_winning_amount: {type: Number,default:0},

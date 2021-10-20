@@ -18,12 +18,12 @@ module.exports = async (req, res) => {
     try {
         let data1 = {};
         const user_id = req.userId;
-        const {contest_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        const {contest_id, match_id, sport, rf_code, refer_by_user_id,game_code } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 3;
         let decoded = { match_id: parseInt(match_id),contest_id: contest_id,user_id: user_id}
-        if (match_id && contest_id && user_id) {
+        if (match_id && contest_id && user_id && game_code) {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
@@ -95,6 +95,7 @@ module.exports = async (req, res) => {
                                                 contest.user_id = user_id;
                                                 contest.team_name = authUser.team_name;
                                                 contest.total_amount = contestData.entry_fee;
+                                                contest.game_code = game_code;
                                                 
                                                 let useableBonusPer = contestData.used_bonus || 0;
                                                 let contestType = contestData.contest_type;
