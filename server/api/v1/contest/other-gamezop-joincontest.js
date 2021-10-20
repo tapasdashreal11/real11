@@ -13,7 +13,7 @@ const _ = require("lodash");
 const ludoMqtt = require('../../../../lib/ludo-mqtt');
 const { startSession } = require('mongoose');
 const btoa = require('btoa');
-
+var imageurl = config.imageBaseUrl;
 module.exports = async (req, res) => {
     try {
         let data1 = {};
@@ -314,7 +314,7 @@ module.exports = async (req, res) => {
                                                                 roomId: contest_id, 
                                                                 user: {
                                                                         name: authUser.team_name,
-                                                                        photo: authUser.avatar,
+                                                                        photo:_.isEqual( authUser.avatar, "boy.png") ? imageurl+"/avatar20.png" : imageurl+"/"+authUser.avatar+".png",
                                                                         sub: authUser._id
                                                                 },
                                                                 maxPlayers: 2,
