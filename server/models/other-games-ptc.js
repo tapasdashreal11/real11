@@ -17,6 +17,7 @@ var otherGamesPtcSchema = new Schema({
 	is_deleted: { type: Number, default: 0 },  // contest cancel 
 	user_score: { type: Object,default:{} },
 	price_win: { type: Number,default:0 },
+	zop_match_id: { type: Number },
 	join_contest_detail: {
 		deduct_bonus_amount: {type: Number,default:0},
 		deduct_winning_amount: {type: Number,default:0},

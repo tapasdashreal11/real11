@@ -25,7 +25,7 @@ module.exports = async (req, res, dbs) => {
 					newArr.push({
 						"_id": i._id,
 						"sign_type": (_.indexOf([3, 11, 12, 13,23], i.added_type) >=0)? '-' : '+' ,
-						"amount": i.txn_amount.toString(),
+						"amount": i && i.txn_amount ? "" +i.txn_amount:"0",
 						"txn_type": (i.added_type)? transaction_type[parseInt(i.added_type)] : "",
 						"transaction_id": i.local_txn_id,
 						"retantion_amount":i.retantion_amount || 0,
