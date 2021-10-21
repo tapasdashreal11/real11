@@ -326,7 +326,7 @@ module.exports = {
                                 }
                                 if (referal_code_detail && referal_code_detail.sub_referal_code && _.isEqual(referal_code_detail.sub_referal_code, "IPL200")) {
                                     rf_xtra_amount = 75;
-                                } else if (referal_code_detail && referal_code_detail.referal_code && _.isEqual(referal_code_detail.referal_code, "RWC200")) {
+                                } else if (referal_code_detail && referal_code_detail.referal_code && _.isEqual(referal_code_detail.referal_code, "RWC100")) {
                                     rf_xtra_amount = 75;
                                 }
                             } else {

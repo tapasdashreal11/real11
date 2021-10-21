@@ -36,6 +36,9 @@ module.exports = {
                 if (x_system == 1 && (!liveMatch.is_parent || liveMatch.inning_number !=2)){
                     return res.send(ApiUtility.failed('Something went wrong!!!'));
                 }
+                if (x_system != 1 && (liveMatch.is_parent && liveMatch.inning_number ==2)){
+                    return res.send(ApiUtility.failed('Something went wrong!!!'));
+                }
 
                 // let wk = 0, bat = 0, bowl = 0, ar = 0;
                 let playerIds = player_id;
