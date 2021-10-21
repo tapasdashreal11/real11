@@ -51,13 +51,17 @@ module.exports = {
         const user_id = req.userId;
         let redisKeyForWeekLeaderBorad = 'week-leaderboard-user-data-' + s_id + '-' + w_count+'-'+v_page;
         
-        let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0}
+        let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0,"gadget_name":"","win_msz":"","win_distribute":0,"win_widget":""}
         try { 
             if(user_id && s_id && w_count){
                 var myWData = await WeekLeaderboard.findOne({series_id:parseInt(s_id),week_count:parseInt(w_count),user_id:ObjectId(user_id)});
                 if(myWData && myWData._id){
                     myTeamData['total_points'] = myWData.total_points;
                     myTeamData['current_rank'] = myWData.current_rank;
+                    myTeamData['gadget_name'] = myWData.gadget_name ? myWData.gadget_name:"";
+                    myTeamData['win_msz'] = myWData.win_msz ? myWData.win_msz:"";
+                    myTeamData['win_distribute'] = myWData.win_distribute ? myWData.win_distribute:0;
+                    myTeamData['win_widget'] = myWData.win_widget ? (imageurl + "/" + myWData.win_widget):'';
                 }
                 redis.getRedisWeekLeaderboard(redisKeyForWeekLeaderBorad, async (err, data) => {
                     if (data) {
@@ -145,13 +149,17 @@ module.exports = {
         let v_limit = 500;
         const user_id = req.userId;
         let redisKeyForseriesLeaderBoard = 'series-leaderboard-user-data-' + s_id +'-'+v_page;
-        let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0}
+        let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0,"gadget_name":"","win_msz":"","win_distribute":0,"win_widget":""}
         try { 
             if(user_id && s_id){
                 var myWData = await SeriesLeaderboard.findOne({series_id:parseInt(s_id),user_id:ObjectId(user_id)});
                 if(myWData && myWData._id){
                     myTeamData['total_points'] = myWData.total_points;
                     myTeamData['current_rank'] = myWData.current_rank;
+                    myTeamData['gadget_name'] = myWData.gadget_name ? myWData.gadget_name:"";
+                    myTeamData['win_msz'] = myWData.win_msz ? myWData.win_msz:"";
+                    myTeamData['win_distribute'] = myWData.win_distribute ? myWData.win_distribute:0;
+                    myTeamData['win_widget'] = myWData.win_widget ? (imageurl + "/" + myWData.win_widget):'';
                 }
                 redis.getRedisWeekLeaderboard(redisKeyForseriesLeaderBoard, async (err, data) => {
                     if (data) {
