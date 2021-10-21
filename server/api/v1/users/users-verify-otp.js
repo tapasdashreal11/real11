@@ -108,6 +108,8 @@ module.exports = async (req, res) => {
 								responseMsz = "Otp verified successfully.Your applied referal code has been out!!"
                                if(user && user.extra_amount>0)updateObj['extra_amount'] = 0;
 							}
+						} else if (referalUser && referalUser.referal_code && _.isEqual(referalUser.referal_code,"RWC200")) {
+							rf_xtra_amount = 75;
 						}
 					}catch(errrrr){}
 					
