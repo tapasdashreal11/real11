@@ -37,7 +37,7 @@ module.exports = {
                     return res.send(ApiUtility.failed('Something went wrong!!!'));
                 }
                 if (x_system != 1 && (liveMatch.is_parent && liveMatch.inning_number ==2)){
-                    return res.send(ApiUtility.failed('This System will not support create team. Please update the app!!'));
+                    return res.send(ApiUtility.failed('This system will not support create team. Please update the app!!'));
                 }
 
                 // let wk = 0, bat = 0, bowl = 0, ar = 0;
