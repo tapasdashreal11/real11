@@ -18,7 +18,10 @@ var otherGameSchema = new Schema({
 	},
 	match_name: {
 		type: String
-	}
+	},
+	match_logo: {
+		type: String
+	},
 }, {
 	timestamps: true
 });
