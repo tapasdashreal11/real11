@@ -68,7 +68,7 @@ module.exports = {
 
           if (user.bank_account_verify == 2 && user.pen_verify == 2 && user.email_verified == 1) {
             data.account_verified = true;
-            try{
+           /** try{
               let bankDetail = await BankDetails.findOne({ user_id: userId });
               if(bankDetail && bankDetail.ifsc_code && bankDetail.api_verified && bankDetail.api_verified == 1 ){
                 ifsc.fetchDetails(bankDetail.ifsc_code).then(async function(res) {
@@ -96,7 +96,7 @@ module.exports = {
               
             }catch(errorIfsc){
               console.log('errorIfsc check at profile *****',errorIfsc);
-            }
+            } */
 
           } else {
             data.account_verified = false;
