@@ -47,7 +47,7 @@ module.exports = async (req, res) => {
                             if (oPTCuserItem && oPTCuserItem.user_id) {
                                 let rank = oPTCuserItem.rank ? oPTCuserItem.rank : 0;
                                 let score = oPTCuserItem.score ? oPTCuserItem.score : 0;
-                                let finalScoreDataObj ={rank:rank,score:score,sub:""+oPTCuserItem.user_id,currencyIcon: "icon.png"};
+                                let finalScoreDataObj ={rank:rank,score: score,sub:""+oPTCuserItem.user_id,currencyIcon: "icon.png"};
                                 const txnId = (new Date()).getTime() + contestTeam.user_id;
                                 
                                 let rankDataGroup = rankData.reduce(function(rv, x) {
