@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
                             await OtherGameTransaction.insertMany(transactionData, { ordered: false });
                         }
                         let response = {};
-                        response.status = true;
+                        response.success = true;
                         response.scores = finalScoreData;
                         console.log('response',response);
                         return res.json(response);
