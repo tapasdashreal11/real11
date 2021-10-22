@@ -60,7 +60,7 @@ module.exports = async (req, res) => {
                                 if (rankItem && breakup && breakup.length>0) {
                                     let perTeamPrice = rankItem.price_each ? rankItem.price_each :0;
                                     if (rankDataGroup.hasOwnProperty(rank) && perTeamPrice >0) {
-                                        const priceGroup = rankDataGroup[key];
+                                        const priceGroup = rankDataGroup[rank];
                                         const priceWin = perTeamPrice / priceGroup.length;
                                         if(priceWin>0) await User.updateOne({ _id: oPTCuserItem.user_id }, { $inc: { winning_balance: parseFloat(priceWin) } })
                                         win_amount = priceWin;
