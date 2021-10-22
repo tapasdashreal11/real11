@@ -86,6 +86,7 @@ module.exports = async (req, res) => {
                         let response = {};
                         response.status = true;
                         response.scores = finalScoreData;
+                        console.log('response',response);
                         return res.json(response);
                     } else {
                         // already distributed and update score
