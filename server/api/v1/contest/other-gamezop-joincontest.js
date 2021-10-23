@@ -212,7 +212,7 @@ module.exports = async (req, res) => {
                                                                                     return res.send(ApiUtility.failed("Please try again."));
                                                                                 }
                                                                             }
-
+                                                                            userWalletStatus = true;
                                                                        /**  let walletRes = await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
 
                                                                         if (walletRes && walletRes.nModified > 0) {
@@ -289,7 +289,7 @@ module.exports = async (req, res) => {
                                                                 added_type: parseInt(status)
                                                             };
 
-                                                            await Transaction.create([entity], { session: session });
+                                                           // await Transaction.create([entity], { session: session });
                                                             userWalletStatus = true;
                                                         } else {
                                                             await session.abortTransaction();
