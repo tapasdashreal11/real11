@@ -9,15 +9,16 @@ const OtherGameTransaction = require('../../../models/other-games-transaction');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 const _ = require("lodash");
 const { Validator } = require("node-input-validator");
+const { startSession } = require('mongoose');
 
 module.exports = async (req, res) => {
     try {
-        const {roomId, status, players} = req.body;
+        const { roomId, status, players } = req.body;
         let response = {};
-        let constraints = { roomId: "required", status: "required",players: "required" };
+        let constraints = { roomId: "required", status: "required", players: "required" };
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
-        var apiKey = req.headers['api-key']; 
+        var apiKey = req.headers['api-key'];
         let decoded = { match_id: 111 };
         let match_sport = 3;
         if (!matched) {
@@ -25,46 +26,157 @@ module.exports = async (req, res) => {
             response["matchId"] = "";
             return res.json(response);
         }
-        if(_.isEqual(apiKey,config.gamezop_api_key)){
+        if (_.isEqual(apiKey, config.gamezop_api_key)) {
             let playersIds = players.map(s => ObjectId(s));
-            let ptcData = await OtherGamesPtc.find({contest_id:ObjectId(roomId),user_id:{$in:playersIds},is_deleted:0});
-            if(status=='MATCH_FOUND'){
-                
-                 if(ptcData && ptcData.length>0){
-                    if(ptcData.length == playersIds.length ){
+            if (status == 'MATCH_FOUND') {
+                const session = await startSession()
+                session.startTransaction();
+                try {
+                    let userDataList = await User.find({ _id: { $in: playersIds } });
+                    if (userDataList && userDataList.length > 0) {
+                        let matchContest = OtherGamesContest.findOne({ contest_id: ObjectId(roomId) })
+                        let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
+                        let useableBonusPer = contestData.used_bonus || 0;
+                        let contestType = contestData.contest_type;
+                        let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
+                        let calEntryFees = entryFee;
+                        let retention_bonus_amount = 0;
+                        let date = new Date();
+                        let caculateAdminComision = await calculateAdminComission(contestData);
+                        let transactionArray = [];
+                        let ptcArray = [];
+                        let userArray = [];
                         let zop_match_id = await generateZopMatchId();
-                        response["success"] = true;
-                        response["matchId"] = zop_match_id;
-                         await OtherGamesPtc.updateMany({contest_id:ObjectId(roomId),user_id:{$in:playersIds},is_deleted:0},{$set:{zop_match_id:zop_match_id}});
-                        return res.json(response);
+                        if (contestType == 'Paid') {
+                            for (const userId of playersIds) {
+
+                                let singleUserDataItem = _.find(userDataList, { _id: userId });
+                                let contest = {};
+                                let newContestId = new ObjectId();
+                                contest._id = newContestId;
+                                contest.match_id = 111;
+                                contest.contest_id = roomId;
+                                contest.user_id = userId;
+                                contest.team_name = singleUserDataItem.team_name;
+                                contest.total_amount = contestData.entry_fee;
+
+                                if (matchContest.usable_bonus_time) {
+                                    if (moment().isBefore(matchContest.usable_bonus_time)) {
+                                        useableBonusPer = matchContest.before_time_bonus;
+                                    } else {
+                                        useableBonusPer = matchContest.after_time_bonus;
+                                    }
+                                } else {
+                                    useableBonusPer = contestData.used_bonus || 0;
+                                }
+                                let cashAmount = 0;
+                                let winAmount = 0;
+                                let bonusAmount = 0;
+                                let extraAmount = 0;
+                                const paymentCal = await joinContestPaymentCalculation(useableBonusPer, singleUserDataItem, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
+                                cashAmount = paymentCal.cashAmount;
+                                winAmount = paymentCal.winAmount;
+                                bonusAmount = paymentCal.bonusAmount;
+                                extraAmount = paymentCal.extraAmount;
+                                let saveData = paymentCal.saveData;
+                                let perdayExtraAmount = paymentCal.perdayExtraAmount;
+                                let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId;
+
+                                let txnId = joinContestTxnId;
+                                let status = TransactionTypes.JOIN_CONTEST;
+                                let txnAmount = entryFee;
+                                let withdrawId = 0;
+
+                                if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
+                                    let jcd = {
+                                        deduct_bonus_amount: bonusAmount,
+                                        deduct_winning_amount: winAmount,
+                                        deduct_deposit_cash: cashAmount,
+                                        deduct_extra_amount: extraAmount,
+                                        total_amount: entryFee,
+                                        admin_comission: caculateAdminComision,
+                                        retention_bonus: retention_bonus_amount,
+                                    }
+                                    contest.join_contest_detail = jcd;
+                                    contest.zop_match_id = zop_match_id;
+                                    ptcArray.push(contest);
+                                    let entity = {
+                                        user_id: userId, contest_id: roomId, match_id: 111, sport: match_sport, txn_amount: txnAmount, currency: "INR",
+                                        details: {
+                                            cons_winning_balance: winAmount, cons_cash_balance: cashAmount, cons_bonus_amount: bonusAmount,
+                                            cons_extra_amount: extraAmount,
+                                        },
+                                        retantion_amount: retention_bonus_amount,
+                                        txn_date: Date.now(),
+                                        local_txn_id: txnId,
+                                        added_type: parseInt(status)
+                                    };
+                                    transactionArray.push(entity);
+                                    userArray.push({
+                                        updateOne: {
+                                            "filter": { "_id": userId },
+                                            "update": { $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }
+                                        }
+                                    })
+
+                                }
+
+                            }
+                            if (ptcArray && ptcArray.length > 0 && userArray && userArray.length>0 && transactionArray && transactionArray.length>0 && transactionArray.length == ptcArray.length) {
+                                await User.bulkWrite(userArray, { session: session });
+                                await OtherGameTransaction.insertMany(transactionArray, { session: session });
+                                await OtherGamesPtc.insertMany(ptcArray, { session: session });
+                                await session.commitTransaction();
+                                session.endSession();
+
+                                response["success"] = true;
+                                response["matchId"] = zop_match_id;
+                                return res.json(response);
+                            } else {
+
+                                await session.commitTransaction();
+                                session.endSession();
+                                response["success"] = true;
+                                response["matchId"] = "";
+                                 return res.json(response);
+                            }
+                        } else {
+                            response["success"] = true;
+                            response["matchId"] = zop_match_id;
+                            return res.json(response);
+                        }
+
                     } else {
-                        await refundAmountProcess(ptcData,decoded,roomId,match_sport);
                         response["success"] = true;
                         response["matchId"] = "";
                         return res.json(response);
                     }
-                 } else {
+                } catch (sessionError) {
+                    console.log('sessionError in LUDO at match status****',sessionError);
+                    await session.abortTransaction();
+                    session.endSession();
+
                     response["success"] = false;
                     response["matchId"] = "";
                     return res.json(response);
-                 }
-            } else if(status=='NO_MATCH_FOUND'){
-                console.log("enter refund****");
-                await refundAmountProcess(ptcData,decoded,roomId,match_sport);
+                }
+
+            } else if (status == 'NO_MATCH_FOUND') {
+                console.log("No Mactch FOUND at match Status****");
                 response["success"] = true;
                 response["matchId"] = "";
                 return res.json(response);
             }
-        }else {
+        } else {
             let response = {};
             response["success"] = false;
             response["message"] = "Wrong api key!!";
             return res.json(response);
         }
-        
+
     } catch (error) {
         let response = {};
-        console.log("error",error);
+        console.log("error", error);
         response["success"] = false;
         response["matchId"] = "";
         return res.json(response);
@@ -80,39 +192,100 @@ async function generateZopMatchId() {
 }
 
 
-async function refundAmountProcess(ptcData,decoded,roomId,match_sport){
-    if(ptcData && ptcData.length>0){
-        let transactionData = [];
-        let joineduser = ptcData.length ? ptcData.length : 0
-        const doc = await OtherGamesContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'joined_users': { $gt: 0 }, 'contest_id': ObjectId(roomId) }, { $inc: { joined_users: -joineduser }, $set: { is_full: 0 } });
-        for (const ptcItems of ptcData) {
-            let ptcItem = JSON.parse(JSON.stringify(ptcItems));
-            const txnId = (new Date()).getTime() + ptcItem.user_id;
-            await OtherGamesPtc.updateOne({ _id: ptcItem._id }, { $set: { is_deleted: 1 } });
-            console.log('ptcItem.join_contest_detail****',ptcItem);
-            let refundAmount = ptcItem.join_contest_detail && ptcItem.join_contest_detail.total_amount ? ptcItem.join_contest_detail.total_amount : 0;
-            console.log('refundAmount pooo****',refundAmount);
-            if (refundAmount > 0) {
-                console.log('refundAmount****',refundAmount);
-                transactionData.push({
-                    "match_id": decoded['match_id'], "contest_id": ptcItem.contest_id, "local_txn_id": txnId, "txn_date": new Date(), "txn_amount": refundAmount, "currency": "INR", "added_type": 6,
-                    "status": 1,
-                    "created": new Date(),
-                    "user_id": ptcItem.user_id,
-                    "txn_id": "",
-                }); 
-                let deduct_winning_amount = ptcItem.join_contest_detail && ptcItem.join_contest_detail.deduct_winning_amount ? ptcItem.join_contest_detail.deduct_winning_amount : 0;
-                let deduct_bonus_amount = ptcItem.join_contest_detail && ptcItem.join_contest_detail.deduct_bonus_amount ? ptcItem.join_contest_detail.deduct_bonus_amount : 0;
-                let deduct_deposit_cash = ptcItem.join_contest_detail && ptcItem.join_contest_detail.deduct_deposit_cash ? ptcItem.join_contest_detail.deduct_deposit_cash : 0;
-                let deduct_extra_amount = ptcItem.join_contest_detail && ptcItem.join_contest_detail.deduct_extra_amount ? ptcItem.join_contest_detail.deduct_extra_amount : 0;
-                await User.updateOne({ _id: ptcItem.user_id }, { $inc: { extra_amount: parseFloat(deduct_extra_amount), cash_balance: parseFloat(deduct_deposit_cash), bonus_amount: parseFloat(deduct_bonus_amount), winning_balance: parseFloat(deduct_winning_amount) } });
-                console.log('transactionData in****',transactionData);
-            }
+async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
+    let useAmount = (useableBonusPer / 100) * entryFee;
+    let saveData = {};
+    let remainingFee = 0;
+    let indianDate = Date.now();
+    indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
+
+    if (entryFee > 0 && authUser.bonus_amount && authUser.bonus_amount > 0 && retention_bonus_amount == 0) {
+        if (useAmount <= authUser.bonus_amount) {
+            remainingFee = retention_bonus_amount > 0 ? entryFee : entryFee - useAmount;
+            saveData['bonus_amount'] = retention_bonus_amount > 0 ? 0 : authUser.bonus_amount - useAmount;
+            bonusAmount = retention_bonus_amount > 0 ? 0 : useAmount;
+        } else {
+            remainingFee = retention_bonus_amount > 0 ? entryFee : entryFee - authUser.bonus_amount;
+            saveData['bonus_amount'] = 0;
+            bonusAmount = retention_bonus_amount > 0 ? 0 : authUser.bonus_amount;
         }
-        if(transactionData && transactionData.length>0){
-            console.log("***transactionData",transactionData);
-            await OtherGameTransaction.insertMany(transactionData, { ordered: false });
+    } else {
+        remainingFee = entryFee;
+    }
+    if (retention_bonus_amount > 0) bonusAmount = 0;
+
+    let perdayExtraAmount = 0;
+    if (remainingFee) {
+        let extraBalance = authUser.extra_amount || 0;
+
+        let extraBal = 0;
+        if (extraBalance && extraBalance > 0) {
+            let perDayExtraAmt = 0;
+            let perDayLimit = config.extra_bonus_perday_limit;
+            if (String(authUser.extra_amount_date) == String(indianDate)) {
+                perDayExtraAmt = authUser.perday_extra_amount;
+            }
+
+            let saveData = {};
+            if (perDayExtraAmt < perDayLimit) {
+                extraAmount = (extraBalance > remainingFee) ? remainingFee : extraBalance;
+                extraAmount = ((perDayExtraAmt + extraAmount) > perDayLimit) ? (perDayLimit - perDayExtraAmt) : extraAmount;
+                extraBal = (extraBalance > remainingFee) ? extraBalance - extraAmount : 0;
+
+                remainingFee = (extraBalance < remainingFee && extraAmount < remainingFee) ? (extraAmount < remainingFee ? remainingFee - extraAmount : remainingFee - extraBalance) : remainingFee - extraAmount;
+
+                saveData['extra_amount'] = extraBal;
+                saveData['extra_amount_date'] = indianDate;
+                perdayExtraAmount = ((perDayExtraAmt + extraAmount) > perDayLimit) ? (perDayLimit - extraAmount) : (perDayExtraAmt + extraAmount);
+                saveData['perday_extra_amount'] = perdayExtraAmount;
+            } else {
+                perdayExtraAmount = perDayExtraAmt;
+                saveData['perday_extra_amount'] = perdayExtraAmount;
+            }
+        } else {
+            // remainingFee = entryFee;
+            saveData['extra_amount'] = extraBal;
+        }
+        saveData['perday_extra_amount'] = perdayExtraAmount;
+        saveData['extra_amount'] = extraBal;
+    }
+
+    if (remainingFee) {
+        let cashBalance = authUser.cash_balance;
+
+        if (cashBalance) {
+            let cashBal = (cashBalance > remainingFee) ? cashBalance - remainingFee : 0;
+            cashAmount = (cashBalance > remainingFee) ? remainingFee : cashBalance;
+            remainingFee = (cashBalance < remainingFee) ? remainingFee - cashBalance : 0;
+            saveData['cash_balance'] = cashBal;
         }
     }
+
+    if (remainingFee) {
+        winningBal = authUser.winning_balance;
+        if (winningBal) {
+            winningBal1 = (winningBal > remainingFee) ? winningBal - remainingFee : 0;
+            winAmount = (winningBal > remainingFee) ? remainingFee : winningBal;
+            remainingFee = (winningBal < remainingFee) ? remainingFee - winningBal : 0;
+            saveData['winning_balance'] = winningBal1;
+        }
+    }
+    return { 'winAmount': winAmount, 'cashAmount': cashAmount, 'bonusAmount': bonusAmount, 'extraAmount': extraAmount, 'saveData': saveData, 'perdayExtraAmount': perdayExtraAmount };
+
 }
 
+async function calculateAdminComission(contestData) {
+    let adminComission = contestData.admin_comission || 0;
+    let winningAmount = contestData.winning_amount || 0;
+    let contestSize = contestData.contest_size || 0;
+    let comission = 0;
+    if (adminComission && adminComission > 0) {
+        const profitAmount = Math.ceil((winningAmount * adminComission) / 100);
+        comission = (profitAmount / contestSize);
+        comission = Math.round(comission, 2);
+        return comission;
+    } else {
+        comission = 0;
+        return comission;
+    }
+}
