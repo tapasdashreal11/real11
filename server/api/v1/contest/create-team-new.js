@@ -165,6 +165,7 @@ module.exports = {
                 } else {
                     let teamDataa = [];
                     if (req.body.teamType && req.body.teamType == 55) {
+                        console.log('hello team type 55 ****');
                         teamDataa = await PlayerTeam.aggregate([
                             {
                                 $match: { 'match_id': match_id, 'playerStr': teamString, 'sport': sport }
