@@ -84,6 +84,7 @@ module.exports = async (req, res) => {
                             console.log("***transactionData",transactionData);
                             await OtherGameTransaction.insertMany(transactionData, { ordered: false });
                         }
+                        await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) },{$set:{is_distributed:1}});
                         let response = {};
                         response.success = true;
                         response.scores = finalScoreData;

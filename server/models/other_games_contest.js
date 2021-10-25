@@ -41,6 +41,8 @@ var otherGamesContest = new Schema({
     sport: { type: Number },
     contest: { type: Object },
     is_private: {type: Number, default: 0 },
+    is_distributed: { type: Number, default:0 },
+    zop_match_id: { type: Number }
 },{
     timestamps: { createdAt: 'created', updatedAt: 'modified' },
     toObject: { getters: true, setters: true },

@@ -127,6 +127,7 @@ module.exports = async (req, res) => {
                                 await User.bulkWrite(userArray, { session: session });
                                 await OtherGameTransaction.insertMany(transactionArray, { session: session });
                                 await OtherGamesPtc.insertMany(ptcArray, { session: session });
+                                await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) },{$set:{zop_match_id:zop_match_id}},{ session: session });
                                 await session.commitTransaction();
                                 session.endSession();
                                 console.log('data in join contest at status***',zop_match_id);
