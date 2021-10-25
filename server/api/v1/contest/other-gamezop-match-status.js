@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
                 try {
                     let userDataList = await User.find({ _id: { $in: playersIds } });
                     if (userDataList && userDataList.length > 0) {
-                        let matchContest = OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
+                        let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
                         console.log("matchContest at ludo",matchContest);
                         let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
                         console.log("contestData at ludo",contestData);
