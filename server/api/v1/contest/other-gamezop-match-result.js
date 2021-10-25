@@ -68,6 +68,7 @@ module.exports = async (req, res) => {
                                         transactionData.push({"match_id": decoded['match_id'],"contest_id": contestTeam.contest_id,"local_txn_id": txnId,"txn_date": new Date(),"txn_amount": pricewin_amount,"currency": "INR","added_type": 4,
                                         "status": 1,
                                         "created": new Date(),
+                                        "sport": match_sport,
                                         "user_id": oPTCuserItem.user_id,
                                         "txn_id": "",
                                         });
