@@ -47,7 +47,8 @@ module.exports = async (req, res) => {
                         let ptcArray = [];
                         let userArray = [];
                         let zop_match_id = await generateZopMatchId();
-                        if (contestType == 'Paid') {
+                        console.log('contestType****',contestType);
+                        if (entryFee>0) {
                             for (const userId of playersIds) {
 
                                 let singleUserDataItem = _.find(userDataList, { _id: userId });
