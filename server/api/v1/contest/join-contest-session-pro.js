@@ -965,6 +965,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         entity.price_breakup = contestData.price_breakup;
         entity.invite_code = contestData.invite_code;
         entity.breakup = contestData.breakup;
+        entity.amount_gadget = contestData.amount_gadget;
         entity.created = new Date();
         entity.maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1);
         if (parentContestId) {
