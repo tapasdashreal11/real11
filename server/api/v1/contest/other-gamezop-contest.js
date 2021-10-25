@@ -18,7 +18,8 @@ try {
         if (mcResult && mcResult.length > 0) {
             let match_contest_data = mcResult && mcResult[0] ? mcResult[0] : []
             try {
-                    redis.setRedis("match-contest-other" + req.params.match_id, match_contest_data);
+                    redis.setRedis("match-contest-other-" + req.params.match_id, match_contest_data);
+                    redis.setRedis("match-contest-other-view-" + user_id, {status:true});
                     let newMatchContestData = match_contest_data;
                     let resObj = {
                         match_contest: newMatchContestData,
@@ -27,7 +28,7 @@ try {
                         user_favourite_contest: {}
                     };
                     resObj['user_rentation_bonous'] = {};
-                    var finalResult = ApiUtility.success(resObj);
+                var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);
 
             } catch (errs) {

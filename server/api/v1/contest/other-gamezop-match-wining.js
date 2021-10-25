@@ -9,7 +9,7 @@ const { Validator } = require("node-input-validator");
 module.exports = async (req, res) => {
     try {
         const {room_id} = req.params;
-        //const user_id = req.userId;
+        const user_id = req.userId;
         let constraints = { room_id: "required"};
         let validator = new Validator(req.params, constraints);
         let matched = await validator.check();
