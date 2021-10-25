@@ -308,8 +308,7 @@ module.exports = async (req, res) => {
                                                             let getCountKey = 0;
                                                             let playerTeamContestId = newContestId;
                                                             totalContestKey = await getContestCount(matchContest,contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
-                                                            let ptcList = await OtherGamesPtc.find({match_id:match_id,is_deleted:0},{user_id:1,team_name:1,contest_id:1,match_id:1,_id:1}).sort({_id:-1})
-                                                            let uniqCode = '_' + Math.random().toString(36).substr(2, 9);
+                                                            
                                                             
                                                             const roomDetails = {
                                                                 roomId: contest_id, 
