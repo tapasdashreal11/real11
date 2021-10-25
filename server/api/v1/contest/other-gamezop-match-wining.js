@@ -19,7 +19,11 @@ module.exports = async (req, res) => {
         if(room_id){
             let playerTeamRes = await OtherGamesPtc.find({contest_id:ObjectId(room_id),is_deleted:0,winning_amount_distributed:1});
             let winuserList = playerTeamRes ? playerTeamRes : [];
-            var finalResult = ApiUtility.success(winuserList);
+            let winList = winuserList.map(s => {
+                return {team_name:s.team_name,user_id:s.user_id,score:s.points,rank:s.rank,price_win:s.price_win,avatar:""}
+            });
+
+            var finalResult = ApiUtility.success(winList);
             return res.send(finalResult);
 
         } else {
