@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
         const {room_id} = req.params;
         const user_id = req.userId;
         let constraints = { room_id: "required"};
-        let validator = new Validator(req.body, constraints);
+        let validator = new Validator(req.params, constraints);
         let matched = await validator.check();
         if (!matched) {
             return res.send(ApiUtility.failed('Parameters are not properly !!'));
