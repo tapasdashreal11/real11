@@ -77,6 +77,7 @@ const  gameZopContestList = require('./api/v1/contest/other-gamezop-contest');
 const  gamezopJoinContest  = require('./api/v1/contest/other-gamezop-joincontest');
 const  gamezopMatchStatus  = require('./api/v1/contest/other-gamezop-match-status');
 const  gamezopMatchResult  = require('./api/v1/contest/other-gamezop-match-result');
+const  gamezopMatchResultForuser  = require('./api/v1/contest/other-gamezop-match-wining');
 
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
 const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-pro');
@@ -322,7 +323,8 @@ router.get('/api/v1/gamezop-match-list', gameZopMatchList);
 router.get('/api/v1/gamezop-contest-list/:match_id', gameZopContestList);
 router.post('/api/v1/gamezop-games-join-contest',auth.authenticate.jwtLogin, gamezopJoinContest);
 router.post('/gamezop/match-status',gamezopMatchStatus);
-router.post('/gamezop/match-result',gamezopMatchResult);
+router.post('/gamezop/match-result',gamezopMatchResult);  //
+router.get('/api/v1/gamezop-game-win-list/:room_id', gamezopMatchResultForuser);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
