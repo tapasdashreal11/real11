@@ -128,12 +128,12 @@ module.exports = async (req, res) => {
                                 await OtherGamesPtc.insertMany(ptcArray, { session: session });
                                 await session.commitTransaction();
                                 session.endSession();
-
+                                console.log('data in join contest at status***',zop_match_id);
                                 response["success"] = true;
                                 response["matchId"] = zop_match_id;
                                 return res.json(response);
                             } else {
-
+                                console.log('data in join contest at status at fail***',ptcArray,userArray,transactionArray);
                                 await session.commitTransaction();
                                 session.endSession();
                                 response["success"] = true;
@@ -141,6 +141,7 @@ module.exports = async (req, res) => {
                                  return res.json(response);
                             }
                         } else {
+                            console.log('data in join contest at status at free***');
                             response["success"] = true;
                             response["matchId"] = zop_match_id;
                             return res.json(response);
