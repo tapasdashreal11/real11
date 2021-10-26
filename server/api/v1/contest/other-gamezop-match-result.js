@@ -13,6 +13,7 @@ const { Validator } = require("node-input-validator");
 module.exports = async (req, res) => {
     try {
         const {roomId, matchId, scores} = req.body;
+        console.log('roomId',roomId,'scores',scores,'matchId',matchId);
         let response = {};
         let constraints = { roomId: "required", matchId: "required",scores: "required" };
         var apiKey = req.headers['api-key']; 
@@ -25,7 +26,7 @@ module.exports = async (req, res) => {
             response["scores"] = [];
             return res.json(response);
         }
-        console.log('roomId',roomId,'scores',scores,'matchId',matchId);
+        
         let rankData = scores.map(s => {
             return {rank:s.rank,user_id:ObjectId(s.sub),score:s.score}
         });
