@@ -335,7 +335,6 @@ module.exports = async (req, res) => {
                                                         } catch (error) {
                                                             await session.abortTransaction();
                                                             session.endSession();
-
                                                             return res.send(ApiUtility.failed(error.message));
                                                         }
                                                    

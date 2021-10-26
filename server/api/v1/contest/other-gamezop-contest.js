@@ -27,7 +27,6 @@ try {
                         user_coupons: {},
                         user_favourite_contest: {}
                     };
-                    resObj['user_rentation_bonous'] = {};
                 var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);
 
