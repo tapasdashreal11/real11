@@ -92,17 +92,20 @@ module.exports = async (req, res) => {
                         return res.json(response);
                     } else {
                         // already distributed and update score
+                        console.log('data in result match for playerContestData******',rankData);
                         response["success"] = false;
                          response["scores"] = [];
                         return res.json(response);
                     }
                 } else {
+                    console.log('data in result match for matchContestData******',rankData);
                     response["success"] = false;
                     response["scores"] = [];
                     return res.json(response);
                 }
     
             }else{
+                console.log('data in result match for else******');
                 response["success"] = false;
                 response["scores"] = [];
                 return res.json(response);
