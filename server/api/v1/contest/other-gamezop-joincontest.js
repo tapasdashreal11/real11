@@ -13,6 +13,7 @@ const _ = require("lodash");
 const ludoMqtt = require('../../../../lib/ludo-mqtt');
 const { startSession } = require('mongoose');
 const btoa = require('btoa');
+const redis = require('../../../../lib/redis');
 var imageurl = config.imageBaseUrl;
 module.exports = async (req, res) => {
     try {
