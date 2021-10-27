@@ -483,6 +483,9 @@ module.exports = async (req, res) => {
                                                                 } else {
 
                                                                     if (filteredCDArray.length == contestDataArray.length && ptIdArray.length == contestDataArray.length && contestDataFinal.length == contestDataArray.length && contestDataFinalOne.length == contestDataArray.length) {
+                                                                        if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
+                                                                            await multipleJoinContestDetail(session,contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                        }
                                                                         totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                     } else {
                                                                         console.log("Team data not match before join");
@@ -494,7 +497,7 @@ module.exports = async (req, res) => {
 
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
-                                                                    await multipleJoinContestDetail(contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                   
                                                                     //await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
 
                                                                     if (retention_bonus_amount > 0 && userBounousData && userBounousData._id && isOfferused) {
@@ -1202,7 +1205,7 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
     }
 }
 
-async function multipleJoinContestDetail(contestTeamData, decoded, bonusAmount, winAmount, cashAmount, playerTeamContestId, contestData, extraAmount, match_sport, retention_bonus_amount) {
+async function multipleJoinContestDetail(session,contestTeamData, decoded, bonusAmount, winAmount, cashAmount, playerTeamContestId, contestData, extraAmount, match_sport, retention_bonus_amount) {
 
     let surpriseAmount = extraAmount || 0;
     let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
@@ -1240,9 +1243,9 @@ async function multipleJoinContestDetail(contestTeamData, decoded, bonusAmount, 
         saveEntity.retention_bonus = retention_bonus_amount || 0;
         jcdArray.push(saveEntity);
     }
+   console.log('user data in ***** ****multle join detail');
 
-
-    await JoinContestDetail.create(jcdArray);
+    await JoinContestDetail.create(jcdArray,{ session: session });
 
 }
 
