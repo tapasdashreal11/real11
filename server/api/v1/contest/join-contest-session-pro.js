@@ -138,7 +138,7 @@ module.exports = async (req, res) => {
                                         session.startTransaction();
                                         const sessionOpts = { session, new: true };
                                         try {
-                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
+                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, sessionOpts);
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
 
@@ -1218,7 +1218,7 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
 }
 
 async function setTranscation(decoded, match_sport, contest_id) {
-    await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - 1 } });
+   // await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - 1 } });
 } 
 
 async function saveJoinContestDetailAtJoin(session,decoded,bonusAmount,winAmount,cashAmount,playerTeamContestId,contestData, extraAmount,match_sport,retention_bonus_amount) {
