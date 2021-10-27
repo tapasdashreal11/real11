@@ -60,6 +60,7 @@ module.exports = async (req, res) => {
                                 contest.user_id = userId;
                                 contest.team_name = singleUserDataItem.team_name;
                                 contest.total_amount = contestData.entry_fee;
+                                contest.avatar = singleUserDataItem.avatar || '';
 
                                 if (matchContest.usable_bonus_time) {
                                     if (moment().isBefore(matchContest.usable_bonus_time)) {

@@ -5,6 +5,7 @@ const OtherGamesPtc = require('../../../models/other-games-ptc');
 const ObjectId = require('mongoose').Types.ObjectId;
 const _ = require("lodash");
 const { Validator } = require("node-input-validator");
+var imageurl = config.imageBaseUrl;
 
 module.exports = async (req, res) => {
     try {
@@ -20,7 +21,9 @@ module.exports = async (req, res) => {
             let playerTeamRes = await OtherGamesPtc.find({contest_id:ObjectId(room_id),is_deleted:0,winning_amount_distributed:1});
             let winuserList = playerTeamRes ? playerTeamRes : [];
             let winList = winuserList.map(s => {
-                return {team_name:s.team_name,user_id:s.user_id,score:s.points,rank:s.rank,price_win:s.price_win,avatar:""}
+                return {team_name:s.team_name,user_id:s.user_id,score:s.points,rank:s.rank,price_win:s.price_win,
+                    avatar:_.isEqual( s.avatar, "boy.png") ? imageurl+"/avatar20.png" : imageurl+"/"+s.avatar+".png"
+                }
             });
 
             var finalResult = ApiUtility.success(winList);
