@@ -478,7 +478,7 @@ module.exports = async (req, res) => {
                                                                         return res.send(ApiUtility.failed("Player team not found. Please try again!!"));
                                                                     }
 
-                                                                }
+                                                                } 
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
 
                                                                    // await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
