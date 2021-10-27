@@ -1260,6 +1260,6 @@ async function saveJoinContestDetailAtJoin(session,decoded,bonusAmount,winAmount
     saveEntity.admin_comission= comission ? parseFloat(comission):0;
     saveEntity.player_team_contest_id=	playerTeamContestId;
     saveEntity.retention_bonus = retention_bonus_amount|| 0;
-    JoinContestDetail.create([saveEntity],{ session: session });
+   await JoinContestDetail.create([saveEntity],{ session: session });
     
   }
