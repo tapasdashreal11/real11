@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
             let winuserList = playerTeamRes ? playerTeamRes : [];
             let winList = winuserList.map(s => {
                 return {team_name:s.team_name,user_id:s.user_id,score:s.points,rank:s.rank,price_win:s.price_win,
-                    avatar:_.isEqual( s.avatar, "boy.png") ? imageurl+"/avatar20.png" : imageurl+"/"+s.avatar+".png"
+                    avatar:_.isEqual( s.avatar, "boy.png") || _.isEqual( s.avatar, "") || !_.has( s, "avatar") ? imageurl+"/avatar20.png" : imageurl+"/"+s.avatar+".png"
                 }
             });
 
