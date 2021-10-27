@@ -22,6 +22,7 @@ const { startSession } = require('mongoose');
 const UserAnalysis = require("../../../models/user-analysis");
 const ContestInvite = require("../../../models/contest-invite");
 const CouponSale = require("../../../models/coupon-sale");
+const JoinContestDetail = require("../../../models/join-contest-detail");
 const { appsFlyerEntryService } = require("../users/appsflyer-api");
 
 module.exports = async (req, res) => {
@@ -465,6 +466,10 @@ module.exports = async (req, res) => {
                                                                 } else {
 
                                                                     if (_.has(contest, "player_team_id") && _.has(contest, "team_count") && _.has(contest, "team_name") && contest.team_name != '' && contest.player_team_id != null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0) {
+                                                                        if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
+                                                                            await saveJoinContestDetailAtJoin(session,decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                        }
+                                                                        
                                                                         totalContestKey = await getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                     } else {
                                                                         await session.abortTransaction();
@@ -476,7 +481,7 @@ module.exports = async (req, res) => {
                                                                 }
                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
 
-                                                                    await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                   // await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
 
                                                                     if (retention_bonus_amount > 0 && userBounousData && userBounousData._id && isOfferused) {
 
@@ -1215,3 +1220,46 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
 async function setTranscation(decoded, match_sport, contest_id) {
     await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - 1 } });
 } 
+
+async function saveJoinContestDetailAtJoin(session,decoded,bonusAmount,winAmount,cashAmount,playerTeamContestId,contestData, extraAmount,match_sport,retention_bonus_amount) {
+    //console.log("22222***************")
+    let surpriseAmount  = extraAmount || 0;
+    let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
+    // let totalAmount = bonusAmount+winAmount+cashAmount;
+    if(!contestData){
+      contestData = await Contest.findOne({'_id':decoded['contest_id']});
+   }
+    console.log("join contest detail at join single data**************");
+    let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
+    let winningAmount = contestData.winning_amount;
+    let contestSize = contestData.contest_size;
+    let comission = 0;
+    if(adminComission && adminComission > 0) {
+      const profitAmount = Math.ceil((winningAmount * adminComission) / 100);
+      let entryfee = contestData.entry_fee;
+      comission = (profitAmount / contestSize);
+      comission = Math.round(comission,2);
+    } else {
+      comission = 0;
+    }
+  
+    // let comission = ((adminComission/100) * totalAmount);
+    // comission = comission.toFixed(2);
+  
+    let saveEntity	=	{};
+    saveEntity.user_id		=	decoded['user_id'];
+    saveEntity.contest_id		=	decoded['contest_id'];
+    saveEntity.series_id		=	decoded['series_id'];
+    saveEntity.match_id		=	decoded['match_id'];
+    saveEntity.sport = match_sport;
+    saveEntity.bonus_amount	=	bonusAmount;
+    saveEntity.winning_amount	=	winAmount;
+    saveEntity.deposit_cash	=	cashAmount;
+    saveEntity.extra_amount	=	surpriseAmount;
+    saveEntity.total_amount   =	totalAmount;
+    saveEntity.admin_comission= comission ? parseFloat(comission):0;
+    saveEntity.player_team_contest_id=	playerTeamContestId;
+    saveEntity.retention_bonus = retention_bonus_amount|| 0;
+    JoinContestDetail.create([saveEntity],{ session: session });
+    
+  }
