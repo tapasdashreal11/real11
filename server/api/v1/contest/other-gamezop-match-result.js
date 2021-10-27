@@ -153,11 +153,12 @@ async function cancelContestAtResult(zop_match_id, room_id) {
                 let transactionArray = [];
                 let ptcDataArray = [];
                 for (const otherPtcItem of otherPtc) {
-                    let bonousAmount = otherPtcItem.deduct_bonus_amount && otherPtcItem.deduct_bonus_amount > 0 ? otherPtcItem.deduct_bonus_amount : 0;
-                    let cashAmount = otherPtcItem.deduct_deposit_cash && otherPtcItem.deduct_deposit_cash > 0 ? otherPtcItem.deduct_deposit_cash : 0;
-                    let xtraAmount = otherPtcItem.deduct_extra_amount && otherPtcItem.deduct_extra_amount > 0 ? otherPtcItem.deduct_extra_amount : 0;
-                    let winAmount = otherPtcItem.deduct_winning_amount && otherPtcItem.deduct_winning_amount > 0 ? otherPtcItem.deduct_winning_amount : 0;
-                    let total_amount = otherPtcItem.total_amount && otherPtcItem.total_amount > 0 ? otherPtcItem.total_amount : 0;
+                    let jcd = otherPtcItem.join_contest_detail;
+                    let bonousAmount = jcd && jcd.deduct_bonus_amount && jcd.deduct_bonus_amount > 0 ? jcd.deduct_bonus_amount : 0;
+                    let cashAmount =jcd &&  jcd.deduct_deposit_cash && jcd.deduct_deposit_cash > 0 ? jcd.deduct_deposit_cash : 0;
+                    let xtraAmount = jcd && jcd.deduct_extra_amount && jcd.deduct_extra_amount > 0 ? jcd.deduct_extra_amount : 0;
+                    let winAmount =jcd &&  jcd.deduct_winning_amount && jcd.deduct_winning_amount > 0 ? jcd.deduct_winning_amount : 0;
+                    let total_amount =jcd &&  jcd.total_amount && jcd.total_amount > 0 ? jcd.total_amount : 0;
                     ptcDataArray.push({
                         updateOne: {
                             "filter": { "_id": otherPtcItem._id },
