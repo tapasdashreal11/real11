@@ -539,7 +539,8 @@ module.exports = {
             let youtuber_code = 0;
             let is_offer_applied = false;
             let couponSaleData = [];
-            let userdata = await User.findOne({ _id: decoded['user_id'] })
+            let userdata = await User.findOne({ _id: decoded['user_id'] });
+            let winDistributeStatus = userdata && userdata.win_dis_status ? true : false;
             if(userdata.fair_play_violation && userdata.fair_play_violation ==1){
                 return res.send(ApiUtility.failed("You can't join contest.You are under fair play violation!!"));
             }
@@ -702,7 +703,7 @@ module.exports = {
                            
                         }
                         data['cash_balance'] = (cashBalance) ? cashBalance : 0;
-                        data['winning_balance'] = (winningBalance) ? winningBalance : 0;
+                        data['winning_balance'] = (winningBalance && !winDistributeStatus) ? winningBalance : 0;
                         data['usable_bonus'] = usableAmt ? parseFloat(usableAmt.toFixed(2)) : 0;
                         data['extra_amount'] = extraAmount ? parseFloat(extraAmount.toFixed(2)) : 0;
                         data['entry_fee'] = (totalEntryFee) ? parseFloat(totalEntryFee) : 0;
