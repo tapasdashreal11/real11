@@ -1243,8 +1243,6 @@ async function multipleJoinContestDetail(session,contestTeamData, decoded, bonus
         saveEntity.retention_bonus = retention_bonus_amount || 0;
         jcdArray.push(saveEntity);
     }
-   console.log('user data in ***** ****multle join detail');
-
     await JoinContestDetail.create(jcdArray,{ session: session });
 
 }

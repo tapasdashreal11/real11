@@ -1229,7 +1229,7 @@ async function saveJoinContestDetailAtJoin(session,decoded,bonusAmount,winAmount
     if(!contestData){
       contestData = await Contest.findOne({'_id':decoded['contest_id']});
    }
-    console.log("join contest detail at join single data**************");
+    //console.log("join contest detail at join single data**************");
     let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
     let winningAmount = contestData.winning_amount;
     let contestSize = contestData.contest_size;
