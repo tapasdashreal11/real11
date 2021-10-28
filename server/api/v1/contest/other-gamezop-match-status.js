@@ -167,7 +167,8 @@ module.exports = async (req, res) => {
 
             } else if (status == 'NO_MATCH_FOUND') {
                 console.log("No Mactch FOUND at match Status****");
-                await OtherGamesContest.findOneAndUpdate({contest_id: ObjectId(roomId),is_full:0 },{ $inc: { joined_users: -1 }});
+                let teamLength = playersIds && playersIds.length>0 ? playersIds.length: 1;
+                await OtherGamesContest.findOneAndUpdate({contest_id: ObjectId(roomId),is_full:0 },{ $inc: { joined_users: -teamLength }});
                 response["success"] = true;
                 response["matchId"] = "";
                 return res.json(response);
