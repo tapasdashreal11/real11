@@ -413,7 +413,6 @@ module.exports = async (req, res) => {
  */
 async function getContestCount(matchContest,contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user) {
     try {
-        console.log('dadasdsadsa*****11');
         return new Promise(async (resolve, reject) => {
             var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
             if (isAutoCreateStatus) {
@@ -423,14 +422,12 @@ async function getContestCount(matchContest,contest, user_id, match_id, contest_
                     contestAutoCreateAferJoin(contestData, contest_id, match_id, parentContestId, match_sport, session,matchContest);
                     await OtherGamesContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                 } else {
-                    console.log('dadasdsadsa*****111222');
                     await session.commitTransaction();
                     session.endSession();
                 }
             } else {
                 await session.commitTransaction();
                 session.endSession();
-                console.log('dadasdsadsa*****111');
             }
             return resolve(1);
         })
