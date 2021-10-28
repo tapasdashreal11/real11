@@ -389,7 +389,7 @@ module.exports = async (req, res) => {
                                                                                 }
                                                                             }
 
-                                                                            let walletRes = await User.updateOne({ _id: user_id,win_dis_status:false }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
+                                                                            let walletRes = await User.updateOne({ _id: user_id}, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
 
                                                                             if (walletRes && walletRes.nModified > 0) {
                                                                                 await Transaction.create([entity], { session: session });
@@ -1152,7 +1152,7 @@ async function joinContestPaymentCalculation(contest_size,offerableAppled,useabl
 
     if (remainingFee) {
         winningBal = authUser.winning_balance;
-        if (winningBal && !winDistributeStatus) {
+        if (winningBal) {
             winningBal1 = (winningBal > remainingFee) ? winningBal - remainingFee : 0;
             winAmount = (winningBal > remainingFee) ? remainingFee : winningBal;
             remainingFee = (winningBal < remainingFee) ? remainingFee - winningBal : 0;

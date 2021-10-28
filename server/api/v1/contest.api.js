@@ -703,7 +703,7 @@ module.exports = {
                            
                         }
                         data['cash_balance'] = (cashBalance) ? cashBalance : 0;
-                        data['winning_balance'] = (winningBalance && !winDistributeStatus) ? winningBalance : 0;
+                        data['winning_balance'] = (winningBalance) ? winningBalance : 0;
                         data['usable_bonus'] = usableAmt ? parseFloat(usableAmt.toFixed(2)) : 0;
                         data['extra_amount'] = extraAmount ? parseFloat(extraAmount.toFixed(2)) : 0;
                         data['entry_fee'] = (totalEntryFee) ? parseFloat(totalEntryFee) : 0;
