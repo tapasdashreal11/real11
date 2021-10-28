@@ -57,6 +57,7 @@ module.exports = async (req, res) => {
                                 let newContestId = new ObjectId();
                                 contest._id = newContestId;
                                 contest.match_id = 111;
+                                contest.sport = match_sport;
                                 contest.contest_id = roomId;
                                 contest.user_id = userId;
                                 contest.team_name = singleUserDataItem.team_name;
