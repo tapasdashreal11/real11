@@ -141,7 +141,7 @@ module.exports = async (req, res) => {
                                             const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, {new: true });
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
-                                                  console.log('joinedContestCount',joinedContestCount);
+                                                
                                                 if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
                                                     console.log("Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
                                                     await session.abortTransaction();
