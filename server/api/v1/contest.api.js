@@ -1513,6 +1513,8 @@ module.exports = {
                         let userCouponCount = await UserCouponCodes.find({ 'user_id': decoded['user_id'], 'coupon_code_id': couponData._id, 'status': 1 }).countDocuments();
                         if (userCouponCount >= couponData.per_user_limit && couponData.per_user_limit) {
                             return res.send(ApiUtility.failed('You have used your limit.'));
+                        } else if ( couponData && couponData.first_deposite && couponData.first_deposite == 1 && authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 1) {
+                            return res.send(ApiUtility.failed("This coupon is not valid for you!!."));
                         } else {
                             // const idArr     =   [ "606855256de28e3177251828","606855536de28e3177251829" ];
                             // let couponIndex =   idArr.indexOf((couponData._id).toString() );
