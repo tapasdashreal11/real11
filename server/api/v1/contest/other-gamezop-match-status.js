@@ -173,7 +173,7 @@ module.exports = async (req, res) => {
                 await OtherGamesContest.findOneAndUpdate({contest_id: ObjectId(roomId),is_full:0 },{ $inc: { joined_users: -teamLength }});
                 response["success"] = true;
                 response["matchId"] = "";
-               if(playersIds && playersIds.length>0) redis.setRedis("match-contest-other-view-" + playersIds[0], {});
+                if(playersIds && playersIds.length>0) redis.setRedis("match-contest-other-" + 111, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
                 return res.json(response);
             }
         } else {
