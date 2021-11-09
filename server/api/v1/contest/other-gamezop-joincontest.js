@@ -485,6 +485,7 @@ async function contestAutoCreateAferJoin(contestData, contest_id, match_id, pare
                 used_bonus: contestData.used_bonus,
                 winner_percent: contestData.winner_percent,
                 breakup: contestData.breakup,
+                admin_comission: contestData && contestData.admin_comission ? contestData.admin_comission :0,
                 maximum_team_size: contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
             };
             
