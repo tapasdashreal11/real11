@@ -543,6 +543,8 @@ module.exports = {
             let winDistributeStatus = userdata && userdata.win_dis_status ? true : false;
             if(userdata.fair_play_violation && userdata.fair_play_violation ==1){
                 return res.send(ApiUtility.failed("You can't join contest.You are under fair play violation!!"));
+            }else if(userdata && userdata.win_dis_status){
+                return res.send(ApiUtility.failed("Please wait for few seconds and then try again!!"));
             }
             if (userdata) {
                 adminPer = 0; //(setting.admin_percentage) ? setting.admin_percentage : 0;
