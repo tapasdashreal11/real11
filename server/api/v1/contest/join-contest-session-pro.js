@@ -373,7 +373,7 @@ module.exports = async (req, res) => {
                                                                                     return res.send(ApiUtility.failed("Please try again."));
                                                                                 }
                                                                             }
-                                                                            let walletRes = await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
+                                                                            let walletRes = await User.updateOne({ _id: user_id ,win_dis_status:false}, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
 
                                                                             if (walletRes && walletRes.nModified > 0) {
                                                                                 await Transaction.create([entity], { session: session });
@@ -383,7 +383,7 @@ module.exports = async (req, res) => {
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
                                                                                 await setTranscation(decoded, match_sport, contest_id);
-                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again."));
+                                                                                return res.send(ApiUtility.failed("Please wait for few seconds and then try again!!"));
                                                                             }
 
                                                                         } catch (error) {
