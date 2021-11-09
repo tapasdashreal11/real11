@@ -378,7 +378,7 @@ module.exports = async (req, res) => {
                                                                                 total_team_joined: totalTeamJoinedCount,
                                                                                 added_type: parseInt(status)
                                                                             };
-                                                                            let userBalance = await User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1 })
+                                                                            let userBalance = await User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1,"win_dis_status":1 })
                                                                             if (userBalance) {
                                                                                 if (userBalance.extra_amount < extraAmount || userBalance.cash_balance < cashAmount || userBalance.winning_balance < winAmount || userBalance.bonus_amount < bonusAmount) {
                                                                                     userWalletStatus = false;
@@ -386,10 +386,16 @@ module.exports = async (req, res) => {
                                                                                     session.endSession();
                                                                                     await setTranscation(decoded,match_sport,contest_id,total_team_number);
                                                                                     return res.send(ApiUtility.failed("Please try again."));
+                                                                                } else if(userBalance && userBalance.win_dis_status){
+                                                                                    userWalletStatus = false;
+                                                                                    await session.abortTransaction();
+                                                                                    session.endSession();
+                                                                                    await setTranscation(decoded,match_sport,contest_id,total_team_number);
+                                                                                    return res.send(ApiUtility.failed("Please wait for few seconds and then try again!!"));
                                                                                 }
                                                                             }
 
-                                                                            let walletRes = await User.updateOne({ _id: user_id,win_dis_status:false}, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
+                                                                            let walletRes = await User.updateOne({ _id: user_id}, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
 
                                                                             if (walletRes && walletRes.nModified > 0) {
                                                                                 await Transaction.create([entity], { session: session });
@@ -399,7 +405,7 @@ module.exports = async (req, res) => {
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
                                                                                 await setTranscation(decoded,match_sport,contest_id,total_team_number);
-                                                                                return res.send(ApiUtility.failed("Please wait for few seconds and then try again!!"));
+                                                                                return res.send(ApiUtility.failed("Please try again!!"));
                                                                             }
 
                                                                         } catch (error) {
