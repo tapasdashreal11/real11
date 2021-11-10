@@ -293,7 +293,7 @@ config.appsFlyeriPhoneUrl = "https://api2.appsflyer.com/inappevent/id1455728625"
 config.imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://real11-images.s3.ap-south-1.amazonaws.com';
 // config.imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://real-11-dev.s3.ap-south-1.amazonaws.com'; 
 
-config.maxPhotoUploadSize = 2 * 1024 * 1024; // 2M
+config.maxPhotoUploadSize = 12 * 1024 * 1024; // 2M
 config.sendgridApiKey = "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"; 
 config.fcmKey = process.env.FCM_KEY || "";
 
