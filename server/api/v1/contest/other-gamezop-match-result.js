@@ -6,6 +6,7 @@ const OtherGamesContest = require('../../../models/other_games_contest');
 const OtherGames = require('../../../models/other_game');
 const ObjectId = require('mongoose').Types.ObjectId;
 const OtherGameTransaction = require('../../../models/other-games-transaction');
+const OtherGameLudoLogs = require('../../../models/other-game-ludo-log');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 const _ = require("lodash");
 const { Validator } = require("node-input-validator");
@@ -215,14 +216,18 @@ async function cancelContestAtResult(zop_match_id, room_id) {
                 session.endSession();
             }
         } else {
-            console.log('result in catch at contest cancel****', errorSession);
+            console.log('result in else during contest cancel****',room_id);
+            await OtherGameLudoLogs.create({error_txt:"contest cancel at result-matchContest data not found",room_id:room_id});
             await session.abortTransaction();
             session.endSession();
         }
     } catch (errorSession) {
         console.log('sessionError in catch at contest cancel****', errorSession);
+        let error = "contest cancel at result-"+errorSession;
+        await OtherGameLudoLogs.create({error_txt:error,room_id:room_id});
         await session.abortTransaction();
         session.endSession();
+        
     }
 
 }
