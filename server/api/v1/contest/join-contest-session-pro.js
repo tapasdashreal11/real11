@@ -24,6 +24,7 @@ const ContestInvite = require("../../../models/contest-invite");
 const CouponSale = require("../../../models/coupon-sale");
 const JoinContestDetail = require("../../../models/join-contest-detail");
 const { appsFlyerEntryService } = require("../users/appsflyer-api");
+const Helper = require('./../common/helper');
 
 module.exports = async (req, res) => {
     try {
@@ -992,7 +993,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
 
         // console.log('cResult************** after contest create in auto',cResult);
-
+        let inviteCode = Helper.createUserReferal(6);
         if (cResult && cResult._id) {
             let newContestId = cResult._id;
             let entityM = {};
@@ -1005,7 +1006,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entityM.contest_id = newContestId;
             entityM.series_id = series_id;
             entityM.category_id = ObjectId(catID);
-            entityM.invite_code = '1Q' + Math.random().toString(36).slice(-6);
+            entityM.invite_code = '1Q' + inviteCode;
             entityM.created = new Date();
             entityM.localteam = liveMatch.localteam || '';
             entityM.localteam_id = liveMatch.localteam_id || '';
