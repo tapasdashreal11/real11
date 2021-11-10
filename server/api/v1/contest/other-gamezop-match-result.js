@@ -199,7 +199,7 @@ async function cancelContestAtResult(zop_match_id, room_id) {
                 }
                 if (userArray && userArray.length > 0 && transactionArray && transactionArray.length > 0 && ptcDataArray && ptcDataArray.length > 0) {
                     await User.bulkWrite(userArray, { session: session });
-                    await OtherGameTransaction.insertMany(transactionArray, { session: session });
+                    await OtherGameTransaction.create(transactionArray, { session: session });
                     await OtherGamesPtc.bulkWrite(ptcDataArray, { session: session });
                     await OtherGamesContest.updateOne({ contest_id: ObjectId(room_id) }, { $set: { is_cancelled: 1 } }, { session: session });
                     await session.commitTransaction();
