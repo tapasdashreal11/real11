@@ -148,7 +148,7 @@ module.exports = {
                 
                                         let indianDate = Date.now();
                                         indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
-                                        if (extraBalance) {
+                                        if (extraBalance && !userdata.xtra_cash_block) {
                                             let perDayExtraAmt = 0;
                                             let perDayLimit = config.extra_bonus_perday_limit;
                 
