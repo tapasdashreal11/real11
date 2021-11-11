@@ -101,7 +101,7 @@ const  otherGameWinningDis   = require('./api/v1/contest/other-games-wining-dis'
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
-const {userGoogleSignIn,userGoogleSignUpDetailAdd,userAppleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate,userAppleSignIn,userAddInFairPlayViolation} = require('./api/v1/users/user-google-signup');
+const {userRefStaticData,userGoogleSignIn,userGoogleSignUpDetailAdd,userAppleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate,userAppleSignIn,userAddInFairPlayViolation} = require('./api/v1/users/user-google-signup');
 const appSettingApi = require("./api/v1/common/app-settings");
 const user_offers = require("./api/v1/common/app-analysis-api");
 const { 
@@ -249,6 +249,7 @@ router.get('/api/v1/series-list', auth.authenticate.jwtLogin, seriesList);
 router.get('/api/v1/transation-history-new', auth.authenticate.jwtLogin, transactionHistoryNew);
 router.post('/api/v1/profile', auth.authenticate.jwtLogin, profile);
 router.get('/api/v1/withdraw-history', auth.authenticate.jwtLogin, withdrawHistory);
+router.get('/api/v1/ref-txt', userRefStaticData);
 
 router.get('/api/v1/user-coupon-purchase/:coupon_id',auth.authenticate.jwtLogin, userCouponPurchase);
 router.get('/api/v1/user-coupon-wallet/:coupon_id',auth.authenticate.jwtLogin, userCouponWalletAmount);

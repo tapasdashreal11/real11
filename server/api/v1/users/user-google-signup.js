@@ -806,6 +806,45 @@ module.exports = {
             var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
             return res.json(response);
         }
+    },
+    userRefStaticData: async (req, res) => {
+        var response = { status: false, message: "Invalid Request", data: {} };
+        try{
+         let ref_now= {
+             heading:"How it Works?",
+             sub_heading:"Get 75 on every referral.",
+             icon:"ic_howitworks",
+             data:[
+                {
+                    icon:"ic_invite_friends_email",
+                    txt:"₹10",
+                    sub_txt:"on Email Verification",
+                },
+                {
+                    icon:"ic_invite_friends_20",
+                    txt:"₹20",
+                    sub_txt:"on Pan card Verification"
+                },
+                {
+                    icon:"ic_invite_friends_bank_verify",
+                    txt:"₹20",
+                    sub_txt:"on Bank account Verification",
+                },
+                {
+                    icon:"ic_firstdeposit",
+                    txt:"₹5 XtraCash",
+                    sub_txt:"On First Deposit",
+                }
+             ]
+         }
+         response["message"] = "";
+         response["data"] = {ref_now:ref_now};
+         response["status"] = true;
+         return res.json(response);
+
+        }catch (err) {
+            return res.json(response);
+        }
     }
 }
 
