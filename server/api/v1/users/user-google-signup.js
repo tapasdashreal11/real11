@@ -833,7 +833,7 @@ module.exports = {
                 {
                     icon:"ic_firstdeposit",
                     txt:"₹5 XtraCash",
-                    sub_txt:"On First Deposit",
+                    sub_txt:"on First Deposit",
                 }
              ]
          }
