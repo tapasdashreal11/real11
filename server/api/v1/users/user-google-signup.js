@@ -817,17 +817,17 @@ module.exports = {
              data:[
                 {
                     icon:"ic_invite_friends_email",
-                    txt:"₹10",
+                    txt:"₹10 Bonus",
                     sub_txt:"on Email Verification",
                 },
                 {
                     icon:"ic_invite_friends_20",
-                    txt:"₹20",
+                    txt:"₹20 Bonus & ₹10 XtraCash",
                     sub_txt:"on Pan card Verification"
                 },
                 {
                     icon:"ic_invite_friends_bank_verify",
-                    txt:"₹20",
+                    txt:"₹20 Bonus & ₹10 XtraCash",
                     sub_txt:"on Bank account Verification",
                 },
                 {
