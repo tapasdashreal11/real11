@@ -50,12 +50,24 @@ module.exports = async (req, res) => {
                 if (matchTieStatus) {
                     // When match tie status is happening
                     console.log('Match tie status is happening******', roomId);
-                    let zop_match_id = parseInt(matchId);
-                    await cancelContestAtResult(zop_match_id, roomId);
-                    response["success"] = false;
-                    response["scores"] = [];
-                    return res.json(response);
-
+                    let matchContest = await OtherGamesContest.findOne({ 'contest_id': ObjectId(roomId), sport: match_sport });
+                    let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
+                    let contestType = contestData.contest_type;
+                    if (contestType == "Paid") {
+                        console.log('game tie paid contest**');
+                        let zop_match_id = parseInt(matchId);
+                        await cancelContestAtResult(zop_match_id, roomId);
+                        response["success"] = false;
+                        response["scores"] = [];
+                        return res.json(response);
+                    } else {
+                        response.success = true;
+                        let scoresData = scores.map(v => ({...v, prize: 0,currencyIcon: "icon.png"}))
+                        response.scores = scoresData;
+                        console.log('response at game tie in free contest**', scoresData);
+                        return res.json(response);
+                    }
+                    
                 } else {
                     // If match tie does not exists
                     let userIds = _.map(rankData, 'user_id');
@@ -65,73 +77,82 @@ module.exports = async (req, res) => {
                     let matchContestData = await OtherGamesContest.findOne({ 'contest_id': ObjectId(roomId), sport: match_sport });
                     if (matchContestData && matchContestData._id && matchContestData.contest) {
                         let contestData = matchContestData.contest;
-                        var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
-                        let breakup = contestData.breakup ? _.sortBy(contestData.breakup, ['startRank']) : [];
-                        if (playerContestData && playerContestData.length > 0) {
-                            let transactionData = [];
-                            let finalScoreData = [];
-                            for (const contestTeam of playerContestData) {
-                                let oPTCuserItem = _.find(rankData, { user_id: contestTeam.user_id });
-                                if (oPTCuserItem && oPTCuserItem.user_id) {
-                                    let rank = oPTCuserItem.rank ? oPTCuserItem.rank : 0;
-                                    let score = oPTCuserItem.score ? oPTCuserItem.score : 0;
-                                    let finalScoreDataObj = { rank: rank, score: score, sub: "" + oPTCuserItem.user_id, currencyIcon: "icon.png" };
-                                    const txnId = (new Date()).getTime() + contestTeam.user_id;
-
-                                    let rankDataGroup = rankData.reduce(function (rv, x) {
-                                        (rv[x['rank']] = rv[x['rank']] || []).push(x);
-                                        return rv;
-                                    }, {});
-                                    let win_amount = 0;
-                                    let pricewin_amount = 0;
-                                    let rankItem = breakup && breakup.length > 0 ? breakup.find((item) => oPTCuserItem.rank >= item.startRank && oPTCuserItem.rank <= item.endRank) : {};
-                                    if (rankItem && breakup && breakup.length > 0) {
-                                        let perTeamPrice = rankItem.price_each ? rankItem.price_each : 0;
-                                        if (rankDataGroup.hasOwnProperty(rank) && perTeamPrice > 0) {
-                                            const priceGroup = rankDataGroup[rank];
-                                            const priceWin = perTeamPrice / priceGroup.length;
-                                            if (priceWin > 0) await User.updateOne({ _id: oPTCuserItem.user_id }, { $inc: { winning_balance: parseFloat(priceWin) } })
-                                            win_amount = priceWin;
-                                            pricewin_amount = priceWin;
-                                            transactionData.push({
-                                                "match_id": decoded['match_id'], "contest_id": contestTeam.contest_id, "local_txn_id": txnId, "txn_date": new Date(), "txn_amount": pricewin_amount, "currency": "INR", "added_type": 4,
-                                                "status": 1,
-                                                "created": new Date(),
-                                                "sport": match_sport,
-                                                "user_id": oPTCuserItem.user_id,
-                                                "txn_id": "",
-                                            });
+                        let contestType = contestData.contest_type;
+                        if (contestType == "Paid") {
+                            var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
+                            let breakup = contestData.breakup ? _.sortBy(contestData.breakup, ['startRank']) : [];
+                            if (playerContestData && playerContestData.length > 0) {
+                                let transactionData = [];
+                                let finalScoreData = [];
+                                for (const contestTeam of playerContestData) {
+                                    let oPTCuserItem = _.find(rankData, { user_id: contestTeam.user_id });
+                                    if (oPTCuserItem && oPTCuserItem.user_id) {
+                                        let rank = oPTCuserItem.rank ? oPTCuserItem.rank : 0;
+                                        let score = oPTCuserItem.score ? oPTCuserItem.score : 0;
+                                        let finalScoreDataObj = { rank: rank, score: score, sub: "" + oPTCuserItem.user_id, currencyIcon: "icon.png" };
+                                        const txnId = (new Date()).getTime() + contestTeam.user_id;
+    
+                                        let rankDataGroup = rankData.reduce(function (rv, x) {
+                                            (rv[x['rank']] = rv[x['rank']] || []).push(x);
+                                            return rv;
+                                        }, {});
+                                        let win_amount = 0;
+                                        let pricewin_amount = 0;
+                                        let rankItem = breakup && breakup.length > 0 ? breakup.find((item) => oPTCuserItem.rank >= item.startRank && oPTCuserItem.rank <= item.endRank) : {};
+                                        if (rankItem && breakup && breakup.length > 0) {
+                                            let perTeamPrice = rankItem.price_each ? rankItem.price_each : 0;
+                                            if (rankDataGroup.hasOwnProperty(rank) && perTeamPrice > 0) {
+                                                const priceGroup = rankDataGroup[rank];
+                                                const priceWin = perTeamPrice / priceGroup.length;
+                                                if (priceWin > 0) await User.updateOne({ _id: oPTCuserItem.user_id }, { $inc: { winning_balance: parseFloat(priceWin) } })
+                                                win_amount = priceWin;
+                                                pricewin_amount = priceWin;
+                                                transactionData.push({
+                                                    "match_id": decoded['match_id'], "contest_id": contestTeam.contest_id, "local_txn_id": txnId, "txn_date": new Date(), "txn_amount": pricewin_amount, "currency": "INR", "added_type": 4,
+                                                    "status": 1,
+                                                    "created": new Date(),
+                                                    "sport": match_sport,
+                                                    "user_id": oPTCuserItem.user_id,
+                                                    "txn_id": "",
+                                                });
+                                            }
+    
                                         }
-
+                                        finalScoreDataObj['prize'] = pricewin_amount;
+                                        finalScoreData.push(finalScoreDataObj);
+                                        await OtherGamesPtc.updateOne({ _id: contestTeam._id }, { $set: { "price_win": pricewin_amount, "points": score, "winning_amount": win_amount, "rank": rank, "winning_amount_distributed": 1, "winning_amount_notification": 1 } });
                                     }
-                                    finalScoreDataObj['prize'] = pricewin_amount;
-                                    finalScoreData.push(finalScoreDataObj);
-                                    await OtherGamesPtc.updateOne({ _id: contestTeam._id }, { $set: { "price_win": pricewin_amount, "points": score, "winning_amount": win_amount, "rank": rank, "winning_amount_distributed": 1, "winning_amount_notification": 1 } });
                                 }
+                                if (transactionData && transactionData.length > 0) {
+                                    console.log("***transactionData", transactionData);
+                                    await OtherGameTransaction.insertMany(transactionData, { ordered: false });
+                                }
+                                await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) }, { $set: { is_distributed: 1 } });
+                                let response = {};
+                                response.success = true;
+                                response.scores = finalScoreData;
+                                console.log('response', response);
+                                return res.json(response);
+                            } else {
+                                // already distributed and update score
+                                console.log('data in result match for playerContestData******', rankData);
+                                response["success"] = false;
+                                response["scores"] = [];
+                                return res.json(response);
                             }
-                            if (transactionData && transactionData.length > 0) {
-                                console.log("***transactionData", transactionData);
-                                await OtherGameTransaction.insertMany(transactionData, { ordered: false });
-                            }
-                            await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) }, { $set: { is_distributed: 1 } });
-                            let response = {};
+                         } else {
                             response.success = true;
-                            response.scores = finalScoreData;
-                            console.log('response', response);
+                            let scoresData = scores.map(v => ({...v, prize: 0,currencyIcon: "icon.png"}))
+                            response.scores = scoresData;
+                            console.log('response result at free contest**', scoresData);
                             return res.json(response);
-                        } else {
-                            // already distributed and update score
-                            console.log('data in result match for playerContestData******', rankData);
-                            response["success"] = false;
-                            response["scores"] = [];
-                            return res.json(response);
-                        }
-                    } else {
+                         }
+                     } else {
                         console.log('data in result match for matchContestData******', rankData);
                         response["success"] = false;
                         response["scores"] = [];
                         return res.json(response);
-                    }
+                     }
                 }
 
             } else {
