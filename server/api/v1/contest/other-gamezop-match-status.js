@@ -41,6 +41,7 @@ module.exports = async (req, res) => {
                         let useableBonusPer = contestData.used_bonus || 0;
                         let contestType = contestData.contest_type;
                         let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
+                        let contestSizeCal = (contestData && contestData.contest_size) ? (contestData.contest_size) :(contestData.infinite_contest_size ? 2 : 2);
                         let calEntryFees = entryFee;
                         let retention_bonus_amount = 0;
                         let date = new Date();
@@ -77,7 +78,7 @@ module.exports = async (req, res) => {
                                 let winAmount = 0;
                                 let bonusAmount = 0;
                                 let extraAmount = 0;
-                                const paymentCal = await joinContestPaymentCalculation(useableBonusPer, singleUserDataItem, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
+                                const paymentCal = await joinContestPaymentCalculation(contestSizeCal,useableBonusPer, singleUserDataItem, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
                                 cashAmount = paymentCal.cashAmount;
                                 winAmount = paymentCal.winAmount;
                                 bonusAmount = paymentCal.bonusAmount;
@@ -201,7 +202,7 @@ async function generateZopMatchId() {
 }
 
 
-async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
+async function joinContestPaymentCalculation(contest_size,useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
     let useAmount = (useableBonusPer / 100) * entryFee;
     let saveData = {};
     let remainingFee = 0;
@@ -228,7 +229,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
         let extraBalance = authUser.extra_amount || 0;
 
         let extraBal = 0;
-        if (extraBalance && extraBalance > 0 && (authUser && !authUser.xtra_cash_block)) {
+        if (extraBalance && extraBalance > 0 && contest_size > 25 && (authUser && !authUser.xtra_cash_block)) {
             let perDayExtraAmt = 0;
             let perDayLimit = config.extra_bonus_perday_limit;
             if (String(authUser.extra_amount_date) == String(indianDate)) {

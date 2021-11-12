@@ -125,9 +125,9 @@ module.exports = async (req, res) => {
                                                     let userBounousData = {};
                                                     let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
                                                     if (contestType == 'Paid') {
-                                                        
+                                                        let contestSizeCal = (contestData && contestData.contest_size) ? (contestData.contest_size) :(contestData.infinite_contest_size ? 2 : 2);
                                                         if (calEntryFees > 0) {
-                                                            const paymentCal = await joinContestPaymentCalculation(useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
+                                                            const paymentCal = await joinContestPaymentCalculation(contestSizeCal,useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
                                                             cashAmount = paymentCal.cashAmount;
                                                             winAmount = paymentCal.winAmount;
                                                             bonusAmount = paymentCal.bonusAmount;
@@ -514,7 +514,7 @@ async function contestAutoCreateAferJoin(contestData, contest_id, match_id, pare
  * @param {*} bonusAmount 
  * @param {*} extraAmount 
  */
-async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
+async function joinContestPaymentCalculation(contest_size,useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
     let useAmount = (useableBonusPer / 100) * entryFee;
     let saveData = {};
     let remainingFee = 0;
@@ -541,7 +541,7 @@ async function joinContestPaymentCalculation(useableBonusPer, authUser, entryFee
         let extraBalance = authUser.extra_amount || 0;
        
         let extraBal = 0;
-        if (extraBalance && extraBalance > 0) {
+        if (extraBalance && extraBalance > 0 && contest_size > 25) {
             let perDayExtraAmt = 0;
             let perDayLimit = config.extra_bonus_perday_limit;
             if (String(authUser.extra_amount_date) == String(indianDate)) {
