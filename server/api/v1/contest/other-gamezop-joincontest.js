@@ -426,6 +426,9 @@ async function getContestCount(matchContest,contest, user_id, match_id, contest_
                     session.endSession();
                 }
             } else {
+                if (joinedContestCount == contestData.contest_size) {
+                    await OtherGamesContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
+                }
                 await session.commitTransaction();
                 session.endSession();
             }
