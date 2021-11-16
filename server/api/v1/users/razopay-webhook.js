@@ -32,8 +32,13 @@ module.exports = async (req, res) => {
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		let params = req.body;
 		if(params && params.entity){
-			var paramsData = JSON.parse(JSON.stringify(params));
-			console.log(" webhook in****",paramsData);
+			if(params.event == 'payout.processed'){
+			 var paramsData = JSON.parse(JSON.stringify(params));
+			 console.log(" webhook in****",paramsData);
+			 let payoutData	 = params.payload && params.payload.payout ? params.payload.payout :[];
+			 console.log(" payoutData in****",payoutData);
+			}
+			
 
 		}
         
