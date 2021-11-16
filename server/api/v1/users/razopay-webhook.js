@@ -30,8 +30,13 @@ module.exports = async (req, res) => {
   	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        let params = req.body;
-        console.log(" webhook****",params);
+		let params = req.body;
+		if(params && params.entity){
+			var paramsData = JSON.parse(JSON.stringify(params));
+			console.log(" webhook****",paramsData);
+
+		}
+        
 		
 	} catch (error) {
 		res.send(ApiUtility.failed(error.message));
