@@ -162,6 +162,12 @@ config.PAN_VERIFY_API = {
   API_TOKEN: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDMyODIyNzIsIm5iZiI6MTYwMzI4MjI3MiwianRpIjoiNTM2MWNmNGYtNzcwYi00Y2UyLWJmYTEtYmY5N2QyNjI0NmY2IiwiZXhwIjoxOTE4NjQyMjcyLCJpZGVudGl0eSI6ImRldi5yZWFsMTFAYWFkaGFhcmFwaS5pbyIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyIsInVzZXJfY2xhaW1zIjp7InNjb3BlcyI6WyJyZWFkIl19fQ.GRQOGCGPWBTTeRlAueJfjdFHD7TM8-UfRQlWmnzfJ5E',
 }
 
+config.RAZOPAY_API = {
+  BASIC_URL: 'https://api.razorpay.com/v1/',
+  USER_NAME: "rzp_test_8JVz4J7ikbp7Xq",
+  PASSWORD: "ZUHnolptkSjsMB1Gz2cpf2d1",
+}
+
 config.DateFormat = {
   date: 'YYYY-MM-DD',
   time: 'HH:mm',

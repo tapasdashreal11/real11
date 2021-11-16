@@ -98,6 +98,9 @@ const  categoryContestList  = require('./api/v1/contest/category-contest-list');
 const  { otherGamesMatch }  = require('./api/v1/contest/other_games_match');
 const  { otherGameContestWallet }  = require('./api/v1/contest/other-games-wallet');
 const  otherGameWinningDis   = require('./api/v1/contest/other-games-wining-dis');
+const  CreateRazopayFundAccount   = require('./api/v1/users/create-razopay-fund-ac');
+const  RazopayWithdrawReq   = require('./api/v1/users/razopay-withdraw-req');
+const  RazopayWebhook   = require('./api/v1/users/razopay-webhook');
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
@@ -249,7 +252,10 @@ router.get('/api/v1/series-list', auth.authenticate.jwtLogin, seriesList);
 router.get('/api/v1/transation-history-new', auth.authenticate.jwtLogin, transactionHistoryNew);
 router.post('/api/v1/profile', auth.authenticate.jwtLogin, profile);
 router.get('/api/v1/withdraw-history', auth.authenticate.jwtLogin, withdrawHistory);
-router.get('/api/v1/ref-txt', userRefStaticData);
+router.get('/api/v1/ref-txt', userRefStaticData);  
+router.get('/api/v1/create-razopay-fund-ac', CreateRazopayFundAccount);
+router.post('/api/v1/withdraw-razopay-req', RazopayWithdrawReq);
+router.post('/api/v1/withdraw-razopay-webhook', RazopayWebhook);
 
 router.get('/api/v1/user-coupon-purchase/:coupon_id',auth.authenticate.jwtLogin, userCouponPurchase);
 router.get('/api/v1/user-coupon-wallet/:coupon_id',auth.authenticate.jwtLogin, userCouponWalletAmount);

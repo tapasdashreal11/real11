@@ -22,7 +22,7 @@ module.exports = {
       try {
         let userId = req.userId;
         let user = await User.findOne({ _id: userId }).select("  ");
-        let userProData = await Profile.findOne({ user_id: ObjectId(userId) })
+        let userProData = await Profile.findOne({ user_id: ObjectId(userId) });
 
         if (user) {
           let is_profile_complete = false;
