@@ -310,7 +310,7 @@ module.exports = async (req, res) => {
                                                             let playerTeamContestId = newContestId;
                                                             totalContestKey = await getContestCount(matchContest,contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
                                                             
-                                                            
+                                                            console.log('login in join 5****',contestData);
                                                             const roomDetails = {
                                                                 roomId: contest_id, 
                                                                 user: {
@@ -414,6 +414,7 @@ module.exports = async (req, res) => {
 async function getContestCount(matchContest,contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user) {
     try {
         return new Promise(async (resolve, reject) => {
+            console.log('login in join*****');
             var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
             if (isAutoCreateStatus) {
                 
@@ -426,8 +427,11 @@ async function getContestCount(matchContest,contest, user_id, match_id, contest_
                     session.endSession();
                 }
             } else {
+                console.log('login in join 2*****');
                 if (joinedContestCount == contestData.contest_size) {
+                    console.log('login in join 3*****');
                     await OtherGamesContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
+                    console.log('login in join 4****');
                 }
                 await session.commitTransaction();
                 session.endSession();
