@@ -428,14 +428,14 @@ async function getContestCount(matchContest,contest, user_id, match_id, contest_
                 }
             } else {
                 console.log('login in join 2*****');
-                if (joinedContestCount == contestData.contest_size) {
-                    console.log('login in join 3*****',contest_id);
-                    
-                     let resDaaa= await OtherGamesContest.findOneAndUpdate({'contest_id': contest_id }, { $set: {"is_full": 1 } });
-                    console.log('login in join 4****',resDaaa);
-                }
                 await session.commitTransaction();
                 session.endSession();
+                if (joinedContestCount == contestData.contest_size) {
+                    console.log('login in join 3*****',contest_id);
+                     let resDaaa= await OtherGamesContest.findOneAndUpdate({'contest_id': contest_id }, { $set: {"is_full": 1 } });
+                     console.log('login in join 4****');
+                }
+                
             }
             return resolve(1);
         })
