@@ -430,6 +430,7 @@ async function getContestCount(matchContest,contest, user_id, match_id, contest_
                 console.log('login in join 2*****');
                 if (joinedContestCount == contestData.contest_size) {
                     console.log('login in join 3*****');
+                    
                     //await OtherGamesContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     console.log('login in join 4****');
                 }
