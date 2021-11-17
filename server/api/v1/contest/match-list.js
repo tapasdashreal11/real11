@@ -36,8 +36,9 @@ module.exports = {
             data1.message = 'Test Message';
             data1.show_ludo = false;
             data1.show_new_ludo = false;
-            data1.show_zop_ludo = false; 
-            data1.show_phonepe = true;
+            data1.show_zop_ludo = true; 
+            data1.show_phonepe = true; 
+            data1.games = [{"sport":1,"name":"Circket","icon":"circket.png","allow":"b"},{"sport":2,"name":"Football","icon":"football.png","allow":"b"},{"sport":3,"name":"Other Game","icon":"other.png","allow":"a"}];
             data1.server_time = moment(new Date()).format(config.DateFormat.datetime);
             data1.apk_url = `http://apk.real11.com/Real11.apk`;
             
