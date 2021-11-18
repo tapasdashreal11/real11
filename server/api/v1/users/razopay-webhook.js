@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
 		let params = req.body;
 		let approveDate = new Date();
 		if (params && params.entity) {
-			if (params.event == 'payout.processed' || params.event == 'payout.updated') {
+			if (params.event == 'payout.processed') {
 				console.log('razopay webhook in state*****',params.event);
 				let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
 				if(payoutData && payoutData.id){
