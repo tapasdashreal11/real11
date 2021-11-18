@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const razopayPayoutStatus = mongoose.Schema({
     payout_id: { type: String },
     fund_account_id: { type: String},
-    user_id: { type: mongoose.Schema.Types.ObjectId, unique: true },
+    user_id: { type: mongoose.Schema.Types.ObjectId },
     withdraw_id: { type: mongoose.Schema.Types.ObjectId },
     transaction_id: { type: mongoose.Schema.Types.ObjectId },
     status: {type: Number,default:0},
