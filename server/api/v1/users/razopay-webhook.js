@@ -29,7 +29,7 @@ const BANK_MID = process.env.BANK_MID;
 
 module.exports = async (req, res) => {
 	try {
-		var response = { status: false, message: "Invalid Request", data: {} };
+		var response = { status: false, message: "", data: {} };
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		let params = req.body;
 		let approveDate = new Date();
@@ -40,20 +40,15 @@ module.exports = async (req, res) => {
 				console.log('payoutData in hook',payoutData);
 				if(payoutData && payoutData.id){
 					let pId = payoutData.id;
-					console.log('if hook',pId);
 					let payoutStatus =  await RazopayPayoutStatus.findOne({payout_id:pId});
-					console.log('if payoutStatus',payoutStatus);
 					if(payoutStatus && payoutStatus.withdraw_id && payoutStatus.transaction_id){
 						let transStatus = TransactionTypes.TRANSACTION_CONFIRM;
 						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 1, approve_date: approveDate, message: "processed" } });
 						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: "processed from hook" } });
-					}else{
-						console.log('if payoutStatus not payout',payoutStatus);
 					}
 				} else{
-					console.log(" payoutData in else condi****", payoutData);
+					console.log(" payoutData in hook for processed condi****", payoutData);
 				}
-				console.log(" payoutData in****", payoutData);
 				response["status"] = true;
 				response["data"] = {};
 				return res.json(response);
@@ -63,7 +58,9 @@ module.exports = async (req, res) => {
 				console.log('razopay webhook in state*****',params.event);
 				let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
 				if(payoutData && payoutData.id){
-					let payoutStatus =  await RazopayPayoutStatus.findOne({pauout_id:payoutData.id});
+					let pId = payoutData.id;
+					console.log('if hook',pId);
+					let payoutStatus =  await RazopayPayoutStatus.findOne({payout_id:pId});
 					if(payoutStatus.withdraw_id && payoutStatus.transaction_id){
 						let transStatus = TransactionTypes.TRANSACTION_REJECT;
 						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: "payout reversed from hook" } });

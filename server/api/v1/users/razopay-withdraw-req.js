@@ -165,7 +165,7 @@ module.exports = async (req, res) => {
                                             console.log("payOutResponse",payOutResponse);
                                             if(payOutResponse && payOutResponse.id){
 												let transEntity = { user_id:userId,txn_amount:txnAmount,currency: "INR",txn_date: Date.now(),local_txn_id:txnId };
-												let payOutData ={payout_id:payOutResponse.id,fund_account_id:userRazopayData.fund_account_id,user_id:userId};
+												let payOutData ={payout_id:payOutResponse.id,fund_account_id:userRazopayData.fund_account_id,user_id:userId,txn_amount:txnAmount};
 												
 
 												transEntity['order_id'] = payOutResponse.id;

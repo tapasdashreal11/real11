@@ -6,6 +6,7 @@ const razopayPayoutStatus = mongoose.Schema({
     withdraw_id: { type: mongoose.Schema.Types.ObjectId },
     transaction_id: { type: mongoose.Schema.Types.ObjectId },
     status: {type: Number,default:0},
+    txn_amount: {type: Number},
     msz: { type: String},
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
