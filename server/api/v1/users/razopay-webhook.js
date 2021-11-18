@@ -42,10 +42,12 @@ module.exports = async (req, res) => {
 					console.log('if hook',payoutData.id);
 					let payoutStatus =  await RazopayPayoutStatus.findOne({pauout_id:payoutData.id});
 					console.log('if payoutStatus',payoutStatus);
-					if(payoutStatus.withdraw_id && payoutStatus.transaction_id){
+					if(payoutStatus && payoutStatus.withdraw_id && payoutStatus.transaction_id){
 						let transStatus = TransactionTypes.TRANSACTION_CONFIRM;
 						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 1, approve_date: approveDate, message: "processed" } });
 						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: "processed from hook" } });
+					}else{
+						console.log('if payoutStatus not payout',payoutStatus);
 					}
 				} else{
 					console.log(" payoutData in else condi****", payoutData);
