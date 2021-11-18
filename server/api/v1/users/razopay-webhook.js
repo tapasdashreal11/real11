@@ -39,8 +39,9 @@ module.exports = async (req, res) => {
 				let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
 				console.log('payoutData in hook',payoutData);
 				if(payoutData && payoutData.id){
-					console.log('if hook',payoutData.id);
-					let payoutStatus =  await RazopayPayoutStatus.findOne({pauout_id:payoutData.id});
+					let pId = payoutData.id;
+					console.log('if hook',pId);
+					let payoutStatus =  await RazopayPayoutStatus.findOne({payout_id:pId});
 					console.log('if payoutStatus',payoutStatus);
 					if(payoutStatus && payoutStatus.withdraw_id && payoutStatus.transaction_id){
 						let transStatus = TransactionTypes.TRANSACTION_CONFIRM;
