@@ -12,6 +12,8 @@ const AdminSchema = mongoose.Schema({
     refund_initiate: { type: Number, default: 0 }, // 	0=no,1=yes,2=fail 
     approve_date: { type: Date, default: null },
     transfer_id: { type: String, default: null },
+    pauout_id: { type: String},
+    fund_account_id: { type: String},
     reference_id: { type: String, default: null },
     amount: { type: Number, default: 0 },
     is_cancelled: { type: Boolean, default: false },
