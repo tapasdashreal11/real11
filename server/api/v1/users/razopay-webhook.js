@@ -16,6 +16,7 @@ const https = require('https');
 const { parse } = require('url');
 const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
 const { razopayPayoutToUserFundAc } = require("./razopay-contact-fund-ac");
+const RazopayPayoutStatus = require("../../../models/razopay-payout-status");
 
 const subwalletGuid = process.env.WALLET_SUBWALLET_GUID;
 const MERCHANT_KEY = process.env.WALLET_MERCHANT_KEY;
@@ -31,45 +32,36 @@ module.exports = async (req, res) => {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		let params = req.body;
+		let approveDate = new Date();
 		if (params && params.entity) {
-			if (params.event == 'payout.processed') {
-				var paramsData = JSON.parse(JSON.stringify(params));
-				console.log(" webhook in****", paramsData);
-				let payoutData = params.payload && params.payload.payout ? params.payload.payout : [];
+			if (params.event == 'payout.processed' || params.event == 'payout.updated') {
+				console.log('razopay webhook in state*****',params.event);
+				let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
+				if(payoutData && payoutData.id){
+					let payoutStatus =  await RazopayPayoutStatus.findOne({pauout_id:payoutData.id});
+					if(payoutStatus.withdraw_id && payoutStatus.transaction_id){
+						let transStatus = TransactionTypes.TRANSACTION_CONFIRM;
+						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 1, approve_date: approveDate, message: "processed" } });
+						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: "processed from hook" } });
+					}
+				}
+				
 				console.log(" payoutData in****", payoutData);
-			} else if (params.event == 'payout.reversed') {
-				var paramsData = JSON.parse(JSON.stringify(params));
-				console.log(" webhook in****", paramsData);
+			} else if (params.event == 'payout.reversed' || params.event == 'payout.failed' || params.event == 'payout.rejected') {
+				console.log('razopay webhook in state*****',params.event);
 				let payoutData = params.payload && params.payload.payout ? params.payload.payout : [];
-				console.log(" payoutData in****", payoutData);
-			} else if (params.event == 'payout.failed') {
-				var paramsData = JSON.parse(JSON.stringify(params));
-				console.log(" webhook in****", paramsData);
-				let payoutData = params.payload && params.payload.payout ? params.payload.payout : [];
-				console.log(" payoutData in****", payoutData);
-			} else if (params.event == 'payout.updated') {
-				var paramsData = JSON.parse(JSON.stringify(params));
-				console.log(" webhook in****", paramsData);
-				let payoutData = params.payload && params.payload.payout ? params.payload.payout : [];
-				console.log(" payoutData in****", payoutData);
-			} else if (params.event == 'payout.rejected') {
-				var paramsData = JSON.parse(JSON.stringify(params));
-				console.log(" webhook in****", paramsData);
-				let payoutData = params.payload && params.payload.payout ? params.payload.payout : [];
-				console.log(" payoutData in****", payoutData);
-			} else if (params.event == 'payout.queued') {
-				var paramsData = JSON.parse(JSON.stringify(params));
-				console.log(" webhook in****", paramsData);
-				let payoutData = params.payload && params.payload.payout ? params.payload.payout : [];
-				console.log(" payoutData in****", payoutData);
+				if(payoutData && payoutData.id){
+					let payoutStatus =  await RazopayPayoutStatus.findOne({pauout_id:payoutData.id});
+					if(payoutStatus.withdraw_id && payoutStatus.transaction_id){
+						let transStatus = TransactionTypes.TRANSACTION_REJECT;
+						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: "payout reversed from hook" } });
+						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: "payout reversed from hook" } });
+					}
+				}
+			} else {
+				console.log('razopay webhook in other state*****',params.event);
 			}
-
-
-
-
 		}
-
-
 	} catch (error) {
 		res.send(ApiUtility.failed(error.message));
 	}

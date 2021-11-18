@@ -16,6 +16,8 @@ const https = require('https');
 const { parse } = require('url');
 const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
 const {razopayPayoutToUserFundAc } = require("./razopay-contact-fund-ac");
+const RazopayPayoutStatus = require("../../../models/razopay-payout-status");
+const { startSession } = require('mongoose');
 
 const subwalletGuid = process.env.WALLET_SUBWALLET_GUID;
 const MERCHANT_KEY = process.env.WALLET_MERCHANT_KEY;
@@ -78,9 +80,6 @@ module.exports = async (req, res) => {
                                 updatedData.wallet_type = params.wallet_type || '';
                                 updatedData.is_instant = isInstant; 
                                 updatedData.ip_address = userIp ? userIp :""; 
-                                // console.log(remainingAmount);
-                                
-                                // let result =  await Users.update({_id: userId}, {$set : {affiliate_amount : remainingAmount}});
                                 let result =  await Users.updateOne({_id: userId}, {$inc : {affiliate_amount : - parseFloat(params.withdraw_amount)}});
                                 if(result) {
                                     let withdrawData =  await WithdrawRequest.create(updatedData);
@@ -138,17 +137,10 @@ module.exports = async (req, res) => {
                                         }
                                         updatedData.instant_withdraw_comm = instantComm;
                                     }
-                                    // console.log(updatedData);
-                                    // return false;
-                                    
-                                    // let result =  await Users.update({_id: userId}, {$set : {winning_balance : remainingAmount}});
-                                    let result =  await Users.updateOne({_id: userId}, {$inc : {winning_balance : - parseFloat(params.withdraw_amount)}});
-                                    if(result) {
-                                        
+                                    if(user) {
                                         let date = new Date();
                                         let joinContestTxnId	=	'JL'+ date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId;
                                         let txnId = joinContestTxnId;
-                                        // let status = TransactionTypes.TRANSACTION_PENDING;
                                          let txnAmount = params.withdraw_amount;
                                         // let withdrawId = withdrawData._id;
                                         let amountValue = updatedData.refund_amount;// - updatedData.instant_withdraw_comm;
@@ -173,62 +165,90 @@ module.exports = async (req, res) => {
                                             console.log("payOutResponse",payOutResponse);
                                             if(payOutResponse && payOutResponse.id){
 												let transEntity = { user_id:userId,txn_amount:txnAmount,currency: "INR",txn_date: Date.now(),local_txn_id:txnId };
+												let payOutData ={payout_id:payOutResponse.id,fund_account_id:userRazopayData.fund_account_id,user_id:userId};
+												
+
+												transEntity['order_id'] = payOutResponse.id;
+												transEntity['gateway_name'] = "Razopay";
+												transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
+
 												if(payOutResponse.status == "processing"){
 													console.log("enter to processing state with status");
 													// request status 3 => request pending, whether its not sent to wallet or user's wallet not found 
-													let approveDate = new Date();
+													//const session = await startSession()
+													//session.startTransaction();
 													let transStatus = TransactionTypes.TRANSACTION_PENDING;
+													response["message"] =  "Your transaction is processing!!";
 													updatedData['request_status']= 3;
 													updatedData['message']= "processing";
-													updatedData['pauout_id']= payOutResponse.id;
-													updatedData['fund_account_id']= userRazopayData.fund_account_id;
-													await Users.updateOne({_id: userId}, {$inc : {winning_balance : - parseFloat(params.withdraw_amount)}});
-												    let newDataC =  await WithdrawRequest.create([updatedData]);
-													var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+													payOutData['status']=1;
 													transEntity['added_type'] = parseInt(transStatus);
-													transEntity['withdraw_id'] = cResult._id;
-													transEntity['order_id'] = payOutResponse.id;
-													transEntity['gateway_name'] = "Razopay";
-													transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
-													await Transaction.create([transEntity]);
+													
+													try{
+														await Users.updateOne({_id: userId}, {$inc : {winning_balance : - parseFloat(params.withdraw_amount)}});
+														let newDataC =  await WithdrawRequest.create([updatedData]);
+														var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+														transEntity['withdraw_id'] = cResult._id;
+														let newTrnasDataC = await Transaction.create([transEntity]);
+														var cTResult = newTrnasDataC && newTrnasDataC.length > 0 ? newTrnasDataC[0] : {};
+														if(cResult && cResult._id) payOutData['withdraw_id']=cResult._id;
+														if(cTResult && cTResult._id) payOutData['transaction_id']=cTResult._id;
+														await RazopayPayoutStatus.create([payOutData]);
+													}catch(err_pending){
+
+													}
+													
 
 												} else if(payOutResponse.status == "processed"){
 													console.log("enter to processed state with status");
 													// request status 1 => request pending, whether its not sent to wallet or user's wallet not found 
 													let transStatus = TransactionTypes.TRANSACTION_CONFIRM;
+													response["message"] =  "Your transaction has been processed successfully!!";
 													let approveDate = new Date();
 													updatedData['request_status']= 1;
+													payOutData['status']=1;
 													updatedData['approve_date']= approveDate;
 													updatedData['message']= "processed";
-													updatedData['pauout_id']= payOutResponse.id;
-													updatedData['fund_account_id']= userRazopayData.fund_account_id;
-													await Users.updateOne({_id: userId}, {$inc : {winning_balance : - parseFloat(params.withdraw_amount)}});
-													let newDataC =  await WithdrawRequest.create([updatedData]);
-													var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
 													transEntity['added_type'] = parseInt(transStatus);
-													transEntity['withdraw_id'] = cResult._id;
-													transEntity['order_id'] = payOutResponse.id;
-													transEntity['gateway_name'] = "Razopay";
 													transEntity['approve_withdraw'] = approveDate;
-													transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
-													await Transaction.create([transEntity]);
+													try{
+														await Users.updateOne({_id: userId}, {$inc : {winning_balance : - parseFloat(params.withdraw_amount)}});
+														let newDataC =  await WithdrawRequest.create([updatedData]);
+														var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+														transEntity['withdraw_id'] = cResult._id;
+														let newTrnasDataC = await Transaction.create([transEntity]);
+														var cTResult = newTrnasDataC && newTrnasDataC.length > 0 ? newTrnasDataC[0] : {};
+														if(cResult && cResult._id) payOutData['withdraw_id']=cResult._id;
+														if(cTResult && cTResult._id) payOutData['transaction_id']=cTResult._id;
+														await RazopayPayoutStatus.create([payOutData]);
+													}catch(err_pending){
 
+													}
+													
 													
 												} else if(payOutResponse.status == "reversed"){
 													console.log("enter to reversed state with status");
-													response["message"] =  "Your transaction has been reversed successfully!!";
+													response["message"] =  "Your transaction has been reversed!!";
+													payOutData['status']=2;
+													await RazopayPayoutStatus.create([payOutData]);
                                                     return res.json(response);
 													
 												} else if(payOutResponse.status == "rejected"){
 													console.log("enter to rejected state with status");
+													payOutData['status']=2;
+													await RazopayPayoutStatus.create([payOutData]);
 													response["message"] =  "Your withdraw has been rejected.Please try again!!";
 													
 												} else if(payOutResponse.status == "cancelled"){
 													console.log("enter to cancelled state with status");
+													payOutData['status']=2;
+													await RazopayPayoutStatus.create([payOutData]);
 													response["message"] =  "Your withdraw has been cancelled.Please try again!!";
 													
 												} else if(payOutResponse.status == "failed"){
 													console.log("enter to failed state with status");
+													payOutData['status']=2;
+													await RazopayPayoutStatus.create([payOutData]);
 													response["message"] =  "Your withdraw has been failed.Please try again!!";
 												} else {
 													console.log("enter in else state in withdraw");
@@ -243,11 +263,11 @@ module.exports = async (req, res) => {
                                                 return res.json(response);
                                             }
                                         } else {
+											await Users.updateOne({_id: userId}, {$inc : {winning_balance : - parseFloat(params.withdraw_amount)}});
 											let withdrawData =  await WithdrawRequest.create(updatedData);
                                             let status = TransactionTypes.TRANSACTION_PENDING;
                                             let txnAmount = params.withdraw_amount;
                                             let withdrawId = withdrawData._id;
-                                            
                                             await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
             
                                             response["message"] = "Your request has been sent successfully, you will get notified once request is approved.";
