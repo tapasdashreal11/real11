@@ -37,19 +37,28 @@ module.exports = async (req, res) => {
 			if (params.event == 'payout.processed') {
 				console.log('razopay webhook in state*****',params.event);
 				let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
+				console.log('payoutData in hook',payoutData);
 				if(payoutData && payoutData.id){
+					console.log('if hook',payoutData.id);
 					let payoutStatus =  await RazopayPayoutStatus.findOne({pauout_id:payoutData.id});
+					console.log('if payoutStatus',payoutStatus);
 					if(payoutStatus.withdraw_id && payoutStatus.transaction_id){
 						let transStatus = TransactionTypes.TRANSACTION_CONFIRM;
 						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 1, approve_date: approveDate, message: "processed" } });
 						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: "processed from hook" } });
 					}
+				} else{
+					console.log(" payoutData in else condi****", payoutData);
 				}
-				
 				console.log(" payoutData in****", payoutData);
+				response["status"] = true;
+				response["data"] = {};
+				return res.json(response);
+				
+				
 			} else if (params.event == 'payout.reversed' || params.event == 'payout.failed' || params.event == 'payout.rejected') {
 				console.log('razopay webhook in state*****',params.event);
-				let payoutData = params.payload && params.payload.payout ? params.payload.payout : [];
+				let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
 				if(payoutData && payoutData.id){
 					let payoutStatus =  await RazopayPayoutStatus.findOne({pauout_id:payoutData.id});
 					if(payoutStatus.withdraw_id && payoutStatus.transaction_id){
