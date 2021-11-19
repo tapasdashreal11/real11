@@ -25,7 +25,8 @@ module.exports = async (req, res) => {
 	console.log('host*****',host);
 	try {
 
-		const shasum = crypto.createHmac('sha256', secret)
+		const shasum = crypto.createHmac('sha256', secret);
+		shasum.update(JSON.stringify(req.body));
 		const signature  = shasum.digest('hex');
 		const x_rzopay_signature  = host['x-razorpay-signature'];
 		console.log("signature",signature,"x_rzopay_signature",x_rzopay_signature);
