@@ -43,8 +43,14 @@ module.exports = async (req, res) => {
 					let payoutStatus =  await RazopayPayoutStatus.findOne({payout_id:pId});
 					if(payoutStatus && payoutStatus.withdraw_id && payoutStatus.transaction_id){
 						let transStatus = TransactionTypes.TRANSACTION_CONFIRM;
+						let userId = payoutStatus.user_id;
+						let txnAmount  = payoutStatus.txn_amount ? parseFloat(payoutStatus.txn_amount):0;
+						let user = await Users.findOne({ _id: userId});
 						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 1, approve_date: approveDate, message: "processed" } });
 						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: "processed from hook" } });
+						let title = 'withdraw Request confirmed';
+						let notification = 'Your withdraw request has been confirmed';
+						await sendNotificationToUser(userId,user,txnAmount,title,notification,true);
 					}
 				} else{
 					console.log(" payoutData in hook for processed condi****", payoutData);
@@ -54,17 +60,22 @@ module.exports = async (req, res) => {
 				return res.json(response);
 				
 				
-			} else if (params.event == 'payout.reversed' || params.event == 'payout.failed' || params.event == 'payout.rejected') {
+			} else if (params.event == 'payout.reversed' || params.event == 'payout.failed' || params.event == 'payout.rejected' || params.event == 'payout.cancelled') {
 				console.log('razopay webhook in state*****',params.event);
+				 let mszOfEvent = "Hook case of "+ params.event
 				let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
 				if(payoutData && payoutData.id){
 					let pId = payoutData.id;
 					console.log('if hook',pId);
-					let payoutStatus =  await RazopayPayoutStatus.findOne({payout_id:pId});
+					let payoutStatus =  await RazopayPayoutStatus.findOne({payout_id:pId,reverse_status:2});
 					if(payoutStatus.withdraw_id && payoutStatus.transaction_id){
 						let transStatus = TransactionTypes.TRANSACTION_REJECT;
-						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: "payout reversed from hook" } });
-						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: "payout reversed from hook" } });
+						let txnAmount  = payoutStatus.txn_amount ? parseFloat(payoutStatus.txn_amount):0;
+						let userId  = payoutStatus.user_id;
+						await Users.updateOne({_id: userId}, {$inc : {winning_balance : txnAmount}});
+						await RazopayPayoutStatus.updateOne({_id: payoutStatus._id}, {$set : {reverse_status : 1}});
+						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: mszOfEvent } });
+						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: mszOfEvent } });
 					}
 				}
 			} else {
@@ -75,3 +86,23 @@ module.exports = async (req, res) => {
 		res.send(ApiUtility.failed(error.message));
 	}
 };
+
+async function sendNotificationToUser(userId,userDetail,refund_amount,title,notification,isSendEmail){
+	try{
+		const deviceType = userDetail.device_type;
+		const deviceToken = userDetail.device_id;
+		let to = userDetail.email;
+		let subject = 'Real 11 Withdraw Request';
+		let message = '<table><tr><td>Dear user,</td></tr><tr><td>Your withdrawal request is confirmed of Rs. ' + refund_amount + '/- Make sure your withdrawal details are correct. <br><br/> In case any issue please mail us on support@real11.com</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
+		// send mail on withdraw end
+		if(isSendEmail)sendSMTPMail(to, subject, message);
+		// PUSH Notification
+		const notiType = '8';
+		if ((deviceType == 'Android') && (deviceToken != '')) {
+			sendNotificationFCM(userId, notiType, deviceToken, title, notification);
+		}
+		if ((deviceType == 'iphone') && (deviceToken != '') && (deviceToken != 'device_id')) {
+			sendNotificationFCM(userId, notiType, deviceToken, title, notification);
+		}
+	}catch(error_notif){}
+}

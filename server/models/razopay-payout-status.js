@@ -5,7 +5,8 @@ const razopayPayoutStatus = mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId },
     withdraw_id: { type: mongoose.Schema.Types.ObjectId },
     transaction_id: { type: mongoose.Schema.Types.ObjectId },
-    status: {type: Number,default:0},
+    status: {type: Number,default:0}, // default 0 case of pending.becomes 1 in case of processed else 2
+    reverse_status: {type: Number,default:2}, // default value is 2 if any case of reverse/failed/cancelled then it becomes 1 
     txn_amount: {type: Number},
     msz: { type: String},
 }, {
