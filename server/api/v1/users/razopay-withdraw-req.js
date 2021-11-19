@@ -79,22 +79,46 @@ module.exports = async (req, res) => {
 								updatedData.wallet_type = params.wallet_type || '';
 								updatedData.is_instant = isInstant;
 								updatedData.ip_address = userIp ? userIp : "";
-								let result = await Users.updateOne({ _id: userId }, { $inc: { affiliate_amount: - parseFloat(params.withdraw_amount) } });
-								if (result) {
-									let withdrawData = await WithdrawRequest.create(updatedData);
-									let date = new Date();
-									let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId;
-									let txnId = joinContestTxnId;
-									let status = TransactionTypes.TRANSACTION_PENDING;
-									let txnAmount = params.withdraw_amount;
-									let withdrawId = withdrawData._id;
-
-									await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
+								const session = await startSession()
+								session.startTransaction();
+								const sessionOpts = { session, new: true };
+								try{
+									let result = await Users.updateOne({ _id: userId }, { $inc: { affiliate_amount: - parseFloat(params.withdraw_amount) } },sessionOpts);
+									if (result && result.nModified > 0) {
+										let withdrawData = await WithdrawRequest.create([updatedData], { session: session });
+										let date = new Date();
+										let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId;
+										let txnId = joinContestTxnId;
+										let txnStatus = TransactionTypes.TRANSACTION_PENDING;
+										let txnAmount = params.withdraw_amount;
+										var cResult = withdrawData && withdrawData.length > 0 ? withdrawData[0] : {};
+										let withdrawId = cResult._id;
+										let transEntity = { user_id: userId, txn_amount: txnAmount, currency: "INR", txn_date: Date.now(), local_txn_id: txnId };
+										transEntity['added_type']= parseInt(txnStatus);
+										transEntity['match_id']= 0; 
+										transEntity['withdraw_id'] = withdrawId;
+										await Transaction.create([transEntity], { session: session });
+										await session.commitTransaction();
+										session.endSession();
+										response["message"] = "Your request has been sent successfully, you will get notified once request is approved.";
+										response["status"] = true;
+										response["data"] = {};
+										return res.json(response);
+									} else {
+										await session.abortTransaction();
+										session.endSession();
+										return res.send(ApiUtility.failed("Please try again!!"));
+									}
+									
+								} catch(error_affil){
+									await session.abortTransaction();
+									session.endSession();
+									return res.send(ApiUtility.failed("Please try again!!"));
+								} finally {
+									// ending the session
+									session.endSession();
 								}
-								response["message"] = "Your request has been sent successfully, you will get notified once request is approved.";
-								response["status"] = true;
-								response["data"] = {};
-								return res.json(response);
+								
 							}
 						} else {
 							if (params.withdraw_amount > winning_balance) {
@@ -144,7 +168,7 @@ module.exports = async (req, res) => {
 										// let withdrawId = withdrawData._id;
 										let amountValue = updatedData.refund_amount;// - updatedData.instant_withdraw_comm;
 										let payoutPlayload = {
-											"account_number": "2323230094748663",
+											"account_number": config.RAZOPAY_API.ACCOUNT_NUMBER,
 											"fund_account_id": userRazopayData.fund_account_id,
 											"amount": amountValue * 100,
 											"currency": "INR",
@@ -159,7 +183,6 @@ module.exports = async (req, res) => {
 											}
 										}
 										if (params.instant_withdraw && params.instant_withdraw == "1") {
-											console.log("payoutPlayload***", payoutPlayload);
 											let payOutResponse = await razopayPayoutToUserFundAc(payoutPlayload);
 											console.log("payOutResponse", payOutResponse);
 											if (payOutResponse && payOutResponse.id) {
@@ -268,18 +291,43 @@ module.exports = async (req, res) => {
 												return res.json(response);
 											}
 										} else {
+											const session = await startSession()
+											session.startTransaction();
+											const sessionOpts = { session, new: true };
+											try{
+												let walletRes = await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } },sessionOpts);
+												if (walletRes && walletRes.nModified > 0) {
+													let withdrawData = await WithdrawRequest.create([updatedData], { session: session });
+													let txnStatus = TransactionTypes.TRANSACTION_PENDING;
+													let txnAmount = params.withdraw_amount;
+													var cResult = withdrawData && withdrawData.length > 0 ? withdrawData[0] : {};
+													let withdrawId = cResult._id;
+													let transEntity = { user_id: userId, txn_amount: txnAmount, currency: "INR", txn_date: Date.now(), local_txn_id: txnId };
+													transEntity['added_type']= parseInt(txnStatus);
+													transEntity['match_id']= 0; 
+													transEntity['withdraw_id'] = withdrawId;
+													await Transaction.create([transEntity], { session: session });
+													await session.commitTransaction();
+													session.endSession();
+													response["message"] = "Your request has been sent successfully, you will get notified once request is approved.";
+													response["status"] = true;
+													response["data"] = {};
+													return res.json(response);
+												} else {
+													await session.abortTransaction();
+													session.endSession();
+													return res.send(ApiUtility.failed("Please try again!!"));
+												}
+												
+											} catch(error_nin){
+												await session.abortTransaction();
+												session.endSession();
+												return res.send(ApiUtility.failed("Please try again!!"));
+											} finally {
+												// ending the session
+												session.endSession();
+											}
 											
-											await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } });
-											let withdrawData = await WithdrawRequest.create(updatedData);
-											let status = TransactionTypes.TRANSACTION_PENDING;
-											let txnAmount = params.withdraw_amount;
-											let withdrawId = withdrawData._id;
-											await Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId);
-
-											response["message"] = "Your request has been sent successfully, you will get notified once request is approved.";
-											response["status"] = true;
-											response["data"] = {};
-											return res.json(response);
 										}
 
 									}
