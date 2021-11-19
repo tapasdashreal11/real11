@@ -19,6 +19,8 @@ module.exports = async (req, res) => {
 	var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	let params = req.body;
 	let approveDate = new Date();
+	var host = req.headers; 
+	console.log('host*****',host);
 	try {
 		if (params && params.entity) {
 			if (params.event == 'payout.processed') {
