@@ -81,7 +81,9 @@ module.exports = async (req, res) => {
 					}
 				}
 			} else {
-				console.log('razopay webhook in other state*****',params);
+				let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
+				
+				console.log('razopay webhook in other state*****',payoutData);
 			}
 		}
 	} catch (error) {
