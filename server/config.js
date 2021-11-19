@@ -166,7 +166,8 @@ config.RAZOPAY_API = {
   BASIC_URL: 'https://api.razorpay.com/v1/',
   USER_NAME: "rzp_test_8JVz4J7ikbp7Xq",
   PASSWORD: "ZUHnolptkSjsMB1Gz2cpf2d1",
-  ACCOUNT_NUMBER: "2323230094748663"
+  ACCOUNT_NUMBER: "2323230094748663",
+  WEBHOOK_SECRET: "123456789"
 }
 
 config.DateFormat = {

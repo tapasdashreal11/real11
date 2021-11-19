@@ -13,6 +13,7 @@ const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
 const { razopayPayoutToUserFundAc } = require("./razopay-contact-fund-ac");
 const RazopayPayoutStatus = require("../../../models/razopay-payout-status");
 const crypto = require('crypto');
+const config = require('../../../config');
 
 
 module.exports = async (req, res) => {
@@ -20,17 +21,15 @@ module.exports = async (req, res) => {
 	var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	let params = req.body;
 	let approveDate = new Date();
-	var host = req.headers; 
-	const secret = '123456789';
-	console.log('host*****',host);
+	var host = req.headers;
+	const secret = config.RAZOPAY_API.WEBHOOK_SECRET;
 	try {
 
 		const shasum = crypto.createHmac('sha256', secret);
 		shasum.update(JSON.stringify(req.body));
-		const signature  = shasum.digest('hex');
-		const x_rzopay_signature  = host['x-razorpay-signature'];
-		console.log("signature",signature,"x_rzopay_signature",x_rzopay_signature);
-		if(signature === x_rzopay_signature){
+		const signature = shasum.digest('hex');
+		const x_rzopay_signature = host['x-razorpay-signature'];
+		if (signature === x_rzopay_signature) {
 			console.log('we are in write way at hook****');
 			if (params && params.entity) {
 				if (params.event == 'payout.processed') {
@@ -57,8 +56,8 @@ module.exports = async (req, res) => {
 					response["status"] = true;
 					response["data"] = {};
 					return res.json(response);
-	
-	
+
+
 				} else if (params.event == 'payout.reversed' || params.event == 'payout.failed' || params.event == 'payout.rejected' || params.event == 'payout.cancelled') {
 					console.log('razopay webhook in state*****', params.event);
 					let mszOfEvent = "Hook case of " + params.event
@@ -75,8 +74,8 @@ module.exports = async (req, res) => {
 							await RazopayPayoutStatus.updateOne({ _id: payoutStatus._id }, { $set: { reverse_status: 1 } });
 							await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: mszOfEvent } });
 							await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: mszOfEvent } });
-	
-	
+
+
 						}
 					}
 					response["status"] = true;
@@ -84,15 +83,15 @@ module.exports = async (req, res) => {
 					return res.json(response);
 				} else {
 					let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
-	
+
 					console.log('razopay webhook in other state*****', payoutData);
 				}
 			}
-		}else{
+		} else {
 			// some body hitting your server
 			console.log('someone hitting your server******');
 		}
-		
+
 	} catch (error) {
 		res.send(ApiUtility.failed(error.message));
 	}
