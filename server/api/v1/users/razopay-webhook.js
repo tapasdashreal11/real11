@@ -21,13 +21,14 @@ module.exports = async (req, res) => {
 	let params = req.body;
 	let approveDate = new Date();
 	var host = req.headers; 
-	const secret = '123456';
+	const secret = '123456789';
 	console.log('host*****',host);
 	try {
 
 		const shasum = crypto.createHmac('sha256', secret)
 		const signature  = shasum.digest('hex');
 		const x_rzopay_signature  = host['x-razorpay-signature'];
+		console.log("signature",signature,"x_rzopay_signature",x_rzopay_signature);
 		if(signature === x_rzopay_signature){
 			console.log('we are in write way at hook****');
 			if (params && params.entity) {
