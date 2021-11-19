@@ -72,15 +72,16 @@ module.exports = async (req, res) => {
 						let transStatus = TransactionTypes.TRANSACTION_REJECT;
 						let txnAmount  = payoutStatus.txn_amount ? parseFloat(payoutStatus.txn_amount):0;
 						let userId  = payoutStatus.user_id;
-						await Users.updateOne({_id: userId}, {$inc : {winning_balance : txnAmount}});
+						let userData = await Users.updateOne({_id: userId}, {$inc : {winning_balance : txnAmount}});
 						await RazopayPayoutStatus.updateOne({_id: payoutStatus._id}, {$set : {reverse_status : 1}});
 						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: mszOfEvent } });
 						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: mszOfEvent } });
+						console.log("userData in hook**",userData);
 
 					}
 				}
 			} else {
-				console.log('razopay webhook in other state*****',params.event);
+				console.log('razopay webhook in other state*****',params);
 			}
 		}
 	} catch (error) {
