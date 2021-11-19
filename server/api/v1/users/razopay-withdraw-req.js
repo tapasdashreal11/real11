@@ -268,6 +268,7 @@ module.exports = async (req, res) => {
 												return res.json(response);
 											}
 										} else {
+											
 											await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } });
 											let withdrawData = await WithdrawRequest.create(updatedData);
 											let status = TransactionTypes.TRANSACTION_PENDING;
