@@ -38,10 +38,10 @@ module.exports = {
             data1.show_new_ludo = false;
             data1.show_zop_ludo = true; 
             data1.show_phonepe = true; 
-            data1.sport_type = [{"sport":1,"name":"Cricket","active":true,"allow":"b"},{"sport":2,"name":"Football","active":true,"allow":"b"},{"sport":3,"name":"Ludo","active":true,"allow":"a"},{"sport":4,"name":"Kabbadi","active":true,"allow":"b"}];
+            data1.sport_type = [{"sport":1,"name":"Circket","active":true,"allow":"b"},{"sport":2,"name":"Football","active":true,"allow":"b"},{"sport":3,"name":"Ludo","active":true,"allow":"a"}];
             data1.server_time = moment(new Date()).format(config.DateFormat.datetime);
             data1.apk_url = `http://apk.real11.com/Real11.apk`;
-            
+            // ,{"sport":4,"name":"Kabbadi","active":true,"allow":"b"}
             var successObj = ApiUtility.success(data1);
             redis.setRedis('match-list-' + sport, successObj)
             res.send(successObj);

@@ -76,6 +76,7 @@ module.exports = async (req, res) => {
 						await RazopayPayoutStatus.updateOne({_id: payoutStatus._id}, {$set : {reverse_status : 1}});
 						await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: mszOfEvent } });
 						await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: mszOfEvent } });
+
 					}
 				}
 			} else {
