@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
 
 		let wAmount = params && params.withdraw_amount ? parseFloat(params.withdraw_amount) : 0;
 		if (wAmount < 1) {
-			response["message"] = "You are under supervision of admin.Please don't do this activity!!";
+			response["message"] = "You are under supervision of admin. Please don't do this activity!!";
 			return res.json(response);
 		}
 		try {

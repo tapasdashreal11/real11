@@ -8,11 +8,13 @@ const PlayerTeamContest = require('../../../models/player-team-contest');
 const ReferralCodeDetails = require("../../../models/user-referral-code-details");
 const { Validator } = require("node-input-validator");
 const logger = require("../../../../utils/logger")(module);
-const { rowTextToJson,sendSMTPMail } = require("../common/helper");
+const { rowTextToJson, sendSMTPMail } = require("../common/helper");
 const ModelService = require("../../ModelService");
 const _ = require("lodash");
 var ifsc = require('ifsc');
 const redis = require('../../../../lib/redis');
+const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
+const { razopayUserContact, razopayFundAccount } = require("./razopay-contact-fund-ac");
 
 module.exports = {
   profile: async (req, res) => {
@@ -27,7 +29,18 @@ module.exports = {
         if (user) {
           let is_profile_complete = false;
           if (user.first_name !== '' && user.email !== '' && user.phone !== '' && user.address !== '' && user.city !== user.postal_code !== '') {
-            is_profile_complete = true;
+           let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
+           if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
+              is_profile_complete = true;
+           } else {
+              is_profile_complete = false;
+              await checkFundAcOfUser(userId);
+              let userFundAcAgain = await UserRazopayFundAc.findOne({ user_id: userId });
+              if (userFundAcAgain && userFundAcAgain.contact_id && userFundAcAgain.fund_account_id) {
+                is_profile_complete = true;
+               }
+
+           }
           }
           let Referdetails = [];
           let sport = 1;
@@ -68,35 +81,35 @@ module.exports = {
 
           if (user.bank_account_verify == 2 && user.pen_verify == 2 && user.email_verified == 1) {
             data.account_verified = true;
-           /** try{
-              let bankDetail = await BankDetails.findOne({ user_id: userId });
-              if(bankDetail && bankDetail.ifsc_code && bankDetail.api_verified && bankDetail.api_verified == 1 ){
-                ifsc.fetchDetails(bankDetail.ifsc_code).then(async function(res) {
-                  let appSData = await getPromiseForAppSetting('app-setting',"{}");
-                  let dataItem = appSData ?  JSON.parse(appSData) :{};
-                  if(dataItem && dataItem.state_name_list && res && res.STATE && user.email){
-                    if(dataItem.state_name_list.toUpperCase().includes(res.STATE)){
-                      await User.findOneAndUpdate({ _id: userId },{$set:{bank_account_verify:0,bank_reject_reason:"Your state is banned as per govt policy"}});
-                      let updatedData = {};
-                      updatedData.account_number = bankDetail.account_number || null;
-                      updatedData.ifsc_code = bankDetail.ifsc_code || null;
-                      updatedData.bank_name = bankDetail.bank_name || null;
-                      updatedData.branch = bankDetail.branch || null;
-                      updatedData.user_id =bankDetail.user_id;
-                      updatedData.bank_image = bankDetail.bank_image;
-                      await BankDetailsUnverified.create(updatedData);
-                      await BankDetails.deleteOne({ user_id: userId });
-                      sendEmailToAdmin(user.email);
-                    } else {
-                      await BankDetails.findOneAndUpdate({ user_id: userId },{$set:{api_verified:2}});
+            /** try{
+               let bankDetail = await BankDetails.findOne({ user_id: userId });
+               if(bankDetail && bankDetail.ifsc_code && bankDetail.api_verified && bankDetail.api_verified == 1 ){
+                 ifsc.fetchDetails(bankDetail.ifsc_code).then(async function(res) {
+                   let appSData = await getPromiseForAppSetting('app-setting',"{}");
+                   let dataItem = appSData ?  JSON.parse(appSData) :{};
+                   if(dataItem && dataItem.state_name_list && res && res.STATE && user.email){
+                     if(dataItem.state_name_list.toUpperCase().includes(res.STATE)){
+                       await User.findOneAndUpdate({ _id: userId },{$set:{bank_account_verify:0,bank_reject_reason:"Your state is banned as per govt policy"}});
+                       let updatedData = {};
+                       updatedData.account_number = bankDetail.account_number || null;
+                       updatedData.ifsc_code = bankDetail.ifsc_code || null;
+                       updatedData.bank_name = bankDetail.bank_name || null;
+                       updatedData.branch = bankDetail.branch || null;
+                       updatedData.user_id =bankDetail.user_id;
+                       updatedData.bank_image = bankDetail.bank_image;
+                       await BankDetailsUnverified.create(updatedData);
+                       await BankDetails.deleteOne({ user_id: userId });
+                       sendEmailToAdmin(user.email);
+                     } else {
+                       await BankDetails.findOneAndUpdate({ user_id: userId },{$set:{api_verified:2}});
+                     }
                     }
-                   }
-                });
-              }
-              
-            }catch(errorIfsc){
-              console.log('errorIfsc check at profile *****',errorIfsc);
-            } */
+                 });
+               }
+               
+             }catch(errorIfsc){
+               console.log('errorIfsc check at profile *****',errorIfsc);
+             } */
 
           } else {
             data.account_verified = false;
@@ -162,10 +175,10 @@ module.exports = {
             userData['account_verified'] = false;
           }
           userData['cash_balance'] = user && user.cash_balance ? user.cash_balance : 0;
-          userData['winning_balance'] = user && user.winning_balance ? user.winning_balance :0 ;
-          userData['bonus_amount'] = user && user.bonus_amount ? user.bonus_amount :0 ;
+          userData['winning_balance'] = user && user.winning_balance ? user.winning_balance : 0;
+          userData['bonus_amount'] = user && user.bonus_amount ? user.bonus_amount : 0;
           userData['affiliate_amount'] = user && user.affiliate_amount ? parseInt(user.affiliate_amount) : 0;
-          userData['_id'] = user._id ;
+          userData['_id'] = user._id;
           userData['is_profile_complete'] = is_profile_complete;
           userData['fair_play_violation'] = (user.fair_play_violation == 1) ? true : false;
           response["message"] = "Successfully";
@@ -185,23 +198,23 @@ module.exports = {
   }
 };
 
-async function getPromiseForAppSetting(key, defaultValue){
+async function getPromiseForAppSetting(key, defaultValue) {
   return new Promise((resolve, reject) => {
-      redis.redisObj.get(key, async (err, data) => {
-          if (err) { 
-              reject(defaultValue);
-          }
-          if (data == null) {
-              const appSettingData = await AppSettings.findOne({});
-              if(appSettingData && appSettingData._id){
-                  console.log('app setting coming from db*****');
-                  data = JSON.stringify(appSettingData);
-              } else {
-                  data = defaultValue;
-              }
-          }
-          resolve(data)
-      })
+    redis.redisObj.get(key, async (err, data) => {
+      if (err) {
+        reject(defaultValue);
+      }
+      if (data == null) {
+        const appSettingData = await AppSettings.findOne({});
+        if (appSettingData && appSettingData._id) {
+          console.log('app setting coming from db*****');
+          data = JSON.stringify(appSettingData);
+        } else {
+          data = defaultValue;
+        }
+      }
+      resolve(data)
+    })
   })
 }
 
@@ -210,4 +223,65 @@ async function sendEmailToAdmin(to1) {
   let to = "shashijangir@real11.com";
   let subject = "Bank unverified!!";
   sendSMTPMail(to, subject, mailMessage);
+}
+
+async function checkFundAcOfUser(userId) {
+  try {
+    let apiList = [User.findOne({ _id: userId }), BankDetails.findOne({ user_id: userId }), UserRazopayFundAc.findOne({ user_id: userId })];
+    var results = await Promise.all(apiList);
+    if (results && results.length > 0) {
+      let user = results[0] ? results[0] : {};
+      let userBankDeatail = results[1] ? results[1] : {};
+      let userRazopayData = results[2] ? results[2] : {};
+      if (userRazopayData && userRazopayData.contact_id && userRazopayData.fund_account_id) {
+
+      } else {
+        if (user.first_name !== '' && user.email !== '' && user.phone !== '' && user.address !== '' && user.city !== user.postal_code !== '') {
+          let userContact = {
+            "name": user.first_name,
+            "email": user.email,
+            "contact": user.phone,
+            "type": "customer",
+            "reference_id": "" + userId,
+            "notes": {
+              "random_key_1": "Real11 contact",
+              "random_key_2": "Reall 11 User"
+            }
+          };
+
+          let fundAccount = {
+            "account_type": "bank_account",
+            "bank_account": {
+              "name": user.first_name,
+              "ifsc": userBankDeatail.ifsc_code,
+              "account_number": userBankDeatail.account_number,
+            }
+          };
+          if (_.isEmpty(userRazopayData)) {
+            let userContactres = await razopayUserContact(userContact);
+            console.log('userContactres', userContactres);
+            if (userContactres && userContactres.id) {
+              fundAccount["contact_id"] = userContactres.id;
+              let userFundRes = await razopayFundAccount(fundAccount);
+              if (userFundRes && userFundRes.id) {
+                await UserRazopayFundAc.create({ contact_id: userContactres.id, user_id: userId, fund_account_id: userFundRes.id });
+              } else {
+                await UserRazopayFundAc.create({ contact_id: userContactres.id, user_id: userId });
+              }
+            }
+          } else {
+            if (userRazopayData && userRazopayData.contact_id) {
+              fundAccount["contact_id"] = userRazopayData.contact_id;
+              let userFundRes = await razopayFundAccount(fundAccount);
+              if (userFundRes && userFundRes.id) {
+                await UserRazopayFundAc.findOneAndUpdate({ user_id: userId }, { $set: { fund_account_id: userFundRes.id } });
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch (error) {
+    logger.error("LOGIN_ERROR", error.message);
+  }
 }
