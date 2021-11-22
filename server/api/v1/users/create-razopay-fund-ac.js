@@ -11,7 +11,7 @@ const _ = require('lodash');
 module.exports = async (req, res) => {
     try {
         var response = { status: false, message: "Invalid Request", data: {} };
-        let userId = "6166e12894f04e3f15a9c057"; //req.userId;
+        let userId = "6171105acd54863bd0c02c17"; //req.userId;
         let apiList = [Users.findOne({ _id: userId }), BankDetails.findOne({ user_id: userId }), UserRazopayFundAc.findOne({ user_id: userId })];
         var results = await Promise.all(apiList);
         if (results && results.length > 0) {

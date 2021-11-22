@@ -89,7 +89,7 @@ module.exports = async (req, res) => {
 			}
 		} else {
 			// some body hitting your server
-			console.log('someone hitting your server******');
+			console.log('someone hitting your server for razopay hook******');
 		}
 
 	} catch (error) {
