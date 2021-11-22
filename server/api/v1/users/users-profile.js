@@ -32,12 +32,15 @@ module.exports = {
            let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
            if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
               is_profile_complete = true;
+              console.log('profile fund ac match******');
            } else {
               is_profile_complete = false;
+              console.log('profile fund ac not match in else******');
               await checkFundAcOfUser(userId);
               let userFundAcAgain = await UserRazopayFundAc.findOne({ user_id: userId });
               if (userFundAcAgain && userFundAcAgain.contact_id && userFundAcAgain.fund_account_id) {
                 is_profile_complete = true;
+                console.log('profile fund ac match in else******');
                }
 
            }
