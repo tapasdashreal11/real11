@@ -28,10 +28,12 @@ module.exports = {
 
         if (user) {
           let is_profile_complete = false;
+          let is_user_fund_ac = false;
           if (user.first_name !== '' && user.email !== '' && user.phone !== '' && user.address !== '' && user.city !== user.postal_code !== '') {
            let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
            if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
               is_profile_complete = true;
+              is_user_fund_ac =true;
               console.log('profile fund ac match******');
            } else {
               is_profile_complete = false;
@@ -40,9 +42,9 @@ module.exports = {
               let userFundAcAgain = await UserRazopayFundAc.findOne({ user_id: userId });
               if (userFundAcAgain && userFundAcAgain.contact_id && userFundAcAgain.fund_account_id) {
                 is_profile_complete = true;
+                is_user_fund_ac =true;
                 console.log('profile fund ac match in else******');
                }
-
            }
           }
           let Referdetails = [];
@@ -128,6 +130,7 @@ module.exports = {
           data.rewards = [];
           data.series_ranks = [];
           data.is_profile_complete = is_profile_complete;
+          data.is_user_fund_ac = is_user_fund_ac;
           data.fair_play_violation = (user.fair_play_violation == 1) ? true : false;
           data.is_youtuber = (user.is_youtuber == 1) ? true : false;
           data.pan_reject_reason = user.pan_reject_reason || null;
@@ -169,8 +172,13 @@ module.exports = {
         let userData = {};
         if (user) {
           let is_profile_complete = false;
+          let is_user_fund_ac = false;
           if (user.first_name !== '' && user.email !== '' && user.phone !== '' && user.address !== '' && user.city !== user.postal_code !== '') {
             is_profile_complete = true;
+            let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
+            if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
+                is_user_fund_ac = true;
+            } 
           }
           if (user.bank_account_verify == 2 && user.pen_verify == 2 && user.email_verified == 1) {
             userData['account_verified'] = true;
@@ -183,6 +191,7 @@ module.exports = {
           userData['affiliate_amount'] = user && user.affiliate_amount ? parseInt(user.affiliate_amount) : 0;
           userData['_id'] = user._id;
           userData['is_profile_complete'] = is_profile_complete;
+          userData['is_user_fund_ac'] = is_user_fund_ac;
           userData['fair_play_violation'] = (user.fair_play_violation == 1) ? true : false;
           response["message"] = "Successfully";
           response["status"] = true;
