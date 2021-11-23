@@ -164,10 +164,10 @@ config.PAN_VERIFY_API = {
 
 config.RAZOPAY_API = {
   BASIC_URL: 'https://api.razorpay.com/v1/',
-  USER_NAME: "rzp_test_8JVz4J7ikbp7Xq",
-  PASSWORD: "ZUHnolptkSjsMB1Gz2cpf2d1",
-  ACCOUNT_NUMBER: "2323230094748663",
-  WEBHOOK_SECRET: "123456789"
+  USER_NAME: process.env.RAZOPAY_USER_NAME,  //"rzp_test_8JVz4J7ikbp7Xq",
+  PASSWORD: process.env.RAZOPAY_PASSWORD, //"ZUHnolptkSjsMB1Gz2cpf2d1",
+  ACCOUNT_NUMBER: process.env.RAZOPAY_ACCOUNT_NUMBER, //"2323230094748663",
+  WEBHOOK_SECRET: process.env.RAZOPAY_WEBHOOK_SECRET, //"123456789"
 }
 
 config.DateFormat = {
