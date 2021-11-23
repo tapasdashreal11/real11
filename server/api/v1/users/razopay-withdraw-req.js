@@ -203,7 +203,7 @@ module.exports = async (req, res) => {
 													response["message"] = "Your transaction is processing!!";
 													updatedData['request_status'] = 3;
 													updatedData['message'] = "processing";
-													payOutData['status'] = 1;
+													payOutData['status'] = 0;
 													transEntity['added_type'] = parseInt(transStatus);
 
 													try {
@@ -244,7 +244,8 @@ module.exports = async (req, res) => {
 														let newTrnasDataC = await Transaction.create([transEntity]);
 														var cTResult = newTrnasDataC && newTrnasDataC.length > 0 ? newTrnasDataC[0] : {};
 														if (cResult && cResult._id) payOutData['withdraw_id'] = cResult._id;
-														if (cTResult && cTResult._id) payOutData['transaction_id'] = cTResult._id;
+														if (cTResult && cTResult._id) payOutData['transaction_id'] = cTResult._id; //utr
+														payOutData['utr'] = payOutResponse.utr;
 														await RazopayPayoutStatus.create([payOutData]);
 														let title = 'withdraw Request confirmed';
 														let notification = 'Your withdraw request has been confirmed';

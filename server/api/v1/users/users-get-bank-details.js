@@ -9,6 +9,7 @@ const logger = require("../../../../utils/logger")(module);
 const { rowTextToJson } = require("../common/helper");
 const moment = require('moment');
 const { isAbstractType } = require("graphql");
+const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
 
 // @params
 // {
@@ -37,21 +38,27 @@ module.exports = async (req, res) => {
       // console.log(user);
       // return false;
       if (user) {
-        
         let currentDate = moment().format('YYYY-MM-DD');
         let userWithdraw = await WithdrawRequests.findOne({ user_id: userId, is_instant:true, refund_amount:{$gte:10000}, created: {$gte: (moment(currentDate+"T00:00:00.000Z").toISOString()), $lte: (moment(currentDate+"T23:59:59.000Z").toISOString())}  });
         // console.log(userWithdraw);
         // return false;
         const userData = rowTextToJson(user);
+        let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
+        
         let data = userData;
         data.account_no = userData.account_number;
         data.min_withdraw_amount = config.min_withdraw_amount || 0; 
         data.winning_balance = userData.user_id.winning_balance || 0; 
-        data.is_fast_withdraw = false
+        data.is_fast_withdraw = false;
+        data.withdraw_allow_option = ['bank','paytm'];
         if(!userWithdraw) {
           data.is_fast_withdraw  = true;
         }
-
+        if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
+          data. is_user_fund_ac = true;
+        } else {
+          data. is_user_fund_ac = false;
+        }
         response["message"] = "Successfully";
         response["status"] = true;
         response["data"] = data;

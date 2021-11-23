@@ -9,6 +9,7 @@ const razopayPayoutStatus = mongoose.Schema({
     reverse_status: {type: Number,default:2}, // default value is 2 if any case of reverse/failed/cancelled then it becomes 1 
     txn_amount: {type: Number},
     msz: { type: String},
+    utr: { type: String,default:''},
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },

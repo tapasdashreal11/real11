@@ -38,12 +38,15 @@ module.exports = async (req, res) => {
 					console.log('payoutData in hook', payoutData);
 					if (payoutData && payoutData.id) {
 						let pId = payoutData.id;
+						let utrId = payoutData.utr;
 						let payoutStatus = await RazopayPayoutStatus.findOne({ payout_id: pId });
 						if (payoutStatus && payoutStatus.withdraw_id && payoutStatus.transaction_id) {
 							let transStatus = TransactionTypes.TRANSACTION_CONFIRM;
 							let userId = payoutStatus.user_id;
+							
 							let txnAmount = payoutStatus.txn_amount ? parseFloat(payoutStatus.txn_amount) : 0;
 							let user = await Users.findOne({ _id: userId });
+							await RazopayPayoutStatus.updateOne({ '_id': payoutStatus._id }, { $set: { status: 1, utr: utrId, msz: "hook processed" } });
 							await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 1, approve_date: approveDate, message: "processed" } });
 							await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: "processed from hook" } });
 							let title = 'withdraw Request confirmed';
@@ -74,8 +77,6 @@ module.exports = async (req, res) => {
 							await RazopayPayoutStatus.updateOne({ _id: payoutStatus._id }, { $set: { reverse_status: 1 } });
 							await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: mszOfEvent } });
 							await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: mszOfEvent } });
-
-
 						}
 					}
 					response["status"] = true;
