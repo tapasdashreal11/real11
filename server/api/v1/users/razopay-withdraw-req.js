@@ -384,7 +384,7 @@ async function sendNotificationToUser(userId,userDetail,withdraw_request,title,n
 
 async function sendEmailToAdminForLowBalance(){
 	try{
-		let to = "shashijangir@real11.com";
+		let to = "amityadav@real11.com";
 		let subject = 'Real 11 Withdraw Low Balance Alert';
 		let message = '<table><tr><td>Dear Admin,</td></tr><tr><td>We have low balance in account for payout at Razopay PROD. <br><br/> Please add more amount to make user withdrawal successfully</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
 		// send mail on withdraw end
