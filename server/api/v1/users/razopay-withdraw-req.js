@@ -350,7 +350,7 @@ module.exports = async (req, res) => {
 					return res.json(response);
 				}
 			} else {
-				res.send(ApiUtility.failed("Your account is not verified with us.Please contact with admin!!"));
+				res.send(ApiUtility.failed("Your account is not verified with us. Please contact with admin!!"));
 			}
 		} catch (err) {
 			response["message"] = err.message;
@@ -362,6 +362,15 @@ module.exports = async (req, res) => {
 	}
 };
 
+/**
+ * Send a message and email to user for withdrawal status
+ * @param {*} userId 
+ * @param {*} userDetail 
+ * @param {*} withdraw_request 
+ * @param {*} title 
+ * @param {*} notification 
+ * @param {*} isSendEmail 
+ */
 async function sendNotificationToUser(userId,userDetail,withdraw_request,title,notification,isSendEmail){
 	try{
 		const deviceType = userDetail.device_type;
@@ -382,12 +391,15 @@ async function sendNotificationToUser(userId,userDetail,withdraw_request,title,n
 	} catch(error_notif){}
 }
 
+/**
+ * Send email to admin during low balance in payout
+ */
 async function sendEmailToAdminForLowBalance(){
 	try{
 		let to = "amityadav@real11.com";
 		let subject = 'Real 11 Withdraw Low Balance Alert';
 		let message = '<table><tr><td>Dear Admin,</td></tr><tr><td>We have low balance in account for payout at Razopay PROD. <br><br/> Please add more amount to make user withdrawal successfully</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
-		// send mail on withdraw end
+		// send mail on low balance
 		sendSMTPMail(to, subject, message);
 	
 	} catch(error_notif){}
