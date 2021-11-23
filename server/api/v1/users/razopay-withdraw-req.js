@@ -288,7 +288,13 @@ module.exports = async (req, res) => {
 												response["data"] = {};
 												return res.json(response);
 											} else {
-												response["message"] = (payOutResponse && payOutResponse.error && payOutResponse.error.reason && payOutResponse.error.reason == "insufficient_funds") ? "Withdraw is temporarily on hold for few hours.Please try after some time!!" : "Something went wrong!!";
+												if(payOutResponse && payOutResponse.error && payOutResponse.error.reason && payOutResponse.error.reason == "insufficient_funds"){
+													response["message"] = "Withdraw is temporarily on hold for few hours.Please try after some time!!";
+													sendEmailToAdminForLowBalance();
+												}else{
+													response["message"] = "Something went wrong!!";
+												}
+												
 												return res.json(response);
 											}
 										} else {
@@ -373,5 +379,16 @@ async function sendNotificationToUser(userId,userDetail,withdraw_request,title,n
 		if ((deviceType == 'iphone') && (deviceToken != '') && (deviceToken != 'device_id')) {
 			sendNotificationFCM(userId, notiType, deviceToken, title, notification);
 		}
-	}catch(error_notif){}
+	} catch(error_notif){}
+}
+
+async function sendEmailToAdminForLowBalance(){
+	try{
+		let to = "shashijangir@real11.com";
+		let subject = 'Real 11 Withdraw Low Balance Alert';
+		let message = '<table><tr><td>Dear Admin,</td></tr><tr><td>We have low balance in account for payout at Razopay PROD. <br><br/> Please add more amount to make user withdrawal successfully</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
+		// send mail on withdraw end
+		sendSMTPMail(to, subject, message);
+	
+	} catch(error_notif){}
 }
