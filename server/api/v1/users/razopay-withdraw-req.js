@@ -172,7 +172,7 @@ module.exports = async (req, res) => {
 											"fund_account_id": userRazopayData.fund_account_id,
 											"amount": amountValue * 100,
 											"currency": "INR",
-											"mode": "IMPS",
+											"mode": "NEFT",
 											"purpose": "payout",
 											"queue_if_low_balance": false,
 											"reference_id": "" + userId,
