@@ -30,22 +30,22 @@ module.exports = {
           let is_profile_complete = false;
           let is_user_fund_ac = false;
           if (user.first_name !== '' && user.email !== '' && user.phone !== '' && user.address !== '' && user.city !== user.postal_code !== '') {
-           let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
-           if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
-              is_profile_complete = true;
-              is_user_fund_ac =true;
+            is_profile_complete = true;
+            let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
+            if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
+              is_user_fund_ac = true;
               console.log('profile fund ac match******');
-           } else {
-              is_profile_complete = false;
-              console.log('profile fund ac not match in else******');
-              await checkFundAcOfUser(userId);
-              let userFundAcAgain = await UserRazopayFundAc.findOne({ user_id: userId });
-              if (userFundAcAgain && userFundAcAgain.contact_id && userFundAcAgain.fund_account_id) {
-                is_profile_complete = true;
-                is_user_fund_ac =true;
-                console.log('profile fund ac match in else******');
-               }
-           }
+            } else {
+              if (user.bank_account_verify == 2 && user.pen_verify == 2 && user.email_verified == 1) {
+                console.log('profile fund ac not match in else******');
+                await checkFundAcOfUser(userId);
+                let userFundAcAgain = await UserRazopayFundAc.findOne({ user_id: userId });
+                if (userFundAcAgain && userFundAcAgain.contact_id && userFundAcAgain.fund_account_id) {
+                   is_user_fund_ac = true;
+                  console.log('profile fund ac match in else******');
+                }
+              }
+            }
           }
           let Referdetails = [];
           let sport = 1;
@@ -177,8 +177,8 @@ module.exports = {
             is_profile_complete = true;
             let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
             if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
-                is_user_fund_ac = true;
-            } 
+              is_user_fund_ac = true;
+            }
           }
           if (user.bank_account_verify == 2 && user.pen_verify == 2 && user.email_verified == 1) {
             userData['account_verified'] = true;
