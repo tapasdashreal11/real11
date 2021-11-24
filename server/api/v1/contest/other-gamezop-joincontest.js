@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
                                 return res.send(ApiUtility.failed("Already Joined Contest."));
                              } else {
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
-                                console.log('fsfsfsfsf*** 2');
+                                
                                 const session = await startSession()
                                 session.startTransaction();
                                 const sessionOpts = { session, new: true };
@@ -62,7 +62,7 @@ module.exports = async (req, res) => {
                                         let joinedContestCount = doc.joined_users;
                                         if (contestData && contestData.contest_size < joinedContestCount && infinteStatus ) {
                                             // console.log("Join contest matchContest live fantasy response-----", matchContest.contest_size, joinedContestCount);
-                                            console.log('fsfsfsfsf*** 3');
+                                           
                                             let response = {};
                                             var MatchContestData = await OtherGamesContest.findOne({ 'parent_contest_id': parentContestId,'match_id': decoded['match_id'], is_full: 0 }).sort({ _id: -1 });
                                             if (MatchContestData) {
@@ -85,7 +85,7 @@ module.exports = async (req, res) => {
 
                 
                                         } else {
-                                            console.log('fsfsfsfsf*** 4');
+                                            
                                             
                                                 let contest = {};
                                                 let newContestId = new ObjectId();
@@ -310,7 +310,7 @@ module.exports = async (req, res) => {
                                                             let playerTeamContestId = newContestId;
                                                             totalContestKey = await getContestCount(matchContest,contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
                                                             
-                                                            console.log('login in join 5****',contestData);
+                                                            
                                                             const roomDetails = {
                                                                 roomId: contest_id, 
                                                                 user: {
@@ -325,7 +325,7 @@ module.exports = async (req, res) => {
                                                                 cta: "BRIDGE.postMessage", 
                                                                 text: "go_home"
                                                         }
-                                                           console.log("roomDetails",roomDetails);
+                                                           
                                                            let encodeData = encodeURIComponent(btoa(JSON.stringify(roomDetails)));
                                                             data1.room_id = contest_id;
                                                             //data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&roomDetails="+encodeData; // For Prod
@@ -415,7 +415,7 @@ module.exports = async (req, res) => {
 async function getContestCount(matchContest,contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user) {
     try {
         return new Promise(async (resolve, reject) => {
-            console.log('login in join*****');
+           
             var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
             if (isAutoCreateStatus) {
                 
@@ -502,7 +502,7 @@ async function contestAutoCreateAferJoin(contestData, contest_id, match_id, pare
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
-        console.log('LF something went wrong in autocreate***************************wrong in auto error');
+       // console.log('LF something went wrong in autocreate***************************wrong in auto error');
         return {}
     }
 }
