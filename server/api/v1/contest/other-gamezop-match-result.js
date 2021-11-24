@@ -16,7 +16,7 @@ const moment = require('moment');
 module.exports = async (req, res) => {
     try {
         const { roomId, matchId, scores } = req.body;
-        console.log('roomId', roomId, 'scores', scores, 'matchId', matchId);
+
         let response = {};
         let constraints = { roomId: "required", matchId: "required", scores: "required" };
         var apiKey = req.headers['api-key'];
@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
         let decoded = { match_id: 111 };
         let match_sport = 3;
         if (scores && scores.length == 0 && roomId && matchId) {
-            console.log('in***');
+
             let zop_match_id = parseInt(matchId);
             await cancelContestAtResult(zop_match_id, roomId);
             response["success"] = false;
@@ -49,12 +49,12 @@ module.exports = async (req, res) => {
                 let matchTieStatus = allEqual(rankData);
                 if (matchTieStatus) {
                     // When match tie status is happening
-                    console.log('Match tie status is happening******', roomId);
+
                     let matchContest = await OtherGamesContest.findOne({ 'contest_id': ObjectId(roomId), sport: match_sport });
                     let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
                     let contestType = contestData.contest_type;
                     if (contestType == "Paid") {
-                        console.log('game tie paid contest**');
+
                         let zop_match_id = parseInt(matchId);
                         await cancelContestAtResult(zop_match_id, roomId);
                         response["success"] = false;
@@ -62,12 +62,12 @@ module.exports = async (req, res) => {
                         return res.json(response);
                     } else {
                         response.success = true;
-                        let scoresData = scores.map(v => ({...v, prize: 0,currencyIcon: "icon.png"}))
+                        let scoresData = scores.map(v => ({ ...v, prize: 0, currencyIcon: "icon.png" }))
                         response.scores = scoresData;
-                        console.log('response at game tie in free contest**', scoresData);
+
                         return res.json(response);
                     }
-                    
+
                 } else {
                     // If match tie does not exists
                     let userIds = _.map(rankData, 'user_id');
@@ -91,7 +91,7 @@ module.exports = async (req, res) => {
                                         let score = oPTCuserItem.score ? oPTCuserItem.score : 0;
                                         let finalScoreDataObj = { rank: rank, score: score, sub: "" + oPTCuserItem.user_id, currencyIcon: "icon.png" };
                                         const txnId = (new Date()).getTime() + contestTeam.user_id;
-    
+
                                         let rankDataGroup = rankData.reduce(function (rv, x) {
                                             (rv[x['rank']] = rv[x['rank']] || []).push(x);
                                             return rv;
@@ -116,7 +116,7 @@ module.exports = async (req, res) => {
                                                     "txn_id": "",
                                                 });
                                             }
-    
+
                                         }
                                         finalScoreDataObj['prize'] = pricewin_amount;
                                         finalScoreData.push(finalScoreDataObj);
@@ -124,39 +124,38 @@ module.exports = async (req, res) => {
                                     }
                                 }
                                 if (transactionData && transactionData.length > 0) {
-                                    console.log("***transactionData", transactionData);
+
                                     await OtherGameTransaction.insertMany(transactionData, { ordered: false });
                                 }
                                 await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) }, { $set: { is_distributed: 1 } });
                                 let response = {};
                                 response.success = true;
                                 response.scores = finalScoreData;
-                                console.log('response', response);
+
                                 return res.json(response);
                             } else {
                                 // already distributed and update score
-                                console.log('data in result match for playerContestData******', rankData);
+
                                 response["success"] = false;
                                 response["scores"] = [];
                                 return res.json(response);
                             }
-                         } else {
+                        } else {
                             response.success = true;
-                            let scoresData = scores.map(v => ({...v, prize: 0,currencyIcon: "icon.png"}))
+                            let scoresData = scores.map(v => ({ ...v, prize: 0, currencyIcon: "icon.png" }))
                             response.scores = scoresData;
-                            console.log('response result at free contest**', scoresData);
+
                             return res.json(response);
-                         }
-                     } else {
-                        console.log('data in result match for matchContestData******', rankData);
+                        }
+                    } else {
+
                         response["success"] = false;
                         response["scores"] = [];
                         return res.json(response);
-                     }
+                    }
                 }
 
             } else {
-                console.log('data in result match for else******');
                 response["success"] = false;
                 response["scores"] = [];
                 return res.json(response);
@@ -170,7 +169,6 @@ module.exports = async (req, res) => {
 
     } catch (error) {
         let response = {};
-        console.log("error", error);
         response["success"] = false;
         response["scores"] = [];
         return res.json(response);
@@ -225,30 +223,30 @@ async function cancelContestAtResult(zop_match_id, room_id) {
                     await OtherGamesContest.updateOne({ contest_id: ObjectId(room_id) }, { $set: { is_cancelled: 1 } }, { session: session });
                     await session.commitTransaction();
                     session.endSession();
-                    console.log("in result ludo cancel contest Success****", room_id);
+
                 } else {
-                    console.log("in result ludo cancel contest not work for****", room_id);
+
                     await session.commitTransaction();
                     session.endSession();
                 }
             } else {
-                console.log('in result Ludo cancel contest in else****', room_id);
+
                 await session.abortTransaction();
                 session.endSession();
             }
         } else {
-            console.log('result in else during contest cancel****',room_id);
-            await OtherGameLudoLogs.create({error_txt:"contest cancel at result-matchContest data not found",room_id:room_id});
+
+            await OtherGameLudoLogs.create({ error_txt: "contest cancel at result-matchContest data not found", room_id: room_id });
             await session.abortTransaction();
             session.endSession();
         }
     } catch (errorSession) {
-        console.log('sessionError in catch at contest cancel****', errorSession);
-        let error = "contest cancel at result-"+errorSession;
-        await OtherGameLudoLogs.create({error_txt:error,room_id:room_id});
+
+        let error = "contest cancel at result-" + errorSession;
+        await OtherGameLudoLogs.create({ error_txt: error, room_id: room_id });
         await session.abortTransaction();
         session.endSession();
-        
+
     }
 
 }
