@@ -37,12 +37,12 @@ module.exports = async (req, res) => {
                     let userDataList = await User.find({ _id: { $in: playersIds } });
                     let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
                     if (userDataList && userDataList.length > 0) {
-                       
+
                         let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
                         let useableBonusPer = contestData.used_bonus || 0;
                         let contestType = contestData.contest_type;
                         let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
-                        let contestSizeCal = (contestData && contestData.contest_size) ? (contestData.contest_size) :(contestData.infinite_contest_size ? 2 : 2);
+                        let contestSizeCal = (contestData && contestData.contest_size) ? (contestData.contest_size) : (contestData.infinite_contest_size ? 2 : 2);
                         let calEntryFees = entryFee;
                         let retention_bonus_amount = 0;
                         let date = new Date();
@@ -79,7 +79,7 @@ module.exports = async (req, res) => {
                                 let winAmount = 0;
                                 let bonusAmount = 0;
                                 let extraAmount = 0;
-                                const paymentCal = await joinContestPaymentCalculation(contestSizeCal,useableBonusPer, singleUserDataItem, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
+                                const paymentCal = await joinContestPaymentCalculation(contestSizeCal, useableBonusPer, singleUserDataItem, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
                                 cashAmount = paymentCal.cashAmount;
                                 winAmount = paymentCal.winAmount;
                                 bonusAmount = paymentCal.bonusAmount;
@@ -128,27 +128,27 @@ module.exports = async (req, res) => {
                                 }
 
                             }
-                            if (ptcArray && ptcArray.length > 0 && userArray && userArray.length>0 && transactionArray && transactionArray.length>0 && transactionArray.length == ptcArray.length) {
+                            if (ptcArray && ptcArray.length > 0 && userArray && userArray.length > 0 && transactionArray && transactionArray.length > 0 && transactionArray.length == ptcArray.length) {
                                 await User.bulkWrite(userArray, { session: session });
                                 await OtherGameTransaction.insertMany(transactionArray, { session: session });
                                 await OtherGamesPtc.insertMany(ptcArray, { session: session });
-                                await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) },{$set:{zop_match_id:zop_match_id}},{ session: session });
+                                await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) }, { $set: { zop_match_id: zop_match_id } }, { session: session });
                                 await session.commitTransaction();
                                 session.endSession();
-                                
+
                                 response["success"] = true;
                                 response["matchId"] = zop_match_id;
                                 return res.json(response);
                             } else {
-                                
+
                                 await session.commitTransaction();
                                 session.endSession();
                                 response["success"] = true;
                                 response["matchId"] = "";
-                                 return res.json(response);
+                                return res.json(response);
                             }
                         } else {
-                            
+
                             response["success"] = true;
                             response["matchId"] = zop_match_id;
                             return res.json(response);
@@ -160,7 +160,7 @@ module.exports = async (req, res) => {
                         return res.json(response);
                     }
                 } catch (sessionError) {
-                    
+
                     await session.abortTransaction();
                     session.endSession();
 
@@ -170,12 +170,12 @@ module.exports = async (req, res) => {
                 }
 
             } else if (status == 'NO_MATCH_FOUND') {
-                
-                let teamLength = playersIds && playersIds.length>0 ? playersIds.length: 1;
-                await OtherGamesContest.findOneAndUpdate({contest_id: ObjectId(roomId),is_full:0 },{ $inc: { joined_users: -teamLength }});
+
+                let teamLength = playersIds && playersIds.length > 0 ? playersIds.length : 1;
+                await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0 }, { $inc: { joined_users: -teamLength } });
                 response["success"] = true;
                 response["matchId"] = "";
-                if(playersIds && playersIds.length>0) redis.setRedis("match-contest-other-" + 111, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
+                if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + 111, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
                 return res.json(response);
             }
         } else {
@@ -187,7 +187,7 @@ module.exports = async (req, res) => {
 
     } catch (error) {
         let response = {};
-        
+
         response["success"] = false;
         response["matchId"] = "";
         return res.json(response);
@@ -203,7 +203,7 @@ async function generateZopMatchId() {
 }
 
 
-async function joinContestPaymentCalculation(contest_size,useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
+async function joinContestPaymentCalculation(contest_size, useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
     let useAmount = (useableBonusPer / 100) * entryFee;
     let saveData = {};
     let remainingFee = 0;
