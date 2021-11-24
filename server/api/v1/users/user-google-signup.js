@@ -837,8 +837,18 @@ module.exports = {
                 }
              ]
          }
+         let bank_change_req_txt = {
+            'heading':"Here are some important points to keep mind while changing your bank account",
+            points:[
+                {"item":"It takes 3-5 days to verify your bank account"},
+                {"item":"Once verified, the same bank account can't be verified on any other Real11 account."},
+                {"item":"You can verify a bank account on your name only."},
+                {"item":"NRE accounts, accounts from any Digital Payments Bank or any accounts from can't be verified"},
+                {"item":"You won't be able to change a bank account while your previous withdrawal is in process, and see this error instead"},
+            ]
+        }
          response["message"] = "";
-         response["data"] = {ref_now:ref_now};
+         response["data"] = {ref_now:ref_now,bank_change_req_txt:bank_change_req_txt};
          response["status"] = true;
          return res.json(response);
 
