@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
         } else {
           data. is_user_fund_ac = false;
         }
-        data.withdraw_message ="Instant withdraw is temporarily paused, will resume shortly.";
+        data.withdraw_message = "Instant withdraw is temporarily paused, will resume shortly.";
         response["message"] = "Successfully";
         response["status"] = true;
         response["data"] = data;
