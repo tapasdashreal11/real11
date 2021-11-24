@@ -24,7 +24,6 @@ module.exports = async (req, res) => {
 	var host = req.headers;
 	const secret = config.RAZOPAY_API.WEBHOOK_SECRET;
 	try {
-
 		const shasum = crypto.createHmac('sha256', secret);
 		shasum.update(JSON.stringify(req.body));
 		const signature = shasum.digest('hex');
@@ -63,20 +62,19 @@ module.exports = async (req, res) => {
 
 				} else if (params.event == 'payout.reversed' || params.event == 'payout.failed' || params.event == 'payout.rejected' || params.event == 'payout.cancelled') {
 					console.log('razopay webhook in state*****', params.event);
-					let mszOfEvent = "Hook case of " + params.event
+					let mszOfEvent = "" + params.failure_reason + " from hook"
 					let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
 					if (payoutData && payoutData.id) {
 						let pId = payoutData.id;
 						console.log('if hook', pId);
 						let payoutStatus = await RazopayPayoutStatus.findOne({ payout_id: pId, reverse_status: 2 });
 						if (payoutStatus.withdraw_id && payoutStatus.transaction_id) {
-							let transStatus = TransactionTypes.TRANSACTION_REJECT;
+							let transStatus = TransactionTypes.TRANSACTION_PENDING;
 							let txnAmount = payoutStatus.txn_amount ? parseFloat(payoutStatus.txn_amount) : 0;
 							let userId = payoutStatus.user_id;
-							await Users.updateOne({ _id: userId }, { $inc: { winning_balance: txnAmount } });
-							await RazopayPayoutStatus.updateOne({ _id: payoutStatus._id }, { $set: { reverse_status: 1 } });
-							await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 2, approve_date: approveDate, message: mszOfEvent } });
-							await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), approve_withdraw: approveDate, message: mszOfEvent } });
+							//await RazopayPayoutStatus.updateOne({ _id: payoutStatus._id }, { $set: { reverse_status: 1 } });
+							await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 4, message: mszOfEvent } });
+							await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), message: mszOfEvent } });
 						}
 					}
 					response["status"] = true;
@@ -92,7 +90,6 @@ module.exports = async (req, res) => {
 			// some body hitting your server
 			console.log('someone hitting your server for razopay hook******');
 		}
-
 	} catch (error) {
 		res.send(ApiUtility.failed(error.message));
 	}
