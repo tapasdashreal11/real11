@@ -13,12 +13,12 @@ module.exports = {
             let gameMatchList = await getPromiseMatchList(redisKey, "{}");
             let dataItem = gameMatchList ? JSON.parse(gameMatchList) : {};
             if (dataItem && dataItem.other_games) {
-                console.log('other game list from redis***');
+               // console.log('other game list from redis***');
                 dataItem['server_time'] = moment(new Date()).format(config.DateFormat.datetime);
                 var successObj = ApiUtility.success(dataItem);
                 res.send(successObj);
             } else {
-                console.log('other game list from db***');
+               // console.log('other game list from db***');
                 let data = {};
                 let otherGamesMatch = await getGameZopMatchList();
                 let gamesMatch = await OtherGame.find({status:1}).sort({sort:1});
