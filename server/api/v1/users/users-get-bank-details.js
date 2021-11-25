@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
           data.is_fast_withdraw  = true;
         }
         if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
-          data. is_user_fund_ac = true;
+          data. is_user_fund_ac = false;
         } else {
           data. is_user_fund_ac = false;
           sendEmailToAdminForLowBalance(userId);
