@@ -56,9 +56,10 @@ module.exports = async (req, res) => {
         }
         if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
           data. is_user_fund_ac = true;
+          sendEmailToAdminForLowBalance(userId);
         } else {
           data. is_user_fund_ac = false;
-          sendEmailToAdminForLowBalance(userId);
+         // sendEmailToAdminForLowBalance(userId);
         }
         data.withdraw_message = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
         response["message"] = "Successfully";
