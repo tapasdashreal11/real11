@@ -10,6 +10,7 @@ const { rowTextToJson } = require("../common/helper");
 const moment = require('moment');
 const { isAbstractType } = require("graphql");
 const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
+const { sendSMTPMail } = require("../common/helper.js");
 
 // @params
 // {
