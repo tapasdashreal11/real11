@@ -51,12 +51,12 @@ module.exports = async (req, res) => {
         data.min_withdraw_amount = config.min_withdraw_amount || 0; 
         data.winning_balance = userData.user_id.winning_balance || 0; 
         data.is_fast_withdraw = false;
-        data.withdraw_allow_option = ['bank','paytm'];
+        data.withdraw_allow_option = ['bank'];
         if(!userWithdraw) {
           data.is_fast_withdraw  = true;
         }
         if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
-          data. is_user_fund_ac = false;
+          data. is_user_fund_ac = true;
         } else {
           data. is_user_fund_ac = false;
           sendEmailToAdminForLowBalance(userId);

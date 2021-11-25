@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
 			return res.json(response);
 		}
 		try {
-			let userId = "6171105acd54863bd0c02c17" //req.userId;
+			let userId = req.userId;
 			let user = await Users.findOne({ _id: userId, fair_play_violation: 0 });
 			let userRazopayData = await UserRazopayFundAc.findOne({ user_id: userId });
 			if (userRazopayData && userRazopayData.contact_id && userRazopayData.fund_account_id) {
