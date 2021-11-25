@@ -12,37 +12,15 @@ const { isAbstractType } = require("graphql");
 const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
 const { sendSMTPMail } = require("../common/helper.js");
 
-// @params
-// {
-//   "user_id" : "827",
-//   "language" : "en"
-// }
-
 module.exports = async (req, res) => {
   try {
     var response = { status: false, message: "Invalid Request", data: {} };
-    // let params = req.body;
-    // let constraints = { user_id: "required", language: "required" };
-
-    // let validator = new Validator(params, constraints);
-    // let matched = await validator.check();
-    // if (!matched) {
-    //   response["message"] = "Required fields missing";
-    //   response["errors"] = validator.errors;
-    //   return res.json(response);
-    // }
-
     try {
       let userId = req.userId;
       let user = await BankDetails.findOne({ user_id: userId }).populate('user_id','winning_balance');
-      // console.log('ddsf',user);return false;
-      // console.log(user);
-      // return false;
       if (user) {
         let currentDate = moment().format('YYYY-MM-DD');
         let userWithdraw = await WithdrawRequests.findOne({ user_id: userId, is_instant:true, refund_amount:{$gte:10000}, created: {$gte: (moment(currentDate+"T00:00:00.000Z").toISOString()), $lte: (moment(currentDate+"T23:59:59.000Z").toISOString())}  });
-        // console.log(userWithdraw);
-        // return false;
         const userData = rowTextToJson(user);
         let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
         
