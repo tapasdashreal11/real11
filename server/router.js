@@ -254,7 +254,7 @@ router.post('/api/v1/profile', auth.authenticate.jwtLogin, profile);
 router.get('/api/v1/withdraw-history', auth.authenticate.jwtLogin, withdrawHistory);
 router.get('/api/v1/ref-txt', userRefStaticData);  
 router.get('/api/v1/create-razopay-fund-ac', CreateRazopayFundAccount);
-router.post('/api/v1/withdraw-razopay-req', RazopayWithdrawReq);
+router.post('/api/v1/withdraw-razopay-req',auth.authenticate.jwtLogin, RazopayWithdrawReq);
 router.post('/api/v1/withdraw-razopay-webhook', RazopayWebhook);
 
 router.get('/api/v1/user-coupon-purchase/:coupon_id',auth.authenticate.jwtLogin, userCouponPurchase);

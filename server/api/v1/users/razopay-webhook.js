@@ -88,7 +88,7 @@ module.exports = async (req, res) => {
 			}
 		} else {
 			// some body hitting your server
-			console.log('someone hitting your server for razopay hook******');
+			console.log('someone other hits on razopay hook******');
 		}
 	} catch (error) {
 		res.send(ApiUtility.failed(error.message));
