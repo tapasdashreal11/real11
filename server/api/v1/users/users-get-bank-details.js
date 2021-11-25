@@ -65,6 +65,7 @@ module.exports = async (req, res) => {
         response["message"] = "Successfully";
         response["status"] = true;
         response["data"] = data;
+        console.log("data****",data);
         return res.json(response);
       } else {
         response["message"] = "No data found";
@@ -82,6 +83,7 @@ module.exports = async (req, res) => {
 
 async function sendEmailToAdminForLowBalance(user_id){
 	try{
+    console.log('send email');
 		let to = "shashijangir@real11.com";
 		let subject = 'Real11 user failed at fund account';
 		let message = '<table><tr><td>Dear Team,</td></tr><tr><td>We have one user to face fund account problem <br><br/> User id ' + user_id + '</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
