@@ -58,8 +58,9 @@ module.exports = async (req, res) => {
           data. is_user_fund_ac = true;
         } else {
           data. is_user_fund_ac = false;
+          sendEmailToAdminForLowBalance(userId);
         }
-        data.withdraw_message = "Instant withdraw is temporarily paused, will resume shortly.";
+        data.withdraw_message = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
         response["message"] = "Successfully";
         response["status"] = true;
         response["data"] = data;
@@ -77,3 +78,14 @@ module.exports = async (req, res) => {
     res.send(ApiUtility.failed(error.message));
   }
 };
+
+async function sendEmailToAdminForLowBalance(user_id){
+	try{
+		let to = "shashijangir@real11.com";
+		let subject = 'Real11 user failed at fund account';
+		let message = '<table><tr><td>Dear Team,</td></tr><tr><td>We have one user to face fund account problem <br><br/> User id ' + user_id + '</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
+		// send mail on low balance
+		sendSMTPMail(to, subject, message);
+	
+	} catch(error_notif){}
+}

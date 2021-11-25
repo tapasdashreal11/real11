@@ -38,10 +38,10 @@ module.exports = {
             } else {
               if (user.bank_account_verify == 2 && user.pen_verify == 2 && user.email_verified == 1) {
                 console.log('profile fund ac not match in else******');
-               // await checkFundAcOfUser(userId);
+                // await checkFundAcOfUser(userId);
                 let userFundAcAgain = await UserRazopayFundAc.findOne({ user_id: userId });
                 if (userFundAcAgain && userFundAcAgain.contact_id && userFundAcAgain.fund_account_id) {
-                   is_user_fund_ac = true;
+                  is_user_fund_ac = true;
                   console.log('profile fund ac match in else******');
                 }
               }
@@ -192,7 +192,7 @@ module.exports = {
           userData['_id'] = user._id;
           userData['is_profile_complete'] = is_profile_complete;
           userData['is_user_fund_ac'] = is_user_fund_ac;
-          userData['withdraw_message'] = "Instant withdraw is temporarily paused, will resume shortly.";
+          userData['withdraw_message'] = "";// "Instant withdraw is temporarily paused, will resume shortly.";
           userData['fair_play_violation'] = (user.fair_play_violation == 1) ? true : false;
           response["message"] = "Successfully";
           response["status"] = true;
@@ -250,6 +250,8 @@ async function checkFundAcOfUser(userId) {
 
       } else {
         if (user.first_name !== '' && user.email !== '' && user.phone !== '' && user.address !== '' && user.city !== user.postal_code !== '') {
+          let userName = user.first_name;
+          let userNameReplaced = userName.replace(/[^a-zA-Z ]/g, ""); // remove all special charatar
           let userContact = {
             "name": user.first_name,
             "email": user.email,
@@ -270,24 +272,25 @@ async function checkFundAcOfUser(userId) {
               "account_number": userBankDeatail.account_number,
             }
           };
-          if (_.isEmpty(userRazopayData)) {
-            let userContactres = await razopayUserContact(userContact);
-            console.log('userContactres', userContactres);
-            if (userContactres && userContactres.id) {
-              fundAccount["contact_id"] = userContactres.id;
-              let userFundRes = await razopayFundAccount(fundAccount);
-              if (userFundRes && userFundRes.id) {
-                await UserRazopayFundAc.create({ contact_id: userContactres.id, user_id: userId, fund_account_id: userFundRes.id });
-              } else {
-                await UserRazopayFundAc.create({ contact_id: userContactres.id, user_id: userId });
+          if (userNameReplaced && userNameReplaced.length > 3) {
+            if (_.isEmpty(userRazopayData)) {
+              let userContactres = await razopayUserContact(userContact);
+              if (userContactres && userContactres.id) {
+                fundAccount["contact_id"] = userContactres.id;
+                let userFundRes = await razopayFundAccount(fundAccount);
+                if (userFundRes && userFundRes.id) {
+                  await UserRazopayFundAc.create({ contact_id: userContactres.id, user_id: userId, fund_account_id: userFundRes.id });
+                } else {
+                  await UserRazopayFundAc.create({ contact_id: userContactres.id, user_id: userId });
+                }
               }
-            }
-          } else {
-            if (userRazopayData && userRazopayData.contact_id) {
-              fundAccount["contact_id"] = userRazopayData.contact_id;
-              let userFundRes = await razopayFundAccount(fundAccount);
-              if (userFundRes && userFundRes.id) {
-                await UserRazopayFundAc.findOneAndUpdate({ user_id: userId }, { $set: { fund_account_id: userFundRes.id } });
+            } else {
+              if (userRazopayData && userRazopayData.contact_id) {
+                fundAccount["contact_id"] = userRazopayData.contact_id;
+                let userFundRes = await razopayFundAccount(fundAccount);
+                if (userFundRes && userFundRes.id) {
+                  await UserRazopayFundAc.findOneAndUpdate({ user_id: userId }, { $set: { fund_account_id: userFundRes.id } });
+                }
               }
             }
           }
