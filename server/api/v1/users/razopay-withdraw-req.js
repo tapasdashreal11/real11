@@ -182,7 +182,7 @@ module.exports = async (req, res) => {
 
 
 												transEntity['order_id'] = payOutResponse.id;
-												transEntity['gateway_name'] = "Razopay";
+												transEntity['gateway_name'] = "Razorpay";
 												transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
 
 												if (payOutResponse.status == "processing") {
