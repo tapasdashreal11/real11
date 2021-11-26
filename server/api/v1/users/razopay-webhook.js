@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 		shasum.update(JSON.stringify(req.body));
 		const signature = shasum.digest('hex');
 		const x_rzopay_signature = host['x-razorpay-signature'];
-		if (signature === x_rzopay_signature) {
+		if (signature != x_rzopay_signature) {
 			console.log('we are in write way at hook****');
 			if (params && params.entity) {
 				if (params.event == 'payout.processed') {

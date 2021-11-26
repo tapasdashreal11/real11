@@ -19,15 +19,6 @@ const { razopayPayoutToUserFundAc } = require("./razopay-contact-fund-ac");
 const RazopayPayoutStatus = require("../../../models/razopay-payout-status");
 const { startSession } = require('mongoose');
 
-const subwalletGuid = process.env.WALLET_SUBWALLET_GUID;
-const MERCHANT_KEY = process.env.WALLET_MERCHANT_KEY;
-const MID = process.env.WALLET_MID;
-let hostname = 'dashboard.paytm.com';
-
-const bank_subwalletGuid = process.env.BANK_SUBWALLET_GUID;
-const BANK_MERCHANT_KEY = process.env.BANK_MERCHANT_KEY;
-const BANK_MID = process.env.BANK_MID;
-
 module.exports = async (req, res) => {
 	try {
 		var response = { status: false, message: "Invalid Request", data: {} };
@@ -260,7 +251,6 @@ module.exports = async (req, res) => {
 													response["message"] = "Your transaction has been reversed!!";
 													payOutData['status'] = 2;
 													await RazopayPayoutStatus.create([payOutData]);
-													return res.json(response);
 
 												} else if (payOutResponse.status == "rejected") {
 													console.log("enter to rejected state with status");
