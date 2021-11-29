@@ -535,11 +535,9 @@ class PlayerTeamService {
                         } 
                     })
                 } else {
-                    // console.log(data);return false;
-                    PlayerTeamService.getFootballPlayerTeamListSecondLoop(playerTeamRecord, myContest, myTeams, playerListData, data, function (resData) {
+                    PlayerTeamService.getFootballPlayerTeamListSecondLoop(playerTeamRecord, myContest, myTeams, playerListData, data, sport, function (resData) {
                         return cb(null, resData)
                     });
-                    // console.log('footabll');return false;
                 }
             }
         })
@@ -641,15 +639,17 @@ class PlayerTeamService {
         }
     }
 
-    static getFootballPlayerTeamListSecondLoop(playerTeamRecord, myContest, myTeams, playerListData, data, cb) {
+    static getFootballPlayerTeamListSecondLoop(playerTeamRecord, myContest, myTeams, playerListData, data, sport, cb) {
         try {
             if (playerTeamRecord.length > 0) {
                 
                 let index = 0;
-                let totalDefender   =   0;
-                let totalForward    =   0;
-                let totalGoalkeeper =   0;
-                let totalMidfielder =   0;
+                let totalDefender   =   0;  // football && kabaddi player role
+                let totalForward    =   0;  // football player role
+                let totalGoalkeeper =   0;  // football player role
+                let totalMidfielder =   0;  // football player role
+                let totalAllrounder =   0;  // kabaddi player role
+                let totalRaider     =   0;  // kabaddi player role
                 let playerDetail    =   []
 
                 for (let j = 0; j < playerTeamRecord[index].players.length; j++) {
@@ -670,14 +670,26 @@ class PlayerTeamService {
                         playerDetail[j]['points']   =   playerTeamRecord[index].players[j].player_point ? playerTeamRecord[index].players[j].player_point : 0;
                         playerDetail[j]['is_local_team'] = playerTeamRecord[index].players[j].is_local_team;
                         // console.log(playerTeamRecord[index].players[j].player_role);
-                        if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Defender') > -1) {
-                            totalDefender += 1;
-                        } else if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Forward') > -1) {
-                            totalForward += 1;
-                        } else if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Goalkeeper') > -1) {
-                            totalGoalkeeper += 1;
-                        } else if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Midfielder') > -1) {
-                            totalMidfielder += 1;
+                        if(sport == 2) {
+                            // total player role count for football
+                            if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Defender') > -1) {
+                                totalDefender += 1;
+                            } else if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Forward') > -1) {
+                                totalForward += 1;
+                            } else if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Goalkeeper') > -1) {
+                                totalGoalkeeper += 1;
+                            } else if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Midfielder') > -1) {
+                                totalMidfielder += 1;
+                            }
+                        } else {
+                            // total player role count for kabaddi
+                            if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Defender') > -1) {
+                                totalDefender += 1;
+                            } else if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Allrounder') > -1) {
+                                totalAllrounder += 1;
+                            } else if (playerTeamRecord[index].players[j].player_role && playerTeamRecord[index].players[j].player_role.indexOf('Raider') > -1) {
+                                totalRaider += 1;
+                            }
                         }
                     }
                 }
@@ -691,10 +703,12 @@ class PlayerTeamService {
                     'total_point': playerTeamRecord[index].points,
                     'captain_player_id': playerTeamRecord[index].captain,
                     'vice_captain_player_id': playerTeamRecord[index].vice_captain,
-                    'total_defender': totalDefender,
-                    'total_forward': totalForward,
-                    'total_goalkeeper': totalGoalkeeper,
-                    'total_midfielder': totalMidfielder,
+                    'total_defender': totalDefender,    // football & kabaddi player
+                    'total_forward': totalForward,  // football player
+                    'total_goalkeeper': totalGoalkeeper,    // football player
+                    'total_midfielder': totalMidfielder,    // football player
+                    'total_allrounder': totalAllrounder,    // kabaddi player
+                    'total_raider': totalRaider,    // kabaddi player
                     'player_details': playerDetail,
                     'substitute_detail': {},
                     'my_teams': myTeams,
@@ -703,7 +717,7 @@ class PlayerTeamService {
 
                 data.push(indexObj);
                 playerTeamRecord.splice(0,1);
-                PlayerTeamService.getFootballPlayerTeamListSecondLoop(playerTeamRecord, myContest, myTeams, playerListData, data, cb);
+                PlayerTeamService.getFootballPlayerTeamListSecondLoop(playerTeamRecord, myContest, myTeams, playerListData, data, sport, cb);
             } else {
                 cb(data)
             }

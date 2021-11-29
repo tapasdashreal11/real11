@@ -77,7 +77,7 @@ module.exports = {
         }
     },
     previewPlayerTeamList: async (req, res) => {
-        var _this = this;
+        // var _this = this;
         try {
             let { match_id, series_id, team_no, player_team_id, sport,cat_id } = req.params;
            
@@ -86,15 +86,15 @@ module.exports = {
             match_id = parseInt(match_id);
             series_id = parseInt(series_id);
 
-            let data = [];
-            let data1 = [];
+            // let data = [];
+            // let data1 = [];
 
             if (!user_id || !match_id || !series_id || !player_team_id) {
                 return res.send(ApiUtility.failed('user id, match id team id or series id are empty.'));
             }
 
-            let myContest = 0;
-            let myTeams = 0;
+            // let myContest = 0;
+            // let myTeams = 0;
             let liveMatch = await SeriesSquad.findOne({
                 series_id: series_id,
                 match_id: match_id,
@@ -128,7 +128,6 @@ module.exports = {
                         return res.send(ApiUtility.failed('Something went wrong!!'));
                     }
                 } else {
-                    
                     footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
                         return res.send(result);
                     });
@@ -316,7 +315,7 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
     try {
         let data    =   [];
         let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list },team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport });
-        if (teamData && teamData.length == 11) {
+        if (teamData && ((sport == 2 && teamData.length == 11) || (sport == 4 && teamData.length == 7)) ) {
             let playerData = {};
             for (const value of teamData) {
                 playerData[value.player_id] = value;
