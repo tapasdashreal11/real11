@@ -174,10 +174,13 @@ module.exports = async (req, res) => {
 											}
 										}
 										if (params.instant_withdraw && params.instant_withdraw == "1") {
+											await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } });
+											let newDataC = await WithdrawRequest.create([updatedData]);
 											let payOutResponse = await razopayPayoutToUserFundAc(payoutPlayload);
+											let transEntity = { user_id: userId, txn_amount: txnAmount, currency: "INR", txn_date: Date.now(), local_txn_id: txnId };
 											console.log("payOutResponse", payOutResponse);
 											if (payOutResponse && payOutResponse.id) {
-												let transEntity = { user_id: userId, txn_amount: txnAmount, currency: "INR", txn_date: Date.now(), local_txn_id: txnId };
+												
 												let payOutData = { payout_id: payOutResponse.id, fund_account_id: userRazopayData.fund_account_id, user_id: userId, txn_amount: txnAmount };
 
 
@@ -187,9 +190,6 @@ module.exports = async (req, res) => {
 
 												if (payOutResponse.status == "processing") {
 													console.log("enter to processing state with status");
-													// request status 3 => request pending, whether its not sent to wallet or user's wallet not found 
-													//const session = await startSession()
-													//session.startTransaction();
 													let transStatus = TransactionTypes.TRANSACTION_PENDING;
 													response["message"] = "Your transaction is processing!!";
 													updatedData['request_status'] = 3;
@@ -198,10 +198,10 @@ module.exports = async (req, res) => {
 													transEntity['added_type'] = parseInt(transStatus);
 
 													try {
-														await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } });
-														let newDataC = await WithdrawRequest.create([updatedData]);
+														
 														var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
 														transEntity['withdraw_id'] = cResult._id;
+														await WithdrawRequest.updateOne({ '_id': cResult._id },{"request_status":3,"message":"processing"});
 														let newTrnasDataC = await Transaction.create([transEntity]);
 														var cTResult = newTrnasDataC && newTrnasDataC.length > 0 ? newTrnasDataC[0] : {};
 														if (cResult && cResult._id) payOutData['withdraw_id'] = cResult._id;
@@ -228,10 +228,11 @@ module.exports = async (req, res) => {
 													transEntity['added_type'] = parseInt(transStatus);
 													transEntity['approve_withdraw'] = approveDate;
 													try {
-														await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } });
-														let newDataC = await WithdrawRequest.create([updatedData]);
+														//await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } });
+														//let newDataC = await WithdrawRequest.create([updatedData]);
 														var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
 														transEntity['withdraw_id'] = cResult._id;
+														await WithdrawRequest.updateOne({ '_id': cResult._id },{"request_status":1,"message":"processed","approve_date":approveDate});
 														let newTrnasDataC = await Transaction.create([transEntity]);
 														var cTResult = newTrnasDataC && newTrnasDataC.length > 0 ? newTrnasDataC[0] : {};
 														if (cResult && cResult._id) payOutData['withdraw_id'] = cResult._id;
@@ -246,29 +247,24 @@ module.exports = async (req, res) => {
 													}
 
 
-												} else if (payOutResponse.status == "reversed") {
+												} else if (payOutResponse.status == "reversed" || payOutResponse.status == "rejected" || payOutResponse.status == "cancelled" || payOutResponse.status == "failed") {
 													console.log("enter to reversed state with status");
+													let transStatus = TransactionTypes.TRANSACTION_PENDING;
+													let mszFailed  = payOutResponse.failure_reason ? payOutResponse.failure_reason :"failed detected";
+													transEntity['added_type'] = parseInt(transStatus);
 													response["message"] = "Your transaction has been reversed!!";
 													payOutData['status'] = 2;
+													var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+													transEntity['withdraw_id'] = cResult._id;
+													transEntity['message'] = ""+mszFailed; 
+													await WithdrawRequest.updateOne({ '_id': cResult._id },{"request_status":4,"message":mszFailed});
+													let newTrnasDataC = await Transaction.create([transEntity]);
+													var cTResult = newTrnasDataC && newTrnasDataC.length > 0 ? newTrnasDataC[0] : {};
+													if (cResult && cResult._id) payOutData['withdraw_id'] = cResult._id;
+													if (cTResult && cTResult._id) payOutData['transaction_id'] = cTResult._id; //utr
+													if(payOutResponse && payOutResponse.utr) payOutData['utr'] = payOutResponse.utr;
 													await RazopayPayoutStatus.create([payOutData]);
 
-												} else if (payOutResponse.status == "rejected") {
-													console.log("enter to rejected state with status");
-													payOutData['status'] = 2;
-													await RazopayPayoutStatus.create([payOutData]);
-													response["message"] = "Your withdraw has been rejected.Please try again!!";
-
-												} else if (payOutResponse.status == "cancelled") {
-													console.log("enter to cancelled state with status");
-													payOutData['status'] = 2;
-													await RazopayPayoutStatus.create([payOutData]);
-													response["message"] = "Your withdraw has been cancelled.Please try again!!";
-
-												} else if (payOutResponse.status == "failed") {
-													console.log("enter to failed state with status");
-													payOutData['status'] = 2;
-													await RazopayPayoutStatus.create([payOutData]);
-													response["message"] = "Your withdraw has been failed.Please try again!!";
 												} else {
 													console.log("enter in else state in withdraw");
 													response["message"] = "Something went wrong. Please try after some time!!";
@@ -278,13 +274,18 @@ module.exports = async (req, res) => {
 												response["data"] = {};
 												return res.json(response);
 											} else {
+												// In this case razorpay have any error related to low balance and other
 												if(payOutResponse && payOutResponse.error && payOutResponse.error.reason && payOutResponse.error.reason == "insufficient_funds"){
-													response["message"] = "Withdraw is temporarily on hold for few hours.Please try after some time!!";
 													sendEmailToAdminForLowBalance();
-												}else{
-													response["message"] = "Something went wrong!!";
 												}
-												
+												response["message"] = "Your Transaction In Progress!!";
+												var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+												//await WithdrawRequest.updateOne({ '_id': cResult._id },{"request_status":3,"message":"processing"});
+												transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
+												let transStatus = TransactionTypes.TRANSACTION_PENDING;
+												transEntity['added_type'] = parseInt(transStatus);
+												transEntity['withdraw_id'] = cResult._id;
+												await Transaction.create([transEntity]);
 												return res.json(response);
 											}
 										} else {

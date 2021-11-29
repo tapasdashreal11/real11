@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
 				if (params.event == 'payout.processed') {
 					console.log('razopay webhook in state*****', params.event);
 					let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
-					console.log('payoutData in hook', payoutData);
+					//console.log('payoutData in hook', payoutData);
 					if (payoutData && payoutData.id) {
 						let pId = payoutData.id;
 						let utrId = payoutData.utr;
@@ -58,15 +58,12 @@ module.exports = async (req, res) => {
 					response["status"] = true;
 					response["data"] = {};
 					return res.json(response);
-
-
 				} else if (params.event == 'payout.reversed' || params.event == 'payout.failed' || params.event == 'payout.rejected' || params.event == 'payout.cancelled') {
 					console.log('razopay webhook in state*****', params.event);
 					let mszOfEvent = "" + params.failure_reason + " from hook"
 					let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
 					if (payoutData && payoutData.id) {
 						let pId = payoutData.id;
-						console.log('if hook', pId);
 						let payoutStatus = await RazopayPayoutStatus.findOne({ payout_id: pId, reverse_status: 2 });
 						if (payoutStatus.withdraw_id && payoutStatus.transaction_id) {
 							let transStatus = TransactionTypes.TRANSACTION_PENDING;
