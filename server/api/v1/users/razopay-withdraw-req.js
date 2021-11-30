@@ -279,7 +279,7 @@ module.exports = async (req, res) => {
 												if(payOutResponse && payOutResponse.error && payOutResponse.error.reason && payOutResponse.error.reason == "insufficient_funds"){
 													sendEmailToAdminForLowBalance();
 												}
-												response["message"] = "Your Transaction In Progress!!";
+												response["message"] = "Your request is in process. Kindly check after sometime!!";
 												var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
 												//await WithdrawRequest.updateOne({ '_id': cResult._id },{"request_status":3,"message":"processing"});
 												transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
