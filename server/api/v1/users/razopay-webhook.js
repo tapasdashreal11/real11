@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
 					response["data"] = {};
 					return res.json(response);
 				} else if (params.event == 'payout.reversed' || params.event == 'payout.failed' || params.event == 'payout.rejected' || params.event == 'payout.cancelled') {
-					console.log('razopay webhook in state*****', params.event);
+					console.log('razopay webhook in state*****', params);
 					let mszOfEvent = "" + params.failure_reason + " from hook"
 					let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
 					if (payoutData && payoutData.id) {
