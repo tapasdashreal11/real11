@@ -62,7 +62,8 @@ module.exports = async (req, res) => {
 					console.log('razopay webhook in state*****', params);
 					
 					let payoutData = params.payload && params.payload.payout && params.payload.payout.entity ? params.payload.payout.entity : {};
-					let mszOfEvent = "" + payoutData.failure_reason + " from hook"
+					let mszOfEvent = "" + payoutData.failure_reason + " from hook";
+					let utlId = payoutData &&  payoutData.utr ? payoutData.utr : "";
 					if (payoutData && payoutData.id) {
 						let pId = payoutData.id;
 						let payoutStatus = await RazopayPayoutStatus.findOne({ payout_id: pId, reverse_status: 2 });
@@ -70,7 +71,7 @@ module.exports = async (req, res) => {
 							let transStatus = TransactionTypes.TRANSACTION_PENDING;
 							let txnAmount = payoutStatus.txn_amount ? parseFloat(payoutStatus.txn_amount) : 0;
 							let userId = payoutStatus.user_id;
-							//await RazopayPayoutStatus.updateOne({ _id: payoutStatus._id }, { $set: { reverse_status: 1 } });
+							if(utlId) await RazopayPayoutStatus.updateOne({ _id: payoutStatus._id }, { $set: { utr: utlId } });
 							await WithdrawRequest.updateOne({ '_id': payoutStatus.withdraw_id }, { $set: { request_status: 4, message: mszOfEvent } });
 							await Transaction.updateOne({ '_id': payoutStatus.transaction_id }, { $set: { added_type: parseInt(transStatus), message: mszOfEvent } });
 						}
