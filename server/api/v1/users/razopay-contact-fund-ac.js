@@ -52,14 +52,17 @@ const razopayFundAccount = (fundAcData) => {
     })
 }
 
-const razopayPayoutToUserFundAc = (fundAcData) => {
+const razopayPayoutToUserFundAc = (fundAcData,WIthdrawId) => {
     return new Promise((resolve, reject) => {
         if(!isEmpty(fundAcData)){
             var options = {
                 "method": "POST",
                 "url": config.RAZOPAY_API.BASIC_URL+"payouts",
                 "json": true,
-                "headers": {'Content-Type': 'application/json'},
+                "headers": {
+					'Content-Type': 'application/json',
+					"X-Payout-Idempotency": WIthdrawId
+				},
                 "body": fundAcData,
                 "auth": {
                     user: config.RAZOPAY_API.USER_NAME,

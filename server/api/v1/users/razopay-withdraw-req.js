@@ -176,7 +176,8 @@ module.exports = async (req, res) => {
 										if (params.instant_withdraw && params.instant_withdraw == "1") {
 											await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } });
 											let newDataC = await WithdrawRequest.create([updatedData]);
-											let payOutResponse = await razopayPayoutToUserFundAc(payoutPlayload);
+											var withDrawResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+											let payOutResponse = await razopayPayoutToUserFundAc(payoutPlayload,withDrawResult._id);
 											let transEntity = { user_id: userId, txn_amount: txnAmount, currency: "INR", txn_date: Date.now(), local_txn_id: txnId };
 											console.log("payOutResponse", payOutResponse);
 											if (payOutResponse && payOutResponse.id) {
