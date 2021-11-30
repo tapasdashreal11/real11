@@ -25,7 +25,6 @@ module.exports = async (req, res) => {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		let params = req.body;
-		console.log("params",params);
 		let constraints = {
 			is_signup: "required",
 			language: "required",
