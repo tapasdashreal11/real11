@@ -213,6 +213,7 @@ module.exports = async (req, res) => {
 														await sendNotificationToUser(userId, user, updatedData, title, notification, false);
 													} catch (err_pending) {
 														payOutData['status'] = 4;
+														payOutData['msz'] = err_pending && err_pending.message ? err_pending.message: "";
 														await RazopayPayoutStatus.create([payOutData]);
 													}
 
@@ -246,6 +247,7 @@ module.exports = async (req, res) => {
 														await sendNotificationToUser(userId, user, updatedData, title, notification, true);
 													} catch (err_pending) {
 														payOutData['status'] = 4;
+														payOutData['msz'] = err_pending && err_pending.message ? err_pending.message: "";
 														await RazopayPayoutStatus.create([payOutData]);
 													}
 
@@ -270,6 +272,7 @@ module.exports = async (req, res) => {
 														await RazopayPayoutStatus.create([payOutData]);
 													} catch (err_pending) {
 														payOutData['status'] = 4;
+														payOutData['msz'] = err_pending && err_pending.message ? err_pending.message: "";
 														await RazopayPayoutStatus.create([payOutData]);
 													}
 
