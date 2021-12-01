@@ -7,7 +7,6 @@ const WithdrawRequest = require("../../../models/withdraw_requests");
 const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
-var PaytmChecksum = require("../../../../lib/PaytmChecksum");
 const { TransactionTypes } = require('../../../constants/app');
 const config = require('../../../config.js');
 const redis = require('../../../../lib/redis.js');
