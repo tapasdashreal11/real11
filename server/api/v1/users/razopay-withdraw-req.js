@@ -157,7 +157,7 @@ module.exports = async (req, res) => {
 										let txnId = joinContestTxnId;
 										let txnAmount = params.withdraw_amount;
 										// let withdrawId = withdrawData._id;
-										let amountValue = updatedData.refund_amount;// - updatedData.instant_withdraw_comm;
+										let amountValue = updatedData.refund_amount; //- updatedData.instant_withdraw_comm;
 										let payoutPlayload = {
 											"account_number": config.RAZOPAY_API.ACCOUNT_NUMBER,
 											"fund_account_id": userRazopayData.fund_account_id,
