@@ -472,7 +472,7 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
  router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestNewOne);
  router.post('/api/v1/game-multiple-join-contest', auth.authenticate.jwtLogin, joinContestMultipleTeam);
  router.post('/api/v1/game-update-transactions', auth.authenticate.jwtLogin, updateTransaction);
- router.post('/api/v1/game-add-withdraw-request', auth.authenticate.jwtLogin, RazopayWithdrawReq); // added some other addWithdrawRequest 
+ router.post('/api/v1/game-add-withdraw-request', auth.authenticate.jwtLogin, addWithdrawRequest); // added some other  RazopayWithdrawReq
  /* router.get('/cron/paytmwebhook', function(req, res){
   console.log("paytm callback data",req.query)
   if(req.query.STATUS && req.query.STATUS == "TXN_SUCCESS"){
