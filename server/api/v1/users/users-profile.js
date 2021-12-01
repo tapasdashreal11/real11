@@ -135,12 +135,25 @@ module.exports = {
           data.is_youtuber = (user.is_youtuber == 1) ? true : false;
           data.pan_reject_reason = user.pan_reject_reason || null;
           data.bank_reject_reason = user.bank_reject_reason || null;
-          data.withdraw_message = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
+         // data.withdraw_message = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
           data.deposite_message = "Rupay cardholders, please use paytm payment gateway for better success rate.";
           data.change_bank_req = user && user.change_bank_req ? user.change_bank_req : false;
           data.xtra_cash_block = user && user.xtra_cash_block ? true : false;
           data.bonus_amount_block = user && user.bonus_amount_block ? true : false;
-
+          try{
+            redis.getRedis('app-setting', async (err, settingData) => {
+              if (settingData) {
+                if (settingData && settingData.is_instant_withdraw === 1) data.withdraw_message = settingData && settingData.instant_withdraw_msg ? settingData.instant_withdraw_msg: "";
+              } else {
+               let appSettingData = await AppSettings.findOne({}, { is_instant_withdraw: 1, instant_withdraw_msg: 1 });
+               if (appSettingData && appSettingData.is_instant_withdraw === 1) data.withdraw_message = appSettingData &&  appSettingData.instant_withdraw_msg ? appSettingData.instant_withdraw_msg: "";
+               
+              }
+            });
+          }catch(setting_err){
+            data.withdraw_message = "";
+          }
+          
           delete data.profile;
           delete data.created;
           delete data.modified;
