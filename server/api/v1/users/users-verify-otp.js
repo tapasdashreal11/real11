@@ -195,7 +195,19 @@ async function transactionAtSignupBonous(userId,rf_bonous_amount,rf_xtra_amount)
 			currency: "INR",
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
-			added_type: TransactionTypes.SIGNUP_BONOUS_REWARD
+			added_type: TransactionTypes.SIGNUP_BONOUS_REWARD,
+			details: {
+				"refund_winning_balance": 0,
+				"refund_cash_balance": 0,
+				"refund_bonus_amount": rf_bonous_amount,
+				"refund_extra_amount": 0,
+				"refund_affiliate_amount": 0,
+				"current_winning_balance": 0,
+				"current_cash_balance": 0,
+				"current_bonus_amount": rf_bonous_amount,
+				"current_extra_amount": 0,
+				"current_affiliate_amount": 0,
+			}
 		}
 	]
 	if(rf_xtra_amount>0){
@@ -205,7 +217,19 @@ async function transactionAtSignupBonous(userId,rf_bonous_amount,rf_xtra_amount)
 			currency: "INR",
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
-			added_type: TransactionTypes.REAL_CODE_SIGNUP_XCASH_REWARD
+			added_type: TransactionTypes.REAL_CODE_SIGNUP_XCASH_REWARD,
+			details: {
+				"refund_winning_balance": 0,
+				"refund_cash_balance": 0,
+				"refund_bonus_amount":0,
+				"refund_extra_amount": rf_xtra_amount,
+				"refund_affiliate_amount": 0,
+				"current_winning_balance": 0,
+				"current_cash_balance": 0,
+				"current_bonus_amount": rf_bonous_amount,
+				"current_extra_amount": rf_xtra_amount,
+				"current_affiliate_amount": 0,
+			}
 		});
 	}
 	await Transaction.create(transaction_data);
