@@ -138,7 +138,7 @@ module.exports = async (req, res) => {
 									}
 									if (settingData && settingData.is_instant_withdraw === 1 && params.instant_withdraw == "1") {
 										response["message"] = settingData.instant_withdraw_msg;
-                                        console.log("response **",response);
+                                        console.log("response **",response,settingData.instant_withdraw_msg);
 										return res.json(response);
 									}
 									if (params.instant_withdraw && params.instant_withdraw == "1") {
