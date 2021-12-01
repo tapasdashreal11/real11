@@ -39,6 +39,27 @@ var transactionSchema = new Schema({
     refund_bonus_amount: {
       type: Number
     },
+    refund_extra_amount: {
+      type: Number
+    },
+    refund_affiliate_amount: {
+      type: Number
+    },
+    current_winning_balance: {
+      type: Number
+    },
+    current_cash_balance: {
+      type: Number
+    },
+    current_bonus_amount: {
+      type: Number
+    },
+    current_extra_amount: {
+      type: Number
+    },
+    current_affiliate_amount: {
+      type: Number
+    },
     cons_winning_balance: {
       type: Number
     },
