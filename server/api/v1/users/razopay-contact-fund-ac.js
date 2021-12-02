@@ -17,7 +17,6 @@ const razopayUserContact = (contactData) => {
                     password: config.RAZOPAY_API.PASSWORD
                   }
             };
-            console.log(options);
              request(options, function (error,res,body) {
                 return resolve(body);
             });

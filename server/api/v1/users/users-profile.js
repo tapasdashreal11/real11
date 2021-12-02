@@ -34,15 +34,15 @@ module.exports = {
             let userFundAc = await UserRazopayFundAc.findOne({ user_id: userId });
             if (userFundAc && userFundAc.contact_id && userFundAc.fund_account_id) {
               is_user_fund_ac = true;
-              console.log('profile fund ac match******');
+             
             } else {
               if (user.bank_account_verify == 2 && user.pen_verify == 2 && user.email_verified == 1) {
-                console.log('profile fund ac not match in else******');
+                
                 await checkFundAcOfUser(userId);
                 let userFundAcAgain = await UserRazopayFundAc.findOne({ user_id: userId });
                 if (userFundAcAgain && userFundAcAgain.contact_id && userFundAcAgain.fund_account_id) {
                   is_user_fund_ac = true;
-                  console.log('profile fund ac match in else******');
+                  
                 }
               }
             }
