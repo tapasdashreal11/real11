@@ -838,13 +838,13 @@ module.exports = {
              ]
          }
          let bank_change_req_txt = {
-            'heading':"Here are some important points to keep mind while changing your bank account",
+            'heading':"The following are some essential points that one should keep in mind while applying for a bank change request",
             points:[
-                {"item":"It takes 3-5 days to verify your bank account"},
-                {"item":"Once verified, the same bank account can't be verified on any other Real11 account."},
-                {"item":"You can verify a bank account on your name only."},
-                {"item":"NRE accounts, accounts from any Digital Payments Bank or any accounts from can't be verified"},
-                {"item":"You won't be able to change a bank account while your previous withdrawal is in process, and see this error instead"},
+                {"item":"It typically takes 3 to 5 days to verify a bank account. "},
+                {"item":"A bank account once verified with Real11, cannot be linked with another account on the platform."},
+                {"item":"You can only verify the bank account under your name."},
+                {"item":"A Non-Resident External account, Digital payments bank or any other account from Nagaland, Assam, Andhra Pradesh, Telangana, Odisha, Karnataka, Sikkim can't be verified since the game of skill is banned in these states."},
+                {"item":"You would not be able to change a bank account if your previous account verification/withdrawal is pending or in process."},
             ]
         }
          response["message"] = "";
