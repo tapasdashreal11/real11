@@ -264,9 +264,12 @@ async function checkFundAcOfUser(userId) {
       } else {
         if (user.first_name !== '' && user.email !== '' && user.phone !== '' && user.address !== '' && user.city !== user.postal_code !== '') {
           let userName = user.first_name;
-          let userNameReplaced = userName.replace(/[^a-zA-Z ]/g, ""); // remove all special charatar
+          let userLastName = user.last_name;
+          let userFNameReplaced = userName.replace(/[^a-zA-Z ]/g, ""); // remove all special charatar
+          let userLastNameReplaced = !_.isEmpty(userLastName) ? userLastName.replace(/[^a-zA-Z ]/g, "") : ""; // remove all special charatar
+          let full_name = userFNameReplaced +" "+userLastNameReplaced;
           let userContact = {
-            "name": user.first_name,
+            "name": full_name,
             "email": user.email,
             "contact": user.phone,
             "type": "customer",
@@ -280,12 +283,12 @@ async function checkFundAcOfUser(userId) {
           let fundAccount = {
             "account_type": "bank_account",
             "bank_account": {
-              "name": user.first_name,
+              "name": full_name,
               "ifsc": userBankDeatail.ifsc_code,
               "account_number": userBankDeatail.account_number,
             }
           };
-          if (userNameReplaced && userNameReplaced.length > 3) {
+          if (full_name && full_name.length >= 3) {
             if (_.isEmpty(userRazopayData)) {
               let userContactres = await razopayUserContact(userContact);
               if (userContactres && userContactres.id) {
