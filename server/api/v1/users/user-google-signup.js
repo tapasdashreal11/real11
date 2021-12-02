@@ -840,7 +840,7 @@ module.exports = {
          let bank_change_req_txt = {
             'heading':"The following are some essential points that one should keep in mind while applying for a bank change request",
             points:[
-                {"item":"It typically takes 3 to 5 days to verify a bank account. "},
+                {"item":"It typically takes 3 to 5 days to verify a bank account."},
                 {"item":"A bank account once verified with Real11, cannot be linked with another account on the platform."},
                 {"item":"You can only verify the bank account under your name."},
                 {"item":"A Non-Resident External account, Digital payments bank or any other account from Nagaland, Assam, Andhra Pradesh, Telangana, Odisha, Karnataka, Sikkim can't be verified since the game of skill is banned in these states."},
