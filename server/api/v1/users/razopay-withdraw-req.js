@@ -365,7 +365,8 @@ module.exports = async (req, res) => {
 					return res.json(response);
 				}
 			} else {
-				res.send(ApiUtility.failed("Your account is not verified with us. Please contact with admin!!"));
+				sendEmailToDeveloperAc(userId);
+				res.send(ApiUtility.failed("Your account is not verified. Please contact on helpline!!"));
 			}
 		} catch (err) {
 			response["message"] = err.message;
@@ -414,6 +415,20 @@ async function sendEmailToAdminForLowBalance() {
 		let to = "amityadav@real11.com";
 		let subject = 'Real 11 Withdraw Low Balance Alert';
 		let message = '<table><tr><td>Dear Admin,</td></tr><tr><td>We have low balance in account for payout at Razopay PROD. <br><br/> Please add more amount to make user withdrawal successfully</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
+		// send mail on low balance
+		sendSMTPMail(to, subject, message);
+
+	} catch (error_notif) { }
+}
+
+/**
+ * Send email to developer account
+ */
+async function sendEmailToDeveloperAc(userId) {
+	try {
+		let to = "developer@real11.com";
+		let subject = 'Real 11 Payout Problem';
+		let message = '<table><tr><td>Dear Developer,</td></tr><tr><td>User has problem with  payout at Razopay. <br><br/> User Id '+userId+'</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
 		// send mail on low balance
 		sendSMTPMail(to, subject, message);
 
