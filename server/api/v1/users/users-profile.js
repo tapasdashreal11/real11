@@ -203,7 +203,18 @@ module.exports = {
           userData['_id'] = user._id;
           userData['is_profile_complete'] = is_profile_complete;
           userData['is_user_fund_ac'] = is_user_fund_ac;
-          userData['withdraw_message'] = "";// "Instant withdraw is temporarily paused, will resume shortly.";
+          try {
+            let appSeetingData = await getAppSetting();
+            if (appSeetingData) {
+             if (appSeetingData && appSeetingData.is_instant_withdraw === 1) 
+             data.withdraw_message = appSeetingData && appSeetingData.instant_withdraw_msg ? appSeetingData.instant_withdraw_msg: "";
+             else
+             data.withdraw_message = "";
+            }
+          } catch(setting_err){
+           data.withdraw_message = "";
+          }
+          //userData['withdraw_message'] = "";// "Instant withdraw is temporarily paused, will resume shortly.";
           userData['fair_play_violation'] = (user.fair_play_violation == 1) ? true : false;
           response["message"] = "Successfully";
           response["status"] = true;
