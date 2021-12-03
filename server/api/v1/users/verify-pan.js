@@ -66,7 +66,7 @@ module.exports = async (req, res) => {
           await (new ModelService()).referalManageAtVerification(userId,true,false,false);
           let typeOfReward = TransactionTypes.FRIEND_PAN_VERIFY_XCASH_REWARD;
           await (new ModelService()).referalxCashRewardAtPanVerify(userId,typeOfReward,10);
-          await transactionAtPanVerfiy(userId);
+          await transactionAtPanVerfiy(user);
           response["message"] = "Pan card detail updated successfully.";
           response["status"] = true;
           response["data"] = updatedData;
@@ -94,16 +94,28 @@ module.exports = async (req, res) => {
 };
 
 
-async function transactionAtPanVerfiy(userId){
+async function transactionAtPanVerfiy(user){
 	let date = new Date();
 	let transaction_data =[
 		{
-      user_id: userId,
+      user_id: user._id,
       txn_amount: 10,
       currency: "INR",
       txn_date: Date.now(),
-      local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
-      added_type: TransactionTypes.SIGNUP_XTRA_CASH_REWARD
+      local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user._id,
+      added_type: TransactionTypes.SIGNUP_XTRA_CASH_REWARD,
+      details: {
+				"refund_winning_balance":0,
+				"refund_cash_balance": 0,
+				"refund_bonus_amount": 0,
+				"refund_extra_amount": 10,
+				"refund_affiliate_amount": 0,
+				"current_winning_balance": user && user.winning_balance ? user.winning_balance:0,
+				"current_cash_balance": user && user.cash_balance ? user.cash_balance:0,
+				"current_bonus_amount": user && user.bonus_amount ? user.bonus_amount:0,
+				"current_extra_amount": user && user.extra_amount ? (user.extra_amount + 10):10,
+				"current_affiliate_amount":user && user.affiliate_amount ? user.affiliate_amount:0,
+			}
     }
 	]
   await Transaction.create(transaction_data);

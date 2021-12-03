@@ -2406,7 +2406,19 @@ class ModelService {
                                     currency: "INR",
                                     txn_date: Date.now(),
                                     local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
-                                    added_type: TransactionTypes.FRIEND_USED_INVITE
+                                    added_type: TransactionTypes.FRIEND_USED_INVITE,
+                                    details: {
+                                        "refund_winning_balance":0,
+                                        "refund_cash_balance": 0,
+                                        "refund_bonus_amount": bonusAmount,
+                                        "refund_extra_amount": 0,
+                                        "refund_affiliate_amount": 0,
+                                        "current_winning_balance": referedUser && referedUser.winning_balance ? referedUser.winning_balance:0,
+                                        "current_cash_balance": referedUser && referedUser.cash_balance ? referedUser.cash_balance:0,
+                                        "current_bonus_amount": referedUser && referedUser.bonus_amount ? (referedUser.bonus_amount + bonusAmount):bonusAmount,
+                                        "current_extra_amount": referedUser && referedUser.extra_amount ? referedUser.extra_amount:0,
+                                        "current_affiliate_amount":referedUser && referedUser.affiliate_amount ? referedUser.affiliate_amount:0,
+                                    }
                                 };
                                 var totalRefAmount = refAmount + bonusAmount;
                                 var totalRefAmountUpdated = refAmount + bonusAmount + forstDepostData;
@@ -2500,8 +2512,20 @@ class ModelService {
                             local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
                             added_type: trnsaction_type
                         };
-                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} });
+                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} },{new: true});
                        if(referedUser) {
+                        entity['details'] = {
+                                "refund_winning_balance":0,
+                                "refund_cash_balance": 0,
+                                "refund_bonus_amount": 0,
+                                "refund_extra_amount": bonusAmount,
+                                "refund_affiliate_amount": 0,
+                                "current_winning_balance": referedUser && referedUser.winning_balance ? referedUser.winning_balance:0,
+                                "current_cash_balance": referedUser && referedUser.cash_balance ? referedUser.cash_balance:0,
+                                "current_bonus_amount": referedUser && referedUser.bonus_amount ? referedUser.bonus_amount:0,
+                                "current_extra_amount": referedUser && referedUser.extra_amount ? referedUser.extra_amount:bonusAmount,
+                                "current_affiliate_amount":referedUser && referedUser.affiliate_amount ? referedUser.affiliate_amount:0,
+                              }
                             data = await Transaction.create(entity);
                             await ReferralCodeDetails.findOneAndUpdate({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount,first_depo_reward_amount: bonusAmount} }); 
                         }
