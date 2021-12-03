@@ -45,8 +45,15 @@ module.exports = async (req, res) => {
         try{
           redis.getRedis('app-setting', async (err, settingData) => {
             if (settingData) {
-              console.log("data in setting",settingData);
-              if (settingData && settingData.is_instant_withdraw === 1) data.withdraw_message = settingData && settingData.instant_withdraw_msg ? settingData.instant_withdraw_msg: "";
+              
+              if (settingData && settingData.is_instant_withdraw === 1){
+                console.log("data in setting in if",settingData);
+                data.withdraw_message = settingData && settingData.instant_withdraw_msg ? settingData.instant_withdraw_msg: "";
+              }else{
+                data.withdraw_message =""; 
+                console.log("data in setting else",settingData);
+              }
+               
             } else {
              let appSettingData = await AppSettings.findOne({}, { is_instant_withdraw: 1, instant_withdraw_msg: 1 });
              console.log("data in setting***",appSettingData);
