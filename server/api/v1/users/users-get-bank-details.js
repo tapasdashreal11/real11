@@ -45,31 +45,41 @@ module.exports = async (req, res) => {
         try{
           redis.getRedis('app-setting', async (err, settingData) => {
             if (settingData) {
-              
               if (settingData && settingData.is_instant_withdraw === 1){
                 console.log("data in setting in if",settingData);
-                data.withdraw_message = settingData && settingData.instant_withdraw_msg ? settingData.instant_withdraw_msg: "";
+                data['withdraw_message'] = settingData && settingData.instant_withdraw_msg ? settingData.instant_withdraw_msg: "";
               }else{
-                data.withdraw_message =""; 
+                data['withdraw_message'] =""; 
                 console.log("data in setting else",settingData);
               }
                
             } else {
              let appSettingData = await AppSettings.findOne({}, { is_instant_withdraw: 1, instant_withdraw_msg: 1 });
-             console.log("data in setting***",appSettingData);
-             if (appSettingData && appSettingData.is_instant_withdraw === 1) data.withdraw_message = appSettingData &&  appSettingData.instant_withdraw_msg ? appSettingData.instant_withdraw_msg: "";
+            
+             if (appSettingData && appSettingData.is_instant_withdraw === 1){
+              console.log("data in setting if**",appSettingData.instant_withdraw_msg);
+              data['withdraw_message'] = appSettingData ? (appSettingData.instant_withdraw_msg): "";
+             }else{
+              data['withdraw_message'] =""; 
+              console.log("data in setting else**",appSettingData);
+             } 
              
             }
+            response["message"] = "Successfully";
+            response["status"] = true;
+            response["data"] = data;
+            return res.json(response);
           });
         }catch(setting_err){
           data.withdraw_message = "";
+          response["message"] = "Successfully";
+          response["status"] = true;
+          response["data"] = data;
+          return res.json(response);
         }
 
        // data.withdraw_message = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
-        response["message"] = "Successfully";
-        response["status"] = true;
-        response["data"] = data;
-        return res.json(response);
+       
       } else {
         response["message"] = "No data found";
         return res.json(response);
