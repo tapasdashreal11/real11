@@ -141,15 +141,13 @@ module.exports = {
           data.xtra_cash_block = user && user.xtra_cash_block ? true : false;
           data.bonus_amount_block = user && user.bonus_amount_block ? true : false;
           try{
-            redis.getRedis('app-setting', async (err, settingData) => {
-              if (settingData) {
-                if (settingData && settingData.is_instant_withdraw === 1) data.withdraw_message = settingData && settingData.instant_withdraw_msg ? settingData.instant_withdraw_msg: "";
-              } else {
-               let appSettingData = await AppSettings.findOne({}, { is_instant_withdraw: 1, instant_withdraw_msg: 1 });
-               if (appSettingData && appSettingData.is_instant_withdraw === 1) data.withdraw_message = appSettingData &&  appSettingData.instant_withdraw_msg ? appSettingData.instant_withdraw_msg: "";
-               
-              }
-            });
+             let appSeetingData = await getAppSetting();
+             if (appSeetingData) {
+              if (appSeetingData && appSeetingData.is_instant_withdraw === 1) 
+              data.withdraw_message = appSeetingData && appSeetingData.instant_withdraw_msg ? appSeetingData.instant_withdraw_msg: "";
+              else
+              data.withdraw_message = "";
+             }
           }catch(setting_err){
             data.withdraw_message = "";
           }
@@ -316,4 +314,17 @@ async function checkFundAcOfUser(userId) {
   } catch (error) {
     logger.error("LOGIN_ERROR", error.message);
   }
+}
+
+async function getAppSetting() {
+  return new Promise((resolve, reject) => {
+    redis.getRedis('app-setting', async (err, settingData) => {
+      if (settingData) {
+        resolve(settingData)
+      } else {
+       let appSettingData = await AppSettings.findOne({}, { is_instant_withdraw: 1, instant_withdraw_msg: 1 });
+       resolve(appSettingData);
+      }
+    });
+  })
 }
