@@ -11,6 +11,8 @@ const moment = require('moment');
 const { isAbstractType } = require("graphql");
 const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
 const { sendSMTPMail } = require("../common/helper.js");
+const redis = require('../../../../lib/redis');
+const AppSettings = require("../../../models/settings");
 
 module.exports = async (req, res) => {
   try {
@@ -39,7 +41,22 @@ module.exports = async (req, res) => {
           data. is_user_fund_ac = false;
           sendEmailToAdminForLowBalance(userId);
         }
-        data.withdraw_message = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
+
+        try{
+          redis.getRedis('app-setting', async (err, settingData) => {
+            if (settingData) {
+              if (settingData && settingData.is_instant_withdraw === 1) data.withdraw_message = settingData && settingData.instant_withdraw_msg ? settingData.instant_withdraw_msg: "";
+            } else {
+             let appSettingData = await AppSettings.findOne({}, { is_instant_withdraw: 1, instant_withdraw_msg: 1 });
+             if (appSettingData && appSettingData.is_instant_withdraw === 1) data.withdraw_message = appSettingData &&  appSettingData.instant_withdraw_msg ? appSettingData.instant_withdraw_msg: "";
+             
+            }
+          });
+        }catch(setting_err){
+          data.withdraw_message = "";
+        }
+
+       // data.withdraw_message = ""; //"Instant withdraw is temporarily paused, will resume shortly.";
         response["message"] = "Successfully";
         response["status"] = true;
         response["data"] = data;
@@ -60,7 +77,7 @@ module.exports = async (req, res) => {
 
 async function sendEmailToAdminForLowBalance(user_id){
 	try{
-		let to = "shashijangir@real11.com";
+		let to = "developer@real11.com";
 		let subject = 'Real11 user failed at fund account';
 		let message = '<table><tr><td>Dear Team,</td></tr><tr><td>We have one user to face fund account problem <br><br/> User id ' + user_id + '</td></tr><tr><td><br /><br />Thank you <br />Real11</td></tr></table>';
 		// send mail on low balance
