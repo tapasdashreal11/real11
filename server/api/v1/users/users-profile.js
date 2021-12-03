@@ -207,12 +207,12 @@ module.exports = {
             let appSeetingData = await getAppSetting();
             if (appSeetingData) {
              if (appSeetingData && appSeetingData.is_instant_withdraw === 1) 
-             data.withdraw_message = appSeetingData && appSeetingData.instant_withdraw_msg ? appSeetingData.instant_withdraw_msg: "";
+             userData.withdraw_message = appSeetingData && appSeetingData.instant_withdraw_msg ? appSeetingData.instant_withdraw_msg: "";
              else
-             data.withdraw_message = "";
+             userData.withdraw_message = "";
             }
           } catch(setting_err){
-           data.withdraw_message = "";
+            userData.withdraw_message = "";
           }
           //userData['withdraw_message'] = "";// "Instant withdraw is temporarily paused, will resume shortly.";
           userData['fair_play_violation'] = (user.fair_play_violation == 1) ? true : false;
