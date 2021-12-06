@@ -5,14 +5,7 @@ const User = require('../../../models/user');
 const LiveScore = require('../../../models/live-score');
 const PointsBreakup = require('../../../models/points-breakup');
 const ApiUtility = require('../../api.utility');
-// const { ObjectId } = require('mongodb');
-// const moment = require('moment');
-// const config = require('../../../config');
-// const ModelService = require("../../ModelService");
 const _ = require("lodash");
-// const redis = require('../../../../lib/redis');
-// const mqtt = require('../../../../lib/mqtt');
-// const { RedisKeys } = require('../../../constants/app');
 const SeriesPlayer = require('../../../models/series-player');
 
 module.exports = {
@@ -59,17 +52,20 @@ module.exports = {
                     } else {
                         liveScore = await LiveScore.find({ 'series_id': decoded["series_id"], 'match_id': decoded["match_id"] });
                     }
-
+                    
                     if(sport == 1) {
                         cricketPreview(decoded, liveScore, function (result) {
                             return res.send(result);
                         });
-                    } else {
+                    } else if(sport == 2) {
                         footabllPreview(decoded, liveScore, function (result) {
                             return res.send(result);
                         });
+                    } else {
+                        kabaddiPreview(decoded, liveScore, function (result) {
+                            return res.send(result);
+                        });
                     }
-                    
                 } else {
                     return res.send(ApiUtility.failed("Security check failed."));
                 }
@@ -456,6 +452,157 @@ async function footabllPreview(decoded, liveScore, cb) {
                     // };
 
                     playerRecord['total_point'] = {
+                        'actual': 0,
+                        'points': value.total_point
+                    };
+                    selectedPercent  =  value.selected_by ? value.selected_by + "%" : '0.00' + "%";
+                }
+            }
+
+            let dreamPlayers = undefined;//DreamTeams.find().where(['series_id':series_id,'match_id':match_id,'player_id':row.playerId]).first();
+            result.push({
+                'player_id': row.player_id,
+                'player_role': row && row.player_role ? row.player_role : val.player_role,
+                'player_name': val['player_name'],
+                'player_image': val['player_image'],
+                'player_credit': val && val['player_credit'] ? val['player_credit'].toString() : '0',
+                'selection_percent': selectedPercent,  //percent,
+                'points': row.point,
+                'in_contest': (isInContest.length > 0) ? true : false,
+                'team_number': Array.from(new Set(teamNo)), //teamNum,
+                'player_breckup': playerRecord,
+                'in_dream_team': dreamPlayers ? true : false,
+                'is_local_team': (row.team_type === "localteam") ? true : false
+            });
+        }
+        data1 = result;
+        status = true;
+        cb(ApiUtility.success(result));
+        // return res.send(ApiUtility.success(result));
+    } else {
+        cb(ApiUtility.failed("Match scheduled to start soon. Refresh shortly to see fantasy scores of players."));
+    }
+} 
+async function kabaddiPreview(decoded, liveScore, cb) {
+    let userId  =   decoded['user_id'];
+    let sport   =   decoded['sport'];
+    
+    let result      =   [];
+    let player_list =   [];
+    
+    for (const value of liveScore) {
+        player_list.push(value.player_id);
+    }
+    
+    playerRecord = await SeriesPlayer.find({ 'series_id': decoded["series_id"], 'player_id': { $in: player_list }, 'sport': sport });
+    
+    let playerData = {};
+    for (const value of playerRecord) {
+        playerData[value.player_id] = value;
+    }
+    var results = await Promise.all([
+        PointsBreakup.find({ 'series_id': decoded['series_id'], 'match_id': decoded['match_id'] }),
+        PlayerTeam.find({ user_id: userId, 'series_id': decoded["series_id"], 'match_id': decoded["match_id"], sport: sport })
+    ]);
+    let playerBrackupData   =   [];
+    let isInTeam            =   [];
+    if(results && results.length > 0) {
+        playerBrackupData   =   results[0] ? results[0] : [];
+        isInTeam            =   results[1] ? results[1] : [];
+    }
+    if (liveScore) {
+        for (const row of liveScore) {
+            let teamNo = [];
+            let isInContest = _.filter(isInTeam, key => key.players.includes(row.player_id) );
+            
+            // console.log(row.player_id, isInContest);
+            if (isInContest.length > 0) {
+                for (const rows of isInContest) {
+                    teamNo.push(rows.team_count);
+                }
+            }
+
+            let val = playerData[row.player_id];
+            let playerRecord = {};
+            let selectedPercent =   "";
+
+            let playerBrackup = _.filter(playerBrackupData, key => key.player_id == row.player_id)
+            
+            if (playerBrackup) {
+                for (const value of playerBrackup) {
+                    playerRecord['raid_touch'] = {
+                        'key_name': "Raid Touch",
+                        'actual': value.raid_touch ? value.raid_touch : 0 ,
+                        'points': value.raid_touch_point ? value.raid_touch_point : 0
+                    };
+                    playerRecord['raid_bonus'] = {
+                        'key_name': "Raid Bonus",
+                        'actual': value.raid_bonus ? value.raid_bonus : 0,
+                        'points': value.raid_bonus_point ? value.raid_bonus_point : 0 //value.runs_point
+                    };
+
+                    playerRecord['unsuccessful_raid'] = {
+                        'key_name': "Unsuccessful Raid",
+                        'actual': value.raid_unsuccessful ? value.raid_unsuccessful : 0,
+                        'points': value.raid_unsuccessful_point ? value.raid_unsuccessful_point : 0 //value.raid_unsuccessful_point
+                    };
+
+                    playerRecord['successful_tackle'] = {
+                        'key_name': "Successful Tackle",
+                        'actual': value.tackle_successful ? value.tackle_successful : 0,
+                        'points': value.tackle_successful_point ? value.tackle_successful_point : 0 //value.tackle_successful_point
+                    };
+
+                    playerRecord['super_tackles'] = {
+                        'key_name': "Super Tackles",
+                        'actual': value.super_tackles ? value.super_tackles : 0,
+                        'points': value.super_tackles_point ? value.super_tackles_point: 0 //value.strike_rate_point
+                    };
+
+                    playerRecord['green_card'] = {
+                        'key_name': "Green Card",
+                        'actual': value.green_card ? value.green_card : 0,
+                        'points': value.green_card_point ? value.green_card_point : 0
+                    };
+
+                    playerRecord['yellow_card'] = {
+                        'key_name': "Yellow Card",
+                        'actual': value.yellow_card ? value.yellow_card : 0,
+                        'points': value.yellow_card_point ? value.yellow_card_point : 0
+                    };
+
+                    playerRecord['red_card'] = {
+                        'key_name': "Red Card",
+                        'actual': value.red_card ? value.red_card : 0,
+                        'points': value.red_card_point ? value.red_card_point : 0
+                    };
+
+                    playerRecord['pushing_all_out'] = {
+                        'key_name': "Pushing All Out",
+                        'actual': value.pushing_all_out ? value.pushing_all_out : 0,
+                        'points': value.pushing_all_out_point ? value.pushing_all_out_point : 0
+                    };
+
+                    playerRecord['getting_all_out'] = {
+                        'key_name': "Getting All Out",
+                        'actual': value.getting_all_out ? value.getting_all_out : 0,
+                        'points': value.getting_all_out_point ? value.getting_all_out_point : 0
+                    };
+
+                    playerRecord['is_playing_seven'] = {
+                        'key_name': "Starting 7",
+                        'actual': value.in_starting || 0,
+                        'points': value.in_starting_point //value.catch_point
+                    };
+
+                    playerRecord['substitute'] = {
+                        'key_name': "Substitute",
+                        'actual': value.in_substitute || 0,
+                        'points': value.in_substitute_point //value.catch_point
+                    };
+
+                    playerRecord['total_point'] = {
+                        'key_name': "Total Point",
                         'actual': 0,
                         'points': value.total_point
                     };

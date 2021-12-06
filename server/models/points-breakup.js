@@ -227,6 +227,54 @@ var pointsBreakupSchema = new Schema({
   catch_bonus_point: {
     type: Number
   },
+  raid_touch: {
+    type: Number
+  },
+  raid_touch_point: {
+    type: Number
+  },
+  raid_bonus: {
+    type: Number
+  },
+  raid_bonus_point: {
+    type: Number
+  },
+  raid_unsuccessful: {
+    type: Number
+  },
+  raid_unsuccessful_point: {
+    type: Number
+  },
+  tackle_successful: {
+    type: Number
+  },
+  tackle_successful_point: {
+    type: Number
+  },
+  super_tackles: {
+    type: Number
+  },
+  super_tackles_point: {
+    type: Number
+  },
+  green_card: {
+    type: Number
+  },
+  green_card_point: {
+    type: Number
+  },
+  pushing_all_out: {
+    type: Number
+  },
+  pushing_all_out_point: {
+    type: Number
+  },
+  getting_all_out: {
+    type: Number
+  },
+  getting_all_out_point: {
+    type: Number
+  },
   selected_by: {
     type: String
   },
