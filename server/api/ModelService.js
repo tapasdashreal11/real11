@@ -2514,6 +2514,7 @@ class ModelService {
                         };
                        let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} },{new: true});
                        if(referedUser) {
+                           console.log("user_id",user_id,"referedBy",referedBy);
                         entity['details'] = {
                                 "refund_winning_balance":0,
                                 "refund_cash_balance": 0,
