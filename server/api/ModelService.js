@@ -2523,7 +2523,7 @@ class ModelService {
                                 "current_winning_balance": referedUser && referedUser.winning_balance ? referedUser.winning_balance:0,
                                 "current_cash_balance": referedUser && referedUser.cash_balance ? referedUser.cash_balance:0,
                                 "current_bonus_amount": referedUser && referedUser.bonus_amount ? referedUser.bonus_amount:0,
-                                "current_extra_amount": referedUser && referedUser.extra_amount ? referedUser.extra_amount:bonusAmount,
+                                "current_extra_amount": referedUser && referedUser.extra_amount ? (referedUser.extra_amount + bonusAmount):bonusAmount,
                                 "current_affiliate_amount":referedUser && referedUser.affiliate_amount ? referedUser.affiliate_amount:0,
                               }
                             data = await Transaction.create(entity);
