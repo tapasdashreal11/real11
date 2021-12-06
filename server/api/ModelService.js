@@ -2514,7 +2514,6 @@ class ModelService {
                         };
                        let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} },{new: true});
                        if(referedUser) {
-                           console.log("user_id",user_id,"referedBy",referedBy);
                         entity['details'] = {
                                 "refund_winning_balance":0,
                                 "refund_cash_balance": 0,
@@ -2524,7 +2523,7 @@ class ModelService {
                                 "current_winning_balance": referedUser && referedUser.winning_balance ? referedUser.winning_balance:0,
                                 "current_cash_balance": referedUser && referedUser.cash_balance ? referedUser.cash_balance:0,
                                 "current_bonus_amount": referedUser && referedUser.bonus_amount ? referedUser.bonus_amount:0,
-                                "current_extra_amount": referedUser && referedUser.extra_amount ? (referedUser.extra_amount + bonusAmount):bonusAmount,
+                                "current_extra_amount": referedUser && referedUser.extra_amount ? referedUser.extra_amount:bonusAmount,
                                 "current_affiliate_amount":referedUser && referedUser.affiliate_amount ? referedUser.affiliate_amount:0,
                               }
                             data = await Transaction.create(entity);
