@@ -275,6 +275,18 @@ var pointsBreakupSchema = new Schema({
   getting_all_out_point: {
     type: Number
   },
+  super_raid: {
+    type: Number
+  },
+  super_raid_point: {
+    type: Number
+  },
+  tackle_unsuccessful: {
+    type: Number
+  },
+  tackle_unsuccessful_point: {
+    type: Number
+  },
   selected_by: {
     type: String
   },

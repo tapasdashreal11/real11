@@ -530,6 +530,17 @@ async function kabaddiPreview(decoded, liveScore, cb) {
             
             if (playerBrackup) {
                 for (const value of playerBrackup) {
+                    playerRecord['is_playing_seven'] = {
+                        'key_name': "Starting 7",
+                        'actual': value.in_starting || 0,
+                        'points': value.in_starting_point //value.catch_point
+                    };
+
+                    playerRecord['substitute'] = {
+                        'key_name': "Substitute",
+                        'actual': value.in_substitute || 0,
+                        'points': value.in_substitute_point //value.catch_point
+                    };
                     playerRecord['raid_touch'] = {
                         'key_name': "Raid Touch",
                         'actual': value.raid_touch ? value.raid_touch : 0 ,
@@ -541,12 +552,6 @@ async function kabaddiPreview(decoded, liveScore, cb) {
                         'points': value.raid_bonus_point ? value.raid_bonus_point : 0 //value.runs_point
                     };
 
-                    playerRecord['unsuccessful_raid'] = {
-                        'key_name': "Unsuccessful Raid",
-                        'actual': value.raid_unsuccessful ? value.raid_unsuccessful : 0,
-                        'points': value.raid_unsuccessful_point ? value.raid_unsuccessful_point : 0 //value.raid_unsuccessful_point
-                    };
-
                     playerRecord['successful_tackle'] = {
                         'key_name': "Successful Tackle",
                         'actual': value.tackle_successful ? value.tackle_successful : 0,
@@ -554,9 +559,27 @@ async function kabaddiPreview(decoded, liveScore, cb) {
                     };
 
                     playerRecord['super_tackles'] = {
-                        'key_name': "Super Tackles",
+                        'key_name': "Super Tackle",
                         'actual': value.super_tackles ? value.super_tackles : 0,
                         'points': value.super_tackles_point ? value.super_tackles_point: 0 //value.strike_rate_point
+                    };
+
+                    playerRecord['pushing_all_out'] = {
+                        'key_name': "Pushing All Out",
+                        'actual': value.pushing_all_out ? value.pushing_all_out : 0,
+                        'points': value.pushing_all_out_point ? value.pushing_all_out_point : 0
+                    };
+
+                    playerRecord['getting_all_out'] = {
+                        'key_name': "Getting All Out",
+                        'actual': value.getting_all_out ? value.getting_all_out : 0,
+                        'points': value.getting_all_out_point ? value.getting_all_out_point : 0
+                    };
+                    
+                    playerRecord['unsuccessful_raid'] = {
+                        'key_name': "Unsuccessful Raid",
+                        'actual': value.raid_unsuccessful ? value.raid_unsuccessful : 0,
+                        'points': value.raid_unsuccessful_point ? value.raid_unsuccessful_point : 0 //value.raid_unsuccessful_point
                     };
 
                     playerRecord['green_card'] = {
@@ -576,29 +599,17 @@ async function kabaddiPreview(decoded, liveScore, cb) {
                         'actual': value.red_card ? value.red_card : 0,
                         'points': value.red_card_point ? value.red_card_point : 0
                     };
-
-                    playerRecord['pushing_all_out'] = {
-                        'key_name': "Pushing All Out",
-                        'actual': value.pushing_all_out ? value.pushing_all_out : 0,
-                        'points': value.pushing_all_out_point ? value.pushing_all_out_point : 0
+                    
+                    playerRecord['super_raid'] = {
+                        'key_name': "Super Raid",
+                        'actual': value.super_raid ? value.super_raid : 0,
+                        'points': value.super_raid_point ? value.super_raid_point : 0
                     };
-
-                    playerRecord['getting_all_out'] = {
-                        'key_name': "Getting All Out",
-                        'actual': value.getting_all_out ? value.getting_all_out : 0,
-                        'points': value.getting_all_out_point ? value.getting_all_out_point : 0
-                    };
-
-                    playerRecord['is_playing_seven'] = {
-                        'key_name': "Starting 7",
-                        'actual': value.in_starting || 0,
-                        'points': value.in_starting_point //value.catch_point
-                    };
-
-                    playerRecord['substitute'] = {
-                        'key_name': "Substitute",
-                        'actual': value.in_substitute || 0,
-                        'points': value.in_substitute_point //value.catch_point
+                    
+                    playerRecord['tackle_unsuccessful'] = {
+                        'key_name': "Unsuccessful Tackle",
+                        'actual': value.tackle_unsuccessful ? value.tackle_unsuccessful : 0,
+                        'points': value.tackle_unsuccessful_point ? value.tackle_unsuccessful_point : 0
                     };
 
                     playerRecord['total_point'] = {
