@@ -2438,7 +2438,7 @@ class ModelService {
              }
         });
     }
-    referalFirstDespostxCashReward(user_id,isxrtaAmountTrasaction){
+    referalFirstDespostxCashReward(user,user_id,isxrtaAmountTrasaction){
         return new Promise(async(resolve, reject) => {
             try {
                 let referalUser = await ReferralCodeDetails.findOne({ user_id: user_id });
@@ -2465,11 +2465,37 @@ class ModelService {
                                 currency: "INR",
                                 txn_date: Date.now(),
                                 local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
-                                added_type: TransactionTypes.FIRST_DEPOSITE_XCASH_REWARD
+                                added_type: TransactionTypes.FIRST_DEPOSITE_XCASH_REWARD,
+                                details: {
+                                    "refund_winning_balance":0,
+                                    "refund_cash_balance": 0,
+                                    "refund_bonus_amount": 0,
+                                    "refund_extra_amount": 5,
+                                    "refund_affiliate_amount": 0,
+                                    "current_winning_balance": user && user.winning_balance ? user.winning_balance:0,
+                                    "current_cash_balance": user && user.cash_balance ? user.cash_balance:0,
+                                    "current_bonus_amount": user && user.bonus_amount ? user.bonus_amount:0,
+                                    "current_extra_amount": user && user.extra_amount ? user.extra_amount:5,
+                                    "current_affiliate_amount":user && user.affiliate_amount ? user.affiliate_amount:0,
+                                }
                               });
                         }
-                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} });
+                       let referedUser = await Users.findOneAndUpdate({ '_id': referedBy,'fair_play_violation': 0, 'status': 1, 'refer_able': 1,'is_youtuber':0 }, { $inc: {extra_amount: bonusAmount} },{new: true});
                        if(referedUser) {
+                        
+                        transaction_data[0]['details'] = {
+                            "refund_winning_balance":0,
+                            "refund_cash_balance": 0,
+                            "refund_bonus_amount": 0,
+                            "refund_extra_amount": bonusAmount,
+                            "refund_affiliate_amount": 0,
+                            "current_winning_balance": referedUser && referedUser.winning_balance ? referedUser.winning_balance:0,
+                            "current_cash_balance": referedUser && referedUser.cash_balance ? referedUser.cash_balance:0,
+                            "current_bonus_amount": referedUser && referedUser.bonus_amount ? referedUser.bonus_amount:0,
+                            "current_extra_amount": referedUser && referedUser.extra_amount ? referedUser.extra_amount:bonusAmount,
+                            "current_affiliate_amount":referedUser && referedUser.affiliate_amount ? referedUser.affiliate_amount:0,
+                          }
+                          console.log('transaction_data at first depost',transaction_data);
                             data = await Transaction.create(transaction_data);
                             await ReferralCodeDetails.findOneAndUpdate({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount,first_depo_reward_amount: bonusAmount} }); 
                         }
@@ -2480,7 +2506,19 @@ class ModelService {
                         let date = new Date();
                         let transaction_data =[
                             { user_id: user_id,txn_amount: 5,currency: "INR",txn_date: Date.now(),local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
-                             added_type: TransactionTypes.FIRST_DEPOSITE_XCASH_REWARD
+                             added_type: TransactionTypes.FIRST_DEPOSITE_XCASH_REWARD,
+                             details: {
+                                "refund_winning_balance":0,
+                                "refund_cash_balance": 0,
+                                "refund_bonus_amount": 0,
+                                "refund_extra_amount": 5,
+                                "refund_affiliate_amount": 0,
+                                "current_winning_balance": user && user.winning_balance ? user.winning_balance:0,
+                                "current_cash_balance": user && user.cash_balance ? user.cash_balance:0,
+                                "current_bonus_amount": user && user.bonus_amount ? user.bonus_amount:0,
+                                "current_extra_amount": user && user.extra_amount ? user.extra_amount:5,
+                                "current_affiliate_amount":user && user.affiliate_amount ? user.affiliate_amount:0,
+                            }
                             }
                         ]
                        await Transaction.create(transaction_data);

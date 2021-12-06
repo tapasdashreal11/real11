@@ -537,7 +537,7 @@ module.exports = {
                                                             }
                                                             
                                                             try{
-                                                                await (new ModelService()).referalFirstDespostxCashReward(users.id,isxrtaAmountTrasaction);
+                                                                await (new ModelService()).referalFirstDespostxCashReward(users,users.id,isxrtaAmountTrasaction);
                                                             }catch(xcashError){}
                                                             
                                                             try{
@@ -1035,7 +1035,7 @@ module.exports = {
                                 Transaction.saveTransaction(authUser._id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                             }
                             try{
-                                await (new ModelService()).referalFirstDespostxCashReward(authUser._id,isxrtaAmountTrasaction);
+                                await (new ModelService()).referalFirstDespostxCashReward(authUser,authUser._id,isxrtaAmountTrasaction);
                             }catch(xcashError){}
                             try{
                                 let appsflyerURL = "";
@@ -1501,7 +1501,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                                 Transaction.saveTransaction(users.id, txnId, TransactionTypes.FIRST_DEPOSITE_BONUS, finalAmount);
                             }
                             try{
-                                await (new ModelService()).referalFirstDespostxCashReward(users.id,isxrtaAmountTrasaction);
+                                await (new ModelService()).referalFirstDespostxCashReward(users,users.id,isxrtaAmountTrasaction);
                             }catch(xcashError){}
                             try{
                                 let appsflyerURL = "";
