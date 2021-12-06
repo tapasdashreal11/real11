@@ -525,7 +525,7 @@ module.exports = {
                                                             let amountAdded  = parseFloat(txnData.txn_amount);
                                                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
                                                             let isxrtaAmountTrasaction = false;
-                                                            if(users && users.extra_amount <=20){
+                                                            if(users && users.extra_amount <=40){
                                                                 users.extra_amount = parseFloat(users.extra_amount) + 5;
                                                                 isxrtaAmountTrasaction = true;
                                                             }
@@ -1024,7 +1024,7 @@ module.exports = {
                             let amountAdded  = parseFloat(txnData.txn_amount);
                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
                             let isxrtaAmountTrasaction = false;
-                            if(authUser && authUser.extra_amount <=20){
+                            if(authUser && authUser.extra_amount <=40){
                                 authUser.extra_amount = parseFloat(authUser.extra_amount) + 5;
                                 isxrtaAmountTrasaction = true;
                             }
@@ -1489,7 +1489,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                             let amountAdded  = parseFloat(txnData.txn_amount);
                             let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
                             let isxrtaAmountTrasaction = false;
-                            if(users && users.extra_amount <=20){
+                            if(users && users.extra_amount <=40){
                                 users.extra_amount = parseFloat(users.extra_amount) + 5;
                                 isxrtaAmountTrasaction = true;
                             }
