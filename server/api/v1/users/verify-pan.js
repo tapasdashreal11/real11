@@ -119,5 +119,5 @@ async function transactionAtPanVerfiy(user){
     }
 	]
   await Transaction.create(transaction_data);
-  await Users.updateOne({ _id: userId }, { $inc: {extra_amount:10} });
+  await Users.updateOne({ _id: user._id }, { $inc: {extra_amount:10} });
 }
