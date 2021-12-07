@@ -244,7 +244,19 @@ module.exports = {
                                                         contest_entry_fee: entryFee,
                                                         total_team_joined: 1,
                                                         local_txn_id: txnId,
-                                                        added_type: parseInt(status)
+                                                        added_type: parseInt(status),
+                                                        details: {
+                                                            "refund_winning_balance":(winAmount ? winAmount : 0),
+                                                            "refund_cash_balance": (cashAmount ? cashAmount : 0),
+                                                            "refund_bonus_amount": (bonusAmount ? bonusAmount : 0),
+                                                            "refund_extra_amount": (extraAmount ? extraAmount : 0),
+                                                            "refund_affiliate_amount": 0,
+                                                            "current_winning_balance": winning_balance ? winning_balance:0,
+                                                            "current_cash_balance": cash_balance ? cash_balance:0,
+                                                            "current_bonus_amount": bonus_balance ? bonus_balance:0,
+                                                            "current_extra_amount": extra_amount ? extra_amount:0,
+                                                            "current_affiliate_amount":authUser && authUser.affiliate_amount ? authUser.affiliate_amount:0,
+                                                        }
                                                     };
                                                     let userBalance = await User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1 })
                                                     if (userBalance) {
