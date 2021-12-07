@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
         data.min_withdraw_amount = config.min_withdraw_amount || 0;
         data.winning_balance = userData.user_id.winning_balance || 0;
         data.is_fast_withdraw = false;
-        data.withdraw_allow_option = ['bank','paytm'];
+        data.withdraw_allow_option = ['bank'];
         if (!userWithdraw) {
           data.is_fast_withdraw = true;
         }
