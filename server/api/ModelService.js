@@ -2495,7 +2495,7 @@ class ModelService {
                             "current_extra_amount": referedUser && referedUser.extra_amount ? referedUser.extra_amount:bonusAmount,
                             "current_affiliate_amount":referedUser && referedUser.affiliate_amount ? referedUser.affiliate_amount:0,
                           }
-                          console.log('transaction_data at first depost',transaction_data);
+                          
                             data = await Transaction.create(transaction_data);
                             await ReferralCodeDetails.findOneAndUpdate({ user_id: user_id}, { $inc: {refered_by_amount: bonusAmount,first_depo_reward_amount: bonusAmount} }); 
                         }
