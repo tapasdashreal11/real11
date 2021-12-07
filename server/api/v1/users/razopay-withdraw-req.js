@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
 			return res.json(response);
 		}
 		if (params.type != "bank") {
-			response["message"] = "Please update the app to make payout successful!!";
+			response["message"] = "Please update the Real11 app to the latest version to continue enjoying the cash withdrawal service.!!";
 			return res.json(response);
 		 }
 		let wAmount = params && params.withdraw_amount ? parseFloat(params.withdraw_amount) : 0;
