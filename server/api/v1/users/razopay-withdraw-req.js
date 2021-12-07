@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
 			return res.json(response);
 		 }
 		let wAmount = params && params.withdraw_amount ? parseFloat(params.withdraw_amount) : 0;
-		if (wAmount < 1) {
+		if (wAmount < 200) {
 			response["message"] = "You are under supervision of admin. Please don't do this activity!!";
 			return res.json(response);
 		}
@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
 			let user = await Users.findOne({ _id: userId, fair_play_violation: 0 });
 			let userRazopayData = await UserRazopayFundAc.findOne({ user_id: userId });
 			if (userRazopayData && userRazopayData.contact_id && userRazopayData.fund_account_id) {
-				if (user && wAmount >= 1) {
+				if (user && wAmount >= 200) {
 					if (user.status == 1) {
 						let winning_balance = user.winning_balance || 0;
 						let affiliate_amount = user.affiliate_amount || 0;
@@ -159,7 +159,7 @@ module.exports = async (req, res) => {
 										let txnId = joinContestTxnId;
 										let txnAmount = params.withdraw_amount;
 										// let withdrawId = withdrawData._id;
-										let amountValue = updatedData.refund_amount; //- updatedData.instant_withdraw_comm;
+										let amountValue = updatedData.refund_amount - updatedData.instant_withdraw_comm;
 										let payoutPlayload = {
 											"account_number": config.RAZOPAY_API.ACCOUNT_NUMBER,
 											"fund_account_id": userRazopayData.fund_account_id,
@@ -181,7 +181,7 @@ module.exports = async (req, res) => {
 											var withDrawResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
 											let payOutResponse = await razopayPayoutToUserFundAc(payoutPlayload, withDrawResult._id);
 											let transEntity = { user_id: userId, txn_amount: txnAmount, currency: "INR", txn_date: Date.now(), local_txn_id: txnId };
-											console.log("payOutResponse", payOutResponse);
+											
 											if (payOutResponse && payOutResponse.id) {
 
 												let payOutData = { payout_id: payOutResponse.id, fund_account_id: userRazopayData.fund_account_id, user_id: userId, txn_amount: txnAmount };
@@ -192,7 +192,7 @@ module.exports = async (req, res) => {
 												transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
 
 												if (payOutResponse.status == "processing") {
-													console.log("enter to processing state with status");
+													
 													let transStatus = TransactionTypes.TRANSACTION_PENDING;
 													response["message"] = "Your transaction is processing!!";
 													updatedData['request_status'] = 3;
