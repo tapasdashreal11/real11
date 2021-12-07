@@ -35,7 +35,10 @@ module.exports = async (req, res) => {
 			response["errors"] = validator.errors;
 			return res.json(response);
 		}
-
+		if (params.type != "bank") {
+			response["message"] = "Please update the app to make payout successful!!";
+			return res.json(response);
+		 }
 		let wAmount = params && params.withdraw_amount ? parseFloat(params.withdraw_amount) : 0;
 		if (wAmount < 1) {
 			response["message"] = "You are under supervision of admin. Please don't do this activity!!";
