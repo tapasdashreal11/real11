@@ -103,14 +103,27 @@ module.exports = async (req, res) => {
                                         admin_comission: caculateAdminComision,
                                         retention_bonus: retention_bonus_amount,
                                     }
+                                    let r_winning_balance = singleUserDataItem && singleUserDataItem['winning_balance'] ? singleUserDataItem['winning_balance'] - winAmount :0;
+                                    let r_cash_balance = singleUserDataItem && singleUserDataItem['cash_balance'] ? singleUserDataItem['cash_balance'] - cashAmount :0;
+                                    let r_bonus_balance = singleUserDataItem && singleUserDataItem['bonus_amount'] ? singleUserDataItem['bonus_amount'] - bonusAmount :0 ;
+                                    let r_extra_amount = singleUserDataItem && singleUserDataItem['extra_amount'] ? singleUserDataItem['extra_amount'] - extraAmount:0 ;
+
                                     contest.join_contest_detail = jcd;
                                     contest.zop_match_id = zop_match_id;
                                     ptcArray.push(contest);
                                     let entity = {
                                         user_id: userId, contest_id: roomId, match_id: 111, sport: match_sport, txn_amount: txnAmount, currency: "INR",
                                         details: {
-                                            cons_winning_balance: winAmount, cons_cash_balance: cashAmount, cons_bonus_amount: bonusAmount,
-                                            cons_extra_amount: extraAmount,
+                                            "refund_winning_balance":(winAmount ? winAmount : 0),
+                                            "refund_cash_balance": (cashAmount ? cashAmount : 0),
+                                            "refund_bonus_amount": (bonusAmount ? bonusAmount : 0),
+                                            "refund_extra_amount": (extraAmount ? extraAmount : 0),
+                                            "refund_affiliate_amount": 0,
+                                            "current_winning_balance": r_winning_balance ? r_winning_balance:0,
+                                            "current_cash_balance": r_cash_balance ? r_cash_balance:0,
+                                            "current_bonus_amount": r_bonus_balance ? r_bonus_balance:0,
+                                            "current_extra_amount": r_extra_amount ? r_extra_amount:0,
+                                            "current_affiliate_amount":singleUserDataItem && singleUserDataItem.affiliate_amount ? singleUserDataItem.affiliate_amount:0,
                                         },
                                         retantion_amount: retention_bonus_amount,
                                         txn_date: Date.now(),
