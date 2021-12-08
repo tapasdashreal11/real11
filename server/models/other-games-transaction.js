@@ -18,6 +18,24 @@ var transactionSchema = new Schema({
 		refund_extra_amount: {
 			type: Number
 		},
+		refund_affiliate_amount: {
+			type: Number
+		},
+		current_winning_balance: {
+			type: Number
+		},
+		current_cash_balance: {
+			type: Number
+		},
+		current_bonus_amount: {
+			type: Number
+		},
+		current_extra_amount: {
+			type: Number
+		},
+		current_affiliate_amount: {
+			type: Number
+		},
 		cons_winning_balance: {
 			type: Number
 		},
@@ -45,10 +63,10 @@ var transactionSchema = new Schema({
 		type: Boolean,
 		default: true
 	}
-},{
-    timestamps: { createdAt: 'created', updatedAt: 'modified' },
-    toObject: { getters: true, setters: true },
-    toJSON: { getters: true, setters: true }
+}, {
+	timestamps: { createdAt: 'created', updatedAt: 'modified' },
+	toObject: { getters: true, setters: true },
+	toJSON: { getters: true, setters: true }
 });
 
 module.exports = mongoose.model('other_games_transaction', transactionSchema, 'other_games_transaction');
