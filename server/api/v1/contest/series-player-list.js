@@ -1057,6 +1057,18 @@ async function kabaddiPreview(decoded, liveScore, cb) {
                     };
 
                     playerRecord['14'] = {
+                        'key_name': "Super 10",
+                        'actual': value.super_ten ? value.super_ten.toString() : "0",
+                        'points': value.super_ten_point ? value.super_ten_point : 0
+                    };
+
+                    playerRecord['15'] = {
+                        'key_name': "High Five",
+                        'actual': value.high_five ? value.high_five.toString() : "0",
+                        'points': value.high_five_point ? value.high_five_point : 0
+                    };
+
+                    playerRecord['16'] = {
                         'key_name': "Total Point",
                         'actual': "0",
                         'points': value.total_point
