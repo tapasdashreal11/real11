@@ -2438,7 +2438,7 @@ class ModelService {
              }
         });
     }
-    referalFirstDespostxCashReward(user,user_id,isxrtaAmountTrasaction){
+    referalFirstDespostxCashReward(user,user_id,isxrtaAmountTrasaction,isCouponUsed,finalAmount){
         return new Promise(async(resolve, reject) => {
             try {
                 let referalUser = await ReferralCodeDetails.findOne({ user_id: user_id });
@@ -2458,6 +2458,28 @@ class ModelService {
                                 added_type: TransactionTypes.FRIEND_FIRST_DEPOSIT_REWARD
                             }
                         ]
+                        if(isCouponUsed == 0){
+                            transaction_data.push({
+                                user_id: user_id,
+                                txn_amount: finalAmount,
+                                currency: "INR",
+                                txn_date: Date.now(),
+                                local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
+                                added_type: TransactionTypes.FIRST_DEPOSITE_BONUS,
+                                details: {
+                                    "refund_winning_balance":0,
+                                    "refund_cash_balance": 0,
+                                    "refund_bonus_amount": finalAmount,
+                                    "refund_extra_amount": 0,
+                                    "refund_affiliate_amount": 0,
+                                    "current_winning_balance": user && user.winning_balance ? user.winning_balance:0,
+                                    "current_cash_balance": user && user.cash_balance ? user.cash_balance:0,
+                                    "current_bonus_amount": user && user.bonus_amount ? user.bonus_amount:0,
+                                    "current_extra_amount": user && user.extra_amount ? user.extra_amount:5,
+                                    "current_affiliate_amount":user && user.affiliate_amount ? user.affiliate_amount:0,
+                                }
+                              });
+                         }
                         if(isxrtaAmountTrasaction){
                             transaction_data.push({
                                 user_id: user_id,
@@ -2502,9 +2524,11 @@ class ModelService {
                     }
                 }else{
                     // In this case when user is not refered by any one so add first deposit extra cash
+                    let transaction_data =[];
+                    let date = new Date();
                     if(isxrtaAmountTrasaction){
-                        let date = new Date();
-                        let transaction_data =[
+                        
+                         transaction_data.push(
                             { user_id: user_id,txn_amount: 5,currency: "INR",txn_date: Date.now(),local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
                              added_type: TransactionTypes.FIRST_DEPOSITE_XCASH_REWARD,
                              details: {
@@ -2520,10 +2544,35 @@ class ModelService {
                                 "current_affiliate_amount":user && user.affiliate_amount ? user.affiliate_amount:0,
                             }
                             }
-                        ]
-                       await Transaction.create(transaction_data);
+                         )
+                       
                     }
-                      
+                    if(isCouponUsed == 0){
+                        transaction_data.push({
+                            user_id: user_id,
+                            txn_amount: finalAmount,
+                            currency: "INR",
+                            txn_date: Date.now(),
+                            local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id,
+                            added_type: TransactionTypes.FIRST_DEPOSITE_BONUS,
+                            details: {
+                                "refund_winning_balance":0,
+                                "refund_cash_balance": 0,
+                                "refund_bonus_amount": finalAmount,
+                                "refund_extra_amount": 0,
+                                "refund_affiliate_amount": 0,
+                                "current_winning_balance": user && user.winning_balance ? user.winning_balance:0,
+                                "current_cash_balance": user && user.cash_balance ? user.cash_balance:0,
+                                "current_bonus_amount": user && user.bonus_amount ? user.bonus_amount:0,
+                                "current_extra_amount": user && user.extra_amount ? user.extra_amount:5,
+                                "current_affiliate_amount":user && user.affiliate_amount ? user.affiliate_amount:0,
+                            }
+                          });
+                     }
+                     
+                     if(transaction_data && transaction_data.length>0){
+                        await Transaction.create(transaction_data);
+                     }
                 }
                 resolve(data);
              } catch (error) {
