@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
 			if (user && pram_affi_amount >= 1 && user_affil_amount >= pram_affi_amount && user.is_youtuber && user.is_youtuber == 1) {
                let userWalletUpdate = await Users.findOneAndUpdate({ _id: userId },{$inc:{affiliate_amount:-pram_affi_amount,cash_balance:pram_affi_amount}},sessionOpts);
                if(userWalletUpdate){
-                    await transAtAffilateMoneyTranser(userId,pram_affi_amount,session,userIp);
+                    await transAtAffilateMoneyTranser(userId,pram_affi_amount,session,userIp,userWalletUpdate);
                     await session.commitTransaction();
                     session.endSession();
                     response["status"] = true;
@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
  * @param {*} session 
  * @param {*} userIp 
  */
-async function transAtAffilateMoneyTranser(userId,affi_amount,session,userIp){
+async function transAtAffilateMoneyTranser(userId,affi_amount,session,userIp,userWalletUpdate){
 	let date = new Date();
 	let transaction_data =[
 		{
@@ -81,7 +81,19 @@ async function transAtAffilateMoneyTranser(userId,affi_amount,session,userIp){
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
             added_type: TransactionTypes.AFFIL_AMOUNT_AT_DEPOST,
-            ip_address : userIp ? userIp : ""
+			ip_address : userIp ? userIp : "",
+			details: {
+				"refund_winning_balance":0,
+				"refund_cash_balance": affi_amount,
+				"refund_bonus_amount": 0,
+				"refund_extra_amount": 0,
+				"refund_affiliate_amount": 0,
+				"current_winning_balance": userWalletUpdate && userWalletUpdate.winning_balance ? userWalletUpdate.winning_balance:0,
+				"current_cash_balance": userWalletUpdate && userWalletUpdate.cash_balance ? userWalletUpdate.cash_balance:0,
+				"current_bonus_amount": userWalletUpdate && userWalletUpdate.bonus_amount ? userWalletUpdate.bonus_amount:0,
+				"current_extra_amount": userWalletUpdate && userWalletUpdate.extra_amount ? userWalletUpdate.extra_amount:0,
+				"current_affiliate_amount":userWalletUpdate && userWalletUpdate.affiliate_amount ? userWalletUpdate.affiliate_amount:0,
+			}
 		},
 		{
 			user_id: userId,
@@ -90,7 +102,19 @@ async function transAtAffilateMoneyTranser(userId,affi_amount,session,userIp){
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
             added_type: TransactionTypes.AFFIL_AMOUNT_WITHDRAWAL_FOR_DEPOST,
-            ip_address : userIp ? userIp : ""
+			ip_address : userIp ? userIp : "",
+			details: {
+				"refund_winning_balance":0,
+				"refund_cash_balance": 0,
+				"refund_bonus_amount": 0,
+				"refund_extra_amount": 0,
+				"refund_affiliate_amount": affi_amount,
+				"current_winning_balance": userWalletUpdate && userWalletUpdate.winning_balance ? userWalletUpdate.winning_balance:0,
+				"current_cash_balance": userWalletUpdate && userWalletUpdate.cash_balance ? userWalletUpdate.cash_balance:0,
+				"current_bonus_amount": userWalletUpdate && userWalletUpdate.bonus_amount ? userWalletUpdate.bonus_amount:0,
+				"current_extra_amount": userWalletUpdate && userWalletUpdate.extra_amount ? userWalletUpdate.extra_amount:0,
+				"current_affiliate_amount":userWalletUpdate && userWalletUpdate.affiliate_amount ? userWalletUpdate.affiliate_amount:0,
+			}
 		}
 	]
 	await Transaction.create(transaction_data,{ session: session });
