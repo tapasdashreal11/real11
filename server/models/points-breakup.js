@@ -287,6 +287,18 @@ var pointsBreakupSchema = new Schema({
   tackle_unsuccessful_point: {
     type: Number
   },
+  high_five: {
+    type: Number
+  },
+  high_five_point: {
+    type: Number
+  },
+  high_five: {
+    type: Number
+  },
+  high_five_point: {
+    type: Number
+  },
   selected_by: {
     type: String
   },
