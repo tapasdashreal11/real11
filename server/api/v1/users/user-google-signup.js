@@ -296,11 +296,11 @@ module.exports = {
                             var caps_invite_code = params.invite_code.toUpperCase();
                             let real11Code = caps_invite_code.substring(0, 3);
                             let inviteDetails = {};
-                            if(real11Code == "REL"){
-                                 inviteDetails = await Users.findOne({ refer_id: "IPL200" });
-                                 referal_code_detail.sub_referal_code = "IPL200";
-                            }else{
-                                 inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
+                            if (real11Code == "REL") {
+                                inviteDetails = await Users.findOne({ refer_id: "IPL200" });
+                                referal_code_detail.sub_referal_code = "IPL200";
+                            } else {
+                                inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
                             }
                             //let inviteDetails = await Users.findOne({ refer_id: caps_invite_code });
                             if (!_.isEmpty(inviteDetails)) {
@@ -365,7 +365,7 @@ module.exports = {
                         }
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString();
-                        insertData.bonus_amount =  config.referral_bouns_amount;
+                        insertData.bonus_amount = config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
@@ -809,51 +809,51 @@ module.exports = {
     },
     userRefStaticData: async (req, res) => {
         var response = { status: false, message: "Invalid Request", data: {} };
-        try{
-         let ref_now= {
-             heading:"How it Works?",
-             sub_heading:"Get 75 on every referral.",
-             icon:"ic_howitworks",
-             data:[
-                {
-                    icon:"ic_invite_friends_email",
-                    txt:"₹10 Bonus",
-                    sub_txt:"on Email Verification",
-                },
-                {
-                    icon:"ic_invite_friends_20",
-                    txt:"₹20 Bonus & ₹10 XtraCash",
-                    sub_txt:"on Pan card Verification"
-                },
-                {
-                    icon:"ic_invite_friends_bank_verify",
-                    txt:"₹20 Bonus & ₹10 XtraCash",
-                    sub_txt:"on Bank account Verification",
-                },
-                {
-                    icon:"ic_firstdeposit",
-                    txt:"₹5 XtraCash",
-                    sub_txt:"on First Deposit",
-                }
-             ]
-         }
-         let bank_change_req_txt = {
-            'heading':"The following are some essential points that one should keep in mind while applying for a bank change request",
-            points:[
-                {"item":"It typically takes 3 to 5 days to verify a bank account."},
-                {"item":"A bank account once verified with Real11, cannot be linked with another account on the platform."},
-                {"item":"You can only verify the bank account under your name."},
-                {"item":"A Non-Resident External account, Digital payments bank or any other account from Nagaland, Assam, Andhra Pradesh, Telangana, Odisha, Karnataka, Sikkim can't be verified since the game of skill is banned in these states."},
-                {"item":"You would not be able to change a bank account if your previous account verification/withdrawal is pending or in process."},
-            ]
-        }
-        let depoistPaymentGateway =['Paytm','PhonePay'];
-         response["message"] = "";
-         response["data"] = {ref_now:ref_now,bank_change_req_txt:bank_change_req_txt,deposit_pay_gateway:depoistPaymentGateway};
-         response["status"] = true;
-         return res.json(response);
+        try {
+            let ref_now = {
+                heading: "How it Works?",
+                sub_heading: "Get 75 on every referral.",
+                icon: "ic_howitworks",
+                data: [
+                    {
+                        icon: "ic_invite_friends_email",
+                        txt: "₹10 Bonus",
+                        sub_txt: "on Email Verification",
+                    },
+                    {
+                        icon: "ic_invite_friends_20",
+                        txt: "₹20 Bonus & ₹10 XtraCash",
+                        sub_txt: "on Pan card Verification"
+                    },
+                    {
+                        icon: "ic_invite_friends_bank_verify",
+                        txt: "₹20 Bonus & ₹10 XtraCash",
+                        sub_txt: "on Bank account Verification",
+                    },
+                    {
+                        icon: "ic_firstdeposit",
+                        txt: "₹5 XtraCash",
+                        sub_txt: "on First Deposit",
+                    }
+                ]
+            }
+            let bank_change_req_txt = {
+                'heading': "The following are some essential points that one should keep in mind while applying for a bank change request",
+                points: [
+                    { "item": "It typically takes 3 to 5 days to verify a bank account." },
+                    { "item": "A bank account once verified with Real11, cannot be linked with another account on the platform." },
+                    { "item": "You can only verify the bank account under your name." },
+                    { "item": "A Non-Resident External account, Digital payments bank or any other account from Nagaland, Assam, Andhra Pradesh, Telangana, Odisha, Karnataka, Sikkim can't be verified since the game of skill is banned in these states." },
+                    { "item": "You would not be able to change a bank account if your previous account verification/withdrawal is pending or in process." },
+                ]
+            }
+            let depoistPaymentGateway = [{ 'type': 'Card', 'options': [{ 'name': 'Debit Card', 'type': 'paytm', 'status': true, 'offer available': false, 'show': 'b', }, { 'name': 'Credit Card', 'type': 'paytm', 'status': true, 'offer available': false, 'show': 'b' }] }, { 'type': 'Wallet', 'options': [{ 'name': 'Paytm', 'type': 'paytm', 'status': true, 'offer available': true, 'show': 'b', }, { 'name': 'Phonepay', 'type': 'phonepay', 'status': true, 'offer available': true, 'show': 'a' }, { 'name': 'Other Wallet', 'type': 'payubiz', 'status': true, 'offer available': false, 'show': 'b' }] }, { 'type': 'UPI/Google Pay/BHIM', 'options': [{ 'name': 'Paytm UPI', 'type': 'paytm', 'status': true, 'offer available': false, 'show': 'b', }] }, { 'type': 'NETBANKING', 'options': [{ 'name': 'VIEW ALL Net Banking', 'type': 'paytm', 'status': true, 'offer available': false, 'show': 'b', }, { 'name': 'Net Banking', 'type': 'payumoney', 'status': true, 'offer available': false, 'show': 'b', }] }];
+            response["message"] = "";
+            response["data"] = { ref_now: ref_now, bank_change_req_txt: bank_change_req_txt, deposit_pay_gateway: depoistPaymentGateway };
+            response["status"] = true;
+            return res.json(response);
 
-        }catch (err) {
+        } catch (err) {
             return res.json(response);
         }
     }
@@ -907,7 +907,7 @@ async function getUserName() {
 async function sendEmailToAdmin(refer_id, email, phone) {
     let mailMessage = "<div><h3>Referal Used Awareness</h3><p>Hello Admin,</p><p>This Referal Id <b>" + refer_id + " phone " + phone + " email " + email + "</b> has been used upto 10 again </p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
     let to = "amityadav@real11.com";
-   // let to = "shashijangir@real11.com";
+    // let to = "shashijangir@real11.com";
     let subject = "User Signup via Referal code " + refer_id + " other info " + email + " " + phone;
     sendSMTPMail(to, subject, mailMessage);
 }
