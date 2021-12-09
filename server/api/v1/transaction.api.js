@@ -506,7 +506,28 @@ module.exports = {
                                                                                 c_discount_amount = discountAmount; 
                                                                                 let date = new Date();
                                                                                 let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
-                                                                                Transaction.saveTransaction(users.id, txnId, txnType, discountAmount);
+                                                                                let txnObjForOffer = {
+                                                                                    user_id: users.id,
+                                                                                    txn_amount: discountAmount,
+                                                                                    currency: "INR",
+                                                                                    txn_date: Date.now(),
+                                                                                    local_txn_id: txnId,
+                                                                                    added_type: txnType,
+                                                                                    details: {
+                                                                                        "refund_winning_balance":0,
+                                                                                        "refund_cash_balance": txnType == TransactionTypes.EXTRA_DEPOSITE ?discountAmount:0,
+                                                                                        "refund_bonus_amount": txnType == TransactionTypes.COUPON_BONUS ?discountAmount:0,
+                                                                                        "refund_extra_amount": txnType == TransactionTypes.EXTRA_BONUS ?discountAmount:0,
+                                                                                        "refund_affiliate_amount": 0,
+                                                                                        "current_winning_balance": users && users.winning_balance ? users.winning_balance:0,
+                                                                                        "current_cash_balance": users && users.cash_balance ? users.cash_balance:0,
+                                                                                        "current_bonus_amount": users && users.bonus_amount ? users.bonus_amount:0,
+                                                                                        "current_extra_amount": users && users.extra_amount ? users.extra_amount:5,
+                                                                                        "current_affiliate_amount":users && users.affiliate_amount ? users.affiliate_amount:0,
+                                                                                    }
+                                                                                  }
+                                                                                  await Transaction.create(txnObjForOffer);
+                                                                                  //Transaction.saveTransaction(users.id, txnId, txnType, discountAmount);
                                                                             }
                                                                         }
                                                                     }
@@ -660,6 +681,18 @@ module.exports = {
                                                     }
 
                                                     let res = await User.updateOne({ '_id': decoded['user_id'] }, { $set: { isFirstPaymentAdded:1,cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
+                                                    txnEntity['details'] = {
+                                                        "refund_winning_balance":0,
+                                                        "refund_cash_balance": txnData && txnData.txn_amount ? parseFloat(txnData.txn_amount):0,
+                                                        "refund_bonus_amount": 0,
+                                                        "refund_extra_amount": 0,
+                                                        "refund_affiliate_amount": 0,
+                                                        "current_winning_balance": users && users.winning_balance ? users.winning_balance:0,
+                                                        "current_cash_balance": users && users.cash_balance ? users.cash_balance:0,
+                                                        "current_bonus_amount": users && users.bonus_amount ? users.bonus_amount:0,
+                                                        "current_extra_amount": users && users.extra_amount ? users.extra_amount:bonusAmount,
+                                                        "current_affiliate_amount":users && users.affiliate_amount ? users.affiliate_amount:0,
+                                                      }
                                                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
 
                                                     txn_status = true;
@@ -1010,7 +1043,28 @@ module.exports = {
                                                 coupon_id = txnData.coupon_id;
                                                 let date = new Date();
                                                 txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + authUser._id;
-                                                Transaction.saveTransaction(authUser.id, txnId, txnType, discountAmount);
+                                                let txnObjForOffer = {
+                                                    user_id: authUser.id,
+                                                    txn_amount: discountAmount,
+                                                    currency: "INR",
+                                                    txn_date: Date.now(),
+                                                    local_txn_id: txnId,
+                                                    added_type: txnType,
+                                                    details: {
+                                                        "refund_winning_balance":0,
+                                                        "refund_cash_balance": txnType == TransactionTypes.EXTRA_DEPOSITE ?discountAmount:0,
+                                                        "refund_bonus_amount": txnType == TransactionTypes.COUPON_BONUS ?discountAmount:0,
+                                                        "refund_extra_amount": txnType == TransactionTypes.EXTRA_BONUS ?discountAmount:0,
+                                                        "refund_affiliate_amount": 0,
+                                                        "current_winning_balance": authUser && authUser.winning_balance ? authUser.winning_balance:0,
+                                                        "current_cash_balance": authUser && authUser.cash_balance ? authUser.cash_balance:0,
+                                                        "current_bonus_amount": authUser && authUser.bonus_amount ? authUser.bonus_amount:0,
+                                                        "current_extra_amount": authUser && authUser.extra_amount ? authUser.extra_amount:5,
+                                                        "current_affiliate_amount":authUser && authUser.affiliate_amount ? authUser.affiliate_amount:0,
+                                                    }
+                                                  }
+                                                  await Transaction.create(txnObjForOffer);
+                                                 // Transaction.saveTransaction(authUser.id, txnId, txnType, discountAmount);
                                             }
                                         }
                                     }
@@ -1160,7 +1214,19 @@ module.exports = {
                     User.updateOne({ '_id': ObjectId(authUser._id) }, {isFirstPaymentAdded:1, cash_balance: authUser.cash_balance, bonus_amount: authUser.bonus_amount, extra_amount: authUser.extra_amount }, { new: true }).then((data) => {
                         // console.log("MyContestModel-------", data);
                         if (data && data.nModified == 1) {
-                            Transaction.updateOne({ '_id': ObjectId(transactionId) }, { $set: { status: true, txn_id: transactionId } }).then((txnData) => {
+                            let txtDetails = {
+                                "refund_winning_balance":0,
+                                "refund_cash_balance": txnData && txnData.txn_amount ? parseFloat(txnData.txn_amount):0,
+                                "refund_bonus_amount": 0,
+                                "refund_extra_amount": 0,
+                                "refund_affiliate_amount": 0,
+                                "current_winning_balance": authUser && authUser.winning_balance ? authUser.winning_balance:0,
+                                "current_cash_balance": authUser && authUser.cash_balance ? authUser.cash_balance:0,
+                                "current_bonus_amount": authUser && authUser.bonus_amount ? authUser.bonus_amount:0,
+                                "current_extra_amount": authUser && authUser.extra_amount ? authUser.extra_amount:bonusAmount,
+                                "current_affiliate_amount":authUser && authUser.affiliate_amount ? authUser.affiliate_amount:0,
+                              }
+                            Transaction.updateOne({ '_id': ObjectId(transactionId) }, { $set: { status: true, details: txtDetails ,txn_id: transactionId } }).then((txnData) => {
 
                             });
                         }
@@ -1472,7 +1538,28 @@ async function updateTransactionAllGetway(decoded, cb) {
                                                 c_discount_amount = discountAmount;
                                                 let date = new Date();
                                                 let txnId = 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + decoded['user_id'];
-                                                Transaction.saveTransaction(users.id, txnId, txnType, discountAmount);
+                                                let txnObjForOffer = {
+                                                    user_id: users.id,
+                                                    txn_amount: discountAmount,
+                                                    currency: "INR",
+                                                    txn_date: Date.now(),
+                                                    local_txn_id: txnId,
+                                                    added_type: txnType,
+                                                    details: {
+                                                        "refund_winning_balance":0,
+                                                        "refund_cash_balance": txnType == TransactionTypes.EXTRA_DEPOSITE ?discountAmount:0,
+                                                        "refund_bonus_amount": txnType == TransactionTypes.COUPON_BONUS ?discountAmount:0,
+                                                        "refund_extra_amount": txnType == TransactionTypes.EXTRA_BONUS ?discountAmount:0,
+                                                        "refund_affiliate_amount": 0,
+                                                        "current_winning_balance": users && users.winning_balance ? users.winning_balance:0,
+                                                        "current_cash_balance": users && users.cash_balance ? users.cash_balance:0,
+                                                        "current_bonus_amount": users && users.bonus_amount ? users.bonus_amount:0,
+                                                        "current_extra_amount": users && users.extra_amount ? users.extra_amount:5,
+                                                        "current_affiliate_amount":users && users.affiliate_amount ? users.affiliate_amount:0,
+                                                    }
+                                                  }
+                                                  await Transaction.create(txnObjForOffer);
+                                                 // Transaction.saveTransaction(users.id, txnId, txnType, discountAmount);
                                             }
                                         }
                                     }
@@ -1580,6 +1667,18 @@ async function updateTransactionAllGetway(decoded, cb) {
                      }
                     
                     let res = await User.updateOne({ '_id': decoded['user_id'] }, { $set: { isFirstPaymentAdded:1,cash_balance: users.cash_balance, bonus_amount: users.bonus_amount, extra_amount: users.extra_amount } });
+                    txnEntity['details'] = {
+                        "refund_winning_balance":0,
+                        "refund_cash_balance": txnData && txnData.txn_amount ? parseFloat(txnData.txn_amount):0,
+                        "refund_bonus_amount": 0,
+                        "refund_extra_amount": 0,
+                        "refund_affiliate_amount": 0,
+                        "current_winning_balance": users && users.winning_balance ? users.winning_balance:0,
+                        "current_cash_balance": users && users.cash_balance ? users.cash_balance:0,
+                        "current_bonus_amount": users && users.bonus_amount ? users.bonus_amount:0,
+                        "current_extra_amount": users && users.extra_amount ? users.extra_amount:bonusAmount,
+                        "current_affiliate_amount":users && users.affiliate_amount ? users.affiliate_amount:0,
+                      }
                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
 
                     txn_status = true;
