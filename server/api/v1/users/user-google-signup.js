@@ -847,8 +847,9 @@ module.exports = {
                 {"item":"You would not be able to change a bank account if your previous account verification/withdrawal is pending or in process."},
             ]
         }
+        let depoistPaymentGateway =['Paytm','PhonePay'];
          response["message"] = "";
-         response["data"] = {ref_now:ref_now,bank_change_req_txt:bank_change_req_txt};
+         response["data"] = {ref_now:ref_now,bank_change_req_txt:bank_change_req_txt,deposit_pay_gateway:depoistPaymentGateway};
          response["status"] = true;
          return res.json(response);
 
