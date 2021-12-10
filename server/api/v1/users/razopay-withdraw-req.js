@@ -76,8 +76,8 @@ module.exports = async (req, res) => {
 								session.startTransaction();
 								const sessionOpts = { session, new: true };
 								try {
-									let result = await Users.updateOne({ _id: userId }, { $inc: { affiliate_amount: - parseFloat(params.withdraw_amount) } }, sessionOpts);
-									if (result && result.nModified > 0) {
+									let userWallet = await Users.findOneAndUpdate({ _id: userId }, { $inc: { affiliate_amount: - parseFloat(params.withdraw_amount) } }, sessionOpts);
+									if (userWallet) {
 										let withdrawData = await WithdrawRequest.create([updatedData], { session: session });
 										let date = new Date();
 										let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId;
@@ -90,6 +90,18 @@ module.exports = async (req, res) => {
 										transEntity['added_type'] = parseInt(txnStatus);
 										transEntity['match_id'] = 0;
 										transEntity['withdraw_id'] = withdrawId;
+										transEntity['details'] = {
+											"refund_winning_balance": params && params.withdraw_amount ? parseFloat(params.withdraw_amount):0,
+											"refund_cash_balance": 0,
+											"refund_bonus_amount": 0,
+											"refund_extra_amount": 0,
+											"refund_affiliate_amount": 0,
+											"current_winning_balance": userWallet && userWallet.winning_balance ? userWallet.winning_balance:0,
+											"current_cash_balance": userWallet && userWallet.cash_balance ? userWallet.cash_balance:0,
+											"current_bonus_amount": userWallet && userWallet.bonus_amount ? userWallet.bonus_amount:0,
+											"current_extra_amount": userWallet && userWallet.extra_amount ? userWallet.extra_amount:0,
+											"current_affiliate_amount":userWallet && userWallet.affiliate_amount ? userWallet.affiliate_amount:0,
+										   }
 										await Transaction.create([transEntity], { session: session });
 										await session.commitTransaction();
 										session.endSession();
@@ -176,12 +188,23 @@ module.exports = async (req, res) => {
 											}
 										}
 										if (params.instant_withdraw && params.instant_withdraw == "1") {
-											await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } });
+											let userData = await Users.findOneAndUpdate({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } },{new: true});
 											let newDataC = await WithdrawRequest.create([updatedData]);
 											var withDrawResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
 											let payOutResponse = await razopayPayoutToUserFundAc(payoutPlayload, withDrawResult._id);
 											let transEntity = { user_id: userId, txn_amount: txnAmount, currency: "INR", txn_date: Date.now(), local_txn_id: txnId };
-											
+											 transEntity['details'] = {
+												"refund_winning_balance": params && params.withdraw_amount ? parseFloat(params.withdraw_amount):0,
+												"refund_cash_balance": 0,
+												"refund_bonus_amount": 0,
+												"refund_extra_amount": 0,
+												"refund_affiliate_amount": 0,
+												"current_winning_balance": userData && userData.winning_balance ? userData.winning_balance:0,
+												"current_cash_balance": userData && userData.cash_balance ? userData.cash_balance:0,
+												"current_bonus_amount": userData && userData.bonus_amount ? userData.bonus_amount:0,
+												"current_extra_amount": userData && userData.extra_amount ? userData.extra_amount:0,
+												"current_affiliate_amount":userData && userData.affiliate_amount ? userData.affiliate_amount:0,
+											   }
 											if (payOutResponse && payOutResponse.id) {
 
 												let payOutData = { payout_id: payOutResponse.id, fund_account_id: userRazopayData.fund_account_id, user_id: userId, txn_amount: txnAmount };
@@ -190,6 +213,8 @@ module.exports = async (req, res) => {
 												transEntity['order_id'] = payOutResponse.id;
 												transEntity['gateway_name'] = "Razorpay";
 												transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
+												
+
 
 												if (payOutResponse.status == "processing") {
 													
@@ -320,8 +345,8 @@ module.exports = async (req, res) => {
 											session.startTransaction();
 											const sessionOpts = { session, new: true };
 											try {
-												let walletRes = await Users.updateOne({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } }, sessionOpts);
-												if (walletRes && walletRes.nModified > 0) {
+												let walletRes = await Users.findOneAndUpdate({ _id: userId }, { $inc: { winning_balance: - parseFloat(params.withdraw_amount) } }, sessionOpts);
+												if (walletRes) {
 													let withdrawData = await WithdrawRequest.create([updatedData], { session: session });
 													let txnStatus = TransactionTypes.TRANSACTION_PENDING;
 													let txnAmount = params.withdraw_amount;
@@ -331,6 +356,18 @@ module.exports = async (req, res) => {
 													transEntity['added_type'] = parseInt(txnStatus);
 													transEntity['match_id'] = 0;
 													transEntity['withdraw_id'] = withdrawId;
+													transEntity['details'] = {
+														"refund_winning_balance": params && params.withdraw_amount ? parseFloat(params.withdraw_amount):0,
+														"refund_cash_balance": 0,
+														"refund_bonus_amount": 0,
+														"refund_extra_amount": 0,
+														"refund_affiliate_amount": 0,
+														"current_winning_balance": walletRes && walletRes.winning_balance ? walletRes.winning_balance:0,
+														"current_cash_balance": walletRes && walletRes.cash_balance ? walletRes.cash_balance:0,
+														"current_bonus_amount": walletRes && walletRes.bonus_amount ? walletRes.bonus_amount:0,
+														"current_extra_amount": walletRes && walletRes.extra_amount ? walletRes.extra_amount:0,
+														"current_affiliate_amount":walletRes && walletRes.affiliate_amount ? walletRes.affiliate_amount:0,
+													   }
 													await Transaction.create([transEntity], { session: session });
 													await session.commitTransaction();
 													session.endSession();
