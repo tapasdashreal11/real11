@@ -347,6 +347,8 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                 let totalForward = 0;
                 let totalGoalkeeper = 0;
                 let totalMidfielder = 0;
+                let totalRaider = 0;
+                let totalAllrounder = 0;
 
                 if (result.players && result.players.length > 0) {
                     let playerTeamDetails = result.players;
@@ -393,15 +395,24 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                             }catch(preiewErr){}
 
                             totalPoints +=   point;
-
-                            if (playerRole.indexOf('Defender') > -1) {
-                                totalDefender += 1;
-                            } else if (playerRole.indexOf('Forward') > -1) {
-                                totalForward += 1;
-                            } else if (playerRole.indexOf('Goalkeeper') > -1) {
-                                totalGoalkeeper += 1;
-                            } else if (playerRole.indexOf('Midfielder') > -1) {
-                                totalMidfielder += 1;
+                            if(sport == 4) {
+                                if (playerRole.indexOf('Defender') > -1) {
+                                    totalDefender += 1;
+                                } else if (playerRole.indexOf('Raider') > -1) {
+                                    totalRaider += 1;
+                                } else if (playerRole.indexOf('Allrounder') > -1) {
+                                    totalAllrounder += 1;
+                                }
+                            } else {
+                                if (playerRole.indexOf('Defender') > -1) {
+                                    totalDefender += 1;
+                                } else if (playerRole.indexOf('Forward') > -1) {
+                                    totalForward += 1;
+                                } else if (playerRole.indexOf('Goalkeeper') > -1) {
+                                    totalGoalkeeper += 1;
+                                } else if (playerRole.indexOf('Midfielder') > -1) {
+                                    totalMidfielder += 1;
+                                }
                             }
                             teamKey++;
                         }
@@ -420,6 +431,8 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                 data[key]['total_forward'] = totalForward;
                 data[key]['total_goalkeeper'] = totalGoalkeeper;
                 data[key]['total_midfielder'] = totalMidfielder;
+                data[key]['total_raider'] = totalRaider;
+                data[key]['total_allrounder'] = totalAllrounder;
                 data[key]['player_details'] = playerDetail;
                 data[key]['substitute_detail'] = substituteDetail;
                 data[key]['my_teams'] = 0;
