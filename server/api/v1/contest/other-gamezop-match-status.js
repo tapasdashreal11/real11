@@ -141,7 +141,7 @@ module.exports = async (req, res) => {
                                 }
 
                             }
-                            if (ptcArray && ptcArray.length > 0 && userArray && userArray.length > 0 && transactionArray && transactionArray.length > 0 && transactionArray.length == ptcArray.length) {
+                            if (ptcArray && ptcArray.length > 1 && userArray && userArray.length > 1 && transactionArray && transactionArray.length > 0 && transactionArray.length == ptcArray.length) {
                                 await User.bulkWrite(userArray, { session: session });
                                 await OtherGameTransaction.insertMany(transactionArray, { session: session });
                                 await OtherGamesPtc.insertMany(ptcArray, { session: session });
