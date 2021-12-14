@@ -180,6 +180,7 @@ module.exports = {
           } else {
             let inviteDetails = await Users.findOne({ refer_id: caps_invite_code },{_id:1});
             if(!_.isEmpty(inviteDetails) && inviteDetails._id) {
+              console.log("inviteDetails",inviteDetails);
               // Valid code we set status 1
               let obj = { status : 1 };
               redis.setRedisLogin(ref_key,obj); 
@@ -188,6 +189,7 @@ module.exports = {
               return res.json(response);
             } else {
               // Not valid code we set status 2
+              console.log("inviteDetails",inviteDetails);
               let obj = { status : 2 }; 
               redis.setRedisLogin(ref_key,obj);
               response["status"] = false;
