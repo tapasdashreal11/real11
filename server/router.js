@@ -160,6 +160,7 @@ const verifyPanDetails = require('./api/v1/users/verify-pan');
 const addWithdrawRequest = require('./api/v1/users/withdraw-request');
 const {realRefCodeGenerate,verifyReferal, verifyEmail, verifyAccountEmail ,updateUserFCMToken,verifyGmailAccount} = require('./api/v1/users/verify-email');
 // const { newLeaderboard } = require('./api/v1/leaderboard');
+const {emailReqOtp,verifyEmailWithOtp} = require('./api/v1/users/verify-email-new');
 const paytmController = require('./controllers/paytm-controller');
 
 const { imageFilter } = require("./api/v1/common/helper");
@@ -399,6 +400,10 @@ router.get('/mobikwik/:transactionId', mobikwikController.showForm);
 router.post('/mobikwik/callback', mobikwikController.callback);
 
 router.get('/api/v1/change-bank-req',auth.authenticate.jwtLogin,changeBankReq);
+
+
+router.post('/api/v1/email-req-otp', auth.authenticate.jwtLogin, emailReqOtp);
+router.get('/api/v1/verify-email-with-otp/:otp', auth.authenticate.jwtLogin, verifyEmailWithOtp);
 
 router.post('/cron/paytmwebhook', function(req, res) {
     console.log("paytm callback data", req.body)
