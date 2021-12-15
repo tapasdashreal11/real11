@@ -719,13 +719,12 @@ async function cricketPreviewNew(decoded, liveScore, cb) {
             }
 
             let dreamPlayers = undefined;//DreamTeams.find().where(['series_id':series_id,'match_id':match_id,'player_id':row.playerId]).first();
-            
             result.push({
                 'player_id': row.player_id,
-                'player_role': row && row.playing_role ? row.player_role : val.playing_role,
+                'player_role': row && row.player_role ? row.player_role : val.player_role,
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
-                'player_credit': val['player_credit'],
+                'player_credit': val['player_credit'] ? val['player_credit'].toString() : '0',
                 'selection_percent': selectedPercent,  //percent,
                 'points': row.point,
                 'in_contest': (isInContest.length > 0) ? true : false,
