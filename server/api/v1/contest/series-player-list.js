@@ -826,7 +826,7 @@ async function footabllPreviewNew(decoded, liveScore, cb) {
                     playerRecord['7'] = {
                         'key_name': "Saves",
                         'actual': "0", //value.goal_scored,
-                        'points': "0" //value.century_halfCentury_point
+                        'points': 0 //value.century_halfCentury_point
                     };
                     playerRecord['8'] = {
                         'key_name': "penalties Saved",
