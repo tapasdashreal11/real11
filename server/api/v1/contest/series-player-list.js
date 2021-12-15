@@ -781,7 +781,7 @@ async function footabllPreviewNew(decoded, liveScore, cb) {
             }
 
             let val = playerData[row.player_id];
-            let playerRecord = {};
+            let playerRecord = [];
             let selectedPercent =   "";
 
             playerBrackup = _.filter(playerBrackupData, key => key.player_id == row.player_id);
