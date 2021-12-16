@@ -331,6 +331,7 @@ module.exports = async (req, res) => {
 													sendEmailToAdminForLowBalance();
 												}
 												response["message"] = "Your request is in process. Kindly check after sometime!!";
+												let errorMsz = payOutResponse && payOutResponse.error && payOutResponse.error.reason ? payOutResponse.error.reason :"in case of razorpay error"
 												var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
 												//await WithdrawRequest.updateOne({ '_id': cResult._id },{"request_status":3,"message":"processing"});
 												transEntity['withdraw_commission'] = updatedData.instant_withdraw_comm ? updatedData.instant_withdraw_comm : 0;
@@ -338,6 +339,7 @@ module.exports = async (req, res) => {
 												transEntity['added_type'] = parseInt(transStatus);
 												transEntity['withdraw_id'] = cResult._id;
 												await Transaction.create([transEntity]);
+												await WithdrawRequest.updateOne({ '_id': cResult._id }, {"message": errorMsz });
 												return res.json(response);
 											}
 										} else {
