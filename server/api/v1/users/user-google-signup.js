@@ -161,9 +161,9 @@ module.exports = {
                         insertData.user_id = insertId;
                         let bank_details = {};
                         bank_details.user_id = insertId;
-                        await BankDetails.create(bank_details);
+                       // await BankDetails.create(bank_details);
                         await Profile.create(bank_details);
-                        await PanDetails.create(bank_details);
+                       // await PanDetails.create(bank_details);
 
                         try {
                             if (insertId) {
@@ -410,9 +410,9 @@ module.exports = {
 
                         let bank_details = {};
                         bank_details.user_id = insertId;
-                        await BankDetails.create(bank_details);
+                      //  await BankDetails.create(bank_details);
                         await Profile.create(bank_details);
-                        await PanDetails.create(bank_details);
+                       // await PanDetails.create(bank_details);
                         try {
 
                             if (params && params.device_id) {
@@ -675,9 +675,9 @@ module.exports = {
                         insertData.user_id = insertId;
                         let bank_details = {};
                         bank_details.user_id = insertId;
-                        await BankDetails.create(bank_details);
+                       // await BankDetails.create(bank_details);
                         await Profile.create(bank_details);
-                        await PanDetails.create(bank_details);
+                       // await PanDetails.create(bank_details);
 
                         try {
                             if (insertId) {
