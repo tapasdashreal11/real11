@@ -55,8 +55,8 @@ module.exports = {
                     let subject	=	"Confirm Your Account To Real11";
                     sendSMTPMail(to, subject, mailMessage);
                     updatedData.verify_string = otp;
-                    const result2 = await Users.updateOne({ _id: userId }, { $set: updatedData });
-                    response["message"] = "Verification code has been sent to email address!";
+                    await Users.updateOne({ _id: userId }, { $set: updatedData });
+                    response["message"] = "Verification code has been sent to the email Id!!";
                     response["status"] = true;
     
                  }else{
@@ -79,11 +79,11 @@ module.exports = {
   },
   verifyEmailWithOtp: async (req, res) => {
     var response = { status: false, message: "Invalid Request", data: {} };
-    let params = req.params;
-    let {otp} = req.params;
+    let params = req.body;
+    let {otp,email} = req.body;
     try {
         let userId = req.userId;
-        let constraints = { otp: "required" };
+        let constraints = { otp: "required",email: "required" };
         let validator = new Validator(params, constraints);
         let matched = await validator.check();
         if (!matched) {
@@ -98,7 +98,7 @@ module.exports = {
             response["message"] = "Your email already verified!";
             response["status"] = false;
             return res.json(response);
-        } else if(_.isEqual(user.verify_string,otp)) {
+        } else if(_.isEqual(user.verify_string,otp) && _.isEqual(user.new_email,email)) {
             updatedData.email_verified = 1;
           if(user.email && user.new_email &&! _.isEqual(user.email,user.new_email) ){
             updatedData.email = user.new_email || null;
