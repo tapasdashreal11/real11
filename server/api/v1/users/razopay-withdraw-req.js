@@ -330,6 +330,7 @@ module.exports = async (req, res) => {
 												if (payOutResponse && payOutResponse.error && payOutResponse.error.reason && payOutResponse.error.reason == "insufficient_funds") {
 													sendEmailToAdminForLowBalance();
 												}
+												console.log(payOutResponse.error);
 												response["message"] = "Your request is in process. Kindly check after sometime!!";
 												let errorMsz = payOutResponse && payOutResponse.error && payOutResponse.error.reason ? payOutResponse.error.reason :"in case of razorpay error"
 												var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
