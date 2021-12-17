@@ -101,6 +101,7 @@ module.exports = {
             return res.json(response);
         } else if(_.isEqual(user.verify_string,otp) && _.isEqual(user.new_email,email)) {
             updatedData.email_verified = 1;
+            updatedData.verify_string = "";
           if(user.email && user.new_email &&! _.isEqual(user.email,user.new_email) ){
             updatedData.email = user.new_email || null;
             updatedData.google_id = null;
