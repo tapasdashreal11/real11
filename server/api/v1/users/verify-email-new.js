@@ -51,7 +51,7 @@ module.exports = {
                 
                 if(to){
                     var otp		=	Math.floor(100000 + Math.random() * 900000);
-                    let mailMessage	=	"<div><h3>Email Verification OTP</h3><p>Hi,</p><p>Your One Time Password(OTP) is <b>"+ otp +"</b></p><p>The OTP will expire in 30 minnutes if not used.</p><p>If you have not made this request, please contact our customer support immidiately.</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>";
+                    let mailMessage	=	"<div><h3>Email Verification OTP</h3><p>Hi,</p><p>Your One time password (OTP) is <b>"+ otp +"</b></p><p>This OTP will only be valid for 30 minutes. Kindly complete the verification before the password expires.</p><p>If you have not made any request, please contact our customer support team immediately.</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>";
                     let subject	=	"Confirm Your Account To Real11";
                     sendSMTPMail(to, subject, mailMessage);
                     updatedData.verify_string = otp;
