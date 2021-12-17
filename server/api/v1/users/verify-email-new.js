@@ -51,7 +51,8 @@ module.exports = {
                 
                 if(to){
                     var otp		=	Math.floor(100000 + Math.random() * 900000);
-                    let mailMessage	=	"<div><h3>Email Verification OTP</h3><p>Hi,</p><p>Your One time password (OTP) is <b>"+ otp +"</b></p><p>This OTP will only be valid for 30 minutes. Kindly complete the verification before the password expires.</p><p>If you have not made any request, please contact our customer support team immediately.</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>";
+                   // let mailMessage	=	"<div><h3>Email Verification OTP</h3><p>Hi,</p><p>Your One time password (OTP) is <b>"+ otp +"</b></p><p>This OTP will only be valid for 30 minutes. Kindly complete the verification before the password expires.</p><p>If you have not made any request, please contact our customer support team immediately.</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>";
+                    let mailMessage	=	  "<div style='padding: 10px;font-family: roboto,sans-serif;'><p><span style='font-weight:600;'>Hi,</span></p><p>Your One time password (OTP) is</p><h2 style='background: #298be5;letter-spacing: 6px;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;'>"+otp+"</h2><p style='margin-top: 20px;'>This OTP will only be valid for 5 minutes. Kindly complete the verification before the password expires.</p><p style='color: #ccc;padding: 0px;font-size: 12px;'>If you have not made any request, please contact our customer support team immediately.</p><p style='font-size:0.9em;'>Thank You,<br /> <span style='font-weight:600;'>Real11 Team</span></p></div>"
                     let subject	=	"Confirm Your Account To Real11";
                     sendSMTPMail(to, subject, mailMessage);
                     updatedData.verify_string = otp;
