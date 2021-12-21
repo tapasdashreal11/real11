@@ -690,7 +690,7 @@ module.exports = {
                                                         "current_winning_balance": users && users.winning_balance ? users.winning_balance:0,
                                                         "current_cash_balance": users && users.cash_balance ? users.cash_balance:0,
                                                         "current_bonus_amount": users && users.bonus_amount ? users.bonus_amount:0,
-                                                        "current_extra_amount": users && users.extra_amount ? users.extra_amount:bonusAmount,
+                                                        "current_extra_amount": users && users.extra_amount ? users.extra_amount:0,
                                                         "current_affiliate_amount":users && users.affiliate_amount ? users.affiliate_amount:0,
                                                       }
                                                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
@@ -1223,7 +1223,7 @@ module.exports = {
                                 "current_winning_balance": authUser && authUser.winning_balance ? authUser.winning_balance:0,
                                 "current_cash_balance": authUser && authUser.cash_balance ? authUser.cash_balance:0,
                                 "current_bonus_amount": authUser && authUser.bonus_amount ? authUser.bonus_amount:0,
-                                "current_extra_amount": authUser && authUser.extra_amount ? authUser.extra_amount:bonusAmount,
+                                "current_extra_amount": authUser && authUser.extra_amount ? authUser.extra_amount:0,
                                 "current_affiliate_amount":authUser && authUser.affiliate_amount ? authUser.affiliate_amount:0,
                               }
                             Transaction.updateOne({ '_id': ObjectId(transactionId) }, { $set: { status: true, details: txtDetails ,txn_id: transactionId } }).then((txnData) => {
@@ -1676,7 +1676,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                         "current_winning_balance": users && users.winning_balance ? users.winning_balance:0,
                         "current_cash_balance": users && users.cash_balance ? users.cash_balance:0,
                         "current_bonus_amount": users && users.bonus_amount ? users.bonus_amount:0,
-                        "current_extra_amount": users && users.extra_amount ? users.extra_amount:bonusAmount,
+                        "current_extra_amount": users && users.extra_amount ? users.extra_amount:0,
                         "current_affiliate_amount":users && users.affiliate_amount ? users.affiliate_amount:0,
                       }
                     await Transaction.updateOne({ _id: txnData._id }, { $set: txnEntity });
