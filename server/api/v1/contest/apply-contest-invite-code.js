@@ -29,7 +29,7 @@ module.exports = {
                     if (!contestMatch || contestMatch == false) {
                         let matchContes = await MatchContest.findOne({ 'invite_code': ddinvite_code, is_full: 0 }, { _id: 1, 'contest.contest_size': 1, 'contest.category_id': 1, 'contest.contest_type': 1, contest_id: 1, category_id: 1, series_id: 1, match_id: 1, localteam_id: 1, visitorteam_id: 1, localteam: 1, visitorteam: 1, sport: 1 });
                         if (matchContes && matchContes._id) {
-                            let seriesSqad = await SeriesSquad.findOne({ 'match_id': matchContes.match_id, sport: matchContes.sport }, { _id: 1,live_fantasy_parent_id: 1,inning_number:1, is_parent: 1, time: 1, date: 1, contest_count: 1, series_name: 1, localteam_short_name: 1, visitorteam_short_name: 1, match_id: 1 });
+                            let seriesSqad = await SeriesSquad.findOne({ 'match_id': matchContes.match_id, sport: matchContes.sport }, { _id: 1,live_fantasy_parent_id: 1,inning_number:1, is_parent: 1, time: 1, date: 1, contest_count: 1, series_name: 1, localteam_short_name: 1, visitorteam_short_name: 1, match_id: 1, local_flag: 1, visitor_flag: 1 });
                             if (seriesSqad && seriesSqad._id) {
                                 let matchContesComplete = JSON.parse(JSON.stringify(matchContes))
                                 matchContesComplete['series_squad'] = seriesSqad;
@@ -46,8 +46,8 @@ module.exports = {
                     if (contestMatch && contestMatch._id && contestMatch.series_squad) {
                         let seriesSquad = contestMatch.series_squad;
                         let totalContest = seriesSquad.contest_count;
-                        let localTeamFlag = '';
-                        let visitorTeamFlag = '';
+                        let localTeamFlag = seriesSquad && seriesSquad.local_flag ? process.env.IMAGE_BASE_URL + seriesSquad.local_flag : "";
+                        let visitorTeamFlag = seriesSquad && seriesSquad.visitor_flag ? process.env.IMAGE_BASE_URL + seriesSquad.visitor_flag : "";
                         let finalDate = moment(seriesSquad.time).utc().format(config.DateFormat.date);
                         let finalTime = moment(seriesSquad.time).utc().format(config.DateFormat.time);
                         let sdateTime = moment(seriesSquad.time).utc();
