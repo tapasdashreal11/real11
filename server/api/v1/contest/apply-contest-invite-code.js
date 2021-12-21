@@ -46,8 +46,8 @@ module.exports = {
                     if (contestMatch && contestMatch._id && contestMatch.series_squad) {
                         let seriesSquad = contestMatch.series_squad;
                         let totalContest = seriesSquad.contest_count;
-                        let localTeamFlag = seriesSquad && seriesSquad.local_flag ? process.env.IMAGE_BASE_URL + seriesSquad.local_flag : "";
-                        let visitorTeamFlag = seriesSquad && seriesSquad.visitor_flag ? process.env.IMAGE_BASE_URL + seriesSquad.visitor_flag : "";
+                        let localTeamFlag = seriesSquad && seriesSquad.local_flag ? process.env.IMAGE_BASE_URL + "/" + seriesSquad.local_flag : "";
+                        let visitorTeamFlag = seriesSquad && seriesSquad.visitor_flag ? process.env.IMAGE_BASE_URL + "/" + seriesSquad.visitor_flag : "";
                         let finalDate = moment(seriesSquad.time).utc().format(config.DateFormat.date);
                         let finalTime = moment(seriesSquad.time).utc().format(config.DateFormat.time);
                         let sdateTime = moment(seriesSquad.time).utc();
