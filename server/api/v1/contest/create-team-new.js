@@ -60,7 +60,7 @@ module.exports = {
                     } else if (sport === 2) {
                         if (playerIds.length !== 11)
                             return res.send(ApiUtility.failed('Please select valid team'));
-                    }else if (sport === 4) {
+                    } else if (sport === 4) {
                         if (playerIds.length !== 7)
                             return res.send(ApiUtility.failed('Please select valid team'));
                     }

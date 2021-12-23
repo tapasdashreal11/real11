@@ -2577,7 +2577,7 @@ class ModelService {
                 }
                 resolve(data);
              } catch (error) {
-                reject(err);
+                reject(error);
                 console.log("referal amount error >", error)
              }
         });
