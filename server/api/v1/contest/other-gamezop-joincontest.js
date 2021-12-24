@@ -329,7 +329,15 @@ module.exports = async (req, res) => {
                                                            let encodeData = encodeURIComponent(btoa(JSON.stringify(roomDetails)));
                                                             data1.room_id = contest_id; 
                                                            // data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&roomDetails="+encodeData; // For Prod
-                                                            data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
+                                                           // data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
+                                                            if(decoded['match_id'] == 111){
+                                                                data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
+                                                            } else if(decoded['match_id'] == 112){
+                                                                data1.game_url ="https://www.gamezop.com/g/rkPlk2T7qAr?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
+                                                            }else if(decoded['match_id'] == 113){
+                                                                data1.game_url ="https://www.gamezop.com/g/H1PJn6mqAr?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
+                                                            }
+
                                                             redis.setRedis("match-contest-other-view-" + authUser._id, {});
                                                             return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                             
