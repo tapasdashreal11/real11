@@ -335,7 +335,7 @@ module.exports = async (req, res) => {
                                                             } else if(decoded['match_id'] == 112){
                                                                 data1.game_url ="https://www.gamezop.com/g/rkPlk2T7qAr?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
                                                             }else if(decoded['match_id'] == 113){
-                                                                data1.game_url ="https://www.gamezop.com/g/H1PJn6mqAr?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
+                                                                data1.game_url ="https://www.gamezop.com/g/H1AN6fkwqJ7?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
                                                             }
 
                                                             redis.setRedis("match-contest-other-view-" + authUser._id, {});
