@@ -35,13 +35,13 @@ module.exports = {
                                 // Solitaire Gold
                                 let itemObj = o;
                                 itemObj.match_id = 112;
-                                itemObj.match_img = gamesMatch && gamesMatch.length >0 && gamesMatch[0].match_logo ? imageurl+"/"+gamesMatch[0].match_logo :'';
+                                itemObj.match_img = gamesMatch && gamesMatch.length >0 && gamesMatch[0].match_logo ? imageurl+"/"+gamesMatch[1].match_logo :'';
                                 return itemObj;
                             }else if (_.isEqual(o.code, "H1PJn6mqAr")) {
                                 // Knife Flip
                                 let itemObj = o;
                                 itemObj.match_id = 113;
-                                itemObj.match_img = gamesMatch && gamesMatch.length >0 && gamesMatch[0].match_logo ? imageurl+"/"+gamesMatch[0].match_logo :'';
+                                itemObj.match_img = gamesMatch && gamesMatch.length >0 && gamesMatch[0].match_logo ? imageurl+"/"+gamesMatch[2].match_logo :'';
                                 return itemObj;
                             }
                         }
