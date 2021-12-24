@@ -22,7 +22,6 @@ module.exports = async (req, res) => {
         var apiKey = req.headers['api-key'];
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
-        let decoded = { match_id: 111 };
         let match_sport = 3;
         if (scores && scores.length == 0 && roomId && matchId) {
 
@@ -113,7 +112,7 @@ module.exports = async (req, res) => {
                                                         win_amount = priceWin;
                                                         pricewin_amount = priceWin;
                                                         transactionData.push({
-                                                            "match_id": decoded['match_id'], "contest_id": contestTeam.contest_id, "local_txn_id": txnId, "txn_date": new Date(), "txn_amount": pricewin_amount, "currency": "INR", "added_type": 4,
+                                                            "match_id": matchContestData.match_id, "contest_id": contestTeam.contest_id, "local_txn_id": txnId, "txn_date": new Date(), "txn_amount": pricewin_amount, "currency": "INR", "added_type": 4,
                                                             "status": 1,
                                                             "created": new Date(),
                                                             "sport": match_sport,
@@ -243,7 +242,7 @@ async function cancelContestAtResult(zop_match_id, room_id) {
                         });
                         const txnId = (new Date()).getTime() + otherPtcItem.user_id;
                         let entity = {
-                            user_id: otherPtcItem.user_id, contest_id: otherPtcItem.contest_id, match_id: 111, sport: 3, txn_amount: total_amount, currency: "INR",
+                            user_id: otherPtcItem.user_id, contest_id: otherPtcItem.contest_id, match_id: matchContest.match_id, sport: 3, txn_amount: total_amount, currency: "INR",
                             retantion_amount: 0,
                             txn_date: Date.now(),
                             local_txn_id: txnId,
