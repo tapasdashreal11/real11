@@ -157,20 +157,23 @@ module.exports = async (req, res) => {
                                 return res.json(response);
                             } else {
 
-                                await session.commitTransaction();
+                                await session.abortTransaction();
                                 session.endSession();
                                 response["success"] = true;
                                 response["matchId"] = "";
                                 return res.json(response);
                             }
                         } else {
-
+                            await session.abortTransaction();
+                            session.endSession();
                             response["success"] = true;
                             response["matchId"] = zop_match_id;
                             return res.json(response);
                         }
 
                     } else {
+                        await session.abortTransaction();
+                        session.endSession();
                         response["success"] = true;
                         response["matchId"] = "";
                         return res.json(response);
