@@ -273,7 +273,7 @@ async function cancelContestAtResult(zop_match_id, room_id) {
     
                     } else {
     
-                        await session.commitTransaction();
+                        await session.abortTransaction();
                         session.endSession();
                     }
                 }{

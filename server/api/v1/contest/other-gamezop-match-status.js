@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
             let playersIds = players.map(s => ObjectId(s));
             let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
             local_match_id = matchContest && matchContest.match_id ? matchContest.match_id:111;
-            if (status == 'MATCH_FOUND') {
+            if (status == 'MATCH_FOUND' && matchContest && matchContest.is_full) {
                 const session = await startSession()
                 session.startTransaction();
                 try {
@@ -192,6 +192,10 @@ module.exports = async (req, res) => {
                 response["success"] = true;
                 response["matchId"] = "";
                 if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + local_match_id, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
+                return res.json(response);
+            } else {
+                response["success"] = false;
+                response["matchId"] = "";
                 return res.json(response);
             }
         } else {
