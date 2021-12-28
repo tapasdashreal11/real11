@@ -22,6 +22,7 @@ module.exports = {
                 let data = {};
                 let otherGamesMatch = await getGameZopMatchList();
                 let gamesMatch = await OtherGame.find({status:1}).sort({sort:1});
+                let matchListData =[];
                 if (otherGamesMatch && otherGamesMatch.games && gamesMatch &&  gamesMatch.length>0) {
                    
                     let filtered_array = _.filter(
@@ -34,7 +35,9 @@ module.exports = {
                                 let itemObj =  ddd;
                                 itemObj.match_id = 111;
                                 itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
+                                matchListData.push(itemObj);
                                 return itemObj;
+                                
                             }else if (_.isEqual(o.match_id, 112)) {
                                 // Solitaire Gold
                                 let ddd = _.find(otherGamesMatch.games, {code:"rkPlk2T7qAr"});
@@ -42,6 +45,7 @@ module.exports = {
                                 let itemObj = ddd;
                                 itemObj.match_id = 112;
                                 itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
+                                matchListData.push(itemObj);
                                 return itemObj;
                             } else if (_.isEqual(o.match_id, 113)) {
                                 // Knife Flip
@@ -50,6 +54,7 @@ module.exports = {
                                 let itemObj = ddd;
                                 itemObj.match_id = 113;
                                 itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
+                                matchListData.push(itemObj);
                                 return itemObj;
                             }
                         }
@@ -78,8 +83,8 @@ module.exports = {
                             }
                         }
                     );*/
-                    data.total = filtered_array.length;
-                    data.other_games = filtered_array;
+                    data.total = matchListData.length;
+                    data.other_games = matchListData;
                     data.server_time = moment(new Date()).format(config.DateFormat.datetime);
                     var successObj = ApiUtility.success(data);
                     redis.setRedis(redisKey, data)
