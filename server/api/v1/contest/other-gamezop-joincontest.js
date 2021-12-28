@@ -339,7 +339,7 @@ module.exports = async (req, res) => {
                                                             } else if(decoded['match_id'] == 113){
                                                                 data1.game_url ="https://www.gamezop.com/g/H1PJn6mqAr?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
                                                             }*/
-
+                                                            console.log("Game URL", data1.game_url);
                                                             redis.setRedis("match-contest-other-view-" + authUser._id, {});
                                                             return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                             
