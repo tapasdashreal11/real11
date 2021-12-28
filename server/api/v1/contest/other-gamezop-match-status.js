@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
                 const session = await startSession()
                 session.startTransaction();
                 try {
-                    let userDataList = await User.find({ _id: { $in: playersIds ,fair_play_violation:0} });
+                    let userDataList = await User.find({ _id: { $in: playersIds},fair_play_violation:0 });
                     console.log("log*** 1");
                     if (userDataList && userDataList.length > 0 && matchContest && playersIds && playersIds.length == userDataList.length) {
                         local_match_id = matchContest.match_id;
