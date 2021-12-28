@@ -16,7 +16,6 @@ const redis = require('../../../../lib/redis');
 module.exports = async (req, res) => {
     try {
         const { roomId, status, players } = req.body;
-        console.log("ludo req body***",req.body)
         let response = {};
         let constraints = { roomId: "required", status: "required", players: "required" };
         let validator = new Validator(req.body, constraints);
@@ -38,7 +37,6 @@ module.exports = async (req, res) => {
                 session.startTransaction();
                 try {
                     let userDataList = await User.find({ _id: { $in: playersIds},fair_play_violation:0 });
-                    console.log("log*** 1");
                     if (userDataList && userDataList.length > 0 && matchContest && playersIds && playersIds.length == userDataList.length) {
                         local_match_id = matchContest.match_id;
                         let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
@@ -54,10 +52,8 @@ module.exports = async (req, res) => {
                         let ptcArray = [];
                         let userArray = [];
                         let zop_match_id = await generateZopMatchId();
-                        console.log("log*** 2");
                         if (contestType == "Paid") {
                             for (const userId of playersIds) {
-                                console.log("log*** count**");
                                 let singleUserDataItem = _.find(userDataList, { _id: userId });
                                 let contest = {};
                                 let newContestId = new ObjectId();
@@ -115,7 +111,6 @@ module.exports = async (req, res) => {
                                     contest.join_contest_detail = jcd;
                                     contest.zop_match_id = zop_match_id;
                                     ptcArray.push(contest);
-                                    console.log("local_match_id*****",local_match_id);
                                     let entity = {
                                         user_id: userId, contest_id: roomId, match_id: local_match_id, sport: match_sport, txn_amount: txnAmount, currency: "INR",
                                         details: {
@@ -146,9 +141,7 @@ module.exports = async (req, res) => {
                                 }
 
                             }
-                            console.log("log*** 3");
                             if (ptcArray && ptcArray.length > 1 && userArray && userArray.length > 1 && transactionArray && transactionArray.length > 0 && transactionArray.length == ptcArray.length) {
-                                console.log("log*** 4");
                                 await User.bulkWrite(userArray, { session: session });
                                 await OtherGameTransaction.insertMany(transactionArray, { session: session });
                                 await OtherGamesPtc.insertMany(ptcArray, { session: session });
@@ -160,7 +153,6 @@ module.exports = async (req, res) => {
                                 response["matchId"] = zop_match_id;
                                 return res.json(response);
                             } else {
-                                console.log("log*** 5");
                                 await session.commitTransaction();
                                 session.endSession();
                                 response["success"] = true;
@@ -168,23 +160,24 @@ module.exports = async (req, res) => {
                                 return res.json(response);
                             }
                         } else {
-                            
+                            await session.abortTransaction();
+                            session.endSession();
                             response["success"] = true;
                             response["matchId"] = zop_match_id;
                             return res.json(response);
                         }
 
                     } else {
-                       
+                        await session.abortTransaction();
+                        session.endSession();
                         response["success"] = true;
                         response["matchId"] = "";
                         return res.json(response);
                     }
                 } catch (sessionError) {
-                 console.log(sessionError);
+                    console.log("catch error in ludo match status",sessionError);
                     await session.abortTransaction();
                     session.endSession();
-
                     response["success"] = false;
                     response["matchId"] = "";
                     return res.json(response);
@@ -208,7 +201,7 @@ module.exports = async (req, res) => {
 
     } catch (error) {
         let response = {};
-
+        console.log("catch error in ludo match status",error);
         response["success"] = false;
         response["matchId"] = "";
         return res.json(response);
