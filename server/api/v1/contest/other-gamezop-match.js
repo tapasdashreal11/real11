@@ -22,8 +22,33 @@ module.exports = {
                 let data = {};
                 let otherGamesMatch = await getGameZopMatchList();
                 let gamesMatch = await OtherGame.find({status:1}).sort({sort:1});
-                if (otherGamesMatch && otherGamesMatch.games) {
+                if (otherGamesMatch && otherGamesMatch.games && gamesMatch &&  gamesMatch.length>0) {
+                   
                     let filtered_array = _.filter(
+                        gamesMatch, function (o) {
+                            if (_.isEqual(o.match_id, 111)) {
+                                // Ludo
+                                let itemObj =  _.find(otherGamesMatch.games, {code:"SkhljT2fdgb"});
+                                itemObj.match_id = 111;
+                                itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
+                                return itemObj;
+                            }else if (_.isEqual(o.match_id, 112)) {
+                                // Solitaire Gold
+                                let itemObj = _.find(otherGamesMatch.games, {code:"rkPlk2T7qAr"});;
+                                itemObj.match_id = 112;
+                                itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
+                                return itemObj;
+                            } else if (_.isEqual(o.match_id, 113)) {
+                                // Knife Flip
+                                let itemObj = _.find(otherGamesMatch.games, {code:"H1PJn6mqAr"});;
+                                itemObj.match_id = 113;
+                                itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
+                                return itemObj;
+                            }
+                        }
+                    );
+
+                    /**let filtered_array = _.filter(
                         otherGamesMatch.games, function (o) {
                             if (_.isEqual(o.code, "SkhljT2fdgb")) {
                                 // Ludo
@@ -45,7 +70,7 @@ module.exports = {
                                 return itemObj;
                             }
                         }
-                    );
+                    );*/
                     data.total = filtered_array.length;
                     data.other_games = filtered_array;
                     data.server_time = moment(new Date()).format(config.DateFormat.datetime);
