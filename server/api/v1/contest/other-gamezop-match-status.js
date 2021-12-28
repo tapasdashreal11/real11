@@ -35,9 +35,9 @@ module.exports = async (req, res) => {
                 const session = await startSession()
                 session.startTransaction();
                 try {
-                    let userDataList = await User.find({ _id: { $in: playersIds } });
+                    let userDataList = await User.find({ _id: { $in: playersIds },fair_play_violation:0 });
                     let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
-                    if (userDataList && userDataList.length > 0) {
+                    if (userDataList && userDataList.length > 0 && playersIds && playersIds.length == userDataList.length) {
 
                         let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
                         let useableBonusPer = contestData.used_bonus || 0;
