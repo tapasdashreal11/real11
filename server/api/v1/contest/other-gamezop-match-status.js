@@ -114,6 +114,7 @@ module.exports = async (req, res) => {
                                     contest.join_contest_detail = jcd;
                                     contest.zop_match_id = zop_match_id;
                                     ptcArray.push(contest);
+                                    console.log("local_match_id*****",local_match_id);
                                     let entity = {
                                         user_id: userId, contest_id: roomId, match_id: local_match_id, sport: match_sport, txn_amount: txnAmount, currency: "INR",
                                         details: {
@@ -157,23 +158,21 @@ module.exports = async (req, res) => {
                                 return res.json(response);
                             } else {
 
-                                await session.abortTransaction();
+                                await session.commitTransaction();
                                 session.endSession();
                                 response["success"] = true;
                                 response["matchId"] = "";
                                 return res.json(response);
                             }
                         } else {
-                            await session.abortTransaction();
-                            session.endSession();
+                            
                             response["success"] = true;
                             response["matchId"] = zop_match_id;
                             return res.json(response);
                         }
 
                     } else {
-                        await session.abortTransaction();
-                        session.endSession();
+                       
                         response["success"] = true;
                         response["matchId"] = "";
                         return res.json(response);
@@ -195,10 +194,6 @@ module.exports = async (req, res) => {
                 response["success"] = true;
                 response["matchId"] = "";
                 if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + local_match_id, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
-                return res.json(response);
-            } else {
-                response["success"] = false;
-                response["matchId"] = "";
                 return res.json(response);
             }
         } else {
