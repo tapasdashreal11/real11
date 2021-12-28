@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
                 session.startTransaction();
                 try {
                     let userDataList = await User.find({ _id: { $in: playersIds ,fair_play_violation:0} });
-                    
+                    console.log("log*** 1");
                     if (userDataList && userDataList.length > 0 && matchContest && playersIds && playersIds.length == userDataList.length) {
                         local_match_id = matchContest.match_id;
                         let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
@@ -54,9 +54,10 @@ module.exports = async (req, res) => {
                         let ptcArray = [];
                         let userArray = [];
                         let zop_match_id = await generateZopMatchId();
+                        console.log("log*** 2");
                         if (contestType == "Paid") {
                             for (const userId of playersIds) {
-
+                                console.log("log*** count**");
                                 let singleUserDataItem = _.find(userDataList, { _id: userId });
                                 let contest = {};
                                 let newContestId = new ObjectId();
@@ -145,7 +146,9 @@ module.exports = async (req, res) => {
                                 }
 
                             }
+                            console.log("log*** 3");
                             if (ptcArray && ptcArray.length > 1 && userArray && userArray.length > 1 && transactionArray && transactionArray.length > 0 && transactionArray.length == ptcArray.length) {
+                                console.log("log*** 4");
                                 await User.bulkWrite(userArray, { session: session });
                                 await OtherGameTransaction.insertMany(transactionArray, { session: session });
                                 await OtherGamesPtc.insertMany(ptcArray, { session: session });
@@ -157,7 +160,7 @@ module.exports = async (req, res) => {
                                 response["matchId"] = zop_match_id;
                                 return res.json(response);
                             } else {
-
+                                console.log("log*** 5");
                                 await session.commitTransaction();
                                 session.endSession();
                                 response["success"] = true;
@@ -178,7 +181,7 @@ module.exports = async (req, res) => {
                         return res.json(response);
                     }
                 } catch (sessionError) {
-
+                 console.log(sessionError);
                     await session.abortTransaction();
                     session.endSession();
 
