@@ -28,19 +28,26 @@ module.exports = {
                         gamesMatch, function (o) {
                             if (_.isEqual(o.match_id, 111)) {
                                 // Ludo
-                                let itemObj =  _.find(otherGamesMatch.games, {code:"SkhljT2fdgb"});
+                                
+                                let ddd = _.find(otherGamesMatch.games, {code:"SkhljT2fdgb"});
+                                console.log('ludo***',ddd);
+                                let itemObj =  ddd;
                                 itemObj.match_id = 111;
                                 itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
                                 return itemObj;
                             }else if (_.isEqual(o.match_id, 112)) {
                                 // Solitaire Gold
-                                let itemObj = _.find(otherGamesMatch.games, {code:"rkPlk2T7qAr"});;
+                                let ddd = _.find(otherGamesMatch.games, {code:"rkPlk2T7qAr"});
+                                console.log('ddd solitire',ddd);
+                                let itemObj = ddd;
                                 itemObj.match_id = 112;
                                 itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
                                 return itemObj;
                             } else if (_.isEqual(o.match_id, 113)) {
                                 // Knife Flip
-                                let itemObj = _.find(otherGamesMatch.games, {code:"H1PJn6mqAr"});;
+                                let ddd = _.find(otherGamesMatch.games, {code:"H1PJn6mqAr"});
+                                console.log('ddd knife',ddd);
+                                let itemObj = ddd;
                                 itemObj.match_id = 113;
                                 itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
                                 return itemObj;
