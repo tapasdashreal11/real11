@@ -16,13 +16,13 @@ const redis = require('../../../../lib/redis');
 module.exports = async (req, res) => {
     try {
         const { roomId, status, players } = req.body;
-        console.log("ludo req body***",req.body)
+        console.log("ludo req body***",req.body);
         let response = {};
         let constraints = { roomId: "required", status: "required", players: "required" };
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
         var apiKey = req.headers['api-key'];
-        let local_match_id;
+        let decoded = { match_id: 111 };
         let match_sport = 3;
         if (!matched) {
             response["success"] = false;
@@ -31,16 +31,14 @@ module.exports = async (req, res) => {
         }
         if (_.isEqual(apiKey, config.gamezop_api_key)) {
             let playersIds = players.map(s => ObjectId(s));
-            let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
-            local_match_id = matchContest && matchContest.match_id ? matchContest.match_id:111;
-            if (status == 'MATCH_FOUND' && matchContest && matchContest.is_full) {
+            if (status == 'MATCH_FOUND') {
                 const session = await startSession()
                 session.startTransaction();
                 try {
-                    let userDataList = await User.find({ _id: { $in: playersIds ,fair_play_violation:0} });
-                    
-                    if (userDataList && userDataList.length > 0 && matchContest && playersIds && playersIds.length == userDataList.length) {
-                        local_match_id = matchContest.match_id;
+                    let userDataList = await User.find({ _id: { $in: playersIds } });
+                    let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
+                    if (userDataList && userDataList.length > 0) {
+
                         let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
                         let useableBonusPer = contestData.used_bonus || 0;
                         let contestType = contestData.contest_type;
@@ -61,7 +59,7 @@ module.exports = async (req, res) => {
                                 let contest = {};
                                 let newContestId = new ObjectId();
                                 contest._id = newContestId;
-                                contest.match_id = local_match_id;
+                                contest.match_id = 111;
                                 contest.sport = match_sport;
                                 contest.contest_id = roomId;
                                 contest.user_id = userId;
@@ -115,7 +113,7 @@ module.exports = async (req, res) => {
                                     contest.zop_match_id = zop_match_id;
                                     ptcArray.push(contest);
                                     let entity = {
-                                        user_id: userId, contest_id: roomId, match_id: local_match_id, sport: match_sport, txn_amount: txnAmount, currency: "INR",
+                                        user_id: userId, contest_id: roomId, match_id: 111, sport: match_sport, txn_amount: txnAmount, currency: "INR",
                                         details: {
                                             "refund_winning_balance":(winAmount ? winAmount : 0),
                                             "refund_cash_balance": (cashAmount ? cashAmount : 0),
@@ -157,23 +155,20 @@ module.exports = async (req, res) => {
                                 return res.json(response);
                             } else {
 
-                                await session.abortTransaction();
+                                await session.commitTransaction();
                                 session.endSession();
                                 response["success"] = true;
                                 response["matchId"] = "";
                                 return res.json(response);
                             }
                         } else {
-                            await session.abortTransaction();
-                            session.endSession();
+
                             response["success"] = true;
                             response["matchId"] = zop_match_id;
                             return res.json(response);
                         }
 
                     } else {
-                        await session.abortTransaction();
-                        session.endSession();
                         response["success"] = true;
                         response["matchId"] = "";
                         return res.json(response);
@@ -194,11 +189,7 @@ module.exports = async (req, res) => {
                 await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0 }, { $inc: { joined_users: -teamLength } });
                 response["success"] = true;
                 response["matchId"] = "";
-                if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + local_match_id, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
-                return res.json(response);
-            } else {
-                response["success"] = false;
-                response["matchId"] = "";
+                if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + 111, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
                 return res.json(response);
             }
         } else {
