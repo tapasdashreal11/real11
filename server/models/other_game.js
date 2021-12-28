@@ -22,6 +22,9 @@ var otherGameSchema = new Schema({
 	match_logo: {
 		type: String
 	},
+	game_code: {
+		type: String
+	},
 }, {
 	timestamps: true
 });
