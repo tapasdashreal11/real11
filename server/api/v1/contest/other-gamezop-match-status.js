@@ -201,7 +201,7 @@ module.exports = async (req, res) => {
 
     } catch (error) {
         let response = {};
-        console.log("catch error in ludo match status",error);
+        console.log("catch error in ludo match status2",error);
         response["success"] = false;
         response["matchId"] = "";
         return res.json(response);
