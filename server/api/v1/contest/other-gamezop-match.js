@@ -22,7 +22,6 @@ module.exports = {
                 let gamesMatch = await OtherGame.find({status:1}).sort({sort:1});
                 let matchListData =[];
                 if (otherGamesMatch && otherGamesMatch.games && gamesMatch &&  gamesMatch.length>0) {
-                   
                     let filtered_array = _.filter(
                         gamesMatch, function (o) {
                             if(o && o.game_code){
