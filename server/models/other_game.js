@@ -25,6 +25,9 @@ var otherGameSchema = new Schema({
 	game_code: {
 		type: String
 	},
+	game_sub_url: {
+		type: String
+	},
 }, {
 	timestamps: true
 });
