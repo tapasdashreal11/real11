@@ -36,9 +36,7 @@ module.exports = async (req, res) => {
             if(results && results.length>0){
                 let authUser = results[0] ? results[0] : {};
                 if (authUser) {
-                    console.log("count 1***");
                     let liveMatch = results && results.length ==3 && results[2] ? results[2] : {};
-                    console.log("count 2***",liveMatch);
                     if(authUser.fair_play_violation && authUser.fair_play_violation ==1){
                         return res.send(ApiUtility.failed("You can't join contest.You are under fair play violation!!"));
                      }
