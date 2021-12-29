@@ -30,11 +30,10 @@ module.exports = async (req, res) => {
             let apiList = [
                 User.findById(user_id).select({"_id":1,"fair_play_violation":1,"avatar": 1, "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1,"team_name":1 }),
                 OtherGamesContest.findOne({ 'match_id': decoded['match_id'],'contest_id': contest_id}),
-                OtherGames.findOne({ 'match_id': decoded['match_id']}),
+                OtherGames.findOne({ 'match_id': decoded['match_id'],status:1}),
             ];
             var results = await Promise.all(apiList);
             if(results && results.length>0){
-               
                 let authUser = results[0] ? results[0] : {};
                 if (authUser) {
                     let liveMatch = results[2] ? results[2] : {};
@@ -401,7 +400,7 @@ module.exports = async (req, res) => {
 
                         
                     } else {
-                        return res.send(ApiUtility.failed('Something went wrong.!!!!'));
+                        return res.send(ApiUtility.failed('This Game is now in-active.Please try after sometime.'));
                     }
 
                 } else {
