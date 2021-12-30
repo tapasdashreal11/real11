@@ -29,6 +29,7 @@ module.exports = {
                                 if(zopData && zopData.code){
                                     let itemObj =  zopData;
                                     itemObj.match_id = o.match_id;
+                                    itemObj.local_match_name = o.match_name ? o.match_name : "";
                                     itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
                                     matchListData.push(itemObj);
                                     return itemObj;
