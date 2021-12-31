@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
             let playersIds = players.map(s => ObjectId(s));
             let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
             local_match_id = matchContest && matchContest.match_id ? matchContest.match_id:111;
-            if (status == 'MATCH_FOUND' && matchContest) {
+            if (status == 'MATCH_FOUND' && matchContest && matchContest.is_full) {
                 const session = await startSession()
                 session.startTransaction();
                 try {
