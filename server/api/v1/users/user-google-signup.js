@@ -872,12 +872,22 @@ module.exports = {
             try {
                 var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
                 if (params && params.mobile_number && _.size(params.mobile_number) > 9) {
-                    let userPhone = await Users.findOne({ phone: params.mobile_number }, { _id: 1,email: 1, phone: 1 });
+                    let userPhone = await Users.findOne({ phone: params.mobile_number }, { _id: 1,email: 1, phone: 1,otp_time:1 });
                     if (userPhone) {
                         let insertData = {};
+                        let otp_time = currentDateTimeFormat("YYYY-MM-DD HH:mm:ss");
+                        if(userPhone.otp_time){
+                            const expiration = moment(userPhone.otp_time);
+                            const diff = expiration.diff(otp_time);
+                            const diffDuration = moment.duration(diff);
+                            console.log("Minutes:", diffDuration.minutes());
+                            if(diffDuration.minutes() == 0){
+                                response['message'] = 'OTP already sent to your number or try after few minutes!!'
+                                return res.json(response);
+                            }
+                        }
                         var otp = Math.floor(100000 + Math.random() * 900000);
                         insertData.otp = otp;
-                        let otp_time = currentDateTimeFormat("YYYY-MM-DD HH:mm:ss");
                         insertData.otp_time = otp_time;
                         await Users.findOneAndUpdate({ _id: userPhone._id }, { $set: insertData });
                         const msg = otp + " is the OTP for your Real11 account. Never share your OTP with anyone.";
