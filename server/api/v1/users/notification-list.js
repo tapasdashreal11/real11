@@ -16,17 +16,17 @@ module.exports = {
         let result = await Notifications.find({ user_id: ObjectId(userId) }).sort({ _id: -1 }).limit(25);
 
         if (!_.isEmpty(result)) {
-         let dataArray  = result.map(function(element){
-          var s = new Date(element.date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'});
-           console.log("s**",s);
-           element['data'] =s; 
-           element['new_data'] =s; 
-           return element;
+         let notificationList = [];
+          result.map(function(element){
+           if(element && element.date){
+            let obj = JSON.parse(JSON.stringify(element));
+            obj['date'] = new Date(element.date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'});
+            notificationList.push(obj);
+           }
           });
-          console.log("dataArray****",dataArray);
           response["message"] = null;
           response["status"] = true;
-          response["data"] = dataArray;
+          response["data"] = notificationList;
           return res.json(response);
 
         } else {
