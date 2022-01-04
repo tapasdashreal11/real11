@@ -16,9 +16,20 @@ module.exports = {
         let result = await Notifications.find({ user_id: ObjectId(userId) }).sort({ _id: -1 }).limit(25);
 
         if (!_.isEmpty(result)) {
+
+          let filtered_array = _.filter(
+            result, function (o) {
+                if(o && o.date){
+                   let new_item = o;
+                   var s = new Date(o.date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
+                   new_item.data =s; 
+                  return new_item;
+                }
+            }
+        );
           response["message"] = null;
           response["status"] = true;
-          response["data"] = result;
+          response["data"] = filtered_array;
           return res.json(response);
 
         } else {
