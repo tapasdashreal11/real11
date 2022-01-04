@@ -16,19 +16,13 @@ module.exports = {
         let result = await Notifications.find({ user_id: ObjectId(userId) }).sort({ _id: -1 }).limit(25);
 
         if (!_.isEmpty(result)) {
-         let dataArray = [];
-          let filtered_array = _.filter(
-            result, function (o) {
-                if(o && o.date){
-                   let new_item = o;
-                   var s = new Date(o.date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'});
-                   new_item.data =s; 
-                   new_item.new_data =s; 
-                   dataArray.push(new_item);
-                  return new_item;
-                }
-            }
-        );
+         let dataArray  = result.map(function(element){
+          var s = new Date(element.date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'});
+           console.log("s**",s);
+           element['data'] =s; 
+           element['new_data'] =s; 
+           return element;
+          });
           console.log("dataArray****",dataArray);
           response["message"] = null;
           response["status"] = true;
