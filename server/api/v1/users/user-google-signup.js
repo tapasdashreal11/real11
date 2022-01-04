@@ -856,6 +856,62 @@ module.exports = {
         } catch (err) {
             return res.json(response);
         }
+    },
+    userResendOtp: async (req, res) => {
+        try {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            let params = req.body;
+            let constraints = { mobile_number: "required" };
+            let validator = new Validator(params, constraints);
+            let matched = await validator.check();
+            if (!matched) {
+                response["message"] = "Required fields missing";
+                response["errors"] = validator.errors;
+                return res.json(response);
+            }
+            try {
+                var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                if (params && params.mobile_number && _.size(params.mobile_number) > 9) {
+                    let userPhone = await Users.findOne({ phone: params.mobile_number }, { _id: 1,email: 1, phone: 1 });
+                    if (userPhone) {
+                        let insertData = {};
+                        var otp = Math.floor(100000 + Math.random() * 900000);
+                        insertData.otp = otp;
+                        let otp_time = currentDateTimeFormat("YYYY-MM-DD HH:mm:ss");
+                        insertData.otp_time = otp_time;
+                        await Users.findOneAndUpdate({ _id: userPhone._id }, { $set: insertData });
+                        const msg = otp + " is the OTP for your Real11 account. Never share your OTP with anyone.";
+                        let userMobile = params.mobile_number || '';
+                        sendSMS(userMobile, msg)
+                            .then(() => { })
+                            .catch(err => {
+                                console.log("error in sms API ", err);
+                                logger.error("MSG_ERROR", err.message);
+                            });
+
+                        response["status"] = true;
+                        response["data"] = {};
+                        response["login_success"] = false;
+                        response['message'] = 'OTP has been sent successfully!!'
+                        return res.json(response);
+
+                    } else {
+                        response['message'] = 'This number is not registered!!'
+                        return res.json(response);
+                    }
+                } else {
+                    return res.json(response);
+                }
+            } catch (err) {
+                console.log("err at otp resend",err);
+                response["message"] ="Something went wrong!!";
+                return res.json(response);
+            }
+        } catch (error) {
+            logger.error("LOGIN_ERROR", error.message);
+            var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
+            return res.json(response);
+        }
     }
 }
 
