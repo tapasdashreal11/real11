@@ -21,8 +21,9 @@ module.exports = {
             result, function (o) {
                 if(o && o.date){
                    let new_item = o;
-                   var s = new Date(o.date).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
+                   var s = new Date(o.date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'});
                    new_item.data =s; 
+                   new_item.new_data =s; 
                   return new_item;
                 }
             }
