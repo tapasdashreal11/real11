@@ -29,6 +29,7 @@ module.exports = {
                 }
             }
         );
+          console.log("dataArray****",dataArray);
           response["message"] = null;
           response["status"] = true;
           response["data"] = dataArray;
