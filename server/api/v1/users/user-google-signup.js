@@ -161,9 +161,9 @@ module.exports = {
                         insertData.user_id = insertId;
                         let bank_details = {};
                         bank_details.user_id = insertId;
-                       // await BankDetails.create(bank_details);
+                        // await BankDetails.create(bank_details);
                         await Profile.create(bank_details);
-                       // await PanDetails.create(bank_details);
+                        // await PanDetails.create(bank_details);
 
                         try {
                             if (insertId) {
@@ -410,9 +410,9 @@ module.exports = {
 
                         let bank_details = {};
                         bank_details.user_id = insertId;
-                      //  await BankDetails.create(bank_details);
+                        //  await BankDetails.create(bank_details);
                         await Profile.create(bank_details);
-                       // await PanDetails.create(bank_details);
+                        // await PanDetails.create(bank_details);
                         try {
 
                             if (params && params.device_id) {
@@ -675,9 +675,9 @@ module.exports = {
                         insertData.user_id = insertId;
                         let bank_details = {};
                         bank_details.user_id = insertId;
-                       // await BankDetails.create(bank_details);
+                        // await BankDetails.create(bank_details);
                         await Profile.create(bank_details);
-                       // await PanDetails.create(bank_details);
+                        // await PanDetails.create(bank_details);
 
                         try {
                             if (insertId) {
@@ -847,7 +847,7 @@ module.exports = {
                     { "item": "You would not be able to change a bank account if your previous account verification/withdrawal is pending or in process." },
                 ]
             }
-            let depoistPaymentGateway = [{'type':'Card','options':[{'name':'Debit Card','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':false,'show':'b','icon':'debit','mode':'DEBIT_CARD'},{'name':'Credit Card','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':false,'show':'b','icon':'credit','mode':'CREDIT_CARD'}]},{'type':'Wallet','options':[{'name':'Paytm','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':true,'show':'b','icon':'paytm1','mode':''},{'name':'Phonepay','type':'PHONEPE','status':true,'offer_available':true,'show':'a','icon':'phonepe_icon','mode':''},{'name':'Mobikwik','type':'MOBIKWICK','status':false,'offer_available':false,'show':'a','icon':'mobo_icon','mode':''},{'name':'Other Wallet','type':'PAYUBIZ','status':true,'offer_available':false,'show':'b','icon':'payubiz','mode':''}]},{'type':'UPI/Google Pay/BHIM','options':[{'name':'Paytm UPI','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':false,'show':'b','icon':'plus','mode':'UPI_INTENT'}]},{'type':'NETBANKING','options':[{'name':'VIEW ALL Net Banking','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':false,'show':'b','icon':'bankaccounticon','mode':'NET_BANKING'},{'name':'Net Banking','type':'PAYUMONEY','status':true,'offer_available':false,'show':'b','icon':'payumoney','mode':''}]}];
+            let depoistPaymentGateway = [{ 'type': 'Card', 'options': [{ 'name': 'Debit Card', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'debit', 'mode': 'DEBIT_CARD' }, { 'name': 'Credit Card', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'credit', 'mode': 'CREDIT_CARD' }] }, { 'type': 'Wallet', 'options': [{ 'name': 'Paytm', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': true, 'show': 'b', 'icon': 'paytm1', 'mode': '' }, { 'name': 'Phonepay', 'type': 'PHONEPE', 'status': true, 'offer_available': true, 'show': 'a', 'icon': 'phonepe_icon', 'mode': '' }, { 'name': 'Mobikwik', 'type': 'MOBIKWICK', 'status': false, 'offer_available': false, 'show': 'a', 'icon': 'mobo_icon', 'mode': '' }, { 'name': 'Other Wallet', 'type': 'PAYUBIZ', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'payubiz', 'mode': '' }] }, { 'type': 'UPI/Google Pay/BHIM', 'options': [{ 'name': 'Paytm UPI', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'plus', 'mode': 'UPI_INTENT' }] }, { 'type': 'NETBANKING', 'options': [{ 'name': 'VIEW ALL Net Banking', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'bankaccounticon', 'mode': 'NET_BANKING' }, { 'name': 'Net Banking', 'type': 'PAYUMONEY', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'payumoney', 'mode': '' }] }];
             response["message"] = "";
             response["data"] = { ref_now: ref_now, bank_change_req_txt: bank_change_req_txt, deposit_pay_gateway: depoistPaymentGateway };
             response["status"] = true;
@@ -861,7 +861,7 @@ module.exports = {
         try {
             var response = { status: false, message: "Invalid Request", data: {} };
             let params = req.body;
-            let constraints = { mobile_number: "required" };
+            let constraints = { mobile_number: "required", type: "required" };
             let validator = new Validator(params, constraints);
             let matched = await validator.check();
             if (!matched) {
@@ -871,17 +871,23 @@ module.exports = {
             }
             try {
                 var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-                if (params && params.mobile_number && _.size(params.mobile_number) > 9) {
-                    let userPhone = await Users.findOne({ phone: params.mobile_number }, { _id: 1,email: 1, phone: 1,otp_time:1 });
+                if (params && params.mobile_number && _.size(params.mobile_number) > 9 && params.type) {
+                    let query = {};
+                    if (params.type == "login") {
+                        query = { phone: params.mobile_number };
+                    } else {
+                        query = { temp_phone: params.mobile_number }
+                    }
+                    let userPhone = await Users.findOne(query, { _id: 1, email: 1, phone: 1, otp_time: 1 });
                     if (userPhone) {
                         let insertData = {};
                         let otp_time = currentDateTimeFormat("YYYY-MM-DD HH:mm:ss");
-                        if(userPhone.otp_time){
+                        if (userPhone.otp_time) {
                             const expiration = moment(userPhone.otp_time);
                             const diff = expiration.diff(otp_time);
                             const diffDuration = moment.duration(diff);
                             console.log("Minutes:", diffDuration.minutes());
-                            if(diffDuration.minutes() == 0){
+                            if (diffDuration.minutes() == 0) {
                                 response['message'] = 'OTP already sent to your number or try after few minutes!!'
                                 return res.json(response);
                             }
@@ -913,8 +919,8 @@ module.exports = {
                     return res.json(response);
                 }
             } catch (err) {
-                console.log("err at otp resend",err);
-                response["message"] ="Something went wrong!!";
+                console.log("err at otp resend", err);
+                response["message"] = "Something went wrong!!";
                 return res.json(response);
             }
         } catch (error) {
