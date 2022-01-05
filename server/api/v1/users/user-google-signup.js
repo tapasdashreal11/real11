@@ -912,7 +912,7 @@ module.exports = {
                         return res.json(response);
 
                     } else {
-                        response['message'] = 'This number is not registered!!'
+                        response['message'] = 'Invalid Request!!'
                         return res.json(response);
                     }
                 } else {
