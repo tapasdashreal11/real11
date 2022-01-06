@@ -31,7 +31,6 @@ module.exports = {
                                     itemObj.match_id = o.match_id;
                                     itemObj.local_match_name = o.match_name ? o.match_name : "";
                                     itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
-                                    if(zopData.code =="rkPlk2T7qAr")itemObj.isPortrait = false;
                                     matchListData.push(itemObj);
                                     return itemObj;
                                 }
