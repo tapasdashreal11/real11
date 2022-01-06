@@ -819,7 +819,6 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                         contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     } else {
-
                         await session.commitTransaction();
                         session.endSession();
                     }
