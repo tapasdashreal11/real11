@@ -30,6 +30,9 @@ var playerTeamContestSchema = new Schema({
   contest_id: {
     type: ObjectId
   },
+  parent_contest_id: {
+    type: ObjectId
+  },
   user_id: {
     type: ObjectId
   },
