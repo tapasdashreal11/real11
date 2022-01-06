@@ -97,6 +97,7 @@ module.exports = async (req, res) => {
                                 }
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
                                 var parentContestId = (contestData && contestData.parent_id) ? contestData.parent_id : contestData._id;
+                                
                                 if (matchContest && matchContest.category_slug && _.isEqual(matchContest.category_slug, 'head-to-head')) {
                                     // Check Contest as a parent contest
                                     let userPtcData = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'parent_contest_id': parentContestId }, { 'contest_id': 1 });

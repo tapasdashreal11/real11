@@ -53,7 +53,7 @@ var matchContestSchema = new Schema({
   category_name: { type: String, default: '' },
   category_description: { type: String, default: '' },
   category_seq: { type: Number },
-
+  category_slug: { type: String, default: '' },
   contestStartDateTime: { type: Date },
 
   localteam: { type: String, default: '' },
