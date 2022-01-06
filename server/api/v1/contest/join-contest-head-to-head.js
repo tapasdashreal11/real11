@@ -111,7 +111,7 @@ module.exports = async (req, res) => {
                                         let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'contest_id': matchContestData.contest_id }).countDocuments();
                                         if (joinedContest && joinedContest > 0) {
                                             let mcontestObj = {}
-                                            joinContestGlobal(indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
+                                            joinContestGlobal(res,indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                         } else {
                                             // This block for when the user did join this contest
                                             const doc = await MatchContest.findOneAndUpdate({ _id: matchContestData._id }, { $inc: { joined_users: 1 } }, { new: true });
@@ -120,10 +120,10 @@ module.exports = async (req, res) => {
                                                 if (contestData && contestData.contest_size < joinedContestCount) {
                                                     // contest has been full now join new contest
                                                     let mcontestObj = {}
-                                                    joinContestGlobal(indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
+                                                    joinContestGlobal(res,indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                                 } else {
                                                     // contest is now available 
-                                                    joinContestGlobal(indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
+                                                    joinContestGlobal(res,indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
                                                 }
                                             } else {
                                                 return res.send(ApiUtility.failed("Please try again!!"));
@@ -132,7 +132,7 @@ module.exports = async (req, res) => {
                                     } else {
                                         // This is used to create contest and join contest when user did not found any contest
                                         let mcontestObj = {}
-                                        joinContestGlobal(indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
+                                        joinContestGlobal(res,indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                     }
                                 }else{
                                     return res.send(ApiUtility.failed('Please do not join contest.Work in progress...'));
@@ -162,7 +162,7 @@ module.exports = async (req, res) => {
 }
 
 
-async function joinContestGlobal(indianDate, decoded, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, prms_matchContest, matchContestData) {
+async function joinContestGlobal(res,indianDate, decoded, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, prms_matchContest, matchContestData) {
     const session = await startSession()
     session.startTransaction();
     const sessionOpts = { session, new: true };
@@ -175,7 +175,7 @@ async function joinContestGlobal(indianDate, decoded, contestData, series_id, pr
             mResultData = await contestAutoCreateAferJoin(contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
         }
 
-        if (mResultData && mResultData._id & parentContestId && mResultData.parent_contest_id) {
+        if (mResultData && mResultData._id && parentContestId && mResultData.parent_contest_id) {
             let matchContest = mResultData;
             let contest_id = matchContest.contest_id;
             let contest = {};
