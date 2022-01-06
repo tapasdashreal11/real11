@@ -761,7 +761,7 @@ async function joinContestGlobal(indianDate, decoded, contestData, series_id, pr
                     return res.send(ApiUtility.failed("Something went wrong!"));
                 }
             } catch (errrr) {
-
+                console.log("errrr**********",errrr);
             }
 
         } else {
@@ -774,9 +774,10 @@ async function joinContestGlobal(indianDate, decoded, contestData, series_id, pr
             return res.json(response);
         }
     } catch (elseError) {
+        console.log("elseError**********",elseError);
         let response = {};
-        await session.abortTransaction();
-        session.endSession();
+       // await session.abortTransaction();
+       // session.endSession();
         response.status = false;
         response.message = "Something went wrong.Please try again.";
         response.error_code = null;
