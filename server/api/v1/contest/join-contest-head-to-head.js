@@ -133,6 +133,8 @@ module.exports = async (req, res) => {
                                         let mcontestObj = {}
                                         joinContestGlobal(indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                     }
+                                }else{
+                                    return res.send(ApiUtility.failed('Please do not join contest.Work in progress...'));
                                 }
                             } else {
                                 return res.send(ApiUtility.failed('You have no team to join this contest.'));
