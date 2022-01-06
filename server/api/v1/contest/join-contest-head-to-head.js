@@ -784,8 +784,6 @@ async function joinContestGlobal(res,refer_by_user,refer_code,joinedContestCount
     } catch (elseError) {
         console.log("elseError**********",elseError);
         let response = {};
-       // await session.abortTransaction();
-       // session.endSession();
         response.status = false;
         response.message = "Something went wrong.Please try again.";
         response.error_code = null;
