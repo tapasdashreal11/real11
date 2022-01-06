@@ -172,6 +172,7 @@ async function joinContestGlobal(res,refer_by_user,refer_code,joinedContestCount
     var mycontId = 0;
     let data1 = {};
     let joinedContest = joinedContestCount; 
+    let sport = match_sport;
     try {
         let mResultData = {}
         if (matchContestData && matchContestData._id) {
