@@ -34,7 +34,8 @@ const logger = require("../../../../utils/logger")(module);
     try {
       let userId = req.userId;
       // console.log('userId', userId)
-      let user = await ReferralCodeDetails.find({ refered_by: userId }).populate('user_id');
+      //let user = await ReferralCodeDetails.find({ refered_by: userId }).populate('user_id');
+      let user = await ReferralCodeDetails.find({ refered_by: userId });
       // console.log(user);
       // return false
       if (user) {
@@ -49,8 +50,8 @@ const logger = require("../../../../utils/logger")(module);
         async.eachSeries(user, function (data, cb) {
           if(data['user_id']) {
             let formated = {};
-            formated.image = (data['user_id'] && data['user_id']['image']) || '';
-            formated.team_name = (data['user_id'] && data['user_id']['team_name']) || '';
+            formated.image ='';     //(data['user_id'] && data['user_id']['image']) || '';
+            formated.team_name = '';  //(data['user_id'] && data['user_id']['team_name']) || '';
             formated.received_amount = (data['refered_by_amount']) || 0.00;
             formated.total_amount = (data['user_amount']) || 0.00;
             formated.first_depo_reward_amount = (data['first_depo_reward_amount']) || 0.00;
