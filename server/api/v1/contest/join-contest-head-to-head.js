@@ -106,7 +106,7 @@ module.exports = async (req, res) => {
                                         let contestIds = _.map(userPtcData, 'contest_id');
                                         queryMatchContest['contest_id'] = { $nin: contestIds };
                                     }
-                                    var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: -1 });
+                                    var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id:1 });
                                     if (matchContestData && matchContestData._id) {
                                         let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'contest_id': matchContestData.contest_id }).countDocuments();
                                         if (joinedContest && joinedContest > 0) {
