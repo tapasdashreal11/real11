@@ -1531,8 +1531,7 @@ async function getContestCount(isCommit,isPrivateCreate,contest, user_id, match_
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
                         contestAutoCreateAferJoin(isCommit,isPrivateCreate,contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
-                        await session.commitTransaction();
-                        session.endSession();
+                        
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                         
                     } else {
@@ -1751,8 +1750,8 @@ async function contestAutoCreateAferJoin(isCommit,isPrivateCreate,contestData, s
 
     } catch (error) {
         console.log("error in auto create**********",error);
-        await session.abortTransaction();
-        session.endSession();
+       // await session.abortTransaction();
+        //session.endSession();
         console.log('sometjhing went wrong in autocreate***************************wrong in auto error');
         return {}
     }
