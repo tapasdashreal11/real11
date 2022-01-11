@@ -656,6 +656,9 @@ module.exports = {
                            }
                            if(matchContestData && matchContestData.is_offerable){
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
+                            if (matchContestData && matchContestData.category_slug && _.isEqual(matchContestData.category_slug, 'head-to-head')) {
+                                 totalJoinedTeam = await PlayerTeamContest.find({ 'parent_contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
+                            }
                             let calJoinTeam = total_team_number + totalJoinedTeam;
                             if(matchContestData.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContestData.offer_after_join && matchContestData.offerable_amount > 0){
                                 if(calEntryFees > 0){
