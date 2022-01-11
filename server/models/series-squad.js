@@ -127,7 +127,8 @@ var seriesSquadSchema = new Schema({
 	local_color_code: {type: String},
 	visitor_color_code: {type: String },
 	is_highlight: {type: Number, default: 0},
-	winning_comment: {type: String, default: ""}
+	winning_comment: {type: String, default: ""},
+	live_match_banner: {type: String}
 }, {
 	timestamps: true
 });

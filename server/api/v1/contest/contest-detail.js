@@ -18,6 +18,7 @@ const mqtt = require('../../../../lib/mqtt');
 const Helper = require('./../common/helper');
 const db = require('../../../db');
 const { setRedis } = require('../../../../lib/redis');
+var imageurl = config.imageBaseUrl;
 
 async function getRedisLeaderboard(matchId, contestId, sport) {
     try {
@@ -731,6 +732,7 @@ module.exports = {
 
                 let contestData = {
                     match_status: (reviewMatch) ? reviewMatch.status : '',
+                    live_match_banner: (reviewMatch && reviewMatch.live_match_banner) ? imageurl + "/" + reviewMatch.live_match_banner : '',
                     prize_money: prizeMoney,
                     usable_bonus_time: matchInviteCode.usable_bonus_time,
                     before_time_bonus: matchInviteCode.before_time_bonus,
