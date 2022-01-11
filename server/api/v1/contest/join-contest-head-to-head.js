@@ -106,7 +106,7 @@ module.exports = async (req, res) => {
                                         let contestIds = _.map(userPtcData, 'contest_id');
                                         queryMatchContest['contest_id'] = { $nin: contestIds };
                                     }
-                                    var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id:1 });
+                                    var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
                                     if (matchContestData && matchContestData._id) {
                                         let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'contest_id': matchContestData.contest_id }).countDocuments();
                                         if (joinedContest && joinedContest > 0) {
@@ -161,7 +161,7 @@ module.exports = async (req, res) => {
 
                                     var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': teamId }
                                     let playerTeamRes = await PlayerTeamContest.findOne(PlayerTeamContestFilter);
-                                    let joinedContestWithTeamCounts =  await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments()
+                                    let joinedContestWithTeamCounts = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments()
                                     // let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
                                     let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
 
@@ -539,7 +539,7 @@ module.exports = async (req, res) => {
                                                                             }
                                                                             let isPrivateCreate = false;
                                                                             let isCommit = true;
-                                                                            totalContestKey = await getContestCount(isCommit,isPrivateCreate,contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
+                                                                            totalContestKey = await getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                         } else {
                                                                             await session.abortTransaction();
                                                                             session.endSession();
@@ -895,7 +895,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
         } else {
             let isPrivateCreate = true;
             isCommit = false;
-            mResultData = await contestAutoCreateAferJoin(isCommit,isPrivateCreate,contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
+            mResultData = await contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
         }
 
         if (mResultData && mResultData._id && parentContestId && mResultData.parent_contest_id) {
@@ -1246,8 +1246,8 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                     await saveJoinContestDetailAtJoin(session, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
                                 }
                                 let isPrivateCreate = true;
-                               
-                                totalContestKey = await getContestCount(isCommit,isPrivateCreate,contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
+
+                                totalContestKey = await getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                             } else {
                                 await session.abortTransaction();
                                 session.endSession();
@@ -1519,7 +1519,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
  * @param {*} parentContestId 
  * @param {*} session 
  */
-async function getContestCount(isCommit,isPrivateCreate,contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest) {
+async function getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest) {
     try {
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
@@ -1530,10 +1530,10 @@ async function getContestCount(isCommit,isPrivateCreate,contest, user_id, match_
                 if (isAutoCreateStatus) {
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
-                        contestAutoCreateAferJoin(isCommit,isPrivateCreate,contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
-                        
+                        contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
+
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
-                        
+
                     } else {
                         await session.commitTransaction();
                         session.endSession();
@@ -1651,7 +1651,7 @@ async function getContestCount(isCommit,isPrivateCreate,contest, user_id, match_
  * @param {*} parentContestId 
  */
 
-async function contestAutoCreateAferJoin(isCommit,isPrivateCreate,contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest) {
+async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest) {
     try {
 
         let catID = contestData.category_id;
@@ -1706,7 +1706,7 @@ async function contestAutoCreateAferJoin(isCommit,isPrivateCreate,contestData, s
             entityM.is_auto_create = 1;
             entityM.admin_create = 0;
             entityM.joined_users = 0;
-            entityM.is_private = isPrivateCreate ? 1:0;
+            entityM.is_private = isPrivateCreate ? 1 : 0;
             entityM.sport = match_sport;
 
             entityM.category_slug = matchContest && matchContest.category_slug ? matchContest.category_slug : '';
@@ -1730,11 +1730,11 @@ async function contestAutoCreateAferJoin(isCommit,isPrivateCreate,contestData, s
                 used_bonus: contestData.used_bonus,
                 winner_percent: contestData.winner_percent,
                 breakup: contestData.breakup,
-                is_private: isPrivateCreate ? 1:0,
+                is_private: isPrivateCreate ? 1 : 0,
                 maximum_team_size: contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
             };
             const match_contest_new = await MatchContest.create([entityM], { session: session });
-            if(isCommit){
+            if (isCommit) {
                 await session.commitTransaction();
                 session.endSession();
             }
@@ -1749,8 +1749,8 @@ async function contestAutoCreateAferJoin(isCommit,isPrivateCreate,contestData, s
         }
 
     } catch (error) {
-        console.log("error in auto create**********",error);
-       // await session.abortTransaction();
+        console.log("error in auto create**********", error);
+        // await session.abortTransaction();
         //session.endSession();
         console.log('sometjhing went wrong in autocreate***************************wrong in auto error');
         return {}
