@@ -1051,6 +1051,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                         }
 
                     }
+                    console.log("calJoinTeam cal data***");
                     if (matchContest && matchContest.is_offerable) {
                         let totalJoinedTeam = joinedContestWithTeamCounts;
                         let calJoinTeam = 1 + totalJoinedTeam;
@@ -1733,6 +1734,11 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
             entityM.is_private = isPrivateCreate ? 1 : 0;
             entityM.sport = match_sport;
 
+            entityM.is_offerable = matchContest && matchContest.is_offerable ? matchContest.is_offerable : 0;
+            if(matchContest && matchContest.is_offerable){
+                entityM.offer_after_join = matchContest && matchContest.offer_after_join ? matchContest.offer_after_join : 0;
+                entityM.offerable_amount = matchContest && matchContest.offerable_amount ? matchContest.offerable_amount : 0;
+            }
             entityM.category_slug = matchContest && matchContest.category_slug ? matchContest.category_slug : '';
             entityM.category_name = matchContest && matchContest.category_name ? matchContest.category_name : '';
             entityM.category_description = matchContest && matchContest.category_description ? matchContest.category_description : "";
