@@ -875,7 +875,29 @@ module.exports = async (req, res) => {
     }
 }
 
-
+/**
+ * This is used to join head to head for all condition either full or having join space
+ * @param {*} res 
+ * @param {*} refer_by_user 
+ * @param {*} refer_code 
+ * @param {*} joinedContestCount 
+ * @param {*} indianDate 
+ * @param {*} decoded 
+ * @param {*} contestData 
+ * @param {*} series_id 
+ * @param {*} prms_contest_id 
+ * @param {*} match_id 
+ * @param {*} parentContestId 
+ * @param {*} match_sport 
+ * @param {*} liveMatch 
+ * @param {*} teamId 
+ * @param {*} user_id 
+ * @param {*} teamCount 
+ * @param {*} authUser 
+ * @param {*} results 
+ * @param {*} prms_matchContest 
+ * @param {*} matchContestData 
+ */
 async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, prms_matchContest, matchContestData) {
     const session = await startSession()
     session.startTransaction();
@@ -1032,8 +1054,10 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                     if (matchContest && matchContest.is_offerable) {
                         let totalJoinedTeam = joinedContestWithTeamCounts;
                         let calJoinTeam = 1 + totalJoinedTeam;
+                        console.log("calJoinTeam***",calJoinTeam);
                         if (matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0) {
                             if (calEntryFees > 0) {
+                                console.log("in offer of contest***");
                                 offerableAppled = true;
                                 let recalcalEntryFees = calEntryFees;
                                 calEntryFees = matchContest.offerable_amount >= calEntryFees ? 0 : (calEntryFees - matchContest.offerable_amount);
@@ -1896,16 +1920,26 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
 }
 
 
-
+/**
+ * This is used to add detatil for join contest 
+ * @param {*} session 
+ * @param {*} decoded 
+ * @param {*} bonusAmount 
+ * @param {*} winAmount 
+ * @param {*} cashAmount 
+ * @param {*} playerTeamContestId 
+ * @param {*} contestData 
+ * @param {*} extraAmount 
+ * @param {*} match_sport 
+ * @param {*} retention_bonus_amount 
+ */
 async function saveJoinContestDetailAtJoin(session, decoded, bonusAmount, winAmount, cashAmount, playerTeamContestId, contestData, extraAmount, match_sport, retention_bonus_amount) {
-    //console.log("22222***************")
     let surpriseAmount = extraAmount || 0;
     let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
     // let totalAmount = bonusAmount+winAmount+cashAmount;
     if (!contestData) {
         contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
     }
-    //console.log("join contest detail at join single data**************");
     let adminComission = contestData && contestData.admin_comission ? parseFloat(contestData.admin_comission) : 0;
     let winningAmount = contestData.winning_amount;
     let contestSize = contestData.contest_size;
@@ -1918,10 +1952,6 @@ async function saveJoinContestDetailAtJoin(session, decoded, bonusAmount, winAmo
     } else {
         comission = 0;
     }
-
-    // let comission = ((adminComission/100) * totalAmount);
-    // comission = comission.toFixed(2);
-
     let saveEntity = {};
     saveEntity.user_id = decoded['user_id'];
     saveEntity.contest_id = decoded['contest_id'];
