@@ -867,7 +867,7 @@ module.exports = async (req, res) => {
                 return res.send(ApiUtility.failed("Something went wrong!!."));
             }
         } else {
-            return res.send(ApiUtility.failed("user id, match id, series id or contest id are empty."));
+            return res.send(ApiUtility.failed("Invalid Request!!"));
         }
     } catch (error) {
         console.log(error);
