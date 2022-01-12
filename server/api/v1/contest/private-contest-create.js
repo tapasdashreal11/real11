@@ -76,7 +76,7 @@ module.exports = {
                         if (seriesMatch && seriesMatch._id) {
                             let ctime = Date.now();
                             let mtime = seriesMatch.time;
-                            if (mtime > ctime && seriesMatch.match_id == 52421) {
+                            if (mtime < ctime) {
                                 return res.send(ApiUtility.failed('Match has been started.'));
                             } else {
                                 const session = await startSession()
