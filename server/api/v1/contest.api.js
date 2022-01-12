@@ -543,7 +543,7 @@ module.exports = {
             let winDistributeStatus = userdata && userdata.win_dis_status ? true : false;
             if(userdata.fair_play_violation && userdata.fair_play_violation ==1){
                 return res.send(ApiUtility.failed("You can't join contest.You are under fair play violation!!"));
-            }else if(userdata && userdata.win_dis_status){
+            } else if(userdata && userdata.win_dis_status){
                 return res.send(ApiUtility.failed("Please wait for few seconds and then try again!!"));
             }
             if (userdata) {
@@ -656,7 +656,7 @@ module.exports = {
                            }
                            if(matchContestData && matchContestData.is_offerable){
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
-                            if (matchContestData && matchContestData.category_slug && _.isEqual(matchContestData.category_slug, 'head-to-head')) {
+                            if (matchContestData && matchContestData.is_auto_create ) {
                                  totalJoinedTeam = await PlayerTeamContest.find({ 'parent_contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
                             }
                             let calJoinTeam = total_team_number + totalJoinedTeam;

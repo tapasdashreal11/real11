@@ -52,15 +52,13 @@ module.exports = async (req, res) => {
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
                 PlayerTeamContest.find({ 'parent_contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
-                MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }),
-                // redis.getRedis('match-contest-detail-' + decoded['match_id'] + '-' + contest_id)
+                MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id })
             ];
             if (!team_id) {
                 apiList.push(PlayerTeam.findOne({ 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
 
             } else if (team_id) {
                 apiList.push(PlayerTeam.findOne({ '_id': ObjectId(team_id), 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }));
-
             }
             var results = await Promise.all(apiList);
             if (results && results.length > 0) {
@@ -79,7 +77,7 @@ module.exports = async (req, res) => {
 
                             let teamId = results[5] && results[5]._id ? results[5]._id : '';
                             let teamCount = team_count_number != 0 ? team_count_number : (results[5] && results[5].team_count ? results[5].team_count : 1);
-
+                            // Check the team is available for join contest
                             if (teamId && teamId != null && teamId != '' && !_.isUndefined(teamId) && teamCount > 0) {
 
                                 let matchContest = results[4] ? results[4] : {};
@@ -97,7 +95,7 @@ module.exports = async (req, res) => {
                                 }
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
                                 var parentContestId = (contestData && contestData.parent_id) ? contestData.parent_id : contestData._id;
-
+                                // Check the contest for head-to-head category 
                                 if (matchContest && matchContest.category_slug && _.isEqual(matchContest.category_slug, 'head-to-head')) {
                                     // Check Contest as a parent contest
                                     let userPtcData = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'parent_contest_id': parentContestId }, { 'contest_id': 1 });
@@ -202,6 +200,7 @@ module.exports = async (req, res) => {
                                                         contest.series_id = series_id;
                                                         contest.contest_id = contest_id;
                                                         contest.user_id = user_id;
+                                                        contest.parent_contest_id = parentContestId;
                                                         contest.total_amount = contestData.entry_fee;
                                                         contest.team_count = teamCount;
                                                         contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
@@ -322,7 +321,8 @@ module.exports = async (req, res) => {
 
                                                                 }
                                                                 if (matchContest && matchContest.is_offerable) {
-                                                                    let totalJoinedTeam = joinedContestWithTeamCounts;
+                                                                    let newJoinedParentCounts = results[2] ? results[2] : 0;
+                                                                    let totalJoinedTeam = newJoinedParentCounts;
                                                                     let calJoinTeam = 1 + totalJoinedTeam;
                                                                     if (matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0) {
                                                                         if (calEntryFees > 0) {
