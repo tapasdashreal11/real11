@@ -50,7 +50,12 @@ module.exports = async (req, res) => {
                         let mtime = liveMatch.time;
                         if (mtime < ctime) {
                             redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
-                            return res.send(ApiUtility.failed('Match has been started.'));
+                            let response = {};
+                            response.status = false;
+                            response.is_match_live = true;
+                            response.message = "Match has been started.";
+                            response.error_code = null;
+                            return res.json(response);
                             
                         } else { 
                             if (teamId && teamId != null && teamId != '' && ! _.isUndefined(teamId) && teamCount > 0) {
