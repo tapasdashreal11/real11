@@ -44,7 +44,6 @@ module.exports = async (req, res) => {
                 let authUser = user_id;
                 if (authUser) {
                     let liveMatch = results[0] ? results[0] : {};
-
                     if (liveMatch) {
                         let ctime = Date.now();
                         let mtime = liveMatch.time;
@@ -200,8 +199,6 @@ module.exports = async (req, res) => {
                     } else {
                         return res.send(ApiUtility.failed('You can not join contest, match already started'));
                     }
-
-
                 } else {
                     return res.send(ApiUtility.failed("You are not authenticated user."));
                 }
