@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
                     if (liveMatch) {
                         let ctime = Date.now();
                         let mtime = liveMatch.time;
-                        if (mtime > ctime) {
+                        if (mtime < ctime) {
                             redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                             return res.send(ApiUtility.failed('Match has been started.'));
                             
