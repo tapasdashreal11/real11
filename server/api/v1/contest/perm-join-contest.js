@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
                                                     await session.abortTransaction();
                                                     session.endSession();
 
-                                                    await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } })
+                                                    await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
                                                     let response = {};
                                                     response.status = false;
                                                     response.message = "This contest is full, please join other contest.";
@@ -234,6 +234,7 @@ async function getContestCount(contest, match_id, contest_id, contestData, sessi
                     console.log('Perm Contest full****************************');
                     await session.commitTransaction();
                     session.endSession();
+                    await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
                 } else {
                     await session.commitTransaction();
                     session.endSession();
