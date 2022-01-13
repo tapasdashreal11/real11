@@ -12,6 +12,7 @@ const redis = require('../../../../lib/redis');
 const db = require('../../../db');
 const { startSession } = require('mongoose');
 const Helper = require('./../common/helper');
+const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 
 
 module.exports = async (req, res) => {
@@ -354,6 +355,32 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             const match_contest_new = await MatchContest.create([entityM], { session: session });
             await session.commitTransaction();
             session.endSession();
+
+            try {
+                let matchContestKey = RedisKeys.MATCH_CONTEST_LIST + match_id;
+                redis.getRedis(matchContestKey, (err, categories) => {
+                    let catId = contestData.category_id.toString();
+                    let catIndex = _.findIndex(categories, { "_id": catId });
+                    if (catIndex >= 0) {
+                        let contestIndex = _.findIndex(categories[catIndex].contests, { "contest_id": contest_id });
+                        if (contestIndex >= 0) {
+                            let newCOntestDeepObj = JSON.parse(JSON.stringify(categories[catIndex]['contests'][contestIndex]))
+                            categories[catIndex]['contests'].splice(contestIndex, 1);
+                            newCOntestDeepObj["contest_id"] = cResult._id;
+                            newCOntestDeepObj["parent_id"] = contest_id;
+                            if (categories[catIndex]['contests'].length === 0) {
+                                categories[catIndex].contests.push(newCOntestDeepObj);
+                            } else {
+                                categories[catIndex].contests.unshift(newCOntestDeepObj);
+                            }
+                            redis.setRedis(matchContestKey, categories);
+                        }
+                    }
+                });
+            } catch (errr) {
+                console.log('JC eorr in auto create redis***');
+            }
+
             return cResult;
         } else {
             console.log('Perm auro else');
