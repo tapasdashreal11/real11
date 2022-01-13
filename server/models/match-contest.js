@@ -60,7 +60,7 @@ var matchContestSchema = new Schema({
   visitorteam: { type: String, default: '' },
   localteam_id: { type: Number, default: 0 },
   visitorteam_id: { type: Number, default: 0 },
-  match_status: { type: String, default: 0 },
+  match_status: { type: String, default: '' },
   status: { type: Number, enum: [1,0], default: 1 },
   is_auto_create: { type: Number, enum: [1,0], default: 0 },
   admin_create: { type: Number, enum: [1,0], default: 0 },
