@@ -243,6 +243,7 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                             session.endSession();
                             await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
                         } else {
+                            console.log('Perm Contest full**************************** autocreate for lms');
                             await contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
                             await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
                         }
