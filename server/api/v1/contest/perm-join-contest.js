@@ -249,14 +249,15 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                             await contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
                             await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
                             let userDataPTC = await PlayerTeamContest.find({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id },{user_id:1});
-                            if(userDataPTC && userDataPTC.length>0){
+                            if(userDataPTC && userDataPTC.length>0 && userDataPTC.length < 8 ){
                                 userDataPTC.map(item => {
                                     if(item && item.user_id){
-                                        console.log("redis delete***",item.user_id);
                                         let uId = item.user_id;
                                         redis.redisObj.get('user-teams-count-' + match_id + '-' + match_sport + '-' + uId, (err, data) => {
-                                            if(data)redis.redisObj.del('user-teams-count-' + match_id + '-' + match_sport + '-' + uId);
-                                            
+                                            if(data){
+                                                console.log("uId redis delete at premanun in lms",uId);
+                                                redis.redisObj.del('user-teams-count-' + match_id + '-' + match_sport + '-' + uId);
+                                            }
                                         });
                                     }
                                 });
