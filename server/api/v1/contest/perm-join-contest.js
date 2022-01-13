@@ -144,6 +144,8 @@ module.exports = async (req, res) => {
                                                         
                                                         if(_.has(contest, "player_team_id") && _.has(contest, "team_count") &&  _.has(contest, "team_name") &&  contest.team_name !='' && contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0 ){
                                                             totalContestKey = await getContestCount(contest, match_id, series_id,contest_id, contestData, session, match_sport, joinedContestCount,parentContestId,liveMatch,matchContest);
+                                                            let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${user_id}`;
+                                                            redis.redisObj.del(joinedContestKey); //force user to get data from db
                                                             return res.send(ApiUtility.failed('Join contest Successfully!!'));
                                                         } else {
                                                             await session.abortTransaction();
