@@ -144,8 +144,7 @@ module.exports = async (req, res) => {
                                                         
                                                         if(_.has(contest, "player_team_id") && _.has(contest, "team_count") &&  _.has(contest, "team_name") &&  contest.team_name !='' && contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0 ){
                                                             totalContestKey = await getContestCount(contest, match_id, series_id,contest_id, contestData, session, match_sport, joinedContestCount,parentContestId,liveMatch,matchContest);
-                                                            let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${user_id}`;
-                                                            redis.redisObj.del(joinedContestKey); //force user to get data from db
+                                                            
                                                             return res.send(ApiUtility.failed('Join contest Successfully!!'));
                                                         } else {
                                                             await session.abortTransaction();
@@ -249,6 +248,16 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                             console.log('Perm Contest full**************************** autocreate for lms');
                             await contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
                             await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
+                            let userDataPTC = await PlayerTeamContest.find({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id },{user_id:1});
+                            if(userDataPTC && userDataPTC.length>0){
+                                userDataPTC.map(item => {
+                                    if(item && item.user_id){
+                                        let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${item.user_id}`;
+                                        redis.redisObj.del(joinedContestKey); //force user to get data from db
+                                    }
+                                });
+                            }
+                            
                         }
                     } else {
                         await session.commitTransaction();
