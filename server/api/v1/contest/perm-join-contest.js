@@ -11,6 +11,7 @@ const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const db = require('../../../db');
 const { startSession } = require('mongoose');
+const Helper = require('./../common/helper');
 
 
 module.exports = async (req, res) => {
@@ -34,7 +35,7 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] },{time:1}),
+                SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] },{time:1,localteam:1,localteam_id:1,visitorteam:1,visitorteam_id:1}),
                 PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
             ];
@@ -70,7 +71,8 @@ module.exports = async (req, res) => {
                                 //let joinedContest = 0;
                                 let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
 
-                                var parentContestId = contestData._id;
+                                // var parentContestId = contestData._id;
+                                var parentContestId = (contestData && contestData.parent_id) ? contestData.parent_id : contestData._id;
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
 
                                 if (contestData && contestData.contest_size == parseInt(joinedContest) && infinteStatus) {
@@ -100,7 +102,7 @@ module.exports = async (req, res) => {
                                             const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, sessionOpts);
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
-
+                                                let matchContest = doc;
                                                 if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
                                                     redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                                                     console.log("PREM Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
@@ -140,7 +142,7 @@ module.exports = async (req, res) => {
                                                     try {
                                                         
                                                         if(_.has(contest, "player_team_id") && _.has(contest, "team_count") &&  _.has(contest, "team_name") &&  contest.team_name !='' && contest.player_team_id !=null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0 ){
-                                                            totalContestKey = await getContestCount(contest, match_id, contest_id, contestData, session, match_sport, joinedContestCount);
+                                                            totalContestKey = await getContestCount(contest, match_id, series_id,contest_id, contestData, session, match_sport, joinedContestCount,parentContestId,liveMatch,matchContest);
                                                             return res.send(ApiUtility.failed('Join contest Successfully!!'));
                                                         } else {
                                                             await session.abortTransaction();
@@ -225,19 +227,31 @@ module.exports = async (req, res) => {
  * @param {*} parentContestId 
  * @param {*} session 
  */
-async function getContestCount(contest, match_id, contest_id, contestData, session, match_sport, joinedContestCount) {
+async function getContestCount(contest, match_id, series_id,contest_id, contestData, session, match_sport, joinedContestCount,parentContestId,liveMatch,matchContest) {
     try {
         
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
-                if (joinedContestCount >= contestData.contest_size && infinteStatus) {
-                    redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
-                    console.log('Perm Contest full****************************');
-                    await session.commitTransaction();
-                    session.endSession();
-                    await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
+                var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
+                if (isAutoCreateStatus) {
+                    if (joinedContestCount >= contestData.contest_size && infinteStatus) {
+                        redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
+                        console.log('Perm Contest full****************************');
+                        if (matchContest && matchContest.category_slug && _.isEqual(matchContest.category_slug, 'head-to-head')) {
+                            await session.commitTransaction();
+                            session.endSession();
+                            await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
+                        } else {
+                            await contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
+                            await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
+                        }
+                    } else {
+                        await session.commitTransaction();
+                        session.endSession();
+                    }
                 } else {
+
                     await session.commitTransaction();
                     session.endSession();
                 }
@@ -247,6 +261,113 @@ async function getContestCount(contest, match_id, contest_id, contestData, sessi
     } catch (error) {
         console.log("perm JC eroor in catch erorr error at 800",error);  
     }
+}
+
+async function contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest) {
+    try {
+
+        let catID = contestData.category_id;
+        let entity = {};
+        entity.category_id = catID;
+        entity.is_full = false;
+        entity.admin_comission = contestData.admin_comission;
+        entity.winning_amount = contestData.winning_amount;
+        entity.contest_size = contestData.contest_size;
+        entity.min_contest_size = contestData.min_contest_size;
+        entity.contest_type = contestData.contest_type;
+        entity.entry_fee = contestData.entry_fee;
+        entity.used_bonus = contestData.used_bonus;
+        entity.confirmed_winning = contestData.confirmed_winning;
+        entity.multiple_team = contestData.multiple_team;
+        entity.auto_create = contestData.auto_create;
+        entity.status = contestData.status;
+        entity.price_breakup = contestData.price_breakup;
+        entity.invite_code = contestData.invite_code;
+        entity.breakup = contestData.breakup;
+        entity.amount_gadget = contestData.amount_gadget;
+        entity.created = new Date();
+        entity.maximum_team_size = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1);
+        if (parentContestId) {
+            entity.parent_id = parentContestId;
+        } else {
+            entity.parent_id = contestData._id;
+        }
+        entity.is_auto_create = 2;
+        // console.log('cResult************** before');
+        const newDataC = await Contest.create([entity], { session: session });
+        var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+        let inviteCode = Helper.createUserReferal(6);
+        if (cResult && cResult._id) {
+            let newContestId = cResult._id;
+            let entityM = {};
+            if (parentContestId) {
+                entityM.parent_contest_id = parentContestId;
+            } else {
+                entityM.parent_contest_id = contestData._id;
+            }
+            entityM.match_id = match_id;
+            entityM.contest_id = newContestId;
+            entityM.series_id = series_id;
+            entityM.category_id = ObjectId(catID);
+            entityM.invite_code = '1Q' + inviteCode;
+            entityM.created = new Date();
+            entityM.localteam = liveMatch.localteam || '';
+            entityM.localteam_id = liveMatch.localteam_id || '';
+            entityM.visitorteam = liveMatch.visitorteam || '';
+            entityM.visitorteam_id = liveMatch.visitorteam_id || '';
+            entityM.is_auto_create = 1;
+            entityM.admin_create = 0;
+            entityM.joined_users = 0;
+            entityM.is_private = 0;
+            entityM.sport = match_sport;
+
+            entityM.is_offerable = matchContest && matchContest.is_offerable ? matchContest.is_offerable : 0;
+            if(matchContest && matchContest.is_offerable){
+                entityM.offer_after_join = matchContest && matchContest.offer_after_join ? matchContest.offer_after_join : 0;
+                entityM.offerable_amount = matchContest && matchContest.offerable_amount ? matchContest.offerable_amount : 0;
+            }
+            entityM.category_slug = matchContest && matchContest.category_slug ? matchContest.category_slug : '';
+            entityM.category_name = matchContest && matchContest.category_name ? matchContest.category_name : '';
+            entityM.category_description = matchContest && matchContest.category_description ? matchContest.category_description : "";
+            entityM.category_seq = matchContest && matchContest.category_seq ? matchContest.category_seq : 0;
+            entityM.contest = {
+                entry_fee: contestData.entry_fee,
+                winning_amount: contestData.winning_amount,
+                contest_size: contestData.contest_size,
+                contest_type: contestData.contest_type,
+                confirmed_winning: contestData.confirmed_winning,
+                amount_gadget: contestData.amount_gadget,
+                category_id: contestData.category_id,
+                multiple_team: contestData.multiple_team,
+                contest_size: contestData.contest_size,
+                infinite_contest_size: contestData.infinite_contest_size,
+                winning_amount_times: contestData.winning_amount_times,
+                is_auto_create: contestData.is_auto_create,
+                auto_create: contestData.auto_create,
+                used_bonus: contestData.used_bonus,
+                winner_percent: contestData.winner_percent,
+                breakup: contestData.breakup,
+                is_private:0,
+                maximum_team_size: contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
+            };
+            const match_contest_new = await MatchContest.create([entityM], { session: session });
+            await session.commitTransaction();
+            session.endSession();
+            return cResult;
+        } else {
+            console.log('Perm auro else');
+            return {}
+        }
+
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        console.log('sometjhing went wrong in autocreate at perm***************************wrong in auto error');
+        return {}
+    }
+
+
+
 }
 
 
