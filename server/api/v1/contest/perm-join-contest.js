@@ -252,6 +252,7 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                             if(userDataPTC && userDataPTC.length>0){
                                 userDataPTC.map(item => {
                                     if(item && item.user_id){
+                                        console.log("redis delete***",item.user_id);
                                         let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${item.user_id}`;
                                         redis.redisObj.del(joinedContestKey); //force user to get data from db
                                     }
