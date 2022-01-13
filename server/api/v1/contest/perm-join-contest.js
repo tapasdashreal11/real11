@@ -253,9 +253,12 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                         session.endSession();
                     }
                 } else {
-
                     await session.commitTransaction();
                     session.endSession();
+                    if (joinedContestCount >= contestData.contest_size && infinteStatus) {
+                        await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
+                     }
+                    
                 }
                 return resolve(1);
             });
