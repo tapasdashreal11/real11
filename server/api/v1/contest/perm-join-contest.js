@@ -253,11 +253,11 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                                 userDataPTC.map(item => {
                                     if(item && item.user_id){
                                         console.log("redis delete***",item.user_id);
-                                        let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${item.user_id}`;
-                                        redis.redisObj.del(joinedContestKey); //force user to get data from db
-
-                                        let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + item.user_id;
-                                        redis.setRedisMyMatches(myJoinedContestListKey, {});
+                                        let uId = item.user_id;
+                                        redis.redisObj.get('user-teams-count-' + match_id + '-' + match_sport + '-' + uId, (err, data) => {
+                                            if(data)redis.redisObj.del('user-teams-count-' + match_id + '-' + match_sport + '-' + uId);
+                                            
+                                        });
                                     }
                                 });
                             }
