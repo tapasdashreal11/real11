@@ -162,7 +162,7 @@ module.exports = async (req, res) => {
                                     let joinedContestWithTeamCounts = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments()
                                     // let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
                                     let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
-
+                                    // check max team size. It should not more then expected size of contest
                                     if (joinedContestWithTeamCounts < maxTeamSize) {
                                         if (!playerTeamRes) {
                                             if ((!contestData.multiple_team && joinedContestWithTeamCounts >= 1) || ((contestData.multiple_team !== 'yes') && joinedContestWithTeamCounts >= 1)) {
