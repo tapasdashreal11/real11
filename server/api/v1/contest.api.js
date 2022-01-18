@@ -657,7 +657,7 @@ module.exports = {
                            if(matchContestData && matchContestData.is_offerable){
                                console.log("contest offer**",matchContestData);
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
-                            if (matchContestData && matchContestData.is_auto_create ) {
+                            if (matchContestData && matchContestData.contest && matchContestData.contest.is_auto_create ) {
                                 console.log("contest offer autocreate**");
                                  totalJoinedTeam = await PlayerTeamContest.find({ 'parent_contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
                             }
