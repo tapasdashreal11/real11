@@ -655,11 +655,14 @@ module.exports = {
                             }    
                            }
                            if(matchContestData && matchContestData.is_offerable){
+                               console.log("contest offer**");
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
                             if (matchContestData && matchContestData.is_auto_create ) {
+                                console.log("contest offer autocreate**");
                                  totalJoinedTeam = await PlayerTeamContest.find({ 'parent_contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
                             }
                             let calJoinTeam = total_team_number + totalJoinedTeam;
+                            console.log("calJoinTeam",calJoinTeam)
                             if(matchContestData.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContestData.offer_after_join && matchContestData.offerable_amount > 0){
                                 if(calEntryFees > 0){
                                    // console.log('in***');
