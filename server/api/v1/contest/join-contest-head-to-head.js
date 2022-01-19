@@ -535,7 +535,7 @@ module.exports = async (req, res) => {
 
                                                                         if (_.has(contest, "player_team_id") && _.has(contest, "team_count") && _.has(contest, "team_name") && contest.team_name != '' && contest.player_team_id != null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0) {
                                                                             if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
-                                                                                await saveJoinContestDetailAtJoin(session, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                                await saveJoinContestDetailAtJoin(contest.contest_id,session, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
                                                                             }
                                                                             let isPrivateCreate = false;
                                                                             let isCommit = true;
@@ -1266,7 +1266,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
 
                             if (_.has(contest, "player_team_id") && _.has(contest, "team_count") && _.has(contest, "team_name") && contest.team_name != '' && contest.player_team_id != null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0) {
                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
-                                    await saveJoinContestDetailAtJoin(session, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                    await saveJoinContestDetailAtJoin(matchContest.contest_id,session, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
                                 }
                                 let isPrivateCreate = true;
 
@@ -1937,7 +1937,7 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
  * @param {*} match_sport 
  * @param {*} retention_bonus_amount 
  */
-async function saveJoinContestDetailAtJoin(session, decoded, bonusAmount, winAmount, cashAmount, playerTeamContestId, contestData, extraAmount, match_sport, retention_bonus_amount) {
+async function saveJoinContestDetailAtJoin(jcd_contest_id,session, decoded, bonusAmount, winAmount, cashAmount, playerTeamContestId, contestData, extraAmount, match_sport, retention_bonus_amount) {
     let surpriseAmount = extraAmount || 0;
     let totalAmount = bonusAmount + winAmount + cashAmount + surpriseAmount;
     // let totalAmount = bonusAmount+winAmount+cashAmount;
@@ -1958,7 +1958,7 @@ async function saveJoinContestDetailAtJoin(session, decoded, bonusAmount, winAmo
     }
     let saveEntity = {};
     saveEntity.user_id = decoded['user_id'];
-    saveEntity.contest_id = decoded['contest_id'];
+    saveEntity.contest_id = jcd_contest_id;
     saveEntity.series_id = decoded['series_id'];
     saveEntity.match_id = decoded['match_id'];
     saveEntity.sport = match_sport;
