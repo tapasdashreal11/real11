@@ -321,7 +321,9 @@ module.exports = async (req, res) => {
 
                                                                 }
                                                                 if (matchContest && matchContest.is_offerable) {
-                                                                    let newJoinedParentCounts = results[2] ? results[2] : 0;
+                                                                   // let newJoinedParentCounts = results[2] ? results[2] : 0;
+                                                                    let mParentId = matchContest && matchContest.parent_contest_id ? matchContest.parent_contest_id :matchContest.contest_id;
+                                                                    let newJoinedParentCounts = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
                                                                     let totalJoinedTeam = newJoinedParentCounts;
                                                                     let calJoinTeam = 1 + totalJoinedTeam;
                                                                     if (matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0) {
