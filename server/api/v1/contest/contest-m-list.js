@@ -81,7 +81,7 @@ try {
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
                 let parentContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'parent_contest_id'), _.isEqual) : [];
 
-                console.log("parentContestIds",parentContestIds);
+                console.log("parentContestIds",myContestCount,"joinedContestIds",joinedContestIds);
                 redis.redisObj.set('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id, myTeamsCount);
                 redis.redisObj.set('user-contest-count-' + match_id + '-' + match_sport + '-' + user_id, joinedContestIds.length || 0);
 
