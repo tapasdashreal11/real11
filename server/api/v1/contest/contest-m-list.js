@@ -54,7 +54,7 @@ try {
             let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
             queryArray.push(
                 PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }).countDocuments(),
-                PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, player_team_id: 1 }).exec(),
+                PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, parent_contest_id:1,player_team_id: 1 }).exec(),
                 getPromiseForAnalysis(redisKeyForUserCategory, "{}"),
                 getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}",user_id,match_series_id)
             )
@@ -79,7 +79,9 @@ try {
                 
                 const contestGrpIds = myContestCount && myContestCount.length > 0 ? _.groupBy(myContestCount, 'contest_id') : {};
                 joinedContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'contest_id'), _.isEqual) : [];
+                let parentContestIds = myContestCount && myContestCount.length > 0 ? _.uniqWith(_.map(myContestCount, 'parent_contest_id'), _.isEqual) : [];
 
+                console.log("parentContestIds",parentContestIds);
                 redis.redisObj.set('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id, myTeamsCount);
                 redis.redisObj.set('user-contest-count-' + match_id + '-' + match_sport + '-' + user_id, joinedContestIds.length || 0);
 
