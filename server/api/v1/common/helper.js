@@ -214,6 +214,7 @@ const parseUserTeams = (userTeamData) => {
       }
       userTeamIds.push({
         contest_id:prop,
+        parent_contest_id:teamData.parent_contest_id,
         player_team_ids: playerTeamIds
       });
     }
