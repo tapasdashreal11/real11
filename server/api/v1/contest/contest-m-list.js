@@ -138,7 +138,7 @@ try {
                             (ObjectId(e.category_id).equals(ObjectId(config.user_category.looser_cat)) && userCategory && userCategory.is_looser_user == 0 )
                         });
                     }catch(eerrrr){}
-                   
+                   console.log("id*********",Helper.parseUserTeams(userTeamIds));
                     let resObj = {
                         match_contest: newMatchContestData,
                         my_teams: myTeamsCount,
