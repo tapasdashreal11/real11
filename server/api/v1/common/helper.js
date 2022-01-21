@@ -203,6 +203,7 @@ const parseUserTeams = (userTeamData) => {
   for (const prop in userTeamData) {
     if (hasOwnProperty.call(userTeamData, prop)) {
       console.log("prop",prop);
+      let objData ={};
       let teamData = userTeamData[prop];
       console.log("teamData",teamData);
       let playerTeamIds = [];
@@ -211,12 +212,13 @@ const parseUserTeams = (userTeamData) => {
         if(team.player_team_id){
           playerTeamIds.push(team.player_team_id);
         }
+        if(team.parent_contest_id){
+          objData['player_team_id']=team.parent_contest_id;
+        }
       }
-      userTeamIds.push({
-        contest_id:prop,
-        parent_contest_id:teamData.parent_contest_id,
-        player_team_ids: playerTeamIds
-      });
+      objData['contest_id']= prop;
+      objData['player_team_ids']= playerTeamIds;
+      userTeamIds.push(objData);
     }
   }
   return userTeamIds;
