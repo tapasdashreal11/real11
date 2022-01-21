@@ -213,7 +213,7 @@ const parseUserTeams = (userTeamData) => {
           playerTeamIds.push(team.player_team_id);
         }
         if(team.parent_contest_id){
-          objData['player_team_id']=team.parent_contest_id;
+          objData['parent_contest_id']=team.parent_contest_id;
         }
       }
       objData['contest_id']= prop;
