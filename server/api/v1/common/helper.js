@@ -202,10 +202,8 @@ const parseUserTeams = (userTeamData) => {
   let userTeamIds = [];
   for (const prop in userTeamData) {
     if (hasOwnProperty.call(userTeamData, prop)) {
-      console.log("prop",prop);
       let objData ={};
       let teamData = userTeamData[prop];
-      console.log("teamData",teamData);
       let playerTeamIds = [];
       for(let team of teamData){
         team.contest_id = prop;
