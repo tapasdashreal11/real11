@@ -117,6 +117,12 @@ module.exports = {
                 let matchContestDetail = await MatchContest.findOne({ contest_id: contest_id, match_id: parseInt(match_id), sport: sport });
                 matchContestDetail = JSON.parse(JSON.stringify(matchContestDetail));
                 let contestDetail = matchContestDetail && matchContestDetail.contest ? matchContestDetail.contest : {};
+                let totalChildContestJoined= 0;
+                if ((matchContestDetail && matchContestDetail.is_auto_create) || (matchContestDetail && matchContestDetail.contest && matchContestDetail.contest.is_auto_create) ) {
+                                
+                    let mParentId = matchContestDetail && matchContestDetail.parent_contest_id ? matchContestDetail.parent_contest_id :matchContestDetail.contest_id;
+                    totalChildContestJoined = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': sport }).countDocuments();
+               }
 
                 /*let CategoryData = await getCategoryRedis(contestDetail.category_id);
                 if(_.isEmpty()) {
@@ -334,6 +340,9 @@ module.exports = {
                     offer_after_join: matchContestDetail && matchContestDetail.is_offerable && matchContestDetail.offer_after_join ? matchContestDetail.offer_after_join : 0,
                     offerable_amount: matchContestDetail && matchContestDetail.is_offerable && matchContestDetail.offerable_amount ? matchContestDetail.offerable_amount : 0,
                     contest_comment: matchContestDetail && matchContestDetail.contest_comment ? matchContestDetail.contest_comment : "",
+                }
+                if(totalChildContestJoined>0){
+                    contestData['total_child_joined']= totalChildContestJoined;
                 }
                 if (reviewMatch == "In Progress") {
                     redis.setRedis(contestDataAPIKey, contestData)
