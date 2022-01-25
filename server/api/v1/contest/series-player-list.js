@@ -825,8 +825,8 @@ async function footabllPreviewNew(decoded, liveScore, cb) {
                     };
                     playerRecord['7'] = {
                         'key_name': "Saves",
-                        'actual': "0", //value.goal_scored,
-                        'points': 0 //value.century_halfCentury_point
+                        'actual': value.shots_saved  ? value.shots_saved.toString() : "0",
+                        'points': value.shots_saved_point ? value.shots_saved_point : 0
                     };
                     playerRecord['8'] = {
                         'key_name': "penalties Saved",
@@ -861,7 +861,7 @@ async function footabllPreviewNew(decoded, liveScore, cb) {
                     playerRecord['14'] = {
                         'key_name': "Red Card",
                         'actual': value.red_card ? value.red_card.toString() : "0",
-                        'points': value.red_card_point //value.catch_point
+                        'points': value.red_card_point ? value.red_card_point : 0
                     };
                     playerRecord['15'] = {
                         'key_name': "Own Goal",
