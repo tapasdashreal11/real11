@@ -143,6 +143,12 @@ var pointsBreakupSchema = new Schema({
   penalty_saved_point: {
     type: Number
   },
+  shots_saved: {
+    type: Number
+  },
+  shots_saved_point: {
+    type: Number
+  },
   penalty_missed: {
     type: Number
   },
