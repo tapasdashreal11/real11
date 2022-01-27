@@ -928,6 +928,31 @@ module.exports = {
             var response = { status: false, message: "Something went wrong. Please try again!!", data: {} };
             return res.json(response);
         }
+    },
+    userDeactivate: async (req, res) => {
+            var response = { status: false, message: "Invalid Request", data: {} };
+            const user_id = req.userId;
+            try {
+                if (user_id) {
+                    let user = await Users.findOneAndUpdate({_id:user_id,status:1},{$set:{status:0,mobile_verify:false}});
+                    if (user) {
+                        response["status"] = true;
+                        response["data"] = {};
+                        response['message'] = 'User deactivate successfully!!'
+                        return res.json(response);
+                    } else {
+                        response['message'] = 'Invalid Request!!'
+                        return res.json(response);
+                    }
+                } else {
+                    return res.json(response);
+                }
+            } catch (err) {
+                console.log("err at otp resend", err);
+                response["message"] = "Something went wrong!!";
+                return res.json(response);
+            }
+       
     }
 }
 

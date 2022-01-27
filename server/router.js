@@ -104,7 +104,7 @@ const  RazopayWebhook   = require('./api/v1/users/razopay-webhook');
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
 
-const {userResendOtp,userRefStaticData,userGoogleSignIn,userGoogleSignUpDetailAdd,userAppleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate,userAppleSignIn,userAddInFairPlayViolation} = require('./api/v1/users/user-google-signup');
+const {userResendOtp,userRefStaticData,userGoogleSignIn,userGoogleSignUpDetailAdd,userAppleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate,userAppleSignIn,userAddInFairPlayViolation,userDeactivate} = require('./api/v1/users/user-google-signup');
 const appSettingApi = require("./api/v1/common/app-settings");
 const user_offers = require("./api/v1/common/app-analysis-api");
 const { 
@@ -238,6 +238,7 @@ router.get('/',function(req,res){
 	return res.send("Welcome")
 })
 //API ROUTES//
+router.get('/api/v1/user-inactive',auth.authenticate.jwtLogin, userDeactivate); 
 router.post('/api/v1/resend-otp', userResendOtp);
 router.post('/api/v1/apple-login', userAppleSignIn); 
 router.post('/api/v1/google-login', userGoogleSignIn); 
