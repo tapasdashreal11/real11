@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		let params = req.body;
 		let constraints = { user_name: "required", language: "required" };
-
+        let ac_retrive = params.ac_retrive ? params.ac_retrive : false;
 		let validator = new Validator(params, constraints);
 		let matched = await validator.check();
 		if (!matched) {
@@ -27,10 +27,15 @@ module.exports = async (req, res) => {
 					{ email: params.user_name }
 				]
 			}).select(
-				"_id phone status image user_id bonous_percent type full_name email"
+				"_id phone status image user_id bonous_percent type full_name email mobile_verify"
 			);
 			if (user) {
-
+             if(user.status ==0 && !user.mobile_verify && !ac_retrive){
+				response["status"] = true;
+				response["message"] = "Your account is in-active.Are you sure do you want retrive your account?";
+				response["data"] = {status:0,mobile_verify:false};
+				return res.json(response);
+			 } else {
 				let data = user;
 
 				var otp		=	Math.floor(100000 + Math.random() * 900000);
@@ -59,11 +64,12 @@ module.exports = async (req, res) => {
 				response["message"] = "Otp has been sent on you registered mail and phone number, please enter otp to complete login.";
 				// response["message"] = "Otp has been sent on your registered phone number, please enter otp to complete login.";
 				// response["message"] = "Login successfully.";
-				await Users.update({ _id: user._id }, { $set: { otp: otp, otp_time: otp_time } });
+				await Users.updateOne({ _id: user._id }, { $set: { otp: otp, otp_time: otp_time } });
 
 				response["status"] = true;
 				response["data"] = data;
 				return res.json(response);
+			 }
 			} else {
 				response["data"] = {};
 				response["message"] = "Mobile no / email is not registered with us.";
