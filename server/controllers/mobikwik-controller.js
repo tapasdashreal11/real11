@@ -9,43 +9,51 @@ module.exports.showForm = async function (req, res) {
     const transactionId = req.params.transactionId;
     let transaction = await Transaction.findById(transactionId);
     if(transaction){
+        // console.log(transaction.user_id);return false;
         let user = await User.findById(transaction.user_id);
+        // console.log(user);return false
         if(user){
-            let txnDate = new Date();
-            let month = ("0" + (txnDate.getMonth() + 1)).slice(-2);
-            let date = ("0" + (txnDate.getDate())).slice(-2);
-            let mobikwikParams = {
-                amount: transaction.txn_amount.toFixed(2) * 100,
-                buyerEmail: user.email,
-                currency: 'INR',
-                // debitorcredit: "netbanking",
-                merchantIdentifier: config.mobikwik.merchantIdentifier,
-                merchantIpAddress:'127.0.0.1',
-                mode:1,
-                orderId:transaction._id,
-                purpose:0,
-                returnUrl:`${req.protocol}://${req.get('host')}/mobikwik/callback`,
-                txnDate: `${txnDate.getFullYear()}-${month}-${date}`,
-                txnType:12,
-                zpPayOption:1
+            if(user.email && user.email !== "") {
+                let txnDate = new Date();
+                let month = ("0" + (txnDate.getMonth() + 1)).slice(-2);
+                let date = ("0" + (txnDate.getDate())).slice(-2);
+                let mobikwikParams = {
+                    amount: transaction.txn_amount.toFixed(2) * 100,
+                    buyerEmail: user.email,
+                    currency: 'INR',
+                    // debitorcredit: "wallet",
+                    merchantIdentifier: config.mobikwik.merchantIdentifier,
+                    merchantIpAddress:'127.0.0.1',
+                    mode:1,
+                    orderId:transaction._id,
+                    purpose:0,
+                    returnUrl:`${req.protocol}://${req.get('host')}/mobikwik/callback`,
+                    txnDate: `${txnDate.getFullYear()}-${month}-${date}`,
+                    txnType:13,
+                    zpPayOption:1
+                }
+                // console.log(mobikwikParams,"mobikwik");
+                let checksumString = "";
+                for(const param of Object.keys(mobikwikParams)){
+                    checksumString += `${param}=${mobikwikParams[param]}`;
+                    // if(Object.keys(mobikwikParams)[Object.keys(mobikwikParams).length-1] !== param){
+                        checksumString += '&'
+                    // }
+                }
+                let checksum = sha256.hmac(config.mobikwik.secret, checksumString);
+                // console.log(checksum, mobikwikParams );
+                // mobikwikParams.debitorcredit= "wallet";
+                return res.render('payment-gateway/mobikwik', {checksum:checksum,mobikwikParams:mobikwikParams});
+            } else {
+                return res.send(ApiUtility.failed('Please verify email first!!'));
             }
-            // console.log(mobikwikParams,"mobikwik");
-            let checksumString = "";
-            for(const param of Object.keys(mobikwikParams)){
-                checksumString += `${param}=${mobikwikParams[param]}`;
-                // if(Object.keys(mobikwikParams)[Object.keys(mobikwikParams).length-1] !== param){
-                    checksumString += '&'
-                // }
-            }
-            let checksum = sha256.hmac(config.mobikwik.secret, checksumString);
-            // console.log(checksum, mobikwikParams );
-            return res.render('payment-gateway/mobikwik', {checksum:checksum,mobikwikParams:mobikwikParams});
         }
     }
 };
 
 module.exports.callback = async function(req, res){
-    // console.log(req.body,"body");
+    console.log(req.body,"body");
+    // return false;
     if(req.body && req.body.responseCode && req.body.responseCode == "100"){
         return res.send(ApiUtility.success(req.body, 'Transaction Successfully.')); 
     } else {
