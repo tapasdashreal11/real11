@@ -66,6 +66,9 @@ var seriesSchema = new Schema({
     series_leaderboard: {
 		type: Number,default:0
 	  },
+	mega_leaderboard: {
+		type: Number,default:0
+	  },
 	start_date: {
 		type: Date
 	},
