@@ -1,6 +1,7 @@
 const Series = require("../../../models/series");
 const WeekLeaderboard = require("../../../models/week-leaderboard");
 const SeriesLeaderboard = require("../../../models/series-leaderboard");
+const MegaLeaderboard = require("../../../models/mega-leaderboard");
 const _ = require('lodash');
 const { ObjectId } = require("mongodb");
 const redis = require('../../../../lib/redis');
@@ -171,6 +172,104 @@ module.exports = {
                     } else {
 
                        await SeriesLeaderboard.aggregate([
+                            {
+                                $match: {series_id:parseInt(s_id)}
+                            },{$sort: {current_rank: 1}},
+                            {
+                                $skip: v_skip
+                            },
+                            {
+                                $limit: v_limit
+                            },
+                            {
+                                $lookup: {
+                                    from: 'users',
+                                    localField: "user_id",
+                                    foreignField: "_id",
+                                    as: 'user_detail',
+                                }
+                            },
+                            {
+                                $unwind: {
+                                    path: "$user_detail",
+                                    preserveNullAndEmptyArrays: false // optional
+                                }
+                            },
+                            {
+                                $project : {
+                                    "user_id" : "$user_detail._id",
+                                    "team_name" : "$user_detail.team_name",
+                                    "avatar" : "$user_detail.avatar",
+                                    "total_points" : "$total_points",
+                                    "current_rank" : "$current_rank",
+                                    "gadget_name":{ $ifNull: [ "$gadget_name", '' ] },
+                                    "win_msz":{ $ifNull: [ "$win_msz", '' ] },
+                                    "win_distribute":{ $ifNull: [ "$win_distribute", 0 ] },
+                                    "win_widget":{$cond: { if: { $ne: [ "$win_widget", '' ] }, then: { $concat: [ imageurl, "/", "$win_widget" ] }, else : ''}},
+                                }
+                            }
+                        ], (err, data) => {
+                            if (err) {
+                                
+                            }
+                            if (!err) {
+                                if(data && data.length>0){
+                                    redis.setRedisWeekLeaderboard(redisKeyForseriesLeaderBoard, data);
+                                    let finalData = mergedTeam = [...[myTeamData], ...data];
+                                    response["data"] = finalData;
+                                    response["message"] = "";
+                                    response["status"] = true;
+                                    return res.json(response);
+                                } else {
+                                    response["data"] = [];
+                                    response["message"] = "No data found!!";
+                                    response["status"] = false;
+                                    return res.json(response);
+                                }
+                            }
+                        });
+                    }
+                  });
+            }else{
+                response["message"] = "Incorrect Params!!";
+                return res.json(response);
+            } 
+           
+        } catch (err) {
+            response["msg"] = err.message;
+            return res.json(response);
+        }
+    },
+    megaLeaderBoardData: async (req, res) => {
+        var response = { status: false, message: "Invalid Request", data: {} };
+        let {s_id,page} = req.params;
+        let v_page = 0; // page ? parseInt(page): 0;
+        let v_skip = v_page ?  v_page*500: 0;
+        let v_limit = 500;
+        const user_id = req.userId;
+        let redisKeyForseriesLeaderBoard = 'mega-leaderboard-user-data-' + s_id +'-'+v_page;
+        let myTeamData = { "user_id" : user_id,"team_name" : "My Team","total_points" : 0,"current_rank" : 0,"gadget_name":"","win_msz":"","win_distribute":0,"win_widget":""}
+        try { 
+            if(user_id && s_id){
+                var myWData = await MegaLeaderboard.findOne({series_id:parseInt(s_id),user_id:ObjectId(user_id)});
+                if(myWData && myWData._id){
+                    myTeamData['total_points'] = myWData.total_points;
+                    myTeamData['current_rank'] = myWData.current_rank;
+                    myTeamData['gadget_name'] = myWData.gadget_name ? myWData.gadget_name:"";
+                    myTeamData['win_msz'] = myWData.win_msz ? myWData.win_msz:"";
+                    myTeamData['win_distribute'] = myWData.win_distribute ? myWData.win_distribute:0;
+                    myTeamData['win_widget'] = myWData.win_widget ? (imageurl + "/" + myWData.win_widget):'';
+                }
+                redis.getRedisWeekLeaderboard(redisKeyForseriesLeaderBoard, async (err, data) => {
+                    if (data) {
+                        let finalData = mergedTeam = [...[myTeamData], ...data];
+                        response["data"] = finalData;
+                        response["message"] = "";
+                        response["status"] = true;
+                        return res.json(response);
+                    } else {
+
+                       await MegaLeaderboard.aggregate([
                             {
                                 $match: {series_id:parseInt(s_id)}
                             },{$sort: {current_rank: 1}},
