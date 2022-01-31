@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
 			);
 			if (user) {
              if(user.status ==0 && !user.mobile_verify && !ac_retrive){
-				response["status"] = true;
+				response["status"] = false;
 				response["message"] = "Your account is in-active.Are you sure do you want retrive your account?";
 				response["data"] = {status:0,mobile_verify:false};
 				return res.json(response);
