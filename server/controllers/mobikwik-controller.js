@@ -40,8 +40,9 @@ module.exports.showForm = async function (req, res) {
                         checksumString += '&'
                     // }
                 }
+				// console.log(checksumString);return false;
                 let checksum = sha256.hmac(config.mobikwik.secret, checksumString);
-                // console.log(checksum, mobikwikParams );
+                console.log(checksum, mobikwikParams, config.mobikwik.secret );
                 // mobikwikParams.debitorcredit= "wallet";
                 return res.render('payment-gateway/mobikwik', {checksum:checksum,mobikwikParams:mobikwikParams});
             } else {

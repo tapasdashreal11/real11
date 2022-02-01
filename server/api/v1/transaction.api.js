@@ -10,6 +10,7 @@ const PaymentOffers = require('../../models/payment-offers');
 const UserCouponCodes = require('../../models/user-coupon-codes');
 const { TransactionTypes } = require('../../constants/app');
 var sha512 = require('js-sha512');
+var JSsha256 = require('js-sha256');
 const paytm = require('../../../lib/paytm/checksum');
 const paytmAllInOne = require('../../../lib/paytm/PaytmChecksum')
 const request = require('request');
@@ -731,6 +732,21 @@ module.exports = {
                         let response   =   JSON.parse(result.body);
                         if(response && response.success == true && response.code == "PAYMENT_SUCCESS") {
                             await updateTransactionAllGetway(decoded, function(txn_res) {
+                                // sendSMTPMailTemplate(req, "Amount Deposite", "deposite/deposite-main.ejs", authUser.email, authUser.first_name, txnData.txn_amount, txnData._id);
+                                return res.send(txn_res);
+                            });
+                        } else {
+                            return res.send(ApiUtility.failed(response.message));
+                        }
+                    });
+                } else if (decoded['gateway_name'] == 'MOBIKWIK') {
+                    // console.log("request:", req.body);
+                    // return false;
+                    await checkMobikwikStatus(txn_id, async function (result) {
+                        let response = JSON.parse(result);
+                        // if (response && response.success == true && response.orders[0].responseCode == ["212","230","228","232"]) {
+                        if (response && response.success == true && response.orders[0].responseCode == "228") {
+                            await updateTransactionAllGetway(decoded, function (txn_res) {
                                 // sendSMTPMailTemplate(req, "Amount Deposite", "deposite/deposite-main.ejs", authUser.email, authUser.first_name, txnData.txn_amount, txnData._id);
                                 return res.send(txn_res);
                             });
@@ -1694,6 +1710,30 @@ async function updateTransactionAllGetway(decoded, cb) {
     } else {
         cb(ApiUtility.failed('Please check all details are correct or not.'));
     }
+}
+
+async function checkMobikwikStatus(txnId, cb) {
+    let formData    =   {"merchantIdentifier":config.mobikwik.merchantIdentifier,"mode":"0","orderDetail":{"orderId":txnId}};
+    // console.log(JSON.stringify(formData),"formData", typeof formData);
+    let checksum = JSsha256.hmac(config.mobikwik.secret, JSON.stringify(formData));
+    // console.log(checksum,"checksum");
+    var options = {
+        'method': 'POST',
+        'url': process.env.MOBIKWIK_URL + 'checkTxn?v=5',
+        'headers': {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': 'JSESSIONID=A4C211B0FC1F713C69DD79521963AAD2; JSESSIONID=279F2B5AADBC63D11B51FADE962EF389'
+        },
+        form: {
+            'data': JSON.stringify(formData),
+            'checksum': checksum
+        }
+    };
+    request(options, function (error, response) {
+        if (error) throw new Error(error);
+        console.log(response.body, "Mobikwik txn_status");
+        cb(response.body);
+    });
 }
 
 async function updateTransactionPaytmAllNew(decoded, transationStatus = false, cb) {

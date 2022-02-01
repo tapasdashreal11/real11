@@ -455,6 +455,14 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
     // return res.send({ status: 'success' });
 });
 
+router.post('/mobikwik/webhook', function(req, res) {
+    console.log("mobikwik callback data", req.body)
+    return false
+    // if (req.body.status && req.body.status == "Success") {
+    //     updateTransactionFromWebhook(req.body.merchantTransactionId, 'payumoney', req.body.amount);
+    // }
+    // return res.send({ status: 'success' });
+});
 
 // live fantasy api section 
  router.get('/api/v1/lf-match-list/:pmatch_id/:sport', liveFantasyMatchList); 
