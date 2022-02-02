@@ -65,10 +65,10 @@ config.payubiz = {
 config.mobikwik = {
   // merchantIdentifier: process.env.MOBIKWIK_MERCHANT_ID || 'b6415a6443604ec59644a70c8b25a0f6',
   // secret: process.env.MOBIKWIK_SECRET || '0678056d96914a8583fb518caf42828a'
-  merchantIdentifier: 'b6415a6443604ec59644a70c8b25a0f6',
-  secret:'0678056d96914a8583fb518caf42828a'
-  // merchantIdentifier: '13ccd11bf9864659b13a6a13f7b58193',
-  // secret:'34dde61d05e04028aab9a480c26f2997'
+  // merchantIdentifier: 'b6415a6443604ec59644a70c8b25a0f6',
+  // secret:'0678056d96914a8583fb518caf42828a'
+  merchantIdentifier: '13ccd11bf9864659b13a6a13f7b58193',
+  secret:'34dde61d05e04028aab9a480c26f2997'
 }
 
 // Sender Email Credentials and configurations
