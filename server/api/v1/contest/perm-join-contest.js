@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
         console.log('hello test');
         const { player_team_id,team_name,user_id, team_count, contest_id, series_id, match_id, sport,pid,by_user,isCreatedBy,} = req.body;
 
-        console.log('req.body',req.body);
+        
         let match_sport = sport ? parseInt(sport) : 1;
         let decoded = {
             match_id: parseInt(match_id),
@@ -255,7 +255,7 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                                         let uId = item.user_id;
                                         redis.redisObj.get('user-teams-count-' + match_id + '-' + match_sport + '-' + uId, (err, data) => {
                                             if(data){
-                                                console.log("uId redis delete at premanun in lms",uId);
+                                               
                                                 redis.redisObj.del('user-teams-count-' + match_id + '-' + match_sport + '-' + uId);
                                             }
                                         });
