@@ -9,6 +9,9 @@ var playerTeamContestSchema = new Schema({
   player_team_id: {
     type: ObjectId
   },
+  category_id: {
+    type: ObjectId
+  },
   team_count: {
     type: Number,
     default: 1

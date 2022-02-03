@@ -202,6 +202,7 @@ module.exports = async (req, res) => {
                                                         contest.user_id = user_id;
                                                         contest.parent_contest_id = parentContestId;
                                                         contest.total_amount = contestData.entry_fee;
+                                                        if(contestData && contestData.category_id) contest.category_id = contestData.category_id;
                                                         contest.team_count = teamCount;
                                                         contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                         contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
@@ -935,6 +936,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
             contest.parent_contest_id = parentContestId;
             contest.user_id = user_id;
             contest.total_amount = contestData.entry_fee;
+            if(contestData && contestData.category_id) contest.category_id = contestData.category_id;
             contest.team_count = teamCount;
             contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
             contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';

@@ -167,6 +167,7 @@ module.exports = async (req, res) => {
                                                     contest.contest_id = contest_id;
                                                     contest.user_id = user_id;
                                                     contest.total_amount = contestData.entry_fee;
+                                                    if(contestData && contestData.category_id) contest.category_id = contestData.category_id;
                                                     contest.team_count = teamCount;
                                                     contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                     contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
