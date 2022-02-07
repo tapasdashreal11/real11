@@ -9,9 +9,8 @@ module.exports.showForm = async function (req, res) {
     const transactionId = req.params.transactionId;
     let transaction = await Transaction.findById(transactionId);
     if(transaction){
-        // console.log(transaction.user_id);return false;
         let user = await User.findById(transaction.user_id);
-        // console.log(user);return false
+
         if(user){
             if(user.email && user.email !== "") {
                 let txnDate = new Date();
@@ -21,7 +20,6 @@ module.exports.showForm = async function (req, res) {
                     amount: transaction.txn_amount.toFixed(2) * 100,
                     buyerEmail: user.email,
                     currency: 'INR',
-                    // debitorcredit: "wallet",
                     merchantIdentifier: config.mobikwik.merchantIdentifier,
                     merchantIpAddress:'127.0.0.1',
                     mode:1,
@@ -42,9 +40,10 @@ module.exports.showForm = async function (req, res) {
                 }
 				// console.log(checksumString);return false;
                 let checksum = sha256.hmac(config.mobikwik.secret, checksumString);
-                console.log(checksum, mobikwikParams, config.mobikwik.secret );
-                // mobikwikParams.debitorcredit= "wallet";
-                return res.render('payment-gateway/mobikwik', {checksum:checksum,mobikwikParams:mobikwikParams});
+                checksumString  =   checksumString + "checksum="+checksum;
+                
+                // console.log(checksum, mobikwikParams, config.mobikwik.secret );
+                return res.render('payment-gateway/mobikwik', {checksum:checksum,mobikwikParams:checksumString});
             } else {
                 return res.send(ApiUtility.failed('Please verify email first!!'));
             }
@@ -53,8 +52,7 @@ module.exports.showForm = async function (req, res) {
 };
 
 module.exports.callback = async function(req, res){
-    console.log(req.body,"body");
-    // return false;
+    // console.log(req.body,"body");
     if(req.body && req.body.responseCode && req.body.responseCode == "100"){
         return res.send(ApiUtility.success(req.body, 'Transaction Successfully.')); 
     } else {

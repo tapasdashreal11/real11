@@ -1,5 +1,5 @@
-<form action="https://zaakstaging.zaakpay.com/api/paymentTransact/V8" method="post">
-	<input type="hidden" name="amount" value="<%- mobikwikParams.amount %>">
+<form action="https://zaakstaging.zaakpay.com/api/paymentTransact/V8?<%- mobikwikParams %>" method="post">
+	<!-- <input type="hidden" name="amount" value="<%- mobikwikParams.amount %>">
 	<input type="hidden" name="buyerAddress" value="">
 	<input type="hidden" name="buyerCity" value="">
 	<input type="hidden" name="buyerCountry" value="">
@@ -34,7 +34,7 @@
 	<input type="hidden" name="txnType" value="<%- mobikwikParams.txnType %>">
 	<input type="hidden" name="paymentOptionTypes" value="12">
 	<input type="hidden" name="zpPayOption" value="1">
-	<input type="hidden" name="checksum" value="<%- checksum %>">
+	<input type="hidden" name="checksum" value="<%- checksum %>"> -->
 </form>
 <script>
 	window.addEventListener('load', (event) => {
