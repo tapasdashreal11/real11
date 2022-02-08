@@ -131,6 +131,7 @@ const {
     updateTransaction,
     updateTransactionFromWebhook,
     updateTransactionPhonePeWebhook,
+    updateTransactionMobikwikWebhook,
     checkTransactionStatus,
     couponForAddCash,
     generatePhonePeChecksum,
@@ -457,11 +458,18 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
 
 router.post('/mobikwik/webhook', function(req, res) {
     console.log("mobikwik callback data", req.body)
-    return false
-    // if (req.body.status && req.body.status == "Success") {
-    //     updateTransactionFromWebhook(req.body.merchantTransactionId, 'payumoney', req.body.amount);
-    // }
-    // return res.send({ status: 'success' });
+    if(req.body && req.body.txnData) {
+        let response = JSON.parse(req.body.txnData);
+        if(response && response.txns[0].responseCode) {
+            updateTransactionMobikwikWebhook(response, req.body.txnData, 'MOBIKWIK', function(resResult) {
+                return res.send(resResult)
+            });
+        } else {
+            return res.send({ status: false, "message":"Something went wrong..!!" });
+        }
+    } else {
+        return res.send({ status: false, "message":"Something went wrong..!!" });
+    }
 });
 
 // live fantasy api section 

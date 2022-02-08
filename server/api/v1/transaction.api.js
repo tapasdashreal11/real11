@@ -1005,6 +1005,46 @@ module.exports = {
         }
     },
 
+    updateTransactionMobikwikWebhook: async(resData, bodyResponse, gateway = null, cb) => {
+        try {
+            let transactionId   =   resData.txns[0].orderId;
+            const txnAmount = resData.txns[0].amount;
+            txnData = await Transaction.findOne({ _id: ObjectId(transactionId) });
+            // console.log(txnData);return false;
+            // In case of call back dont need to check status
+            if(txnData && txnData.status == false) {
+                await checkMobikwikStatus(transactionId, async function (result) {
+                    let response = JSON.parse(result);
+                    
+                    let resCode     =   ["206","207","208","210","211","212"];
+                    let successIndex = _.findIndex(response.orders, { "responseCode": "228" });
+                    let stateIndex = (response.orders.length > 0) ? response.orders.findIndex((item) => resCode.includes(item.responseCode)) : -1;
+                    
+                    if (response && response.success == true && response.orders && response.orders.length > 0) {
+                        const responseAmount    =   txnData.txn_amount * 100;
+                        if(successIndex !== -1) {
+                            const responseAmount    =   txnData.txn_amount * 100;
+                            // check if transaction is completed
+                            await module.exports.updateTransactionFromWebhook(transactionId, gateway, (txnAmount/100));
+                            cb({"message":"Amount Added successfully.", "status": true});
+                        } else if(stateIndex !== -1) {
+                            cb({"message": "You transaction in under process, please wait!!", "status": false})
+                        } else {
+                            cb({"message": "Your transaction has been failed.", "status": false})
+                        }
+                    } else {
+                        cb({"message": "Your transaction has been failed.", "status": false})
+                    }
+                });
+            } else {
+                cb({"message": "Amount already added in your wallet.", "status": false})
+            }
+        } catch(error) {
+            console.log(error);
+            cb({"message": error.message, "status": false});
+        }
+    },
+
     updateTransactionFromWebhook: async (transactionId, gateway = null, txnAmount = 0) => {
         
         try {
