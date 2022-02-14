@@ -403,7 +403,7 @@ router.get('/api/v1/withdraw-cash', auth.authenticate.jwtLogin, withdrawCash);
 router.get('/mobikwik/:transactionId', mobikwikController.showForm);
 router.post('/mobikwik/callback', mobikwikController.callback);
 
-router.get('/api/v1/change-bank-req',auth.authenticate.jwtLogin,changeBankReq);
+router.get('/api/v1/change-bank-req/:is_cancel_req?',auth.authenticate.jwtLogin,changeBankReq);
 
 
 router.post('/api/v1/email-req-otp', auth.authenticate.jwtLogin, emailReqOtp);
