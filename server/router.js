@@ -81,9 +81,9 @@ const  gamezopMatchResultForuser  = require('./api/v1/contest/other-gamezop-matc
 const  { createPrivateContestOG }  = require('./api/v1/contest/other-game-private-contest-create');
 
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
-//const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-pro');
+const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-pro');
 const  permJoinContest  = require('./api/v1/contest/perm-join-contest');
-const  joinContestNewOne  = require('./api/v1/contest/join-contest-head-to-head');
+//const  joinContestNewOne  = require('./api/v1/contest/join-contest-head-to-head');
 const  joinContestMultipleTeam1  = require('./api/v1/contest/join-contest-multiple-team');
 const  joinContestMultipleTeam  = require('./api/v1/contest/join-contest-multiple-pro');
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
