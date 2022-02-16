@@ -96,10 +96,10 @@ module.exports = async (req, res) => {
 							return res.json(response);
 						});
 					} else {
-						
+						response["message"] = "Something went wrong!!";
+						return res.json({response});
 					}
 				});
-				return false;
 			} else {
 				response["message"] = "Invalid User id.";
 				return res.json(response);
