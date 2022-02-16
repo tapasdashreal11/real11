@@ -110,6 +110,7 @@ module.exports = async (req, res) => {
 			return res.json(response);
 		}
 	} catch (error) {
+		console.log('bank verify catch >> ', error)
 		logger.error("LOGIN_ERROR", error.message);
 		res.send(ApiUtility.failed(error.message));
 	}
