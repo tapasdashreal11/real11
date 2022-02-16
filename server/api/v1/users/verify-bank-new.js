@@ -143,6 +143,7 @@ async function bankVerificationToken(bankData, cb) {
 		request(options, function (error, res, body) {
 			if (error) throw new Error(error);
 			let bodyRes	=	JSON.parse(body)
+			console.log("bodyRes",bodyRes);
 			if(bodyRes && bodyRes.status == "SUCCESS" && bodyRes.data && bodyRes.data.token) {
 				cb({"status":true,token:bodyRes.data.token});
 			} else {
