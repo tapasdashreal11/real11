@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
 					// console.log(resToken.token)
 					if(resToken.status == true && resToken.token) {
 						bankVerification(params, user.phone, resToken.token, async function(veriyRes) {
-							// console.log("ddddd", veriyRes);
+							console.log("ddddd", veriyRes);
 							let bankDetail = await BankDetails.findOne({ user_id: userId });
 							let updatedData = {};
 							updatedData.account_number = params.account_no || null;
