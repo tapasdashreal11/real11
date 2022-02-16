@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
 			let user = await Users.findOne({ _id: userId });
 			if (user) {
 				bankVerificationToken(params, function(resToken) {
-					// console.log(resToken.token)
+					console.log(resToken.token)
 					if(resToken.status == true && resToken.token) {
 						bankVerification(params, user.phone, resToken.token, async function(veriyRes) {
 							console.log("ddddd", veriyRes);
