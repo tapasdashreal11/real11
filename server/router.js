@@ -158,6 +158,7 @@ const { notificationList,notificationRead } = require('./api/v1/users/notificati
 const deleteNotifications = require('./api/v1/users/delete-notification');
 const withdrawCash = require('./api/v1/users/withdraw-cash');
 const verifyBankDetails = require('./api/v1/users/verify-bank');
+const verifyBankDetailsNew = require('./api/v1/users/verify-bank-new');
 const verifyPanDetails = require('./api/v1/users/verify-pan');
 const addWithdrawRequest = require('./api/v1/users/withdraw-request');
 const {realRefCodeGenerate,verifyReferal, verifyEmail, verifyAccountEmail ,updateUserFCMToken,verifyGmailAccount} = require('./api/v1/users/verify-email');
@@ -545,7 +546,7 @@ router.post('/api/v1/verify-bank-detail', auth.authenticate.jwtLogin, [
         req.body.image = fileName || '';
         return next();
     },
-], verifyBankDetails);
+], verifyBankDetailsNew);
 
 /*
  * ERROR HANDLING

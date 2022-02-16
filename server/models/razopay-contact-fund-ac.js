@@ -4,6 +4,7 @@ const razopayFundAc = mongoose.Schema({
     fund_account_id: { type: String},
     user_id: { type: mongoose.Schema.Types.ObjectId, unique: true },
     change_bank_req_accept: {type: Boolean, default: false},
+    old_func_account_id: { type: mongoose.Schema.Types.ObjectId, unique: true },
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },

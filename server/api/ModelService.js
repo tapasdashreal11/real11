@@ -2626,6 +2626,54 @@ class ModelService {
              }
         });
     }
+    
+    referalxCashRewardAtBankVerify(user_id, trnsaction_type, amount) {
+		return new Promise(async (resolve, reject) => {
+			try {
+				let referalUser = await ReferralCodeDetails.findOne({ user_id: user_id });
+				var data = {};
+				if (referalUser) {
+					let referedBy = referalUser.refered_by;
+					if (referedBy) {
+						let date = new Date();
+						let bonusAmount = amount;
+						let referedUser = await Users.findOneAndUpdate({ '_id': referedBy, 'status': 1, 'refer_able': 1, 'is_youtuber': 0, "fair_play_violation":0}, { $inc: { extra_amount: bonusAmount } });
+						if(referedUser) {
+							let entity = {
+								user_id: referedBy,
+								txn_amount: bonusAmount,
+								currency: "INR",
+								txn_date: Date.now(),
+								local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + referedBy,
+								added_type: trnsaction_type,
+								details: {
+									"refund_winning_balance":0,
+									"refund_cash_balance": 0,
+									"refund_bonus_amount": 0,
+									"refund_extra_amount": bonusAmount,
+									"refund_affiliate_amount": 0,
+									"current_winning_balance": referedUser && referedUser.winning_balance ? referedUser.winning_balance : 0,
+									"current_cash_balance": referedUser && referedUser.cash_balance ? referedUser.cash_balance : 0,
+									"current_bonus_amount": referedUser && referedUser.bonus_amount ? referedUser.bonus_amount : 0,
+									"current_extra_amount": referedUser && referedUser.extra_amount ? referedUser.extra_amount : bonusAmount,
+									"current_affiliate_amount":referedUser && referedUser.affiliate_amount ? referedUser.affiliate_amount : 0,
+								}
+							};
+							
+							if (referedUser && referalUser.first_depo_reward_amount <= 30) {
+								data = await Transaction.create(entity);
+								await ReferralCodeDetails.findOneAndUpdate({ user_id: user_id }, { $inc: { refered_by_amount: bonusAmount, first_depo_reward_amount: bonusAmount } });
+							}
+						}
+					}
+				}
+				resolve(data);
+			} catch (error) {
+				reject(err);
+				console.log("referal amount error >", error)
+			}
+		});
+	}
 }
 
 module.exports = ModelService;
