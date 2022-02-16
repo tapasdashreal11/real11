@@ -14,6 +14,7 @@ const { razopayFundAccount } = require("./razopay-contact-fund-ac.js");
 
 module.exports = async (req, res) => {
 	try {
+		console.log("enter to bank verify")
 		var response = { status: false, message: "Invalid Request", data: {} };
 		let params = req.body;
 		let constraints = {
