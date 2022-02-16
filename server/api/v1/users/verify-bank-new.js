@@ -140,6 +140,7 @@ async function bankVerificationToken(bankData, cb) {
 			"headers": { 'X-Client-Id': process.env.CASHFREE_CLIENT_ID, 'X-Client-Secret': process.env.CASHFREE_CLIENT_SECRET },
 		};
 		request(options, function (error, res, body) {
+			if (error) throw new Error(error);
 			let bodyRes	=	JSON.parse(body)
 			if(bodyRes && bodyRes.status == "SUCCESS" && bodyRes.data && bodyRes.data.token) {
 				cb({"status":true,token:bodyRes.data.token});
@@ -163,6 +164,7 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 		};
 		console.log(options);
 		request(options, function (error, res, body) {
+			if (error) throw new Error(error);
 			let bodyRes	=	JSON.parse(body)
 			// console.log(bodyRes);
 			if(bodyRes && bodyRes.status == "SUCCESS" && bodyRes.data && bodyRes.data.accountExists && bodyRes.data.accountExists == "YES") {
