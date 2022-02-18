@@ -53,7 +53,7 @@ const {
 } = require('./api/v1/users/users-profile');
 const editUserTeamName = require('./api/v1/users/edit-user-team-name');
 const { seriesList } = require('./api/v1/series.api');
-const { bannerList } = require('./api/v1/banner.api');
+const { bannerList,depositBannerList } = require('./api/v1/banner.api');
 const loginWithEmail = require('./api/v1/users/users-email-login');
 const transactionHistoryNew = require('./api/v1/users/transation-history-new');
 const { teamProfileComparision, teamProfilePaging } = require('./api/v1/users/team-profile-comparision');
@@ -273,6 +273,7 @@ router.post('/api/v1/edit-user-team-name', auth.authenticate.jwtLogin, editUserT
 router.post('/api/v1/login', usersLogin);
 router.post('/api/v1/signup', usersSignup);
 router.get('/api/v1/banner-list', bannerList);
+router.get('/api/v1/deposit-banner-list', depositBannerList);
 //router.get('/api/v1/contest-list/:match_id/:sport?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
