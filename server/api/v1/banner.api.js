@@ -35,7 +35,7 @@ module.exports = {
             let addCashBannerListKey = RedisKeys.ADD_CASH_BANNER_LIST; 
             redis.getRedis(addCashBannerListKey, async (err, bannerData) =>{
                 if(!bannerData){
-                    bannerData = await (new ModelService(DepositBanner)).getBannerList();
+                    bannerData = await (new ModelService(DepositBanner)).depositBannerList();
                     redis.setRedis(addCashBannerListKey,bannerData,RedisKeys.TIME_10_DAYS);
                     return res.send(ApiUtility.success(bannerData));
                 } else {
