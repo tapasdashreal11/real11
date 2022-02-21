@@ -131,6 +131,7 @@ var seriesSquadSchema = new Schema({
 	live_match_banner: {type: String},
 	is_mega_avail: {type:Boolean, default: false},
 	mega_price: {type: Number},
+	guru_url: {type: String},
 }, {
 	timestamps: true
 });

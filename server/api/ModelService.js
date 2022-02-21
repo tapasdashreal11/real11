@@ -973,6 +973,7 @@ class ModelService {
                             "inning_number":"$inning_number",
                             "is_mega_avail":{ $ifNull: [ "$is_mega_avail", false ] },
                             "mega_price":{ $ifNull: [ "$mega_price", 0 ] },
+                            "guru_url":{ $ifNull: [ "$guru_url", "" ] },
                         }
                     }
                 ], (err, data) => {
