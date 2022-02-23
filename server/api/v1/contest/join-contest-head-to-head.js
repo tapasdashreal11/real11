@@ -325,7 +325,7 @@ module.exports = async (req, res) => {
                                                                    // let newJoinedParentCounts = results[2] ? results[2] : 0;
                                                                     let mParentId = matchContest && matchContest.parent_contest_id ? matchContest.parent_contest_id :matchContest.contest_id;
                                                                     let newJoinedParentCounts = await PlayerTeamContest.find({ 'contest_id': matchContest.contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
-                                                                    console.log("newJoinedParentCounts ***",newJoinedParentCounts);
+                                                                    console.log("newJoinedParentCounts ***",matchContestData);
                                                                     if ((matchContestData && matchContestData.is_auto_create) || (matchContestData && matchContestData.contest && matchContestData.contest.auto_create &&  _.isEqual( matchContestData.contest.auto_create,'yes') )) {
                                                                          newJoinedParentCounts = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
                                                                          console.log("newJoinedParentCounts enter ***",newJoinedParentCounts);
