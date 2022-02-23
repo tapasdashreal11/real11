@@ -325,9 +325,11 @@ module.exports = async (req, res) => {
                                                                    // let newJoinedParentCounts = results[2] ? results[2] : 0;
                                                                     let mParentId = matchContest && matchContest.parent_contest_id ? matchContest.parent_contest_id :matchContest.contest_id;
                                                                     let newJoinedParentCounts = await PlayerTeamContest.find({ 'contest_id': matchContest.contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
+                                                                    console.log("newJoinedParentCounts ***",newJoinedParentCounts);
                                                                     if ((matchContestData && matchContestData.is_auto_create) || (matchContestData && matchContestData.contest && matchContestData.contest.multiple_team &&  !_.isEqual( matchContestData.contest.multiple_team,"yes") )) {
                                                                          newJoinedParentCounts = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
-                                                                     }
+                                                                         console.log("newJoinedParentCounts enter ***",newJoinedParentCounts);
+                                                                        }
                                                                     let totalJoinedTeam = newJoinedParentCounts;
                                                                     let calJoinTeam = 1 + totalJoinedTeam;
                                                                     if (matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0) {
