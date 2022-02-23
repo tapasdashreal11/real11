@@ -303,11 +303,10 @@ module.exports = async (req, res) => {
                                                                 }
 
                                                             }
-                                                            console.log("is_offerable***",matchContest.is_offerable);
+                                                            
                                                             if(matchContest && matchContest.is_offerable){
                                                                 let totalJoinedTeam = joinedContestWithTeamCounts;
                                                                 let calJoinTeam = total_team_number + totalJoinedTeam;
-                                                                console.log("calJoinTeam**",calJoinTeam,totalJoinedTeam);
                                                                 if(matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0){
                                                                     if(calEntryFees > 0){
                                                                         offerableAppled = true;
@@ -316,7 +315,6 @@ module.exports = async (req, res) => {
                                                                         let offerdAmount = matchContest.offerable_amount >= recalcalEntryFees ? recalcalEntryFees: matchContest.offerable_amount;
                                                                         let totalOfferdAmount = retention_bonus_amount + offerdAmount;
                                                                         retention_bonus_amount = totalOfferdAmount;
-                                                                        console.log("retention_bonus_amount",retention_bonus_amount);
                                                                     }
                                                                  } 
                                                               }
