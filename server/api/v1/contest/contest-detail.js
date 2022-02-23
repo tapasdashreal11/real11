@@ -350,7 +350,8 @@ module.exports = {
                     offer_after_join: matchContestDetail && matchContestDetail.is_offerable && matchContestDetail.offer_after_join ? matchContestDetail.offer_after_join : 0,
                     offerable_amount: matchContestDetail && matchContestDetail.is_offerable && matchContestDetail.offerable_amount ? matchContestDetail.offerable_amount : 0,
                     contest_comment: matchContestDetail && matchContestDetail.contest_comment ? matchContestDetail.contest_comment : "",
-                    champ_type: matchContestDetail && matchContestDetail.champ_type ? matchContestDetail.champ_type :0
+                    champ_type: contestDetail && contestDetail.champ_type ? contestDetail.champ_type :0,
+                    amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget :""
                 }
                 if(totalChildContestJoined>0){
                     contestData['total_child_joined']= totalChildContestJoined;
@@ -787,7 +788,8 @@ module.exports = {
                     is_aakash_team: aakashLeague,
                     is_multiplier: multiplierLeague,
                     category_id: matchContestDetail.category_id || '',
-                    champ_type: matchContestDetail && matchContestDetail.champ_type ? matchContestDetail.champ_type :0
+                    champ_type: contestDetail && contestDetail.champ_type ? contestDetail.champ_type :0,
+                    amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget :""
                 }
 
                 if (reviewMatch == "In Progress") {
