@@ -281,6 +281,16 @@ module.exports = {
                             customPrice[key]['image'] = customBreakup.image ? config.imageBaseUrl + '/' + customBreakup.image : "";
                             key++;
                         }
+                    } else if (contestDetail.amount_gadget == 'x_win_breakup') {
+                        for (const customBreakup of contestDetail.breakup) {
+                            if (!customPrice[key]) {
+                                customPrice[key] = {}
+                            }
+                            customPrice[key]['start_point'] = customBreakup.start_point ? (customBreakup.start_point) : 0;
+                            customPrice[key]['end_point'] = customBreakup.end_point ? (customBreakup.end_point) : 0;
+                            customPrice[key]['x_factor_price'] = customBreakup.x_factor_price ? (customBreakup.x_factor_price) : 0;
+                            key++;
+                        }
                     } else {
                         for (const customBreakup of contestDetail.breakup) {
                             if (!customPrice[key]) {
@@ -715,6 +725,16 @@ module.exports = {
 
                             customPrice[key]['gadget_name'] = customBreakup.gadget_name ? (customBreakup.gadget_name) : "";
                             customPrice[key]['image'] = customBreakup.image ? config.imageBaseUrl + '/' + customBreakup.image : "";
+                            key++;
+                        }
+                    } else if(contestDetail.amount_gadget == 'x_win_breakup') {
+                        for (const customBreakup of contestDetail.breakup) {
+                            if (!customPrice[key]) {
+                                customPrice[key] = {}
+                            }
+                            customPrice[key]['start_point'] = customBreakup.start_point ? (customBreakup.start_point) : 0;
+                            customPrice[key]['end_point'] = customBreakup.end_point ? (customBreakup.end_point) : 0;
+                            customPrice[key]['x_factor_price'] = customBreakup.x_factor_price ? (customBreakup.x_factor_price) : 0;
                             key++;
                         }
                     } else {
