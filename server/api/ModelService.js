@@ -233,7 +233,8 @@ class ModelService {
                                         "maximum_team_size": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: { $cond: { if: { $ifNull: ["$$sec.contest.maximum_team_size",false] },then: "$$sec.contest.maximum_team_size",else: 9 } }, else: 1 }},
                                         "contest_shareable": {$cond: { if: { $ifNull: [ "$$sec.contest.contest_shareable", false ] }, then: "$$sec.contest.contest_shareable", else: 0 }},
                                         "contest_comment":{ $ifNull: [ "$$sec.contest_comment", "" ] },
-                                        "champ_type":{ $ifNull: [ "$$sec.contest.champ_type", 0 ] }
+                                        "champ_type":{ $ifNull: [ "$$sec.contest.champ_type", 0 ] },
+                                        "amount_gadget":{ $ifNull: [ "$$sec.contest.amount_gadget", "" ] }
                                     }
                                 }
                             },
