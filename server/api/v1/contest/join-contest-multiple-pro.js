@@ -303,7 +303,7 @@ module.exports = async (req, res) => {
                                                                 }
 
                                                             }
-
+                                                            console.log("is_offerable***",matchContest.is_offerable);
                                                             if(matchContest && matchContest.is_offerable){
                                                                 let totalJoinedTeam = joinedContestWithTeamCounts;
                                                                 let calJoinTeam = total_team_number + totalJoinedTeam;
