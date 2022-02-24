@@ -449,7 +449,6 @@ module.exports = {
                                                 customPrice[key]['x_factor_price'] = customBreakup.x_factor_price ? (customBreakup.x_factor_price) : 0;
                                                 key++;
                                             }
-                                            isGadget = true;
                                         } else {
                                             for (const customBreakup of contestValue.contest.breakup) {
                                                 if ((contestValue.rank >= customBreakup.startRank && contestValue.rank <= customBreakup.endRank) || contestValue.rank == customBreakup.end) {
@@ -701,6 +700,23 @@ module.exports = {
                                             key++;
                                         }
                                         isGadget = true;
+                                    } else if (contestValue.contest.amount_gadget == 'x_win_breakup') {
+                                        for (const customBreakup of contestValue.contest.breakup) {
+                                            console.log(contestValue, customBreakup);
+                                            if ((contestValue.points <= customBreakup.start_point && contestValue.points >= customBreakup.end_point)) {
+                                                isWinner = true;
+                                            }
+
+                                            if (!customPrice[key]) {
+                                                customPrice[key] = {}
+                                            }
+
+
+                                            customPrice[key]['start_point'] = customBreakup.start_point ? (customBreakup.start_point) : 0;
+                                            customPrice[key]['end_point'] = customBreakup.end_point ? (customBreakup.end_point) : 0;
+                                            customPrice[key]['x_factor_price'] = customBreakup.x_factor_price ? (customBreakup.x_factor_price) : 0;
+                                            key++;
+                                        }
                                     } else {
                                         for (const customBreakup of contestValue.contest.breakup) {
                                             if ((contestValue.rank >= customBreakup.startRank && contestValue.rank <= customBreakup.endRank) || contestValue.rank == customBreakup.end) {
