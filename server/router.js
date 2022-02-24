@@ -40,6 +40,7 @@ const usersUpdateDetails = require('./api/v1/users/users-update-details');
 const changePassword = require('./api/v1/users/users-change-password');
 const forgotPassword = require('./api/v1/users/forgot-password');
 const {userCouponPurchase,userCouponList,userCouponWalletAmount,userCouponRevoke} = require('./api/v1/users/user-coupon-sale');
+const {signAndEncrypt,signAndEncryptForOperation,verifySignature} = require('./api/v1/users/user-amazon-pay');
 const {
     resetPasswordView,
     resetPassword
@@ -240,7 +241,12 @@ if (config.express.isOnProduction || https_port) {
 router.get('/',function(req,res){
 	return res.send("Welcome")
 })
+
 //API ROUTES//
+router.get('/api/v1/aws/sign-and-encrypt',auth.authenticate.jwtLogin, signAndEncrypt);
+router.get('/api/v1/aws/sign-and-encrypt-for-operation',auth.authenticate.jwtLogin, signAndEncryptForOperation);
+router.get('/api/v1/aws/verify-signature',auth.authenticate.jwtLogin, verifySignature);
+
 router.get('/api/v1/user-inactive',auth.authenticate.jwtLogin, userDeactivate); 
 router.post('/api/v1/resend-otp', userResendOtp);
 router.post('/api/v1/apple-login', userAppleSignIn); 
