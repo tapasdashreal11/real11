@@ -430,7 +430,7 @@ class PlayerTeamService {
                         "player_name": "$seriesplayers.player_name",
                         "playing_role": "$seriesplayers.player_role",
                         "sport": sport,
-                        "image": "undefined",
+                        "image":{ $ifNull: [ "$seriesplayers.image", "" ] },
                         "id": "$seriesplayers._id"
                     },
                     "playing_11": 1,
