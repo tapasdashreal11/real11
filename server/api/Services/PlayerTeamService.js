@@ -218,6 +218,7 @@ class PlayerTeamService {
                     "is_last_played": "$seriesplayers.is_lastplayed",     //,
                     "playing_11": 1,
                     "xfactors": 1,
+                    "image":{ $ifNull: [ "$seriesplayers.image", "" ] }
                 }
             },
         ]).toArray((error, results) => {
@@ -237,7 +238,7 @@ class PlayerTeamService {
                         if ((playerData.match_type === "t10" && playerData.t10 === true) || (playerData.match_type === "odi" && playerData.odi === true) || (playerData.match_type === "t20" && playerData.t20 === true) || (playerData.match_type === "test" && playerData.test === true) || (playerData.match_type === "t100" && playerData.t100 === true)) {
 
                             if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
-                            if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
+                            if (playerData && playerData.player_record) playerData.player_record.image = (playerData && playerData.image? playerData.image:"");
                             // if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = config.imageBaseUrl + '/player_image/' + playerData.player_record.image;
                             if (playerData.playing_11 && playerData.playing_11.length > 0) {
                                 playerData.is_playing_show = 1
