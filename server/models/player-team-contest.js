@@ -94,7 +94,10 @@ var playerTeamContestSchema = new Schema({
   },
   isCreatedBy: {
     type: String
-  }, 
+  },
+  p_type: {
+    type: String
+  },  
   isPermainan: {
     type: Boolean
   }
