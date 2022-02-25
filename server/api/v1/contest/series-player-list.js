@@ -724,6 +724,7 @@ async function cricketPreviewNew(decoded, liveScore, cb) {
                 'player_role': row && row.player_role ? row.player_role : val.player_role,
                 'player_name': val['player_name'],
                 'player_image': val['player_image'],
+                'image': val && val.image ? val.image :'' ,
                 'player_credit': val['player_credit'] ? val['player_credit'].toString() : '0',
                 'selection_percent': selectedPercent,  //percent,
                 'points': row.point,
