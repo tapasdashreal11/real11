@@ -665,7 +665,7 @@ module.exports = {
                             let calJoinTeam = total_team_number + totalJoinedTeam;
                             if(matchContestData.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContestData.offer_after_join && matchContestData.offerable_amount > 0){
                                 if(calEntryFees > 0){
-                                    offerableAppled = true;
+                                    offerableAppled = false;
                                     let recalcalEntryFees = calEntryFees;
                                     calEntryFees = matchContestData.offerable_amount >= calEntryFees ? 0: (calEntryFees - matchContestData.offerable_amount );
                                     let offerdAmount = matchContestData.offerable_amount >= recalcalEntryFees ? recalcalEntryFees: matchContestData.offerable_amount;
