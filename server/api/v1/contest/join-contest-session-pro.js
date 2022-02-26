@@ -291,7 +291,7 @@ module.exports = async (req, res) => {
                                                                 let calJoinTeam = 1 + totalJoinedTeam;
                                                                 if (matchContest.offer_after_join >= totalJoinedTeam && calJoinTeam > matchContest.offer_after_join && matchContest.offerable_amount > 0) {
                                                                     if (calEntryFees > 0) {
-                                                                        offerableAppled = true;
+                                                                        offerableAppled = false;
                                                                         let recalcalEntryFees = calEntryFees;
                                                                         calEntryFees = matchContest.offerable_amount >= calEntryFees ? 0 : (calEntryFees - matchContest.offerable_amount);
                                                                         let offerdAmount = matchContest.offerable_amount >= recalcalEntryFees ? recalcalEntryFees : matchContest.offerable_amount;
