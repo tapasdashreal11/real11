@@ -234,7 +234,9 @@ class ModelService {
                                         "contest_shareable": {$cond: { if: { $ifNull: [ "$$sec.contest.contest_shareable", false ] }, then: "$$sec.contest.contest_shareable", else: 0 }},
                                         "contest_comment":{ $ifNull: [ "$$sec.contest_comment", "" ] },
                                         "champ_type":{ $ifNull: [ "$$sec.contest.champ_type", 0 ] },
-                                        "amount_gadget":{ $ifNull: [ "$$sec.contest.amount_gadget", "" ] }
+                                        "amount_gadget":{ $ifNull: [ "$$sec.contest.amount_gadget", "" ] },
+                                        "attendee":{ $ifNull: [ "$$sec.attendee", 0 ] },
+                                        "category_slug":{ $ifNull: [ "$$sec.category_slug", "" ] }
                                     }
                                 }
                             },
