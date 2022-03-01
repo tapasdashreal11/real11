@@ -665,7 +665,7 @@ class PlayerTeamService {
                         playerDetail[j] = {};
                         playerDetail[j]['name']     =   playerTeamRecord[index].players[j].player_name;
                         playerDetail[j]['player_id']=   playerTeamRecord[index].players[j].player_id;
-                        playerDetail[j]['image']    =   playerTeamRecord[index].players[j].image;
+                        playerDetail[j]['image']    =   playerTeamRecord[index].players[j].player_record.image;
                         playerDetail[j]['role']     =   playerTeamRecord[index].players[j].player_role;
                         playerDetail[j]['credits']  =   (playerTeamRecord[index].players[j].player_record && playerTeamRecord[index].players[j].player_record.player_credit) ? Number(playerTeamRecord[index].players[j].player_record.player_credit) : 0;
                         playerDetail[j]['points']   =   playerTeamRecord[index].players[j].player_point ? playerTeamRecord[index].players[j].player_point : 0;
