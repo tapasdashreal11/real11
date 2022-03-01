@@ -113,6 +113,7 @@ module.exports = {
             }
            let ptcJoinedRecords =[];
            let teamData = [];
+           let joinedTeams = 0;
             if (!contestData) {
                 // let contestDetail = await Contest.findOne({ _id: contest_id });
                 let matchContestDetail = await MatchContest.findOne({ contest_id: contest_id, match_id: parseInt(match_id), sport: sport });
@@ -127,7 +128,7 @@ module.exports = {
                }
                if (matchContestDetail && matchContestDetail.category_slug && _.isEqual(matchContestDetail.category_slug, 'head-to-head') && sport ==1 ) {
                    if(matchContestDetail.parent_contest_id){
-
+                    joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
                    } else {
                     let userJoinedContest = _.map(ptcJoinedRecords,'contest_id'); 
                     let queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id,match_id: decoded['match_id'], sport: sport, joined_users: 1 };
@@ -153,6 +154,8 @@ module.exports = {
                       }
                    }
 
+                }else{
+                    joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
                 }
                 /*let CategoryData = await getCategoryRedis(contestDetail.category_id);
                 if(_.isEmpty()) {
@@ -276,7 +279,7 @@ module.exports = {
                 gadgetLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'gadget') ? true : false;
                 aakashLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'aakash') ? true : false;
                 multiplierLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'multiplier') ? true : false;
-                let joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
+                
                 let is_joined = (myTeamIds.length > 0) ? true : false;
 
                 let bonusAmount = 0;
