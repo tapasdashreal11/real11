@@ -84,7 +84,7 @@ module.exports = {
         try {
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
-            let decoded = { match_id: parseInt(match_id),contest_id: contest_id,user_id: user_id,sport: parseInt(sport) || 1,};
+            let decoded = { match_id: parseInt(match_id), contest_id: contest_id, user_id: user_id, sport: parseInt(sport) || 1, };
             sport = parseInt(sport) || 1;
             let reviewStatus = '';
             let contestDataAPIKey = RedisKeys.getContestDetailAPIKey(match_id, contest_id);
@@ -111,80 +111,91 @@ module.exports = {
             } else {
                 seriesSqadData = await SeriesSquad.findOne({ match_id: parseInt(match_id), sport: sport }, { match_id: 1, inning_number: 1, is_parent: 1 });
             }
-           let ptcJoinedRecords =[];
-           let teamData = [];
-           let joinedTeams = 0;
+            let ptcJoinedRecords = [];
+            let teamData = [];
+            let joinedTeams = 0;
             if (!contestData) {
                 // let contestDetail = await Contest.findOne({ _id: contest_id });
                 let matchContestDetail = await MatchContest.findOne({ contest_id: contest_id, match_id: parseInt(match_id), sport: sport });
                 matchContestDetail = JSON.parse(JSON.stringify(matchContestDetail));
                 let contestDetail = matchContestDetail && matchContestDetail.contest ? matchContestDetail.contest : {};
-                let totalChildContestJoined= 0;
-                if ((matchContestDetail && matchContestDetail.is_auto_create) || (matchContestDetail && matchContestDetail.contest && matchContestDetail.contest.is_auto_create) ) {
-                                
-                    let mParentId = matchContestDetail && matchContestDetail.parent_contest_id ? matchContestDetail.parent_contest_id :matchContestDetail.contest_id;
-                     ptcJoinedRecords  = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': sport },{contest_id:1});
+                let totalChildContestJoined = 0;
+                if ((matchContestDetail && matchContestDetail.is_auto_create) || (matchContestDetail && matchContestDetail.contest && matchContestDetail.contest.is_auto_create)) {
+
+                    let mParentId = matchContestDetail && matchContestDetail.parent_contest_id ? matchContestDetail.parent_contest_id : matchContestDetail.contest_id;
+                    ptcJoinedRecords = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': sport }, { contest_id: 1 });
                     totalChildContestJoined = ptcJoinedRecords && ptcJoinedRecords.length > 0 ? ptcJoinedRecords.length : 0;
-               }
-               if (matchContestDetail && matchContestDetail.category_slug && _.isEqual(matchContestDetail.category_slug, 'head-to-head') && sport ==1 ) {
-                   if(matchContestDetail.parent_contest_id){
-                    joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
-                   } else {
-                    let userJoinedContest = _.map(ptcJoinedRecords,'contest_id'); 
-                    let queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id,match_id: decoded['match_id'], sport: sport, joined_users: 1 };
-                    if(userJoinedContest && userJoinedContest.length>0){
-                        queryMatchContest['contest_id'] = {$nin:userJoinedContest};
-                    }
-                    var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
-                     if(matchContestData && matchContestData._id && matchContestData.contest_id){
-                       let userTeam = await PlayerTeamContest.findOne({ 'contest_id': matchContestData.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
-                       if(userTeam && userTeam._id){
-                        joinedTeams = 1;
-                        teamData[0] = {};
-                        teamData[0]['user_id'] = userTeam.user_id;
-                        teamData[0]['team_name'] = userTeam.team_name;
-                        teamData[0]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
-                        teamData[0]['team_no'] = userTeam.team_count || 0;
-                        teamData[0]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
-                        teamData[0]['previous_rank'] = userTeam.previous_rank || 0;
-                        teamData[0]['winning_amount'] = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;;
-                        teamData[0]['is_aakash_team'] = false;
-                        teamData[0]['champ_type'] = 0;
-                        teamData[0]['player_team_id'] = userTeam.player_team_id;
-                       }
-                      } else {
-                        if(totalChildContestJoined >0 && userJoinedContest && userJoinedContest.length>0) {
-                            let loginuserMatchContest = { 'parent_contest_id': matchContestDetail.contest_id,match_id: decoded['match_id'], sport: sport, joined_users: 1 };
-                            loginuserMatchContest['contest_id'] = {$in:userJoinedContest};
-    
-                            var userJoinMatchContest = await MatchContest.findOne(loginuserMatchContest).sort({ _id: 1 });
-                            if(userJoinMatchContest && userJoinMatchContest.contest_id){
-                                let userTeam = await PlayerTeamContest.findOne({ 'contest_id': userJoinMatchContest.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
-                                if(userTeam && userTeam._id){
-                                    joinedTeams = 1;
-                                    teamData[0] = {};
-                                    teamData[0]['user_id'] = userTeam.user_id;
-                                    teamData[0]['team_name'] = userTeam.team_name;
-                                    teamData[0]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
-                                    teamData[0]['team_no'] = userTeam.team_count || 0;
-                                    teamData[0]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
-                                    teamData[0]['previous_rank'] = userTeam.previous_rank || 0;
-                                    teamData[0]['winning_amount'] = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;;
-                                    teamData[0]['is_aakash_team'] = false;
-                                    teamData[0]['champ_type'] = 0;
-                                    teamData[0]['player_team_id'] = userTeam.player_team_id;
-                                   }
-                            }
-                            
-                        } else {
-                            joinedTeams = 0;
+                }
+                // This is used to show h2h team to user when come from parent contest
+                if (matchContestDetail && matchContestDetail.category_slug && _.isEqual(matchContestDetail.category_slug, 'head-to-head') && sport == 1) {
+                    if (matchContestDetail.parent_contest_id) {
+                        joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
+                    } else {
+                        let userJoinedContest = _.map(ptcJoinedRecords, 'contest_id');
+                        let queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: 1 };
+                        if (userJoinedContest && userJoinedContest.length > 0) {
+                            queryMatchContest['contest_id'] = { $nin: userJoinedContest };
                         }
-                        
+                        var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                        if (matchContestData && matchContestData._id && matchContestData.contest_id) {
+                            let userTeam = await PlayerTeamContest.findOne({ 'contest_id': matchContestData.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
+                            if (userTeam && userTeam._id) {
+                                joinedTeams = 1;
+                                teamData[0] = {};
+                                teamData[0]['user_id'] = userTeam.user_id;
+                                teamData[0]['team_name'] = userTeam.team_name;
+                                teamData[0]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
+                                teamData[0]['team_no'] = userTeam.team_count || 0;
+                                teamData[0]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
+                                teamData[0]['previous_rank'] = userTeam.previous_rank || 0;
+                                teamData[0]['winning_amount'] = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;;
+                                teamData[0]['is_aakash_team'] = false;
+                                teamData[0]['champ_type'] = 0;
+                                teamData[0]['player_team_id'] = userTeam.player_team_id;
+                            }
+                            if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 0) {
+                                await MatchContest.findOneAndUpdate({ contest_id: matchContestDetail.contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 1 } });
+                            }
 
-                      }
-                   }
+                        } else {
+                            if (totalChildContestJoined > 0 && userJoinedContest && userJoinedContest.length > 0) {
+                                let loginuserMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: 1 };
+                                loginuserMatchContest['contest_id'] = { $in: userJoinedContest };
 
-                }else{
+                                var userJoinMatchContest = await MatchContest.findOne(loginuserMatchContest).sort({ _id: 1 });
+                                if (userJoinMatchContest && userJoinMatchContest.contest_id) {
+                                    let userTeam = await PlayerTeamContest.findOne({ 'contest_id': userJoinMatchContest.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
+                                    if (userTeam && userTeam._id) {
+                                        joinedTeams = 1;
+                                        teamData[0] = {};
+                                        teamData[0]['user_id'] = userTeam.user_id;
+                                        teamData[0]['team_name'] = userTeam.team_name;
+                                        teamData[0]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
+                                        teamData[0]['team_no'] = userTeam.team_count || 0;
+                                        teamData[0]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
+                                        teamData[0]['previous_rank'] = userTeam.previous_rank || 0;
+                                        teamData[0]['winning_amount'] = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;;
+                                        teamData[0]['is_aakash_team'] = false;
+                                        teamData[0]['champ_type'] = 0;
+                                        teamData[0]['player_team_id'] = userTeam.player_team_id;
+                                    }
+                                    if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 0) {
+                                        await MatchContest.findOneAndUpdate({ contest_id: matchContestDetail.contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 1 } });
+                                    }
+                                }
+
+                            } else {
+                                joinedTeams = 0;
+                                if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 1) {
+                                    await MatchContest.findOneAndUpdate({ contest_id: s.contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 0 } });
+                                }
+                            }
+
+
+                        }
+                    }
+
+                } else {
                     joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
                 }
                 /*let CategoryData = await getCategoryRedis(contestDetail.category_id);
@@ -198,7 +209,7 @@ module.exports = {
                 let totalTeams = 0;
                 let entryfee = 0;
                 let inviteCode = '';
-               
+
                 let myTeamIds = [];
                 let customPrice = [];
                 // matchInviteCode = await MatchContest.getInviteCode(parseInt(match_id), contest_id, sport);
@@ -309,7 +320,7 @@ module.exports = {
                 gadgetLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'gadget') ? true : false;
                 aakashLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'aakash') ? true : false;
                 multiplierLeague = (contestDetail.amount_gadget && contestDetail.amount_gadget == 'multiplier') ? true : false;
-                
+
                 let is_joined = (myTeamIds.length > 0) ? true : false;
 
                 let bonusAmount = 0;
@@ -414,11 +425,11 @@ module.exports = {
                     offer_after_join: matchContestDetail && matchContestDetail.is_offerable && matchContestDetail.offer_after_join ? matchContestDetail.offer_after_join : 0,
                     offerable_amount: matchContestDetail && matchContestDetail.is_offerable && matchContestDetail.offerable_amount ? matchContestDetail.offerable_amount : 0,
                     contest_comment: matchContestDetail && matchContestDetail.contest_comment ? matchContestDetail.contest_comment : "",
-                    champ_type: contestDetail && contestDetail.champ_type ? contestDetail.champ_type :0,
-                    amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget :""
+                    champ_type: contestDetail && contestDetail.champ_type ? contestDetail.champ_type : 0,
+                    amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget : ""
                 }
-                if(totalChildContestJoined>0){
-                    contestData['total_child_joined']= totalChildContestJoined;
+                if (totalChildContestJoined > 0) {
+                    contestData['total_child_joined'] = totalChildContestJoined;
                 }
                 if (reviewMatch == "In Progress") {
                     redis.setRedis(contestDataAPIKey, contestData)
@@ -793,7 +804,7 @@ module.exports = {
                             customPrice[key]['image'] = customBreakup.image ? config.imageBaseUrl + '/' + customBreakup.image : "";
                             key++;
                         }
-                    } else if(contestDetail.amount_gadget == 'x_win_breakup') {
+                    } else if (contestDetail.amount_gadget == 'x_win_breakup') {
                         for (const customBreakup of contestDetail.breakup) {
                             if (!customPrice[key]) {
                                 customPrice[key] = {}
@@ -853,8 +864,8 @@ module.exports = {
                     is_aakash_team: aakashLeague,
                     is_multiplier: multiplierLeague,
                     category_id: matchContestDetail.category_id || '',
-                    champ_type: contestDetail && contestDetail.champ_type ? contestDetail.champ_type :0,
-                    amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget :""
+                    champ_type: contestDetail && contestDetail.champ_type ? contestDetail.champ_type : 0,
+                    amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget : ""
                 }
 
                 if (reviewMatch == "In Progress") {
