@@ -158,6 +158,7 @@ module.exports = {
                             loginuserMatchContest['contest_id'] = {$in:userJoinedContest};
     
                             var userJoinMatchContest = await MatchContest.findOne(loginuserMatchContest).sort({ _id: 1 });
+                            if(userJoinMatchContest && userJoinMatchContest.contest_id)
                             let userTeam = await PlayerTeamContest.findOne({ 'contest_id': userJoinMatchContest.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
                             if(userTeam && userTeam._id){
                                 joinedTeams = 1;
@@ -174,7 +175,7 @@ module.exports = {
                                 teamData[0]['player_team_id'] = userTeam.player_team_id;
                                }
                         } else {
-
+                            joinedTeams = 0;
                         }
                         
 
