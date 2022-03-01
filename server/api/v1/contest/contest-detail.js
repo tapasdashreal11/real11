@@ -111,7 +111,8 @@ module.exports = {
             } else {
                 seriesSqadData = await SeriesSquad.findOne({ match_id: parseInt(match_id), sport: sport }, { match_id: 1, inning_number: 1, is_parent: 1 });
             }
-
+           let ptcJoinedRecords =[];
+           let teamData = [];
             if (!contestData) {
                 // let contestDetail = await Contest.findOne({ _id: contest_id });
                 let matchContestDetail = await MatchContest.findOne({ contest_id: contest_id, match_id: parseInt(match_id), sport: sport });
@@ -121,9 +122,38 @@ module.exports = {
                 if ((matchContestDetail && matchContestDetail.is_auto_create) || (matchContestDetail && matchContestDetail.contest && matchContestDetail.contest.is_auto_create) ) {
                                 
                     let mParentId = matchContestDetail && matchContestDetail.parent_contest_id ? matchContestDetail.parent_contest_id :matchContestDetail.contest_id;
-                    totalChildContestJoined = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': sport }).countDocuments();
+                     ptcJoinedRecords  = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': sport },{contest_id:1});
+                    totalChildContestJoined = ptcJoinedRecords && ptcJoinedRecords.length > 0 ? ptcJoinedRecords.length : 0;
                }
+               if (matchContestDetail && matchContestDetail.category_slug && _.isEqual(matchContestDetail.category_slug, 'head-to-head') && sport ==1 ) {
+                   if(matchContestDetail.parent_contest_id){
 
+                   } else {
+                    let userJoinedContest = _.map(ptcJoinedRecords,'contest_id'); 
+                    let queryMatchContest = { 'parent_contest_id': parentContestId,match_id: match_id, sport: match_sport, joined_users: 1 };
+                    if(userJoinedContest && userJoinedContest.length>0){
+                        queryMatchContest['contest_id'] = {$nin:userJoinedContest};
+                    }
+                    var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                     if(matchContestData && matchContestData._id && matchContestData.contest_id){
+                       let userTeam = await PlayerTeamContest.findOne({ 'contest_id': matchContestData.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
+                       if(userTeam && userTeam._id){
+                        teamData[0] = {};
+                        teamData[0]['user_id'] = userTeam.user_id;
+                        teamData[0]['team_name'] = userTeam.team_name;
+                        teamData[0]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
+                        teamData[0]['team_no'] = userTeam.team_count || 0;
+                        teamData[0]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
+                        teamData[0]['previous_rank'] = userTeam.previous_rank || 0;
+                        teamData[0]['winning_amount'] = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;;
+                        teamData[0]['is_aakash_team'] = false;
+                        teamData[0]['champ_type'] = 0;
+                        teamData[0]['player_team_id'] = userTeam.player_team_id;
+                       }
+                      }
+                   }
+
+                }
                 /*let CategoryData = await getCategoryRedis(contestDetail.category_id);
                 if(_.isEmpty()) {
                     CategoryData   =   await Category.findOne({ _id: contestDetail.category_id })
@@ -135,7 +165,7 @@ module.exports = {
                 let totalTeams = 0;
                 let entryfee = 0;
                 let inviteCode = '';
-                let teamData = [];
+               
                 let myTeamIds = [];
                 let customPrice = [];
                 // matchInviteCode = await MatchContest.getInviteCode(parseInt(match_id), contest_id, sport);
