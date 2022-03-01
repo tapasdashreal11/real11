@@ -130,7 +130,7 @@ module.exports = {
 
                    } else {
                     let userJoinedContest = _.map(ptcJoinedRecords,'contest_id'); 
-                    let queryMatchContest = { 'parent_contest_id': parentContestId,match_id: match_id, sport: match_sport, joined_users: 1 };
+                    let queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id,match_id: match_id, sport: match_sport, joined_users: 1 };
                     if(userJoinedContest && userJoinedContest.length>0){
                         queryMatchContest['contest_id'] = {$nin:userJoinedContest};
                     }
