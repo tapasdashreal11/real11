@@ -120,11 +120,11 @@ module.exports = async (req, res) => {
                                                     let mcontestObj = {}
 
                                                     joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
-                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId }, { $set: { attendee: 1 } });
+                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
                                                 } else {
                                                     // contest is now available 
                                                     joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
-                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId }, { $set: { attendee: 0 } });
+                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 0 } });
                                                 }
                                             } else {
                                                 return res.send(ApiUtility.failed("Please try again!!"));
@@ -134,7 +134,7 @@ module.exports = async (req, res) => {
                                         // This is used to create contest and join contest when user did not found any contest
                                         let mcontestObj = {}
                                         joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
-                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId }, { $set: { attendee: 0 } });
+                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 0 } });
                                     }
                                 } else {
                                     // This section for all contest to join contest
