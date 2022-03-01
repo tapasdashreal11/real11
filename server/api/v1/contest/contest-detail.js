@@ -126,11 +126,13 @@ module.exports = {
                     ptcJoinedRecords = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': sport }, { contest_id: 1 });
                     totalChildContestJoined = ptcJoinedRecords && ptcJoinedRecords.length > 0 ? ptcJoinedRecords.length : 0;
                 }
-                // This is used to show h2h team to user when come from parent contest
+                // This is used to show h2h team of user when comes on parent contest of H2H
                 if (matchContestDetail && matchContestDetail.category_slug && _.isEqual(matchContestDetail.category_slug, 'head-to-head') && sport == 1) {
                     if (matchContestDetail.parent_contest_id) {
+                        // This is child contest so show only join team of child contest.
                         joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
                     } else {
+                        // parent contest access of H2H case of circket
                         let userJoinedContest = _.map(ptcJoinedRecords, 'contest_id');
                         let queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: 1 };
                         if (userJoinedContest && userJoinedContest.length > 0) {
@@ -196,6 +198,7 @@ module.exports = {
                     }
 
                 } else {
+                    // Case of other contest to show total team joined counts 
                     joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
                 }
                 /*let CategoryData = await getCategoryRedis(contestDetail.category_id);
