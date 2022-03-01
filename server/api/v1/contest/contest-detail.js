@@ -139,6 +139,7 @@ module.exports = {
                      if(matchContestData && matchContestData._id && matchContestData.contest_id){
                        let userTeam = await PlayerTeamContest.findOne({ 'contest_id': matchContestData.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
                        if(userTeam && userTeam._id){
+                        joinedTeams = 1;
                         teamData[0] = {};
                         teamData[0]['user_id'] = userTeam.user_id;
                         teamData[0]['team_name'] = userTeam.team_name;
