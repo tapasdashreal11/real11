@@ -553,7 +553,7 @@ router.post('/api/v1/verify-bank-detail', auth.authenticate.jwtLogin, [
         req.body.image = fileName || '';
         return next();
     },
-], verifyBankDetailsNew);
+], verifyBankDetails);
 
 /*
  * ERROR HANDLING
