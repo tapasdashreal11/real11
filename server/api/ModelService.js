@@ -200,7 +200,7 @@ class ModelService {
                                         "is_auto_create": "$$sec.contest.is_auto_create",                                       
                                         "multiple_team": {$cond: { if: { $in: [ "$$sec.contest.multiple_team", ["yes",true] ] }, then: true, else: false }},
                                         "invite_code": "$$sec.invite_code",
-                                        "breakup_detail": { 
+                                        "breakup_detail":{$cond: { if: { $ne: [ "$$sec.contest.amount_gadget", "x_win_breakup" ] },then:{ 
                                             $map: {
                                                 "input": "$$sec.contest.breakup",
                                                 as: "break",
@@ -211,7 +211,8 @@ class ModelService {
                                                     "price": {$cond: { if: { $gt: [ "$$break.price_each", 0 ] }, then: {$trunc : ["$$break.price_each", 2]}, else: {$trunc : ["$$break.price", 2]} }},
                                                 }
                                             }
-                                        },
+                                        },else:{ $ifNull: [ "$$sec.contest.breakup", [] ] }}},
+                                       
                                         "after_time_bonus":  "$$sec.after_time_bonus",
                                         "before_time_bonus": "$$sec.before_time_bonus",
                                         "current_date": new Date(),
@@ -238,7 +239,6 @@ class ModelService {
                                         "attendee":{ $ifNull: [ "$$sec.attendee", 0 ] },
                                         "category_slug":{ $ifNull: [ "$$sec.category_slug", "" ] },
                                         "is_x_win": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "x_win_breakup" ] }, then: true, else: false }},
-                                        "breakup":{ $ifNull: [ "$$sec.contest.breakup", [] ] },
                                         "entry_fee_range":{ $ifNull: [ "$$sec.contest.entry_fee_range", [] ] },
                                     }
                                 }
