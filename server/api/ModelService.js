@@ -236,7 +236,10 @@ class ModelService {
                                         "champ_type":{ $ifNull: [ "$$sec.contest.champ_type", 0 ] },
                                         "amount_gadget":{ $ifNull: [ "$$sec.contest.amount_gadget", "" ] },
                                         "attendee":{ $ifNull: [ "$$sec.attendee", 0 ] },
-                                        "category_slug":{ $ifNull: [ "$$sec.category_slug", "" ] }
+                                        "category_slug":{ $ifNull: [ "$$sec.category_slug", "" ] },
+                                        "is_x_win": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "x_win_breakup" ] }, then: true, else: false }},
+                                        "breakup":{ $ifNull: [ "$$sec.contest.breakup", [] ] },
+                                        "entry_fee_range":{ $ifNull: [ "$$sec.contest.entry_fee_range", [] ] },
                                     }
                                 }
                             },
