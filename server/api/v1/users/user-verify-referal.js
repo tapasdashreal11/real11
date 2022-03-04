@@ -182,9 +182,7 @@ module.exports = {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		try {
 			const user_id = req.userId;
-			console.log("user_id",user_id);
-			let userRefJoinedEarnList = await UserReferalMeta.find({});
-			console.log("userRefJoinedEarnList",userRefJoinedEarnList);
+			let userRefJoinedEarnList = await UserReferalMeta.find({user_id:user_id,status:1});
 			if (userRefJoinedEarnList && userRefJoinedEarnList.length > 0) {
 				response["message"] = "";
 				response["status"] = true;

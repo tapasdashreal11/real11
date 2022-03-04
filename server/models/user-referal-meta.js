@@ -7,7 +7,7 @@ const userRefMetaSchema = mongoose.Schema({
     wallet: { type: String, default: '' },
     user_earn: { type: Number, default: 0 },
     refered_user_earn: { type: Number, default: 0 },
-    status: { type: String, enum: [1, 0], default: 1 }
+    status: { type: Number, enum: [1, 0], default: 1 }
 }, {
     timestamps: { createdAt: 'created', updatedAt: 'modified' },
     toObject: { getters: true, setters: true },
