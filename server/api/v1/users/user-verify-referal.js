@@ -9,6 +9,7 @@ const YoutuberUser = require("../../../models/youtuber-user");
 const UserAnalysis = require("../../../models/user-analysis");
 const Contest = require("../../../models/contest");
 const ContestInvite = require("../../../models/contest-invite");
+const UserReferalMeta = require("../../../models/user-referal-meta");
 const redis = require('../../../../lib/redis');
 module.exports = {
 	usersVerifyRF: async (req, res) => {
@@ -176,5 +177,14 @@ module.exports = {
 			return res.json(response);
 		}
 
+	},
+	userRefJoinContestMeta:async (req, res)=> {
+		var response = { status: false, message: "Invalid Request", data: {} };
+		try {
+			const user_id = req.userId;
+			UserReferalMeta
+		}catch(error){
+			console.log("error at list fatch of ref user meta**",error);
+		}
 	}
 };
