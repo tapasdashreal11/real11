@@ -181,8 +181,16 @@ module.exports = {
 	userRefJoinContestMeta:async (req, res)=> {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		try {
+			let {page} = req.params;
 			const user_id = req.userId;
-			let userRefJoinedEarnList = await UserReferalMeta.find({user_id:user_id,status:1});
+			let v_page =  page ? parseInt(page): 0;
+			let v_skip = v_page ?  v_page*50: 0;
+			let v_limit = 50;
+			let userRefJoinedEarnList = await UserReferalMeta.find({user_id:user_id,status:1}).limit(v_limit)
+			.skip(v_skip)
+			.sort({
+				_id: -1
+			});
 			if (userRefJoinedEarnList && userRefJoinedEarnList.length > 0) {
 				response["message"] = "";
 				response["status"] = true;
