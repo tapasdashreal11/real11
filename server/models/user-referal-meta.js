@@ -4,6 +4,7 @@ const userRefMetaSchema = mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     refered_to: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     event: { type: String, default: '' },
+    wallet: { type: String, default: '' },
     user_earn: { type: Number, default: 0 },
     refered_user_earn: { type: Number, default: 0 },
     status: { type: String, enum: [1, 0], default: 1 }
