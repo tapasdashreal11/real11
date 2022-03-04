@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
                     let userData = await Users.findOne({ _id: userId });
                     if(userData && userData.change_bank_req){
                         await Users.updateOne({ _id: userId }, { $set: { change_bank_req: false }});
-                        response["message"] = "You have successfully canceled the bank change request!!";
+                        response["message"] = "You have successfully cancelled the bank change request!!";
                         response["status"] = true;
                         return res.json(response);
                      } else {
