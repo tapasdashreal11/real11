@@ -239,7 +239,8 @@ class ModelService {
                                         "attendee":{ $ifNull: [ "$$sec.attendee", 0 ] },
                                         "category_slug":{ $ifNull: [ "$$sec.category_slug", "" ] },
                                         "is_x_win": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "x_win_breakup" ] }, then: true, else: false }},
-                                        "entry_fee_range":"$$sec.contest"
+                                        "entry_fee_range":"$$sec.contest",
+                                        "category_image": {$cond: { if: { $ne: [ "$$sec.category_image", "" ] }, then: { $concat: [ imageurl, "/", "$$sec.category_image" ] }, else: "" }},
                                     }
                                 }
                             },
