@@ -349,11 +349,12 @@ module.exports = {
                             if (!customPrice[key]) {
                                 customPrice[key] = {}
                             }
-                            if (customBreakup.startRank == customBreakup.endRank) {
-                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
-                            } else {
-                                customPrice[key]['rank'] = customBreakup.name;
-                            }
+                            // if (customBreakup.startRank == customBreakup.endRank) {
+                            //     customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                            // } else {
+                            //     customPrice[key]['rank'] = customBreakup.name;
+                            // }
+                            customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
 
                             customPrice[key]['gadget_name'] = customBreakup.gadget_name ? (customBreakup.gadget_name) : "";
                             customPrice[key]['image'] = customBreakup.image ? config.imageBaseUrl + '/' + customBreakup.image : "";
@@ -375,11 +376,12 @@ module.exports = {
                                 customPrice[key] = {}
                             }
 
-                            if (customBreakup.startRank == customBreakup.endRank) {
-                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
-                            } else {
-                                customPrice[key]['rank'] = customBreakup.name;
-                            }
+                            // if (customBreakup.startRank == customBreakup.endRank) {
+                            //     customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                            // } else {
+                            //     customPrice[key]['rank'] = customBreakup.name;
+                            // }
+                            customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
 
                             customPrice[key]['price'] = customBreakup.price_each ? (customBreakup.price_each).toFixed(2) : (customBreakup.price).toFixed(2);
                             if (customBreakup.endRank) {
@@ -797,11 +799,12 @@ module.exports = {
                             if (!customPrice[key]) {
                                 customPrice[key] = {}
                             }
-                            if (customBreakup.startRank == customBreakup.endRank) {
-                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
-                            } else {
-                                customPrice[key]['rank'] = customBreakup.name;
-                            }
+                            // if (customBreakup.startRank == customBreakup.endRank) {
+                            //     customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                            // } else {
+                            //     customPrice[key]['rank'] = customBreakup.name;
+                            // }
+                            customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
 
                             customPrice[key]['gadget_name'] = customBreakup.gadget_name ? (customBreakup.gadget_name) : "";
                             customPrice[key]['image'] = customBreakup.image ? config.imageBaseUrl + '/' + customBreakup.image : "";
@@ -823,11 +826,12 @@ module.exports = {
                                 customPrice[key] = {}
                             }
 
-                            if (customBreakup.startRank == customBreakup.endRank) {
-                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
-                            } else {
-                                customPrice[key]['rank'] = customBreakup.name;
-                            }
+                            // if (customBreakup.startRank == customBreakup.endRank) {
+                            //     customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                            // } else {
+                            //     customPrice[key]['rank'] = customBreakup.name;
+                            // }
+                            customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
 
                             customPrice[key]['price'] = customBreakup.price_each ? (customBreakup.price_each).toFixed(2) : (customBreakup.price).toFixed(2);
                             if (customBreakup.endRank) {
