@@ -239,7 +239,7 @@ class ModelService {
                                         "attendee":{ $ifNull: [ "$$sec.attendee", 0 ] },
                                         "category_slug":{ $ifNull: [ "$$sec.category_slug", "" ] },
                                         "is_x_win": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "x_win_breakup" ] }, then: true, else: false }},
-                                        "entry_fee_range":"$$sec.contest.entry_fee_range"
+                                        "entry_fee_range":"$$sec.contest"
                                     }
                                 }
                             },
