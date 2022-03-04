@@ -13,4 +13,4 @@ const userRefMetaSchema = mongoose.Schema({
     toJSON: { getters: true, setters: true }
 }
 );
-module.exports = mongoose.model('referal_code_detail', userRefMetaSchema);
+module.exports = mongoose.model('user_referal_meta', userRefMetaSchema);

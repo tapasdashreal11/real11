@@ -182,9 +182,20 @@ module.exports = {
 		var response = { status: false, message: "Invalid Request", data: {} };
 		try {
 			const user_id = req.userId;
-			UserReferalMeta
+			let userRefJoinedEarnList = await UserReferalMeta.find({user_id:user_id,status:1});
+			if (userRefJoinedEarnList && userRefJoinedEarnList.length > 0) {
+				response["message"] = "";
+				response["status"] = true;
+				response["data"] = userRefJoinedEarnList;
+			} else {
+				response["message"] = "No data found!!.";
+			}
+
+			return res.json(response);
+
 		}catch(error){
 			console.log("error at list fatch of ref user meta**",error);
+			return res.json(response);
 		}
 	}
 };

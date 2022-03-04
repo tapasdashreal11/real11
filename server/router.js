@@ -47,7 +47,7 @@ const {
 } = require('./api/v1/users/reset-password');
 
 const usersVerifyOtp = require('./api/v1/users/users-verify-otp');
-const {usersVerifyRF,sharedContestCounts} = require('./api/v1/users/user-verify-referal');
+const {usersVerifyRF,sharedContestCounts,userRefJoinContestMeta} = require('./api/v1/users/user-verify-referal');
 const {
     profile,
     getAffiliateAmount
@@ -313,6 +313,7 @@ router.get('/api/v1/joined-contest-list-upcoming/:series_id/:match_id/:sport?', 
 router.get('/api/v1/contest-detail-new-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest);
 router.get('/api/v1/contest-detail-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailLatest);
 router.get('/api/v1/contest-leaderboard-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestLeaderboardLatest);
+router.get('/api/v1/user-referral-earn',auth.authenticate.jwtLogin, userRefJoinContestMeta);
 
 router.get('/api/v1/series-player-detail/:series_id/:match_id/:player_id/:sport', seriesPlayerDetail);
 router.get('/api/v1/series-player-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, seriesPlayerList);
