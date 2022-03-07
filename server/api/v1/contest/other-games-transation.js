@@ -30,7 +30,8 @@ module.exports = async (req, res, dbs) => {
 						"transaction_id": i.local_txn_id,
 						"retantion_amount":i.retantion_amount || 0,
 						"withdraw_commission":i.withdraw_commission || 0,
-						"txn_date": moment(i.txn_date).add('5.5', 'hours').format("YYYY-MM-DD,HH:mm:ss"),
+						"txn_date": new Date(i.txn_date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'}),
+						//"txn_date": moment(i.txn_date).add('5.5', 'hours').format("YYYY-MM-DD,HH:mm:ss"),
 						"team_name": "",
 						"date": moment(i.txn_date).format("YYYY-MM-DD"),
 					});
