@@ -353,7 +353,7 @@ module.exports = {
                                 // customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
                                 customPrice[key]['rank'] = customBreakup.startRank.toString();
                             } else {
-                                customPrice[key]['rank'] = customBreakup.name;
+                                // customPrice[key]['rank'] = customBreakup.name;
                                 customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
                             }
 
