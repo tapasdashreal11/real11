@@ -189,7 +189,7 @@ module.exports = {
                             } else {
                                 joinedTeams = 0;
                                 if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 1) {
-                                    await MatchContest.findOneAndUpdate({ contest_id: s.contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 0 } });
+                                    await MatchContest.findOneAndUpdate({ contest_id: contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 0 } });
                                 }
                             }
 
