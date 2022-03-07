@@ -39,6 +39,7 @@ module.exports = async (req, res, dbs) => {
 						"retantion_amount":i.retantion_amount || 0,
 						"withdraw_commission":i.withdraw_commission || 0,
 						"txn_date": moment(i.txn_date).add('5.5', 'hours').format("YYYY-MM-DD,HH:mm:ss"),
+						"txn_date_formated": new Date(i.txn_date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'}),
 						"team_name": userData.team_name || "",
 						"date": moment(i.txn_date).format("YYYY-MM-DD")
 					}
