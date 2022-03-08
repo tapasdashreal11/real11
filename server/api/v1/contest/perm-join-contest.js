@@ -249,7 +249,6 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                             await session.commitTransaction();
                             session.endSession();
                             let macthContestData  = await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
-                            console.log("prem macthContestData",macthContestData);
                             if(macthContestData && macthContestData._id && macthContestData.parent_contest_id){
                                 let queryMatchContest = { 'parent_contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport, joined_users: 1 };
                                 var remainSlotCounts = await MatchContest.find(queryMatchContest).count();
