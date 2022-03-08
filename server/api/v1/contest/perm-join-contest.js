@@ -248,7 +248,18 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                         if (matchContest && matchContest.category_slug && _.isEqual(matchContest.category_slug, 'head-to-head')) {
                             await session.commitTransaction();
                             session.endSession();
-                            await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
+                            let macthContestData  = await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
+                            console.log("prem macthContestData",macthContestData);
+                            if(macthContestData && macthContestData._id && macthContestData.parent_contest_id){
+                                let queryMatchContest = { 'parent_contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport, joined_users: 1 };
+                                var remainSlotCounts = await MatchContest.find(queryMatchContest).count();
+                                if(remainSlotCounts ==0){
+                                    console.log("prem*** restet attendee");
+                                    await MatchContest.findOneAndUpdate({ 'contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport,attendee:1},{ $set: { attendee: 0 } });
+                                }
+                            }
+                            
+
                         } else {
                             console.log('Perm Contest full**************************** autocreate for lms');
                             await contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
