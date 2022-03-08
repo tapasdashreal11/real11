@@ -184,6 +184,10 @@ module.exports = {
                                     if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 0) {
                                         await MatchContest.findOneAndUpdate({ contest_id: matchContestDetail.contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 1 } });
                                     }
+                                }else{
+                                    if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 1) {
+                                        await MatchContest.findOneAndUpdate({ contest_id: contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 0 } });
+                                    }
                                 }
 
                             } else {
