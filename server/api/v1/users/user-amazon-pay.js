@@ -9,6 +9,7 @@ var config = {
 
 module.exports = {
     signAndEncrypt: async (req, res) => {
+        console.log('aws pay at server 1**');
         var client = new backendSDK(config);
 
         // This can be placed in your controller for a method
@@ -29,7 +30,7 @@ module.exports = {
           res.send(response);
     },
     signAndEncryptForOperation: async (req, res) => {
-        
+        console.log('aws pay at server 2**');
         // This can be placed in your controller for a method
         // that is configured to receive a "GET" request from Mobile. If using POST then make //appropriate changes
 
@@ -48,6 +49,7 @@ module.exports = {
         res.send(response);
     },
     verifySignature: async (req, res) => {
+        console.log('aws pay at server 3**');
         // that is configured to receive a "GET" request from Amazon Pay.
         //Create a map of all the parameters returned.
         var responsemap = new Object();
