@@ -169,6 +169,7 @@ class ModelService {
                             category_name : {$first : "$category_name"},
                             sequence : {$first : "$category_seq"},
                             description : {$first : "$category_description"},
+                            category_image : {$first : "$category_image"},
                             status : {$first : "$status"},
                             match_id : {$first : "$match_id"},
                             match_contest_id : {$first : "$_id"},
