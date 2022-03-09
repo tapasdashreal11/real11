@@ -737,7 +737,7 @@ class PlayerTeamService {
             filter.team_count = team_no
         }
         filter.sport = parseInt(sport) || 1;
-        PlayerTeam.collection.find(filter).limit(15).toArray((err, playerTeamRecord) => {
+        PlayerTeam.collection.find(filter).limit(20).toArray((err, playerTeamRecord) => {
             if (err) {
                 console.error("PlayerTeamService > getDbPlayerTeamList > err ", err);
                 return cb(err);

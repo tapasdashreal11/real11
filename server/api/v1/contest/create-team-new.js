@@ -218,7 +218,7 @@ module.exports = {
                     if (statusAdd) {
                          team_count = await PlayerTeam.countDocuments({user_id: user_id,match_id: match_id,series_id: series_id,sport: sport});
                         let appSettingData = await Settings.findOne({}, { max_team_create: 1 });
-                        const totalTemCount = appSettingData && appSettingData._id && appSettingData.max_team_create ? appSettingData.max_team_create : 15;
+                        const totalTemCount = appSettingData && appSettingData._id && appSettingData.max_team_create ? appSettingData.max_team_create : 20;
                         if (team_count < totalTemCount) {
                             team_count += 1;
                             let team = {
