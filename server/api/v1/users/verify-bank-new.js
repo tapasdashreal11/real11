@@ -41,60 +41,66 @@ module.exports = async (req, res) => {
 					if(resToken.status == true && resToken.token) {
 						bankVerification(params, user.phone, resToken.token, async function(veriyRes) {
 							console.log("ddddd", veriyRes);
-							let bankDetail = await BankDetails.findOne({ user_id: userId });
-							let updatedData = {};
-							updatedData.account_number = params.account_no || null;
-							updatedData.ifsc_code = params.ifsc_code || null;
-							updatedData.bank_name = params.bank_name || null;
-							updatedData.branch = params.branch || null;
-							updatedData.beneficiary_id = null;
-							updatedData.user_id = userId;
-							if (params.image) {
-								updatedData.bank_image = params.image;
-							}
-							if (!bankDetail) {
-								await BankDetails.create(updatedData);
-							} else {
-								const result = await BankDetails.updateOne({ user_id: user._id }, { $set: updatedData });
-							}
-							let currentDate = Date.now();
+							if(veriyRes && veriyRes.status == true) {
 
-							await (new ModelService()).referalManageAtVerification(userId,false,false,true);
-							let typeOfReward = TransactionTypes.FRIEND_BANK_VERIFY_XCASH_REWARD;
-							await (new ModelService()).referalxCashRewardAtBankVerify(userId,typeOfReward,10);
-							if(user && user.bank_xtra_amount === 0){
-								await transactionAtBankVerfiy(userId);
-							}
-							
-							const userResult =	await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 2, bank_request_date: currentDate, change_bank_req:false } });
-							if (userResult && userResult.nModified > 0) {
-								console.log('enter 1');
-								let fundAcount	=	await UserRazopayFundAc.findOne({user_id:user._id});
-								if(!_.isEmpty(fundAcount) && fundAcount.change_bank_req_accept == true) {
-									// console.log(fundAcount);
-									let userBankDeatail	=	await BankDetails.findOne({ user_id: userId })
-									if(!_.isEmpty(userBankDeatail)) {
-										let fundAccount = {
-											"account_type": "bank_account",
-											"contact_id": fundAcount.contact_id,
-											"bank_account": {
-												"name": user.first_name,
-												"ifsc": userBankDeatail.ifsc_code,
-												"account_number": userBankDeatail.account_number,
+								let bankDetail = await BankDetails.findOne({ user_id: userId });
+								let updatedData = {};
+								updatedData.account_number = params.account_no || null;
+								updatedData.ifsc_code = params.ifsc_code || null;
+								updatedData.bank_name = params.bank_name || null;
+								updatedData.branch = params.branch || null;
+								updatedData.beneficiary_id = null;
+								updatedData.user_id = userId;
+								if (params.image) {
+									updatedData.bank_image = params.image;
+								}
+								if (!bankDetail) {
+									await BankDetails.create(updatedData);
+								} else {
+									const result = await BankDetails.updateOne({ user_id: user._id }, { $set: updatedData });
+								}
+								let currentDate = Date.now();
+	
+								await (new ModelService()).referalManageAtVerification(userId,false,false,true);
+								let typeOfReward = TransactionTypes.FRIEND_BANK_VERIFY_XCASH_REWARD;
+								await (new ModelService()).referalxCashRewardAtBankVerify(userId,typeOfReward,10);
+								if(user && user.bank_xtra_amount === 0){
+									await transactionAtBankVerfiy(userId);
+								}
+								
+								const userResult =	await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 2, bank_request_date: currentDate, change_bank_req:false } });
+								if (userResult && userResult.nModified > 0) {
+									console.log('enter 1');
+									let fundAcount	=	await UserRazopayFundAc.findOne({user_id:user._id});
+									if(!_.isEmpty(fundAcount) && fundAcount.change_bank_req_accept == true) {
+										// console.log(fundAcount);
+										let userBankDeatail	=	await BankDetails.findOne({ user_id: userId })
+										if(!_.isEmpty(userBankDeatail)) {
+											let fundAccount = {
+												"account_type": "bank_account",
+												"contact_id": fundAcount.contact_id,
+												"bank_account": {
+													"name": user.first_name,
+													"ifsc": userBankDeatail.ifsc_code,
+													"account_number": userBankDeatail.account_number,
+												}
+											};
+											let userFundRes = await razopayFundAccount(fundAccount);
+											console.log(userFundRes);
+											if (userFundRes && userFundRes.id) {
+												await UserRazopayFundAc.updateOne({user_id:userId, contact_id:fundAcount.contact_id},{$set: {change_bank_req_accept: false, fund_account_id: userFundRes.id, old_func_account_id: fundAcount.fund_account_id }});
 											}
-										};
-										let userFundRes = await razopayFundAccount(fundAccount);
-										console.log(userFundRes);
-										if (userFundRes && userFundRes.id) {
-											await UserRazopayFundAc.updateOne({user_id:userId, contact_id:fundAcount.contact_id},{$set: {change_bank_req_accept: false, fund_account_id: userFundRes.id, old_func_account_id: fundAcount.fund_account_id }});
 										}
 									}
 								}
+								response["message"] = "Bank detail updated successfully.";
+								response["status"] = true;
+								response["data"] = updatedData;
+								return res.json(response);
+							} else {
+								response["message"] = "Invalid Bank detail!! please try again.";
+								return res.json(response);
 							}
-							response["message"] = "Bank detail updated successfully.";
-							response["status"] = true;
-							response["data"] = updatedData;
-							return res.json(response);
 						});
 					} else {
 						response["message"] = "Something went wrong!!";
