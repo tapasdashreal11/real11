@@ -437,7 +437,8 @@ module.exports = {
                     offerable_amount: matchContestDetail && matchContestDetail.is_offerable && matchContestDetail.offerable_amount ? matchContestDetail.offerable_amount : 0,
                     contest_comment: matchContestDetail && matchContestDetail.contest_comment ? matchContestDetail.contest_comment : "",
                     champ_type: contestDetail && contestDetail.champ_type ? contestDetail.champ_type : 0,
-                    amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget : ""
+                    amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget : "",
+                    category_slug: matchContestDetail && matchContestDetail.category_slug ? matchContestDetail.category_slug : '',
                 }
                 if (totalChildContestJoined > 0) {
                     contestData['total_child_joined'] = totalChildContestJoined;
