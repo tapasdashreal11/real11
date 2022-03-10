@@ -105,7 +105,7 @@ module.exports = {
                     let authUser = await User.findOne({ '_id': decoded['user_id'] });
 
                     if (authUser) {
-                        if(!authUser.email && authUser.email == "" && gateway == "MOBIKWIK") {
+                        if((!authUser.email || authUser.email == "") && gateway == "MOBIKWIK") {
                             return res.send(ApiUtility.failed('Please verify email first!!'));
                         }
                         let txnEntity = {};
