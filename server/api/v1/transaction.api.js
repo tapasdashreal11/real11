@@ -20,7 +20,6 @@ const _ = require('lodash');
 const redis = require('../../../lib/redis');
 var sha256 = require('sha256');
 const fetch = require('node-fetch');
-const { registerCustomQueryHandler } = require('puppeteer');
 const { appsFlyerEntryService } = require("./users/appsflyer-api");
 const { facebookEntryService } = require("./users/facebook-api");
 const ModelService = require("../ModelService");
@@ -106,6 +105,9 @@ module.exports = {
                     let authUser = await User.findOne({ '_id': decoded['user_id'] });
 
                     if (authUser) {
+                        if(authUser.email && authUser.email !== "" && gateway == "MOBIKWIK") {
+                            return res.send(ApiUtility.failed('Please verify email first!!'));
+                        }
                         let txnEntity = {};
                         txnEntity.user_id = decoded['user_id'];
                         // txnEntity.order_id       =   decoded['order_id'];
