@@ -245,7 +245,7 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                     if (joinedContestCount >= contestData.contest_size && infinteStatus) {
                         redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
                         console.log('Perm Contest full****************************');
-                        if (matchContest && matchContest.category_slug && _.isEqual(matchContest.category_slug, 'head-to-head')) {
+                        if (matchContest && matchContest.category_slug && (_.isEqual(matchContest.category_slug, 'head-to-head') || _.isEqual(matchContest.category_slug, 'last-man-standing'))) {
                             await session.commitTransaction();
                             session.endSession();
                             let macthContestData  = await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
