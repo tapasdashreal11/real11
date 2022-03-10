@@ -123,9 +123,18 @@ module.exports = async (req, res) => {
                                                     await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
                                                 } else {
                                                     // contest is now available 
+                                                    let available = 0;
+                                                    let toBeJoin = contestData.contest_size - joinedContestCount;
+                                                    if(contestData.contest_size>2 && toBeJoin!=0){
+                                                        available = joinedContestCount;
+                                                    } else if(contestData.contest_size>2 && toBeJoin==0){
+                                                        available = toBeJoin
+                                                    }else if(contestData.contest_size == 2 && toBeJoin==1){
+                                                        available = toBeJoin
+                                                    }
                                                     console.log("check head to head****",joinedContestCount);
                                                     joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
-                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 0 } });
+                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: available } });
                                                 }
                                             } else {
                                                 return res.send(ApiUtility.failed("Please try again!!"));
