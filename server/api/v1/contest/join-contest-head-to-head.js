@@ -129,7 +129,7 @@ module.exports = async (req, res) => {
                                                         available = joinedContestCount;
                                                     } else if(contestData.contest_size>2 && toBeJoin==0){
                                                         available = toBeJoin
-                                                    }else if(contestData.contest_size == 2 && toBeJoin==1){
+                                                    } else if(contestData.contest_size == 2 && toBeJoin==1){
                                                         available = toBeJoin
                                                     }
                                                     console.log("check head to head****",joinedContestCount);
