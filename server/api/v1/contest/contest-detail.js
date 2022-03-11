@@ -168,27 +168,52 @@ module.exports = {
                             if (totalChildContestJoined > 0 && userJoinedContest && userJoinedContest.length > 0) {
                                 let loginuserMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: 1 };
                                 if(_.isEqual(matchContestDetail.category_slug, 'last-man-standing')){
-                                    loginuserMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: { $ne: 0 } };
+                                    loginuserMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: { $ne: 0 },is_full:0 };
                                 }
                                 loginuserMatchContest['contest_id'] = { $in: userJoinedContest };
 
                                 var userJoinMatchContest = await MatchContest.findOne(loginuserMatchContest).sort({ _id: 1 });
                                 if (userJoinMatchContest && userJoinMatchContest.contest_id) {
-                                    let userTeam = await PlayerTeamContest.findOne({ 'contest_id': userJoinMatchContest.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
-                                    if (userTeam && userTeam._id) {
-                                        joinedTeams = 1;
-                                        teamData[0] = {};
-                                        teamData[0]['user_id'] = userTeam.user_id;
-                                        teamData[0]['team_name'] = userTeam.team_name;
-                                        teamData[0]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
-                                        teamData[0]['team_no'] = userTeam.team_count || 0;
-                                        teamData[0]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
-                                        teamData[0]['previous_rank'] = userTeam.previous_rank || 0;
-                                        teamData[0]['winning_amount'] = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;;
-                                        teamData[0]['is_aakash_team'] = false;
-                                        teamData[0]['champ_type'] = 0;
-                                        teamData[0]['player_team_id'] = userTeam.player_team_id;
+                                    if(_.isEqual(matchContestDetail.category_slug, 'last-man-standing')){
+                                        let userTeamArray = await PlayerTeamContest.find({ 'contest_id': userJoinMatchContest.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
+                                        if (userTeamArray && userTeamArray.length>0) {
+                                            let indx =0;
+                                            joinedTeams = userTeamArray.length;
+                                            console.log('heloo in ************detal',joinedTeams);
+                                            for (const userTeam of userTeamArray) {
+                                                teamData[indx] = {};
+                                                teamData[indx]['user_id'] = userTeam.user_id;
+                                                teamData[indx]['team_name'] = userTeam.team_name;
+                                                teamData[indx]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
+                                                teamData[indx]['team_no'] = userTeam.team_count || 0;
+                                                teamData[indx]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
+                                                teamData[indx]['previous_rank'] = userTeam.previous_rank || 0;
+                                                teamData[indx]['winning_amount'] = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;;
+                                                teamData[indx]['is_aakash_team'] = false;
+                                                teamData[indx]['champ_type'] = 0;
+                                                teamData[indx]['player_team_id'] = userTeam.player_team_id;
+                                                indx++;
+                                            }
+                                            
+                                        }
+                                    }else{
+                                        let userTeam = await PlayerTeamContest.findOne({ 'contest_id': userJoinMatchContest.contest_id, 'match_id': decoded['match_id'], 'sport': sport });
+                                        if (userTeam && userTeam._id) {
+                                            joinedTeams = 1;
+                                            teamData[0] = {};
+                                            teamData[0]['user_id'] = userTeam.user_id;
+                                            teamData[0]['team_name'] = userTeam.team_name;
+                                            teamData[0]['avatar'] = userTeam && userTeam.avatar ? userTeam.avatar : '';
+                                            teamData[0]['team_no'] = userTeam.team_count || 0;
+                                            teamData[0]['rank'] = (userTeam.rank) ? userTeam.rank : 0;
+                                            teamData[0]['previous_rank'] = userTeam.previous_rank || 0;
+                                            teamData[0]['winning_amount'] = (userTeam && userTeam.price_win) ? userTeam.price_win : 0;;
+                                            teamData[0]['is_aakash_team'] = false;
+                                            teamData[0]['champ_type'] = 0;
+                                            teamData[0]['player_team_id'] = userTeam.player_team_id;
+                                        }
                                     }
+                                    
                                     if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 0 && _.isEqual(matchContestDetail.category_slug, 'head-to-head')) {
                                         await MatchContest.findOneAndUpdate({ contest_id: matchContestDetail.contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 1 } });
                                     }
