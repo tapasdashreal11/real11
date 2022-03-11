@@ -194,6 +194,12 @@ module.exports = {
                                                 teamData[indx]['player_team_id'] = userTeam.player_team_id;
                                                 indx++;
                                             }
+                                            teamData.forEach(function(item,i){
+                                                if(item && item.user_id && item.user_id.equals(ObjectId(user_id))){
+                                                    teamData.splice(i, 1);
+                                                    teamData.unshift(item);
+                                                }
+                                              });
                                             
                                         }
                                     }else{
