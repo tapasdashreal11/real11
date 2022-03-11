@@ -100,6 +100,10 @@ module.exports = async (req, res) => {
                                     // Check Contest as a parent contest
                                     let userPtcData = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'parent_contest_id': parentContestId }, { 'contest_id': 1 });
                                     let queryMatchContest = { 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, joined_users: { $ne: 2 } };
+                                    if(_.isEqual(matchContest.category_slug, 'last-man-standing')){
+                                        let lmsSize= contestData && contestData.contest_size ? contestData.contest_size:0;
+                                        queryMatchContest = { 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, joined_users: { $ne: lmsSize } };
+                                    }
                                     if (userPtcData && userPtcData.length > 0) {
                                         let contestIds = _.map(userPtcData, 'contest_id');
                                         queryMatchContest['contest_id'] = { $nin: contestIds };
