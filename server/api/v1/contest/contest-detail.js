@@ -135,6 +135,11 @@ module.exports = {
                         // parent contest access of H2H case of circket
                         let userJoinedContest = _.map(ptcJoinedRecords, 'contest_id');
                         let queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: 1 };
+                        if(_.isEqual(matchContestDetail.category_slug, 'last-man-standing')){
+                            let maxTeam = matchContestDetail.contest && matchContestDetail.contest.contest_size ? matchContestDetail.contest.contest_size:0;
+                          queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: {$nin:[0,maxTeam]} };
+                         }
+
                         if (userJoinedContest && userJoinedContest.length > 0) {
                             queryMatchContest['contest_id'] = { $nin: userJoinedContest };
                         }
@@ -155,13 +160,16 @@ module.exports = {
                                 teamData[0]['champ_type'] = 0;
                                 teamData[0]['player_team_id'] = userTeam.player_team_id;
                             }
-                            if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 0) {
+                            if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 0 && _.isEqual(matchContestDetail.category_slug, 'head-to-head')) {
                                 await MatchContest.findOneAndUpdate({ contest_id: matchContestDetail.contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 1 } });
                             }
 
                         } else {
                             if (totalChildContestJoined > 0 && userJoinedContest && userJoinedContest.length > 0) {
                                 let loginuserMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: 1 };
+                                if(_.isEqual(matchContestDetail.category_slug, 'last-man-standing')){
+                                    loginuserMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: { $ne: 0 } };
+                                }
                                 loginuserMatchContest['contest_id'] = { $in: userJoinedContest };
 
                                 var userJoinMatchContest = await MatchContest.findOne(loginuserMatchContest).sort({ _id: 1 });
@@ -181,18 +189,18 @@ module.exports = {
                                         teamData[0]['champ_type'] = 0;
                                         teamData[0]['player_team_id'] = userTeam.player_team_id;
                                     }
-                                    if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 0) {
+                                    if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 0 && _.isEqual(matchContestDetail.category_slug, 'head-to-head')) {
                                         await MatchContest.findOneAndUpdate({ contest_id: matchContestDetail.contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 1 } });
                                     }
-                                }else{
-                                    if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 1) {
+                                } else {
+                                    if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 1 && (_.isEqual(matchContestDetail.category_slug, 'head-to-head'))) {
                                         await MatchContest.findOneAndUpdate({ contest_id: contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 0 } });
                                     }
                                 }
 
                             } else {
                                 joinedTeams = 0;
-                                if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 1) {
+                                if (matchContestDetail && _.has(matchContestDetail, "attendee") && matchContestDetail.attendee == 1 && (_.isEqual(matchContestDetail.category_slug, 'head-to-head'))) {
                                     await MatchContest.findOneAndUpdate({ contest_id: contest_id, 'match_id': decoded['match_id'], 'sport': sport }, { $set: { attendee: 0 } });
                                 }
                             }
