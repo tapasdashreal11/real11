@@ -238,6 +238,7 @@ class ModelService {
                                         "champ_type":{ $ifNull: [ "$$sec.contest.champ_type", 0 ] },
                                         "amount_gadget":{ $ifNull: [ "$$sec.contest.amount_gadget", "" ] },
                                         "attendee":{ $ifNull: [ "$$sec.attendee", 0 ] },
+                                        "is_attendee_applied": {$cond: { if: { $in: [ "$$sec.category_slug", ["head-to-head","last-man-standing"] ] }, then: true, else: false }},
                                         "category_slug":{ $ifNull: [ "$$sec.category_slug", "" ] },
                                         "is_x_win": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "x_win_breakup" ] }, then: true, else: false }},
                                         "entry_fee_ranges":"$$sec.contest.entry_fee_range"
