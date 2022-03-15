@@ -422,11 +422,11 @@ module.exports = {
                                 customPrice[key] = {}
                             }
                             if (customBreakup.startRank == customBreakup.endRank) {
-                                // customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
-                                customPrice[key]['rank'] = customBreakup.startRank.toString();
+                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                                // customPrice[key]['rank'] = customBreakup.startRank.toString();
                             } else {
-                                // customPrice[key]['rank'] = customBreakup.name;
-                                customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
+                                customPrice[key]['rank'] = customBreakup.name;
+                                // customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
                             }
 
                             customPrice[key]['gadget_name'] = customBreakup.gadget_name ? (customBreakup.gadget_name) : "";
@@ -450,11 +450,11 @@ module.exports = {
                             }
 
                             if (customBreakup.startRank == customBreakup.endRank) {
-                                // customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
-                                customPrice[key]['rank'] = customBreakup.startRank.toString();
+                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                                // customPrice[key]['rank'] = customBreakup.startRank.toString();
                             } else {
-                                // customPrice[key]['rank'] = customBreakup.name;
-                                customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
+                                customPrice[key]['rank'] = customBreakup.name;
+                                // customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
                             }
 
                             customPrice[key]['price'] = customBreakup.price_each ? (customBreakup.price_each).toFixed(2) : (customBreakup.price).toFixed(2);
@@ -875,11 +875,11 @@ module.exports = {
                                 customPrice[key] = {}
                             }
                             if (customBreakup.startRank == customBreakup.endRank) {
-                                // customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
-                                customPrice[key]['rank'] = customBreakup.startRank.toString();
+                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                                // customPrice[key]['rank'] = customBreakup.startRank.toString();
                             } else {
-                                // customPrice[key]['rank'] = customBreakup.name;
-                                customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
+                                customPrice[key]['rank'] = customBreakup.name;
+                                // customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
                             }
 
                             customPrice[key]['gadget_name'] = customBreakup.gadget_name ? (customBreakup.gadget_name) : "";
@@ -903,11 +903,11 @@ module.exports = {
                             }
 
                             if (customBreakup.startRank == customBreakup.endRank) {
-                                // customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
-                                customPrice[key]['rank'] = customBreakup.startRank.toString();
+                                customPrice[key]['rank'] = 'Rank ' + customBreakup.startRank;
+                                // customPrice[key]['rank'] = customBreakup.startRank.toString();
                             } else {
-                                // customPrice[key]['rank'] = customBreakup.name;
-                                customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
+                                customPrice[key]['rank'] = customBreakup.name;
+                                // customPrice[key]['rank'] = customBreakup.name.replace("Rank ","");
                             }
 
                             customPrice[key]['price'] = customBreakup.price_each ? (customBreakup.price_each).toFixed(2) : (customBreakup.price).toFixed(2);
