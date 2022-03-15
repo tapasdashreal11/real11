@@ -329,7 +329,7 @@ module.exports = {
                         let joinedContestIds = _.uniq(_.map(ptcData, 'contest_id'), _.isEqual);
                         let ptAndContestData = await Promise.all([
                             PlayerTeam.find({ _id: { $in: playerteamIds } }).exec(),
-                            MatchContest.find({ match_id: decoded['match_id'], contest_id: { $in: joinedContestIds } })
+                            MatchContest.find({ match_id: decoded['match_id'], sport: decoded['sport'], contest_id: { $in: joinedContestIds } })
                         ]);
                         if (ptAndContestData && ptAndContestData.length > 0) {
                             const playerTeamList = ptAndContestData && ptAndContestData[0] ? ptAndContestData[0] : [];
