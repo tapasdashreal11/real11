@@ -251,6 +251,10 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                             let macthContestData  = await MatchContest.findOneAndUpdate({ 'match_id': match_id, 'sport': match_sport, 'contest_id': contest_id }, { $set: { is_full: 1 } });
                             if(macthContestData && macthContestData._id && macthContestData.parent_contest_id){
                                 let queryMatchContest = { 'parent_contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport, joined_users: 1 };
+                                if(_.isEqual(matchContest.category_slug, 'last-man-standing')){
+                                    let maxTeam = macthContestData.contest && macthContestData.contest.contest_size ? macthContestData.contest.contest_size:0;
+                                    queryMatchContest = { 'parent_contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport, joined_users: {$nin:[0,maxTeam]} };
+                                }
                                 var remainSlotCounts = await MatchContest.find(queryMatchContest).count();
                                 if(remainSlotCounts ==0){
                                     console.log("prem*** restet attendee");
