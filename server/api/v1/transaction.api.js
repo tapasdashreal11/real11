@@ -1474,6 +1474,38 @@ module.exports = {
             console.log(error);
             return res.send(ApiUtility.failed(error.message));
         }
+    },
+
+    checkMobikwikTransactionStatus: async(req,res) => {
+        try {
+            let transactionId   =   req.body.transaction_id;
+            const userId = req.userId;
+            const txnAmount = req.body.amount;
+            // let response    =   {}
+            await checkMobikwikStatus(transactionId, async function(result) {
+                let response    =   JSON.parse(result);
+                let resCode     =   ["206","207","208","210","211","212"];
+                let successIndex = _.findIndex(response.orders, { "responseCode": "228" });
+                let processStateIndex = (response.orders.length > 0) ? response.orders.findIndex((item) => resCode.includes(item.responseCode)) : -1;
+                
+                if (response && response.success == true && response.orders && response.orders.length > 0) {
+                    if(successIndex !== -1) {
+                        // console.log(response.orders[successIndex]);
+                        // return false
+                        return res.send(ApiUtility.success(response.orders[successIndex], "Success."));
+                    } else if(processStateIndex !== -1) {
+                        return res.send(ApiUtility.failed("You transaction in under process, please wait!!"));
+                    } else {
+                        return res.send(ApiUtility.failed("Your transaction has been failed."));
+                    }
+                } else {
+                    return res.send(ApiUtility.failed("Your transaction has been failed."));
+                }
+            });
+        } catch(error) {
+            console.log(error);
+            return res.send(ApiUtility.failed(error.message));
+        }
     }
 }
 

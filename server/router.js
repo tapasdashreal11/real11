@@ -137,7 +137,8 @@ const {
     checkTransactionStatus,
     couponForAddCash,
     generatePhonePeChecksum,
-    checkPhonePeTransactionStatus
+    checkPhonePeTransactionStatus,
+    checkMobikwikTransactionStatus
 } = require('./api/v1/transaction.api');
 
 const { matchList,fiveOverliveFantasyMatchList } = require('./api/v1/contest/match-list');
@@ -396,6 +397,7 @@ router.get('/api/v1/reset-password-view/:verify_string', resetPasswordView);
 router.get('/api/v1/view-add-cash-coupon',auth.authenticate.jwtLogin,redis.cacheMiddle, couponForAddCash);
 router.post('/api/v1/generate-phonepe-checksum',auth.authenticate.jwtLogin, generatePhonePeChecksum);
 router.post('/api/v1/check-phonepe-transaction-status',auth.authenticate.jwtLogin, checkPhonePeTransactionStatus);
+router.post('/api/v1/check-mobikwik-transaction-status',auth.authenticate.jwtLogin, checkMobikwikTransactionStatus);
 
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
