@@ -1483,6 +1483,7 @@ module.exports = {
             const txnAmount = req.body.amount;
             // let response    =   {}
             await checkMobikwikStatus(transactionId, async function(result) {
+                console.log(result);
                 let response    =   JSON.parse(result);
                 let resCode     =   ["206","207","208","210","211","212"];
                 let successIndex = _.findIndex(response.orders, { "responseCode": "228" });
