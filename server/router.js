@@ -470,7 +470,8 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
 });
 
 router.post('/mobikwik/webhook', function(req, res) {
-    console.log("mobikwik callback data", req.body)
+    console.log("mobikwik callback data", req.body);
+    console.log("mobikwik query param", req.query);
     if(req.body && req.body.txnData) {
         let response = JSON.parse(req.body.txnData);
         if(response && response.txns[0].responseCode) {
