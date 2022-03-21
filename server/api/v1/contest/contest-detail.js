@@ -137,7 +137,7 @@ module.exports = {
                         let queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: 1 };
                         if(_.isEqual(matchContestDetail.category_slug, 'last-man-standing')){
                             let maxTeam = matchContestDetail.contest && matchContestDetail.contest.contest_size ? matchContestDetail.contest.contest_size:0;
-                          queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: {$nin:[0,maxTeam]} };
+                            queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: {$nin:[0,maxTeam]} };
                          }
 
                         if (userJoinedContest && userJoinedContest.length > 0) {

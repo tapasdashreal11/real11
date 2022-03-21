@@ -258,7 +258,11 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                                 var remainSlotCounts = await MatchContest.find(queryMatchContest).count();
                                 if(remainSlotCounts ==0){
                                     console.log("prem*** restet attendee");
-                                    await MatchContest.findOneAndUpdate({ 'contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport,attendee:1},{ $set: { attendee: 0 } });
+                                    let queyUpdate = {'contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport};
+                                    if(_.isEqual(matchContest.category_slug, 'head-to-head')){
+                                        queyUpdate.attendee =1;
+                                    }
+                                    await MatchContest.findOneAndUpdate(queyUpdate,{ $set: { attendee: 0 } });
                                 }
                             }
                             
