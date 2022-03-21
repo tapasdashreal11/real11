@@ -13,6 +13,8 @@ const AdminSchema = mongoose.Schema({
 
     refered_by_amount: { type: Number, default: 0 },
     status: { type: String, enum: [1, 0], default: 1 },
+    is_refered_by_full: { type: Number, enum: [1, 0], default: 0 },
+    is_user_full: { type: Number, enum: [1, 0], default: 0 }
 
 }, {
     timestamps: { createdAt: 'created', updatedAt: 'modified' },
