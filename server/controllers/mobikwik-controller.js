@@ -54,7 +54,7 @@ module.exports.showForm = async function (req, res) {
 module.exports.callback = async function(req, res){
     // console.log(req.body,"body");
     if(req && req.body && req.body.responseCode && req.body.responseCode == "100"){
-        return res.send(ApiUtility.success(req.body, 'Transaction Successfully.')); 
+        return res.send(ApiUtility.success({}, 'Transaction Successfully.')); 
     } else {
         return res.send(ApiUtility.failed('Transaction Failed..'));
     }
