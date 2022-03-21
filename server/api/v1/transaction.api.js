@@ -1009,7 +1009,7 @@ module.exports = {
 
     updateTransactionMobikwikWebhook: async(resData, bodyResponse, gateway = null, cb) => {
         try {
-            let transactionId   =   resData.txns[0].orderId;
+            let transactionId   =   resData.txns[0].orderId || resData.txns[0].orderid;
             const txnAmount = resData.txns[0].amount;
             txnData = await Transaction.findOne({ _id: ObjectId(transactionId) });
             // console.log(txnData);return false;
@@ -1487,7 +1487,7 @@ module.exports = {
                 let resCode     =   ["206","207","208","210","211","212"];
                 let successIndex = _.findIndex(response.orders, { "responseCode": "228" });
                 let processStateIndex = (response.orders.length > 0) ? response.orders.findIndex((item) => resCode.includes(item.responseCode)) : -1;
-                
+                console.log(response);
                 if (response && response.success == true && response.orders && response.orders.length > 0) {
                     if(successIndex !== -1) {
                         // console.log(response.orders[successIndex]);

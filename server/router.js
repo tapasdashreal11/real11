@@ -471,15 +471,23 @@ router.post('/phonePe/phonePewebhook', function(req, res) {
 
 router.post('/mobikwik/webhook', function(req, res) {
     console.log("mobikwik callback data", req.body);
-    console.log("mobikwik query param", req.query);
+    console.log("mobikwik query param", req.query.realtime);
     if(req.body && req.body.txnData) {
         let response = JSON.parse(req.body.txnData);
-        if(response && response.txns[0].responseCode) {
-            updateTransactionMobikwikWebhook(response, req.body.txnData, 'MOBIKWIK', function(resResult) {
-                return res.send(resResult)
-            });
+        if(req.query && req.query.realtime == "true") {
+            if(response && response.txns[0].responseCode) {
+                updateTransactionMobikwikWebhook(response, req.body.txnData, 'MOBIKWIK', function(resResult) {
+                    return res.send(resResult)
+                });
+            } else {
+                return res.send({ status: false, "message":"Something went wrong..!!" });
+            }
         } else {
-            return res.send({ status: false, "message":"Something went wrong..!!" });
+            if(response && !response.txns[0].responseCode && response.txns[0].orderid) {
+                updateTransactionMobikwikWebhook(response, req.body.txnData, 'MOBIKWIK', function(resResult) {
+                    return res.send(resResult)
+                });
+            }
         }
     } else {
         return res.send({ status: false, "message":"Something went wrong..!!" });
