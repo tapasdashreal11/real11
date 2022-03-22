@@ -208,7 +208,7 @@ module.exports = {
                                         if (userTeamArray && userTeamArray.length>0) {
                                             let indx =0;
                                             joinedTeams = userTeamArray.length;
-                                            console.log('heloo in ************detal',joinedTeams);
+                                           // console.log('heloo in ************detal',joinedTeams);
                                             for (const userTeam of userTeamArray) {
                                                 teamData[indx] = {};
                                                 teamData[indx]['user_id'] = userTeam.user_id;
