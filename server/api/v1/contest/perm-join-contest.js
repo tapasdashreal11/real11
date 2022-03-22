@@ -17,7 +17,7 @@ const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants
 
 module.exports = async (req, res) => {
     try {
-        console.log('hello test');
+        //console.log('hello test');
         const { player_team_id,team_name,user_id,p_type, category_id,team_count, contest_id, series_id, match_id, sport,pid,by_user,isCreatedBy,} = req.body;
 
         
@@ -106,7 +106,7 @@ module.exports = async (req, res) => {
                                                 let matchContest = doc;
                                                 if (contestData && contestData.contest_size < joinedContestCount && infinteStatus) {
                                                     redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
-                                                    console.log("PREM Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
+                                                    //console.log("PREM Going in the/ last response ----------***********", contestData.contest_size, joinedContestCount);
                                                     await session.abortTransaction();
                                                     session.endSession();
 
@@ -244,7 +244,7 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                 if (isAutoCreateStatus) {
                     if (joinedContestCount >= contestData.contest_size && infinteStatus) {
                         redis.setRedis('PERMAINAN_FOR_MATCH_CONTEST_ID_' + match_id + '_' + contest_id, 'FALSE');
-                        console.log('Perm Contest full****************************');
+                       // console.log('Perm Contest full****************************');
                         if (matchContest && matchContest.category_slug && (_.isEqual(matchContest.category_slug, 'head-to-head') || _.isEqual(matchContest.category_slug, 'last-man-standing'))) {
                             await session.commitTransaction();
                             session.endSession();
@@ -257,7 +257,7 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                                 }
                                 var remainSlotCounts = await MatchContest.find(queryMatchContest).count();
                                 if(remainSlotCounts ==0){
-                                    console.log("prem*** restet attendee");
+                                   // console.log("prem*** restet attendee");
                                     let queyUpdate = {'contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport};
                                     if(_.isEqual(matchContest.category_slug, 'head-to-head')){
                                         queyUpdate.attendee =1;
