@@ -547,7 +547,7 @@ module.exports = {
                                                     try{
                                                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2){
                                                             let amountAdded  = parseFloat(txnData.txn_amount);
-                                                            let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
+                                                            let finalAmount = amountAdded > 5000 ? 5000: amountAdded;
                                                             let isxrtaAmountTrasaction = false;
                                                             if(users && users.extra_amount <=40){
                                                                 users.extra_amount = parseFloat(users.extra_amount) + 5;
@@ -1142,7 +1142,7 @@ module.exports = {
                     try{
                         if(authUser && authUser.isFirstPaymentAdded && authUser.isFirstPaymentAdded == 2){
                             let amountAdded  = parseFloat(txnData.txn_amount);
-                            let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
+                            let finalAmount = amountAdded > 5000 ? 5000: amountAdded;
                             let isxrtaAmountTrasaction = false;
                             if(authUser && authUser.extra_amount <=40){
                                 authUser.extra_amount = parseFloat(authUser.extra_amount) + 5;
@@ -1672,7 +1672,7 @@ async function updateTransactionAllGetway(decoded, cb) {
                     try{
                         if(users && users.isFirstPaymentAdded && users.isFirstPaymentAdded == 2 ){
                             let amountAdded  = parseFloat(txnData.txn_amount);
-                            let finalAmount = amountAdded > 2000 ? 2000: amountAdded;
+                            let finalAmount = amountAdded > 5000 ? 5000: amountAdded;
                             let isxrtaAmountTrasaction = false;
                             if(users && users.extra_amount <=40){
                                 users.extra_amount = parseFloat(users.extra_amount) + 5;
