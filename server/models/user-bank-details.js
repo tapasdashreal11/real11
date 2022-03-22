@@ -16,6 +16,7 @@ const AdminSchema = mongoose.Schema({
     beneficiary_id: { type: String, default: null },
     is_verified: { type: String, enum: [1,0], default: 0 },
     api_verified: { type: Number, enum: [1,0], default: 1 },
+    is_instant_verify: { type: Number, enum: [1,0], default: 0 },
     
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
