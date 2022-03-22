@@ -11,7 +11,7 @@ const TransactionTypesByValues =  [
   "Mobile Verified",
   "Joined A Contest",
   "Won A contest",
-  "Friend Joined Contests",
+  "Friend Joined Contests Reward In Xtra",
   "Contest Cancelled",
   "Level Up Cash Credited",
   "Coupon Bonus",
@@ -44,7 +44,8 @@ const TransactionTypesByValues =  [
   "User Bank Verify Xtra Cash Reward",
   "REAL11 Code Signup Xtra Cash Reward",
   "Join Contest Reward",
-  "Instant Bank Verified"
+  "Instant Bank Verified",
+  "Friend Join Contest Reward In Deposit"
 ];
 
 module.exports = {

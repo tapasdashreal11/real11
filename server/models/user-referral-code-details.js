@@ -14,7 +14,13 @@ const AdminSchema = mongoose.Schema({
     refered_by_amount: { type: Number, default: 0 },
     status: { type: String, enum: [1, 0], default: 1 },
     is_refered_by_full: { type: Number, enum: [1, 0], default: 0 },
-    is_user_full: { type: Number, enum: [1, 0], default: 0 }
+    is_user_full: { type: Number, enum: [1, 0], default: 0 },
+    is_referedby_deposit_full: { type: Number, enum: [1, 0], default: 0 },
+    
+    refered_by_deposit: { type: Number, default: 0 },
+    user_amount_total: { type: Number, default: 0 },
+    refered_by_amount_total: { type: Number, default: 0 },
+    refered_by_deposit_total: { type: Number, default: 0 },
 
 }, {
     timestamps: { createdAt: 'created', updatedAt: 'modified' },
