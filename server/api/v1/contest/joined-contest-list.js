@@ -434,7 +434,7 @@ module.exports = {
                                             isGadget = true;
                                         } else if (contestValue.contest.amount_gadget == 'x_win_breakup') {
                                             for (const customBreakup of contestValue.contest.breakup) {
-                                                console.log(contestValue, customBreakup);
+                                               // console.log(contestValue, customBreakup);
                                                 if ((contestValue.points <= customBreakup.start_point && contestValue.points >= customBreakup.end_point)) {
                                                     isWinner = true;
                                                 }
@@ -702,7 +702,7 @@ module.exports = {
                                         isGadget = true;
                                     } else if (contestValue.contest.amount_gadget == 'x_win_breakup') {
                                         for (const customBreakup of contestValue.contest.breakup) {
-                                            console.log(contestValue, customBreakup);
+                                           // console.log(contestValue, customBreakup);
                                             if ((contestValue.points <= customBreakup.start_point && contestValue.points >= customBreakup.end_point)) {
                                                 isWinner = true;
                                             }
