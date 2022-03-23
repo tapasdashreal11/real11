@@ -143,7 +143,7 @@ module.exports = async (req, res) => {
 									return res.json(response);
 								} else {
 									console.log("error in lese***");
-									manualVerification(userId,params);
+									manualVerification(userId,params,response);
 									//response["message"] = "Invalid Bank detail!! please try again.";
 									//return res.json(response);
 								}
@@ -165,7 +165,7 @@ module.exports = async (req, res) => {
 			  }	
 			} else if (user && !isInstantVerfy){
 			  // user bank manual verification
-			  manualVerification(userId,params);
+			  manualVerification(userId,params,response);
 			} else {
 				response["message"] = "Invalid User id.";
 				return res.json(response);
