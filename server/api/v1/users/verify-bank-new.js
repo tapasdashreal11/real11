@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
 		try {
 			let userId = req.userId;
 			let instant_verification_free = true;
-			let user = await Users.findOne({ _id: userId });
+			let user = await Users.findOne({ _id: userId ,bank_account_verify:0});
 			let userCashbalance = user.cash_balance ? user.cash_balance : 0;
 			let userWinBalance = user.winning_balance ? user.winning_balance : 0;
 			let totalBalance = userCashbalance + userWinBalance;
@@ -169,7 +169,7 @@ module.exports = async (req, res) => {
 				// user bank manual verification
 				manualVerification(userId, params, response, res);
 			} else {
-				response["message"] = "Invalid User id.";
+				response["message"] = "Invalid Data!!";
 				return res.json(response);
 			}
 		} catch (err) {
