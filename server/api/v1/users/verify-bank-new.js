@@ -34,6 +34,7 @@ module.exports = async (req, res) => {
 
 		try {
 			let userId = req.userId;
+			let instant_verification_free = true;
 			let user = await Users.findOne({ _id: userId });
 			let userCashbalance = user.cash_balance ? user.cash_balance:0;
 			let userWinBalance = user.winning_balance ? user.winning_balance:0;
@@ -54,7 +55,7 @@ module.exports = async (req, res) => {
 					 remainingFee = (userWinBalance < remainingFee) ? remainingFee - userWinBalance : 0;
 				  }
 				  let totalDeductedAmount = cashAmount + winAmount;
-				  if(totalDeductedAmount == 2){
+				  if(totalDeductedAmount == 2 || instant_verification_free){
 					bankVerificationToken(params, function(resToken) {
 						console.log(resToken.token)
 						if(resToken.status == true && resToken.token) {
@@ -110,10 +111,15 @@ module.exports = async (req, res) => {
                                         local_txn_id: txnId,
                                         added_type: parseInt(status)
                                     };
-									
-									const userResult =	await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 2, bank_request_date: currentDate, change_bank_req:false },$inc:{cash_balance: -cashAmount,winning_balance: -winAmount} });
+									let userUpdateQuery = { $set: { bank_account_verify: 2, bank_request_date: currentDate, change_bank_req:false }};
+									if(instant_verification_free){
+										userUpdateQuery = { $set: { bank_account_verify: 2, bank_request_date: currentDate, change_bank_req:false },$inc:{cash_balance: -cashAmount,winning_balance: -winAmount} };
+									 }
+									const userResult =	await Users.updateOne({ _id: userId },userUpdateQuery );
 									if (userResult && userResult.nModified > 0) {
-										await Transaction.create(entity);
+										if(!instant_verification_free){
+											await Transaction.create(entity);
+										}
 										console.log('enter 1');
 										let fundAcount	=	await UserRazopayFundAc.findOne({user_id:user._id});
 										if(!_.isEmpty(fundAcount) && fundAcount.change_bank_req_accept == true) {
