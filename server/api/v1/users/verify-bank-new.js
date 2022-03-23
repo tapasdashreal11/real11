@@ -142,6 +142,7 @@ module.exports = async (req, res) => {
 									response["data"] = updatedData;
 									return res.json(response);
 								} else {
+									console.log("error in lese***");
 									manualVerification(userId,params);
 									//response["message"] = "Invalid Bank detail!! please try again.";
 									//return res.json(response);
