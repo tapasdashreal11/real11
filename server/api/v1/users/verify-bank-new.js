@@ -251,7 +251,7 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 	}
 }
 
-async function  manualVerification(userId,params){
+async function  manualVerification(userId,params,response){
 	let bankDetail = await BankDetails.findOne({ user_id: userId });
 				let updatedData = {};
 				updatedData.account_number = params.account_no || null;
