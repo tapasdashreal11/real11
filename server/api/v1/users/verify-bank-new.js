@@ -149,7 +149,7 @@ module.exports = async (req, res) => {
 									return res.json(response);
 								} else {
 									console.log("error in lese***");
-									manualVerification(userId,params,response);
+									manualVerification(userId,params,response,res);
 									//response["message"] = "Invalid Bank detail!! please try again.";
 									//return res.json(response);
 								}
@@ -171,7 +171,7 @@ module.exports = async (req, res) => {
 			  }	
 			} else if (user && !isInstantVerfy){
 			  // user bank manual verification
-			  manualVerification(userId,params,response);
+			  manualVerification(userId,params,response,res);
 			} else {
 				response["message"] = "Invalid User id.";
 				return res.json(response);
@@ -251,7 +251,7 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 	}
 }
 
-async function  manualVerification(userId,params,response){
+async function  manualVerification(userId,params,response,res){
 	let bankDetail = await BankDetails.findOne({ user_id: userId });
 				let updatedData = {};
 				updatedData.account_number = params.account_no || null;
