@@ -142,8 +142,9 @@ module.exports = async (req, res) => {
 									response["data"] = updatedData;
 									return res.json(response);
 								} else {
-									response["message"] = "Invalid Bank detail!! please try again.";
-									return res.json(response);
+									manualVerification(userId,params);
+									//response["message"] = "Invalid Bank detail!! please try again.";
+									//return res.json(response);
 								}
 							});
 						} else {
@@ -163,28 +164,7 @@ module.exports = async (req, res) => {
 			  }	
 			} else if (user && !isInstantVerfy){
 			  // user bank manual verification
-			    let bankDetail = await BankDetails.findOne({ user_id: userId });
-				let updatedData = {};
-				updatedData.account_number = params.account_no || null;
-				updatedData.ifsc_code = params.ifsc_code || null;
-				updatedData.bank_name = params.bank_name || null;
-				updatedData.branch = params.branch || null;
-				updatedData.beneficiary_id = null;
-				updatedData.user_id = userId;
-				if (params.image) {
-				updatedData.bank_image = params.image;
-				}
-				if (!bankDetail) {
-				await BankDetails.create(updatedData);
-				} else {
-				const result = await BankDetails.updateOne({ user_id: user._id }, { $set: updatedData });
-				}
-				let currentDate = Date.now();
-				await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 1, bank_request_date:currentDate} });
-				response["message"] = "Bank detail updated successfully.";
-				response["status"] = true;
-				response["data"] = updatedData;
-				return res.json(response); 
+			  manualVerification(userId,params);
 			} else {
 				response["message"] = "Invalid User id.";
 				return res.json(response);
@@ -262,4 +242,29 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 	} else {
 		cb({"status":false});
 	}
+}
+
+async function  manualVerification(userId,params){
+	let bankDetail = await BankDetails.findOne({ user_id: userId });
+				let updatedData = {};
+				updatedData.account_number = params.account_no || null;
+				updatedData.ifsc_code = params.ifsc_code || null;
+				updatedData.bank_name = params.bank_name || null;
+				updatedData.branch = params.branch || null;
+				updatedData.beneficiary_id = null;
+				updatedData.user_id = userId;
+				if (params.image) {
+				updatedData.bank_image = params.image;
+				}
+				if (!bankDetail) {
+				await BankDetails.create(updatedData);
+				} else {
+				const result = await BankDetails.updateOne({ user_id: user._id }, { $set: updatedData });
+				}
+				let currentDate = Date.now();
+				await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 1, bank_request_date:currentDate} });
+				response["message"] = "Bank detail updated successfully.";
+				response["status"] = true;
+				response["data"] = updatedData;
+				return res.json(response); 
 }
