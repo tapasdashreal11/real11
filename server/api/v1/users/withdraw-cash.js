@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
         const userData = rowTextToJson(user);
         let data = userData;
         data.mobile= user.phone || 0;
-        data.bank_verify_mode = 0; // 0 for manual,1 for instatnt,2 for both(manual/instatnt)
+        data.bank_verify_mode = 2; // 0 for manual,1 for instatnt,2 for both(manual/instatnt)
         delete data.phone;
 
         response["message"] = null;
