@@ -266,7 +266,7 @@ async function  manualVerification(userId,params,response){
 				if (!bankDetail) {
 				await BankDetails.create(updatedData);
 				} else {
-				const result = await BankDetails.updateOne({ user_id: user._id }, { $set: updatedData });
+				const result = await BankDetails.updateOne({ user_id: userId }, { $set: updatedData });
 				}
 				let currentDate = Date.now();
 				await Users.updateOne({ _id: userId }, { $set: { bank_account_verify: 1, bank_request_date:currentDate} });
