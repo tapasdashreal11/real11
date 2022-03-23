@@ -111,7 +111,7 @@ module.exports = async (req, res) => {
 											added_type: parseInt(status)
 										};
 										let userUpdateQuery = { $set: { bank_account_verify: 2, bank_request_date: currentDate, change_bank_req: false } };
-										if (instant_verification_free) {
+										if (!instant_verification_free) {
 											userUpdateQuery = { $set: { bank_account_verify: 2, bank_request_date: currentDate, change_bank_req: false }, $inc: { cash_balance: -cashAmount, winning_balance: -winAmount } };
 										}
 										const userResult = await Users.updateOne({ _id: userId }, userUpdateQuery);
