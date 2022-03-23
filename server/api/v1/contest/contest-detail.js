@@ -372,7 +372,9 @@ module.exports = {
                 }
 
                 let teamRankData = MyUser.concat(teamData);
-
+                if(_.isEqual(matchContestDetail.category_slug, 'last-man-standing')){
+                    teamRankData = [];
+                }
                 if (!contestDetail.confirmed_winning || contestDetail.confirmed_winning == '' || contestDetail.confirmed_winning == '0' || contestDetail.confirmed_winning == 'no') {
                     winComfimed = 'no';
                 } else {
