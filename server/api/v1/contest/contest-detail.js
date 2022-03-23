@@ -375,14 +375,12 @@ module.exports = {
                 if(_.isEqual(matchContestDetail.category_slug, 'last-man-standing')){
                     let maxTeam = matchContestDetail.contest && matchContestDetail.contest.contest_size ? matchContestDetail.contest.contest_size:0;
                     if (matchContestDetail.parent_contest_id) {
-                       
                         if(teamRankData && teamRankData.length>maxTeam ){
                             teamRankData = [];
                         }
                     }else{
                         teamRankData = [];
                     }
-                    
                 }
                 if (!contestDetail.confirmed_winning || contestDetail.confirmed_winning == '' || contestDetail.confirmed_winning == '0' || contestDetail.confirmed_winning == 'no') {
                     winComfimed = 'no';
