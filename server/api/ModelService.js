@@ -2002,7 +2002,8 @@ class ModelService {
                             "_id":"$_id",
                             "image" : {$concat : [`${config.imageBaseUrl}/`,"$image"]},
                             "status":"$status",
-                            "url" : "$url"
+                            "url" : "$url",
+                            "type":"$banner_type",
                         }
                     }
                 ], (err, data) => {

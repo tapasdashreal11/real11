@@ -29,7 +29,8 @@ module.exports = {
         } catch (error){
             res.send(ApiUtility.failed(error.message));
         }
-    },depositBannerList: async (req, res) => {
+    },
+    depositBannerList: async (req, res) => {
         try {
             let bannerData = [];
             let addCashBannerListKey = RedisKeys.ADD_CASH_BANNER_LIST; 
