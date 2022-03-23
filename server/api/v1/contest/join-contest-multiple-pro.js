@@ -75,6 +75,9 @@ module.exports = async (req, res) => {
 
                                     return res.send(ApiUtility.failed('Match Contest Not Found'));
                                 }
+                                if (matchContest && matchContest.category_slug && (_.isEqual(matchContest.category_slug, 'head-to-head') || _.isEqual(matchContest.category_slug, 'last-man-standing')) && match_sport ==1) {
+                                    return res.send(ApiUtility.failed('Something went wrong.Please join again from contest list!!'));
+                                }
                                 let contestData = results[3] ? results[3] : '';
                                 if (!contestData) {
                                     contestData = await Contest.findOne({ _id: ObjectId(contest_id) });
