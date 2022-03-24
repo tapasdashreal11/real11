@@ -118,7 +118,7 @@ module.exports = async (req, res) => {
                                                     return res.json(response);
                                                 }
                                                 let joinStatus = false;
-                                                let avatar_name = avatar1;
+                                                let avatar_name = 'avatar1';
                                                 joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
                                                 const avatar_list = ['avatar1','','avatar2','avatar3','','avatar4','avatar5','','avatar6','avatar7','','avatar8','avatar9',
                                                 'avatar10','avatar11','','avatar12','avatar13','','avatar14','','avatar15','','avatar16','avatar17','avatar18','avatar19','avatar20',
