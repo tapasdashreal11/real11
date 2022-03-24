@@ -238,6 +238,7 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 			if (error) throw new Error(error);
 			let bodyRes = JSON.parse(body)
 			console.log("data at verif***",bodyRes);
+			console.log("data at res***",res);
 			if (bodyRes && bodyRes.status == "SUCCESS" && bodyRes.data && bodyRes.data.accountExists && bodyRes.data.accountExists == "YES") {
 				cb({ "status": true, token: bodyRes.data.bvRefId });
 			} else {
