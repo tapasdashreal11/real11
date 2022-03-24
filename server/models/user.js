@@ -129,7 +129,7 @@ const AdminSchema = mongoose.Schema({
     temp_phone: {type: String,default: ''},
     temp_email: {type: String},
     is_refered_by: { type: Boolean, default: false},
-    ref_counter: { type: Number, enum: [1,0], default: 0 },
+    ref_counter: { type: Number, default: 0 },
     ref_counter_used: { type: Number, enum: [1,0], default: 0 },
     xtra_cash_block: { type: Number, enum: [1,0], default: 0 },
     bonus_amount_block: { type: Number, enum: [1,0], default: 0 },
