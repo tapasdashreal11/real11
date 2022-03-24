@@ -118,8 +118,16 @@ module.exports = async (req, res) => {
                                                     return res.json(response);
                                                 }
                                                 let joinStatus = false;
+                                                let avatar_name = avatar1;
                                                 joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
-
+                                                const avatar_list = ['avatar1','','avatar2','avatar3','','avatar4','avatar5','','avatar6','avatar7','','avatar8','avatar9',
+                                                'avatar10','avatar11','','avatar12','avatar13','','avatar14','','avatar15','','avatar16','avatar17','avatar18','avatar19','avatar20',
+                                                'avatar21','','avatar22','','avatar23','avatar24','avatar25','avatar26','avatar27','','avatar28','avatar29','avatar30',
+                                                'avatar31','avatar32','','avatar33','avatar34','','avatar35','avatar36','avatar37','avatar38','avatar39','avatar40'];
+                                                try{
+                                                    avatar_name = avatar_list[Math.floor(Math.random()*avatar_list.length)];
+                                                }catch(err_avtart){}
+                                                
                                                 if (joinStatus == true) {
                                                     let contest = {};
                                                     let newContestId = new ObjectId();
@@ -138,6 +146,7 @@ module.exports = async (req, res) => {
                                                     contest.pid = pid || '';
                                                     contest.by_user = by_user || '';
                                                     contest.isCreatedBy = isCreatedBy;
+                                                    contest.avatar = avatar_name ? avatar_name : 'avatar40';
                                                     if(p_type){
                                                         contest.p_type = p_type;
                                                     }
