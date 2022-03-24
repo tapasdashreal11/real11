@@ -130,7 +130,7 @@ var seriesSquadSchema = new Schema({
 	winning_comment: {type: String, default: ""},
 	live_match_banner: {type: String},
 	is_mega_avail: {type:Boolean, default: false},
-	mega_price: {type: Number},
+	mega_price: {type: String},
 	guru_url: {type: String},
 }, {
 	timestamps: true
