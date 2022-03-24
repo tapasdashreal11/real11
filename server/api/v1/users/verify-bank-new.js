@@ -70,6 +70,7 @@ module.exports = async (req, res) => {
 										updatedData.branch = params.branch || null;
 										updatedData.beneficiary_id = null;
 										updatedData.user_id = userId;
+										updatedData.is_instant_verify = 1;
 										if (params.image) {
 											updatedData.bank_image = params.image;
 										}
