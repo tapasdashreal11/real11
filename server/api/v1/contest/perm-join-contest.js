@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
         console.log('hello test prem****');
         const { player_team_id,team_name,user_id,p_type, category_id,team_count, contest_id, series_id, match_id, sport,pid,by_user,isCreatedBy,} = req.body;
 
-        console.log('hello test prem****',match_id,category_id);
+        console.log('hello test prem****',req.body);
         let match_sport = sport ? parseInt(sport) : 1;
         let decoded = {
             match_id: parseInt(match_id),
