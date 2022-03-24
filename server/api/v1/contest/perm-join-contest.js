@@ -17,10 +17,9 @@ const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants
 
 module.exports = async (req, res) => {
     try {
-        console.log('hello test prem****');
+        console.log('prem join now****');
         const { player_team_id,team_name,user_id,p_type, category_id,team_count, contest_id, series_id, match_id, sport,pid,by_user,isCreatedBy,} = req.body;
 
-        console.log('hello test prem****',req.body);
         let match_sport = sport ? parseInt(sport) : 1;
         let decoded = {
             match_id: parseInt(match_id),
@@ -146,7 +145,7 @@ module.exports = async (req, res) => {
                                                     contest.pid = pid || '';
                                                     contest.by_user = by_user || '';
                                                     contest.isCreatedBy = isCreatedBy;
-                                                    contest.avatar = avatar_name ? avatar_name : 'avatar40';
+                                                    contest.avatar = avatar_name ? avatar_name : 'avatar13';
                                                     if(p_type){
                                                         contest.p_type = p_type;
                                                     }
