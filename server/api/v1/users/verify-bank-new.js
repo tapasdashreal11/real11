@@ -79,10 +79,11 @@ module.exports = async (req, res) => {
 											const result = await BankDetails.updateOne({ user_id: user._id }, { $set: updatedData });
 										}
 										let currentDate = Date.now();
-
-										await (new ModelService()).referalManageAtVerification(userId, false, false, true);
+                                        // This reward goes to refered by user. Now this is stop
+										//await (new ModelService()).referalManageAtVerification(userId, false, false, true);
 										let typeOfReward = TransactionTypes.FRIEND_BANK_VERIFY_XCASH_REWARD;
-										await (new ModelService()).referalxCashRewardAtBankVerify(userId, typeOfReward, 10);
+										// This reward goes to refered by user. Now this is stop
+										//await (new ModelService()).referalxCashRewardAtBankVerify(userId, typeOfReward, 10);
 										if (user && user.bank_xtra_amount === 0) {
 											await transactionAtBankVerfiy(userId);
 										}
