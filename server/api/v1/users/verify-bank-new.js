@@ -257,6 +257,8 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 }
 async function bankVerificationSync(bankData, bvRefIdvalue, token, cb) {
 	if (!_.isEmpty(token)) {
+		let bv = parseInt(bvRefIdvalue);
+		console.log("bv**",bv);
 		var options = {
 			"method": "GET",
 			"url": config.BANK_VERIFY_API.URL + "payout/v1/getValidationStatus/bank?bvRefId=" +parseInt(bvRefIdvalue),
