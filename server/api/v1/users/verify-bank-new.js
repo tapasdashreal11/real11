@@ -230,7 +230,7 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 	if (!_.isEmpty(bankData) && !_.isEmpty(token)) {
 		var options = {
 			"method": "GET",
-			"url": config.BANK_VERIFY_API.URL + "payout/v1/asyncValidation/bankDetails?name=" + bankData.account_holder_name + "&phone=" + phoneNo + "&bankAccount=" + bankData.account_no + "&ifsc=" + bankData.ifsc_code,
+			"url": config.BANK_VERIFY_API.URL + "payout/v1.2/validation/bankDetails?name=" + bankData.account_holder_name + "&phone=" + phoneNo + "&bankAccount=" + bankData.account_no + "&ifsc=" + bankData.ifsc_code,
 			"headers": { 'Accept': "application/json", 'Authorization': "Bearer " + token },
 		};
 		//console.log(options);
@@ -238,7 +238,7 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 			if (error) throw new Error(error);
 			let bodyRes = JSON.parse(body)
 			console.log("data at verif***",bodyRes);
-			if (bodyRes && bodyRes.status == "SUCCESS" && bodyRes.data && bodyRes.data.accountExists && bodyRes.data.accountExists == "YES") {
+			if (bodyRes && bodyRes.status == "SUCCESS" && bodyRes.accountStatus == "VALID") {
 				cb({ "status": true, token: bodyRes.data.bvRefId });
 			} else {
 				cb({ "status": false });
