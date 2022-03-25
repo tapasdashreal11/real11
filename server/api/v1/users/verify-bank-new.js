@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
 								bankVerification(params, user.phone, resToken.token, async function (veriyRes) {
 									//console.log("ddddd", veriyRes);
 									if (veriyRes && veriyRes.status == true) {
-										bankVerificationSync(params, user.phone, resToken.token, async function (veriyResSync) {
+										bankVerificationSync(params, veriyRes.bvRefId, resToken.token, async function (veriyResSync) {
 											if (veriyResSync && veriyResSync.status == true) {
 												// this is at sync 
 												let bankDetail = await BankDetails.findOne({ user_id: userId });
@@ -255,13 +255,13 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 		cb({ "status": false });
 	}
 }
-async function bankVerificationSync(bankData, phoneNo, token, cb) {
+async function bankVerificationSync(bankData, bvRefIdvalue, token, cb) {
 	// console.log(bankData.account_holder_name);
 	// return false;
-	if (!_.isEmpty(bankData) && !_.isEmpty(token)) {
+	if (!_.isEmpty(token)) {
 		var options = {
 			"method": "GET",
-			"url": config.BANK_VERIFY_API.URL + "payout/v1/validation/bankDetails?name=" + bankData.account_holder_name + "&phone=" + phoneNo + "&bankAccount=" + bankData.account_no + "&ifsc=" + bankData.ifsc_code,
+			"url": config.BANK_VERIFY_API.URL + "payout/v1/getValidationStatus/bank?bvRefId=" + bvRefIdvalue,
 			"headers": { 'Accept': "application/json", 'Authorization': "Bearer " + token },
 		};
 		//console.log(options);
@@ -269,7 +269,7 @@ async function bankVerificationSync(bankData, phoneNo, token, cb) {
 			if (error) throw new Error(error);
 			let bodyRes = JSON.parse(body)
 			console.log("data at verif sync ***", bodyRes);
-			if (bodyRes && bodyRes.status == "SUCCESS" && bodyRes.data && bodyRes.data.accountExists && bodyRes.data.accountExists == "YES") {
+			if (bodyRes && bodyRes.status == "SUCCESS") {
 				cb({ "status": true, token: bodyRes.data.bvRefId });
 			} else {
 				cb({ "status": false });
