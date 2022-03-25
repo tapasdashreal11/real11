@@ -110,6 +110,9 @@ module.exports = {
                         if (params && params.device_id)
                             insertData.device_id = params.device_id;
 
+                        if (params && params.app_source)
+                            insertData.app_source = params.app_source;
+
                         if (params && params.device_type) {
                             insertData.device_type = params.device_type;
                             if (params.device_type == "Android") {
@@ -354,6 +357,9 @@ module.exports = {
                         }
                         if (params && params.device_id)
                             insertData.device_id = params.device_id;
+                            
+                        if (params && params.app_source)
+                            insertData.app_source = params.app_source;
 
                         if (params && params.device_type) {
                             insertData.device_type = params.device_type;

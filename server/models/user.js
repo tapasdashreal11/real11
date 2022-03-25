@@ -135,7 +135,8 @@ const AdminSchema = mongoose.Schema({
     bonus_amount_block: { type: Number, enum: [1,0], default: 0 },
     bank_request_date: {type: Date},
     bank_xtra_amount: {type: Number, default: 0},
-    win_dis_status: { type: Boolean, default: false}
+    win_dis_status: { type: Boolean, default: false},
+    app_source: {type: String},
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },
