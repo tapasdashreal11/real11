@@ -256,8 +256,6 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 	}
 }
 async function bankVerificationSync(bankData, bvRefIdvalue, token, cb) {
-	// console.log(bankData.account_holder_name);
-	// return false;
 	if (!_.isEmpty(token)) {
 		var options = {
 			"method": "GET",
