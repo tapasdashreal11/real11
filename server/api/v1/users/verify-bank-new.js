@@ -270,7 +270,7 @@ async function bankVerificationSync(bankData, bvRefIdvalue, token, cb) {
 			let bodyRes = JSON.parse(body)
 			console.log("data at verif sync ***", bodyRes);
 			if (bodyRes && bodyRes.status == "SUCCESS") {
-				cb({ "status": true, token: bodyRes.data.bvRefId });
+				cb({ "status": true });
 			} else {
 				cb({ "status": false });
 			}
