@@ -56,10 +56,10 @@ module.exports = async (req, res) => {
 					let totalDeductedAmount = cashAmount + winAmount;
 					if (totalDeductedAmount == 2 || instant_verification_free) {
 						bankVerificationToken(params, function (resToken) {
-							console.log(resToken.token)
+							//console.log(resToken.token)
 							if (resToken.status == true && resToken.token) {
 								bankVerification(params, user.phone, resToken.token, async function (veriyRes) {
-									console.log("ddddd", veriyRes);
+									//console.log("ddddd", veriyRes);
 									if (veriyRes && veriyRes.status == true) {
 
 										let bankDetail = await BankDetails.findOne({ user_id: userId });
@@ -121,7 +121,7 @@ module.exports = async (req, res) => {
 											if (!instant_verification_free) {
 												await Transaction.create(entity);
 											}
-											console.log('enter 1');
+											//console.log('enter 1');
 											let fundAcount = await UserRazopayFundAc.findOne({ user_id: user._id });
 											if (!_.isEmpty(fundAcount) && fundAcount.change_bank_req_accept == true) {
 												// console.log(fundAcount);
@@ -137,7 +137,7 @@ module.exports = async (req, res) => {
 														}
 													};
 													let userFundRes = await razopayFundAccount(fundAccount);
-													console.log(userFundRes);
+													//console.log(userFundRes);
 													if (userFundRes && userFundRes.id) {
 														await UserRazopayFundAc.updateOne({ user_id: userId, contact_id: fundAcount.contact_id }, { $set: { change_bank_req_accept: false, fund_account_id: userFundRes.id, old_func_account_id: fundAcount.fund_account_id } });
 													}
@@ -212,7 +212,7 @@ async function bankVerificationToken(bankData, cb) {
 		request(options, function (error, res, body) {
 			if (error) throw new Error(error);
 			let bodyRes = JSON.parse(body)
-			console.log("bodyRes", bodyRes);
+			//console.log("bodyRes", bodyRes);
 			if (bodyRes && bodyRes.status == "SUCCESS" && bodyRes.data && bodyRes.data.token) {
 				cb({ "status": true, token: bodyRes.data.token });
 			} else {
@@ -233,12 +233,12 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 			"url": config.BANK_VERIFY_API.URL + "payout/v1/asyncValidation/bankDetails?name=" + bankData.account_holder_name + "&phone=" + phoneNo + "&bankAccount=" + bankData.account_no + "&ifsc=" + bankData.ifsc_code,
 			"headers": { 'Accept': "application/json", 'Authorization': "Bearer " + token },
 		};
-		console.log(options);
+		//console.log(options);
 		request(options, function (error, res, body) {
 			if (error) throw new Error(error);
 			let bodyRes = JSON.parse(body)
-			console.log("data at verif***",bodyRes);
-			console.log("data at res***",res);
+			//console.log("data at verif***",bodyRes);
+			//console.log("data at res***",res);
 			if (bodyRes && bodyRes.status == "SUCCESS" && bodyRes.data && bodyRes.data.accountExists && bodyRes.data.accountExists == "YES") {
 				cb({ "status": true, token: bodyRes.data.bvRefId });
 			} else {
