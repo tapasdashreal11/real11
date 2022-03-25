@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
 							//console.log(resToken.token)
 							if (resToken.status == true && resToken.token) {
 								bankVerification(params, user.phone, resToken.token, async function (veriyRes) {
-									//console.log("ddddd", veriyRes);
+									console.log("ddddd", veriyRes);
 									if (veriyRes && veriyRes.status == true) {
 										bankVerificationSync(params, veriyRes.bvRefId, resToken.token, async function (veriyResSync) {
 											if (veriyResSync && veriyResSync.status == true) {
