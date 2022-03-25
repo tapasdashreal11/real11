@@ -261,7 +261,7 @@ async function bankVerificationSync(bankData, bvRefIdvalue, token, cb) {
 	if (!_.isEmpty(token)) {
 		var options = {
 			"method": "GET",
-			"url": config.BANK_VERIFY_API.URL + "payout/v1/getValidationStatus/bank?bvRefId=" + bvRefIdvalue,
+			"url": config.BANK_VERIFY_API.URL + "payout/v1/getValidationStatus/bank?bvRefId=" +parseInt(bvRefIdvalue),
 			"headers": { 'Accept': "application/json", 'Authorization': "Bearer " + token },
 		};
 		//console.log(options);
