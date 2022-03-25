@@ -238,8 +238,8 @@ async function bankVerification(bankData, phoneNo, token, cb) {
 			if (error) throw new Error(error);
 			let bodyRes = JSON.parse(body)
 			console.log("data at verif***",bodyRes);
-			if (bodyRes && bodyRes.status == "SUCCESS" && bodyRes.accountStatus == "VALID") {
-				cb({ "status": true, token: bodyRes.data.bvRefId });
+			if (bodyRes && bodyRes.status == "SUCCESS" && bodyRes.accountStatus == "VALID" && bodyRes.accountStatusCode == "ACCOUNT_IS_VALID") {
+				cb({ "status": true, token: bodyRes.data.utr });
 			} else {
 				cb({ "status": false });
 			}
