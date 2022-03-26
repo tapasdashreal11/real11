@@ -21,6 +21,7 @@ const AdminSchema = mongoose.Schema({
     user_amount_total: { type: Number, default: 0 },
     refered_by_amount_total: { type: Number, default: 0 },
     refered_by_deposit_total: { type: Number, default: 0 },
+    user_amount_earn: { type: Number, default: 0 },
 
 }, {
     timestamps: { createdAt: 'created', updatedAt: 'modified' },
