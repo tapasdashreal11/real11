@@ -212,6 +212,8 @@ const parseUserTeams = (userTeamData) => {
         }
         if(team.parent_contest_id){
           objData['parent_contest_id']=team.parent_contest_id;
+        }else{
+          objData['parent_contest_id']="";
         }
       }
       objData['contest_id']= prop;
