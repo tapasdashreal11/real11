@@ -708,7 +708,7 @@ module.exports = {
                         sport: parseInt(sport),
                         contest_id: ObjectId(contest_id),
                         user_id: ObjectId(aakashData._id)
-                    }).limit(15).sort({ "rank": 1 });
+                    }).limit(20).sort({ "rank": 1 });
                 }
 
                 if (!_.isEmpty(redisTeams)) {
@@ -718,7 +718,7 @@ module.exports = {
                         sport: parseInt(sport),
                         contest_id: ObjectId(contest_id),
                         user_id: ObjectId(user_id)
-                    }).limit(15).sort({ "rank": 1 });
+                    }).limit(20).sort({ "rank": 1 });
                     let allTeams = [];
                     if (contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
                         allTeams = await getAllTeamsByMatchIdRedis(match_id, contest_id, user_id, aakashData._id, sport);
@@ -738,7 +738,7 @@ module.exports = {
                         sport: parseInt(sport),
                         contest_id: ObjectId(contest_id),
                         user_id: ObjectId(user_id)
-                    }).limit(15).sort({ "rank": 1 });
+                    }).limit(20).sort({ "rank": 1 });
 
                     let allTeams = [];
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
