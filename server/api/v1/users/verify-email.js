@@ -96,7 +96,8 @@ module.exports = {
             updatedData.google_id = null;
           }
           await Users.updateOne({ _id: userId }, { $set: updatedData });
-          await (new ModelService()).referalManageAtVerification(userId, false, true, false);
+          // This is used to give ref amount to refBy User on email verfication. Now this is stop
+          //await (new ModelService()).referalManageAtVerification(userId, false, true, false);
           opts.message = "Your mail has been verified successfully!";
           res.render('alert-msg', opts);
           return false;
