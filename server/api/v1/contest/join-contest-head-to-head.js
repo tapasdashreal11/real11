@@ -611,7 +611,11 @@ module.exports = async (req, res) => {
                                                                     }
                                                                     var mcCountResNew = await MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'contest_id': contest_id });
                                                                     if (mcCountResNew && contestData.contest_size === mcCountResNew.joined_users) {
-                                                                        await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
+                                                                        let totalTeamsJCounts = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }).count();
+                                                                        if (contestData && contestData.contest_size === totalTeamsJCounts) {
+                                                                            await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
+                                                                        }
+                                                                        
                                                                     }
                                                                     let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
                                                                     redis.setRedisMyMatches(myJoinedContestListKey, {});
@@ -1580,9 +1584,10 @@ async function getContestCount(isCommit, isPrivateCreate, contest, user_id, matc
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
                         contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
-
-                        await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
-
+                        let totalTeamsJCounts = await PlayerTeamContest.find({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }).count();
+                        if(totalTeamsJCounts == contestData.contest_size){
+                            await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
+                        }
                     } else {
                         await session.commitTransaction();
                         session.endSession();
