@@ -1585,6 +1585,7 @@ async function getContestCount(isCommit, isPrivateCreate, contest, user_id, matc
                         console.log(contestData.contest_size, "************** auto create counter");
                         contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
                         let totalTeamsJCounts = await PlayerTeamContest.find({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }).count();
+                        console.log("totalTeamsJCounts",totalTeamsJCounts,contest_id);
                         if(totalTeamsJCounts == contestData.contest_size){
                             await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                         }
