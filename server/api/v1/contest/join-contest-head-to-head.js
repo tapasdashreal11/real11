@@ -1367,7 +1367,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                         console.log('error in JC at line 428******* at', error);
                         await session.abortTransaction();
                         session.endSession();
-                        return res.send(ApiUtility.failed("Something went wrong!!"));
+                        return res.send(ApiUtility.failed("Please try again!!"));
                     }
                     // worked for user category set redis
 
@@ -1545,13 +1545,13 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                             return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                         }
                     } else {
-                        return res.send(ApiUtility.failed("Something went wrong!!"));
+                        return res.send(ApiUtility.failed("Please try again!!"));
                     }
                 } else {
                     console.log("check balance error. ");
                     await session.abortTransaction();
                     session.endSession();
-                    return res.send(ApiUtility.failed("Something went wrong!"));
+                    return res.send(ApiUtility.failed("Please try again!"));
                 }
             } catch (errrr) {
                 console.log("errrr**********", errrr);
