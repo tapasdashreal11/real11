@@ -200,7 +200,7 @@ module.exports = async (req, res) => {
                                             session.startTransaction();
                                             const sessionOpts = { session, new: true };
                                             try {
-                                                const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
+                                                const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, sessionOpts);
                                                 if (doc) {
                                                     let joinedContestCount = doc.joined_users;
 
@@ -489,7 +489,7 @@ module.exports = async (req, res) => {
                                                                                     userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
                                                                                     await User.updateOne({ _id: user_id }, { $set: userWalletData });
                                                                                 }
-                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again!!3."));
+                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again!!"));
                                                                             }
                                                                         } else {
                                                                             await session.abortTransaction();
@@ -961,7 +961,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
             isCommit = false;
             isNewContest = true;
             mResultData = await contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
-           console.log("mResultData",mResultData);
+           
         }
 
         if (mResultData && mResultData._id && parentContestId && mResultData.parent_contest_id) {
@@ -1230,7 +1230,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                         userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
                                         await User.updateOne({ _id: user_id }, { $set: userWalletData });
                                     }
-                                    return res.send(ApiUtility.failed("Something went wrong, Please try again!!2."));
+                                    return res.send(ApiUtility.failed("Something went wrong, Please try again!!"));
                                 }
                             } else {
                                 await session.abortTransaction();
