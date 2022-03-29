@@ -1600,12 +1600,14 @@ async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, 
                         let totalTeamsJCounts = await PlayerTeamContest.find({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }).count();
                         
                         if(totalTeamsJCounts == contestData.contest_size){
+
                             await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                         }
                     } else {
                         await session.commitTransaction();
                         session.endSession();
                         if(isNewContest){
+                            console.log("New on is coming**********1");
                             await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
                         }
                     }
@@ -1614,6 +1616,7 @@ async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, 
                     await session.commitTransaction();
                     session.endSession();
                     if(isNewContest){
+                        console.log("New on is coming**********2");
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
                     }
                 }
