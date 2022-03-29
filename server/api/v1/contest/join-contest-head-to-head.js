@@ -910,7 +910,7 @@ module.exports = async (req, res) => {
             return res.send(ApiUtility.failed("Invalid Request!!"));
         }
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         return res.send(ApiUtility.failed("Please try again!!"));
     }
 }
