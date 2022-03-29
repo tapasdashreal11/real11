@@ -477,7 +477,7 @@ module.exports = async (req, res) => {
                                                                                 }
 
                                                                             } catch (error) {
-
+                                                                                console.log("error",error);
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
                                                                                 await setTranscation(decoded, match_sport, contest_id);
@@ -489,7 +489,7 @@ module.exports = async (req, res) => {
                                                                                     userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
                                                                                     await User.updateOne({ _id: user_id }, { $set: userWalletData });
                                                                                 }
-                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again!!."));
+                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again!!3."));
                                                                             }
                                                                         } else {
                                                                             await session.abortTransaction();
@@ -1221,7 +1221,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
 
                                     await session.abortTransaction();
                                     session.endSession();
-
+                                    console.log("error",error);
                                     let userWalletData = await User.findOne({ _id: user_id }, { "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1 });
                                     if (userWalletData) {
                                         userWalletData.winning_balance = (_.isNaN(userWalletData.winning_balance) || _.isNull(userWalletData.winning_balance)) ? 0 : userWalletData.winning_balance;
@@ -1230,7 +1230,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                         userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
                                         await User.updateOne({ _id: user_id }, { $set: userWalletData });
                                     }
-                                    return res.send(ApiUtility.failed("Something went wrong, Please try again!!."));
+                                    return res.send(ApiUtility.failed("Something went wrong, Please try again!!2."));
                                 }
                             } else {
                                 await session.abortTransaction();
