@@ -109,21 +109,30 @@ module.exports = async (req, res) => {
                                         queryMatchContest['contest_id'] = { $nin: contestIds };
                                     }
                                     var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                                        const session = await startSession()
+                                        session.startTransaction();
+                                        const sessionOpts = { session, new: true };
                                     if (matchContestData && matchContestData._id) {
                                         let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'contest_id': matchContestData.contest_id }).countDocuments();
                                         if (joinedContest && joinedContest > 0) {
                                             let mcontestObj = {}
-                                            joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
+                                            joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj,session);
                                         } else {
                                             // This block for when the user did join this contest
-                                            const doc = await MatchContest.findOneAndUpdate({ _id: matchContestData._id }, { $inc: { joined_users: 1 } }, { new: true });
+                                            const doc = await MatchContest.findOneAndUpdate({ _id: matchContestData._id }, { $inc: { joined_users: 1 } }, sessionOpts);
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
                                                 if (contestData && contestData.contest_size < joinedContestCount) {
                                                     // contest has been full now join new contest
-                                                    let mcontestObj = {}
+                                                    await session.abortTransaction();
+                                                    session.endSession();
 
-                                                    joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
+                                                     const sessionNew = await startSession()
+                                                     sessionNew.startTransaction();
+                                                     const sessionNewOpt = { sessionNew, new: true };
+
+                                                    let mcontestObj = {}
+                                                    joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj,sessionNew);
                                                     await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
                                                 } else {
                                                     // contest is now available 
@@ -137,7 +146,7 @@ module.exports = async (req, res) => {
                                                         available = toBeJoin
                                                     }
                                                     console.log("check head to head****",joinedContestCount);
-                                                    joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
+                                                    joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData,session);
                                                     await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: available } });
                                                 }
                                             } else {
@@ -147,7 +156,7 @@ module.exports = async (req, res) => {
                                     } else {
                                         // This is used to create contest and join contest when user did not found any contest
                                         let mcontestObj = {}
-                                        joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
+                                        joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj,session);
                                         await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
                                     }
                                 } else {
@@ -564,7 +573,8 @@ module.exports = async (req, res) => {
                                                                             }
                                                                             let isPrivateCreate = false;
                                                                             let isCommit = true;
-                                                                            totalContestKey = await getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
+                                                                            let isNewContest = false;
+                                                                            totalContestKey = await getContestCount(isNewContest,isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                         } else {
                                                                             await session.abortTransaction();
                                                                             session.endSession();
@@ -927,25 +937,28 @@ module.exports = async (req, res) => {
  * @param {*} prms_matchContest 
  * @param {*} matchContestData 
  */
-async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, prms_matchContest, matchContestData) {
-    const session = await startSession()
-    session.startTransaction();
-    const sessionOpts = { session, new: true };
+async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, prms_matchContest, matchContestData,session) {
+    //const session = await startSession()
+    //session.startTransaction();
+    //const sessionOpts = { session, new: true };
     let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
     var totalContestKey = 0;
     var mycontId = 0;
     let data1 = {};
     let joinedContest = joinedContestCount;
     let sport = match_sport;
+    
     try {
         let mResultData = {};
         let isCommit = false;
+        let isNewContest = false;
         if (matchContestData && matchContestData._id) {
             mResultData = matchContestData;
             isCommit = true;
         } else {
             let isPrivateCreate = true;
             isCommit = false;
+            isNewContest = true;
             mResultData = await contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
         }
 
@@ -1300,7 +1313,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                 }
                                 let isPrivateCreate = true;
 
-                                totalContestKey = await getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
+                                totalContestKey = await getContestCount(isNewContest,isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                             } else {
                                 await session.abortTransaction();
                                 session.endSession();
@@ -1525,7 +1538,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                 console.log('appserr', appserr);
                             }
                             if (_.isEmpty(matchContestData)) {
-                                await MatchContest.findOneAndUpdate({ _id: matchContest._id }, { $inc: { joined_users: 1 } }, { new: true });
+                               // await MatchContest.findOneAndUpdate({ _id: matchContest._id }, { $inc: { joined_users: 1 } }, { new: true });
                             }
                             return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                         }
@@ -1572,7 +1585,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
  * @param {*} parentContestId 
  * @param {*} session 
  */
-async function getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest) {
+async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest) {
     try {
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
@@ -1592,11 +1605,17 @@ async function getContestCount(isCommit, isPrivateCreate, contest, user_id, matc
                     } else {
                         await session.commitTransaction();
                         session.endSession();
+                        if(isNewContest){
+                            await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
+                        }
                     }
                 } else {
 
                     await session.commitTransaction();
                     session.endSession();
+                    if(isNewContest){
+                        await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
+                    }
                 }
 
                 try {
