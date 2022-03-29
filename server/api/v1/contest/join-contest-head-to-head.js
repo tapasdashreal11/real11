@@ -941,7 +941,7 @@ module.exports = async (req, res) => {
 async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, prms_matchContest, matchContestData,session) {
     //const session = await startSession()
     //session.startTransaction();
-    //const sessionOpts = { session, new: true };
+    const sessionOpts = { session, new: true };
     let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
     var totalContestKey = 0;
     var mycontId = 0;
