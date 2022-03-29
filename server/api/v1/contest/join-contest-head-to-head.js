@@ -635,7 +635,7 @@ module.exports = async (req, res) => {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
                                                                     await setTranscation(decoded, match_sport, contest_id);
-                                                                    return res.send(ApiUtility.failed(error.message));
+                                                                    return res.send(ApiUtility.failed("Something went wrong!!"));
                                                                 }
                                                                 // worked for user category set redis
 
@@ -778,7 +778,7 @@ module.exports = async (req, res) => {
                                                                             });
                                                                         } catch (error) {
                                                                             console.log("updateing redis > join contest  > ", error);
-                                                                            return res.send(ApiUtility.failed(error.message));
+                                                                            return res.send(ApiUtility.failed("Something went wrong!!"));
                                                                         }
                                                                         // add bonus cash to user who shared his/her referal code
                                                                         try {
@@ -825,7 +825,7 @@ module.exports = async (req, res) => {
                                                             session.endSession();
                                                             await setTranscation(decoded, match_sport, contest_id);
                                                             console.log("join contest condition true > at line 584", error);
-                                                            return res.send(ApiUtility.failed(error.message));
+                                                            return res.send(ApiUtility.failed("Something went wrong!"));
                                                         }
                                                     } else {
                                                         console.log('JC Join Status is false at line 586');
@@ -911,7 +911,7 @@ module.exports = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        return res.send(ApiUtility.failed(error.message));
+        return res.send(ApiUtility.failed("Something went wrong!!"));
     }
 }
 
@@ -960,7 +960,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
             let isPrivateCreate = true;
             isCommit = false;
             isNewContest = true;
-            mResultData = await contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
+            mResultData = await contestAutoCreateAferJoin(isNewContest,isCommit, isPrivateCreate, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
            
         }
 
@@ -1367,7 +1367,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                         console.log('error in JC at line 428******* at', error);
                         await session.abortTransaction();
                         session.endSession();
-                        return res.send(ApiUtility.failed(error.message));
+                        return res.send(ApiUtility.failed("Something went wrong!!"));
                     }
                     // worked for user category set redis
 
@@ -1510,7 +1510,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                 });
                             } catch (error) {
                                 console.log("updateing redis > join contest  > ", error);
-                                return res.send(ApiUtility.failed(error.message));
+                                return res.send(ApiUtility.failed("Something went wrong!!"));
                             }
                             // add bonus cash to user who shared his/her referal code
                             try {
@@ -1598,7 +1598,7 @@ async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, 
                 if (isAutoCreateStatus) {
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
-                        await contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
+                        await contestAutoCreateAferJoin(isNewContest,isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
                         let totalTeamsJCounts = await PlayerTeamContest.find({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }).count();
                         
                         if(totalTeamsJCounts == contestData.contest_size){
@@ -1608,19 +1608,11 @@ async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, 
                     } else {
                         await session.commitTransaction();
                         session.endSession();
-                        if(isNewContest){
-                            console.log("New on is coming**********1");
-                            await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
-                        }
                     }
                 } else {
 
                     await session.commitTransaction();
                     session.endSession();
-                    if(isNewContest){
-                        console.log("New on is coming**********2");
-                        await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
-                    }
                 }
 
                 try {
@@ -1730,7 +1722,7 @@ async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, 
  * @param {*} parentContestId 
  */
 
-async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest) {
+async function contestAutoCreateAferJoin(isNewContest,isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest) {
     try {
 
         let catID = contestData.category_id;
@@ -1784,7 +1776,7 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
             entityM.visitorteam_id = liveMatch.visitorteam_id || '';
             entityM.is_auto_create = 1;
             entityM.admin_create = 0;
-            entityM.joined_users = 0;
+            entityM.joined_users = isNewContest ? 1:0;
             entityM.is_private = isPrivateCreate ? 1 : 0;
             entityM.sport = match_sport;
 
