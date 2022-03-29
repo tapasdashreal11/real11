@@ -911,7 +911,7 @@ module.exports = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        return res.send(ApiUtility.failed("Something went wrong!!"));
+        return res.send(ApiUtility.failed("Please try again!!"));
     }
 }
 
