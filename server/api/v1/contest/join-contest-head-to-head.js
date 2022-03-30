@@ -109,8 +109,8 @@ module.exports = async (req, res) => {
                                         queryMatchContest['contest_id'] = { $nin: contestIds };
                                     }
                                     var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
-                                        const session = await startSession()
-                                        session.startTransaction();
+                                        const session = await startSession({ readPreference: { mode: "primary" } } )
+                                        session.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" }});
                                         const sessionOpts = { session, new: true };
                                     if (matchContestData && matchContestData._id) {
                                         let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'contest_id': matchContestData.contest_id }).countDocuments();
