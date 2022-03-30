@@ -36,6 +36,11 @@ var settingsSchema = new Schema({
 	leaderbord_popup_img: { type: String, default: "" },
 	match_id: { type: Number, dafault: 0 },
 	coupon_id: { type: String, dafault: "" },
+	is_paytm_on: { type: Number, dafault: 0 }, // 1 for on and 0 for off paytm
+	is_phonepe_on: { type: Number, dafault: 0 }, // 1 for on and 0 for off phonepay
+	is_mobikwik_on: { type: Number, dafault: 0 }, // 1 for on and 0 for off mobikwik
+	is_payumoney_on: { type: Number, dafault: 0 }, // 1 for on and 0 for off payumoney
+	is_paybiz_on: { type: Number, dafault: 0 }, // 1 for on and 0 for off payubiz
 });
 
 module.exports = mongoose.model('settings', settingsSchema, 'settings');

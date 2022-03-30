@@ -18,6 +18,7 @@ const Helper = require('./../common/helper');
 var sha256 = require('sha256');
 const { RedisKeys } = require('../../../constants/app');
 const ReferalUsersAminMetaData = require("../../../models/ref-user-admin-meta");
+const AppSettings = require("../../../models/settings");
 
 module.exports = {
     userGoogleSignIn: async (req, res) => {
@@ -853,7 +854,15 @@ module.exports = {
                     { "item": "You would not be able to change a bank account if your previous account verification/withdrawal is pending or in process." },
                 ]
             }
-            let depoistPaymentGateway = [{ 'type': 'Card', 'options': [{ 'name': 'Debit Card', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'debit', 'mode': 'DEBIT_CARD' }, { 'name': 'Credit Card', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'credit', 'mode': 'CREDIT_CARD' }] }, { 'type': 'Wallet', 'options': [{ 'name': 'Paytm', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': true, 'show': 'b', 'icon': 'paytm1', 'mode': '' }, { 'name': 'PhonePe', 'type': 'PHONEPE', 'status': true, 'offer_available': true, 'show': 'a', 'icon': 'phonepe_icon', 'mode': '' }, { 'name': 'MobiKwik', 'type': 'MOBIKWIK', 'status': true, 'offer_available': false, 'show': 'a', 'icon': 'mobikwik', 'mode': '' }, { 'name': 'Other Wallet', 'type': 'PAYUBIZ', 'status': false, 'offer_available': false, 'show': 'b', 'icon': 'payubiz', 'mode': '' }] }, { 'type': 'UPI/Google Pay/BHIM', 'options': [{ 'name': 'Paytm UPI', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'plus', 'mode': 'UPI_INTENT' }] }, { 'type': 'NETBANKING', 'options': [{ 'name': 'VIEW ALL Net Banking', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'bankaccounticon', 'mode': 'NET_BANKING' }, { 'name': 'Net Banking', 'type': 'PAYUMONEY', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'payumoney', 'mode': '' }] }];
+            let appSData = await getPromiseForAppSetting('app-setting',"{}");
+            let isPaytmOn = appSData && appSData.is_paytm_on ? true :  false;
+            let isPhonepeOn = appSData && appSData.is_phonepe_on ? true :  false;
+            let isMobikwikON = appSData && appSData.is_mobikwik_on ? true :  false;
+            let isPayumoneyOn = appSData && appSData.is_payumoney_on ? true :  false;
+            let isPaybizOn = appSData && appSData.is_paybiz_on ? true :  false;
+
+            let depoistPaymentGateway = [{ 'type': 'Card', 'options': [{ 'name': 'Debit Card', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': false, 'show': 'b', 'icon': 'debit', 'mode': 'DEBIT_CARD' }, { 'name': 'Credit Card', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': false, 'show': 'b', 'icon': 'credit', 'mode': 'CREDIT_CARD' }] }, { 'type': 'Wallet', 'options': [{ 'name': 'Paytm', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': true, 'show': 'b', 'icon': 'paytm1', 'mode': '' }, { 'name': 'PhonePe', 'type': 'PHONEPE', 'status': isPhonepeOn, 'offer_available': true, 'show': 'a', 'icon': 'phonepe_icon', 'mode': '' }, { 'name': 'MobiKwik', 'type': 'MOBIKWIK', 'status': isMobikwikON, 'offer_available': false, 'show': 'a', 'icon': 'mobikwik', 'mode': '' }, { 'name': 'Other Wallet', 'type': 'PAYUBIZ', 'status': isPaybizOn, 'offer_available': false, 'show': 'b', 'icon': 'payubiz', 'mode': '' }] }, { 'type': 'UPI/Google Pay/BHIM', 'options': [{ 'name': 'Paytm UPI', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': false, 'show': 'b', 'icon': 'plus', 'mode': 'UPI_INTENT' }] }, { 'type': 'NETBANKING', 'options': [{ 'name': 'VIEW ALL Net Banking', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': false, 'show': 'b', 'icon': 'bankaccounticon', 'mode': 'NET_BANKING' }, { 'name': 'Net Banking', 'type': 'PAYUMONEY', 'status': isPayumoneyOn, 'offer_available': false, 'show': 'b', 'icon': 'payumoney', 'mode': '' }] }];
+            
             response["message"] = "";
             response["data"] = {max_team_create:20,total_earn:"5,000" ,ref_now: ref_now, bank_change_req_txt: bank_change_req_txt, deposit_pay_gateway: depoistPaymentGateway };
             response["status"] = true;
@@ -1014,3 +1023,23 @@ async function sendEmailToAdmin(refer_id, email, phone) {
     let subject = "User Signup via Referal code " + refer_id + " other info " + email + " " + phone;
     sendSMTPMail(to, subject, mailMessage);
 }
+
+async function getPromiseForAppSetting(key, defaultValue) {
+    return new Promise((resolve, reject) => {
+      redis.redisObj.get(key, async (err, data) => {
+        if (err) {
+          reject(defaultValue);
+        }
+        if (data == null) {
+          const appSettingData = await AppSettings.findOne({});
+          if (appSettingData && appSettingData._id) {
+            console.log('app setting coming from db*****');
+            data = JSON.stringify(appSettingData);
+          } else {
+            data = defaultValue;
+          }
+        }
+        resolve(data)
+      })
+    })
+  }
