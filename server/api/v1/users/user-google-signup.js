@@ -1033,7 +1033,7 @@ async function getPromiseForAppSetting(key, defaultValue) {
         if (data == null) {
           const appSettingData = await AppSettings.findOne({});
           if (appSettingData && appSettingData._id) {
-            console.log('app setting coming from db*****');
+            console.log('app setting coming from db*****',appSettingData);
             data = JSON.stringify(appSettingData);
           } else {
             data = defaultValue;
