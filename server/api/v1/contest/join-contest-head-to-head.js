@@ -109,7 +109,7 @@ module.exports = async (req, res) => {
                                         queryMatchContest['contest_id'] = { $nin: contestIds };
                                     }
                                     var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
-                                        const session = await startSession({ readPreference: { mode: "primary" } } )
+                                        const session = await startSession({ readPreference: { mode: "primary" } } );
                                         session.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" }});
                                         const sessionOpts = { session, new: true };
                                     if (matchContestData && matchContestData._id) {
@@ -127,8 +127,8 @@ module.exports = async (req, res) => {
                                                     await session.abortTransaction();
                                                     session.endSession();
 
-                                                     const sessionNew = await startSession()
-                                                     sessionNew.startTransaction();
+                                                     const sessionNew = await startSession({ readPreference: { mode: "primary" } } );
+                                                     sessionNew.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" }});
                                                      const sessionNewOpt = { sessionNew, new: true };
 
                                                     let mcontestObj = {}
