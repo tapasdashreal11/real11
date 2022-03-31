@@ -2023,5 +2023,5 @@ async function saveJoinContestDetailAtJoin(jcd_contest_id,session, decoded, bonu
 }
 
 async function setTranscation(decoded, match_sport, contest_id) {
-    await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - 1 } });
+    //await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - 1 } });
 }

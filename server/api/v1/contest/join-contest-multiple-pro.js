@@ -124,8 +124,8 @@ module.exports = async (req, res) => {
                                         if ((!contestData.multiple_team && joinedContestWithTeamCounts >= 1) || ((contestData.multiple_team !== 'yes') && joinedContestWithTeamCounts >= 1)) {
                                             return res.send(ApiUtility.failed('Multiple Teams Not Allowed'));
                                         }
-                                        const session = await startSession()
-                                        session.startTransaction();
+                                        const session = await startSession({ readPreference: { mode: "primary" } } );
+                                        session.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" }});
                                         const sessionOpts = { session, new: true };
                                            let teamArray = [];
                                             if (team_data && team_data.length > 0) {
@@ -156,7 +156,7 @@ module.exports = async (req, res) => {
 
                                             let totalTeamJoinedCount = contestDataArray.length;
                                             let total_team_number = totalTeamJoinedCount;
-                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, { new: true});
+                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, sessionOpts);
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
 
@@ -443,7 +443,7 @@ module.exports = async (req, res) => {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
                                                                     await setTranscation(decoded,match_sport,contest_id,total_team_number);
-                                                                    return res.send(ApiUtility.failed('something went wrong!!'));
+                                                                    return res.send(ApiUtility.failed('Please try again!!'));
 
                                                                 }
                                                             } else if (calEntryFees == 0 && retention_bonus_amount > 0) {
@@ -488,7 +488,7 @@ module.exports = async (req, res) => {
                                                                 await session.abortTransaction();
                                                                 session.endSession();
                                                                 await setTranscation(decoded,match_sport,contest_id,total_team_number);
-                                                                return res.send(ApiUtility.failed('something went wrong!!'));
+                                                                return res.send(ApiUtility.failed('Please try again!!'));
 
                                                             }
                                                         }
@@ -576,7 +576,7 @@ module.exports = async (req, res) => {
                                                                 await session.abortTransaction();
                                                                 session.endSession();
                                                                 await setTranscation(decoded,match_sport,contest_id,total_team_number);
-                                                                return res.send(ApiUtility.failed(error.message));
+                                                                return res.send(ApiUtility.failed("Please try again!!"));
                                                             }
                                                             // worked for user category set redis
 
@@ -718,7 +718,7 @@ module.exports = async (req, res) => {
                                                                         });
                                                                     } catch (error) {
                                                                         console.log("updateing redis > join contest  > ", error);
-                                                                        return res.send(ApiUtility.failed(error.message));
+                                                                        return res.send(ApiUtility.failed("Please try again!!"));
                                                                     }
                                                                     // add bonus cash to user who shared his/her referal code
 
@@ -766,7 +766,7 @@ module.exports = async (req, res) => {
                                                         session.endSession();
                                                         await setTranscation(decoded,match_sport,contest_id,total_team_number);
                                                         console.log("join contest condition true > at line 584", error);
-                                                        return res.send(ApiUtility.failed(error.message));
+                                                        return res.send(ApiUtility.failed("Please try again!!"));
                                                     }
                                                 } else {
                                                     console.log('JC Join Status is false at line 586');
@@ -852,7 +852,7 @@ module.exports = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        return res.send(ApiUtility.failed(error.message));
+        return res.send(ApiUtility.failed("Please try again!!"));
     }
 }
 
@@ -1290,5 +1290,5 @@ async function removeDuplicateEntry(data) {
 }
 
 async function setTranscation(decoded,match_sport,contest_id,total_team){
-    await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - total_team } });
+   // await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - total_team } });
 } 
