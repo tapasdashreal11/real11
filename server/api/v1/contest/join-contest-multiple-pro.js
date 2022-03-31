@@ -817,7 +817,7 @@ module.exports = async (req, res) => {
                                                 return res.json(response);
                                             } else {
                                                 response.status = false;
-                                                response.message = "This contest is full, please join other contest.";
+                                                response.message = "Please try again!!.";
                                                 response.error_code = null;
                                                 return res.json(response);
                                             }
