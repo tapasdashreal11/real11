@@ -807,7 +807,7 @@ module.exports = async (req, res) => {
                                             session.endSession();
                                             let tLength = teamArray && teamArray.length > 0 ? teamArray.length : 1; 
                                             await setTranscation(decoded,match_sport,contest_id,tLength);
-                                            console.log("error in catch***", errorr);
+                                           // console.log("error in catch***", errorr);
                                             var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
                                             if (MatchContestData) {
                                                 response.status = false;
@@ -817,7 +817,7 @@ module.exports = async (req, res) => {
                                                 return res.json(response);
                                             } else {
                                                 response.status = false;
-                                                response.message = "Please try again!!.";
+                                                response.message = "Please try again!!";
                                                 response.error_code = null;
                                                 return res.json(response);
                                             }
