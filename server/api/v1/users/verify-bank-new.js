@@ -86,7 +86,7 @@ module.exports = async (req, res) => {
 										// This reward goes to refered by user. Now this is stop
 										//await (new ModelService()).referalxCashRewardAtBankVerify(userId, typeOfReward, 10);
 										if (user && user.bank_xtra_amount === 0) {
-											await transactionAtBankVerfiy(userId);
+											await transactionAtBankVerfiy(user);
 										}
 										let r_winning_balance = user && user['winning_balance'] ? user['winning_balance'] - winAmount : 0;
 										let r_cash_balance = user && user['cash_balance'] ? user['cash_balance'] - cashAmount : 0;
@@ -186,16 +186,29 @@ module.exports = async (req, res) => {
 	}
 };
 
-async function transactionAtBankVerfiy(userId) {
+async function transactionAtBankVerfiy(user) {
 	let date = new Date();
+	let userId = user._id;
 	let transaction_data = [
 		{
-			user_id: userId,
+			user_id: user._id,
 			txn_amount: 10,
 			currency: "INR",
 			txn_date: Date.now(),
 			local_txn_id: 'CB' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + userId,
-			added_type: TransactionTypes.USER_BANK_VERIFY_XCASH_REWARD
+			added_type: TransactionTypes.USER_BANK_VERIFY_XCASH_REWARD,
+			details: {
+				"refund_winning_balance": 0,
+				"refund_cash_balance":0,
+				"refund_bonus_amount": 0,
+				"refund_extra_amount": 10,
+				"refund_affiliate_amount": 0,
+				"current_winning_balance": user && user.winning_balance ? user.winning_balance : 0,
+				"current_cash_balance": user && user.cash_balance ? user.cash_balance : 0,
+				"current_bonus_amount": user && user.bonus_amount ? user.bonus_amount : 0,
+				"current_extra_amount": user && user.extra_amount ? (user.extra_amount + 10) : 0,
+				"current_affiliate_amount": user && user.affiliate_amount ? user.affiliate_amount : 0,
+			},
 		}
 	]
 	await Transaction.create(transaction_data);
