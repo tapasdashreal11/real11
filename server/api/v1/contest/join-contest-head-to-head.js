@@ -109,8 +109,8 @@ module.exports = async (req, res) => {
                                         queryMatchContest['contest_id'] = { $nin: contestIds };
                                     }
                                     var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
-                                        const session = await startSession({ readPreference: { mode: "primary" } } );
-                                        session.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" }});
+                                        const session = await startSession();
+                                        session.startTransaction();
                                         const sessionOpts = { session, new: true };
                                     if (matchContestData && matchContestData._id) {
                                         let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'contest_id': matchContestData.contest_id }).countDocuments();
@@ -127,8 +127,8 @@ module.exports = async (req, res) => {
                                                     await session.abortTransaction();
                                                     session.endSession();
 
-                                                     const sessionNew = await startSession({ readPreference: { mode: "primary" } } );
-                                                     sessionNew.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" }});
+                                                     const sessionNew = await startSession();
+                                                     sessionNew.startTransaction();
                                                      const sessionNewOpt = { sessionNew, new: true };
 
                                                     let mcontestObj = {}
@@ -155,7 +155,6 @@ module.exports = async (req, res) => {
                                         }
                                     } else {
                                         // This is used to create contest and join contest when user did not found any contest
-                                        console.log("Join contest *******1");
                                         let mcontestObj = {}
                                         joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj,session);
                                         await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
@@ -200,7 +199,7 @@ module.exports = async (req, res) => {
                                             session.startTransaction();
                                             const sessionOpts = { session, new: true };
                                             try {
-                                                const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, sessionOpts);
+                                                const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, {new: true});
                                                 if (doc) {
                                                     let joinedContestCount = doc.joined_users;
 
@@ -622,11 +621,7 @@ module.exports = async (req, res) => {
                                                                     }
                                                                     var mcCountResNew = await MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'contest_id': contest_id });
                                                                     if (mcCountResNew && contestData.contest_size === mcCountResNew.joined_users) {
-                                                                        let totalTeamsJCounts = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }).count();
-                                                                        if (contestData && contestData.contest_size === totalTeamsJCounts) {
-                                                                            await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
-                                                                        }
-                                                                        
+                                                                        await MatchContest.updateOne({ _id: ObjectId(matchContest._id) }, { $set: { "is_full": 1 } });
                                                                     }
                                                                     let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
                                                                     redis.setRedisMyMatches(myJoinedContestListKey, {});
@@ -1599,12 +1594,9 @@ async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, 
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
                         await contestAutoCreateAferJoin(isNewContest,isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
-                        let totalTeamsJCounts = await PlayerTeamContest.find({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }).count();
                         
-                        if(totalTeamsJCounts == contestData.contest_size){
+                        await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
 
-                            await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
-                        }
                     } else {
                         await session.commitTransaction();
                         session.endSession();
@@ -2023,5 +2015,5 @@ async function saveJoinContestDetailAtJoin(jcd_contest_id,session, decoded, bonu
 }
 
 async function setTranscation(decoded, match_sport, contest_id) {
-    //await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - 1 } });
+    await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - 1 } });
 }

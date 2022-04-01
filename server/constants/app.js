@@ -40,7 +40,8 @@ module.exports = {
         REAL_CODE_SIGNUP_XCASH_REWARD: 36,
         JOIN_CONTEST_REWARD: 37,
         INSTANT_BANK_VERIFIED: 38,
-        FRIEND_JOIN_CONTEST_DEPOSIT: 39
+        FRIEND_JOIN_CONTEST_DEPOSIT: 39,
+        AFFILIATE_REWARD: 40
     },
     MatchStatus:{
         IN_REVIEW: 'Under Review',
