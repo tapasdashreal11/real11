@@ -124,8 +124,8 @@ module.exports = async (req, res) => {
                                         if ((!contestData.multiple_team && joinedContestWithTeamCounts >= 1) || ((contestData.multiple_team !== 'yes') && joinedContestWithTeamCounts >= 1)) {
                                             return res.send(ApiUtility.failed('Multiple Teams Not Allowed'));
                                         }
-                                        const session = await startSession({ readPreference: { mode: "primary" } } );
-                                        session.startTransaction({ readConcern: { level: "snapshot" }, writeConcern: { w: "majority" }});
+                                        const session = await startSession()
+                                        session.startTransaction();
                                         const sessionOpts = { session, new: true };
                                            let teamArray = [];
                                             if (team_data && team_data.length > 0) {
@@ -156,7 +156,7 @@ module.exports = async (req, res) => {
 
                                             let totalTeamJoinedCount = contestDataArray.length;
                                             let total_team_number = totalTeamJoinedCount;
-                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, sessionOpts);
+                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, {new: true});
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
 
