@@ -40,8 +40,9 @@ module.exports = async (req, res) => {
 			let userWinBalance = user.winning_balance ? user.winning_balance : 0;
 			let totalBalance = userCashbalance + userWinBalance;
 			let isInstantVerfy = params && params.is_instant_verify && params.is_instant_verify == 1 ? true : false;
-			let isFundAcExist = fundAcountCheck && fundAcountCheck.fund_account_id && fundAcountCheck.contact_id == 1 ? true : false;
+			let isFundAcExist = fundAcountCheck && fundAcountCheck.fund_account_id ? true : false;
 			if(isFundAcExist){
+				console.log("manula process status check****");
 				isInstantVerfy = false;
 			}
 			if (user && isInstantVerfy && !isFundAcExist) {
@@ -174,6 +175,7 @@ module.exports = async (req, res) => {
 				}
 			} else if (user && !isInstantVerfy) {
 				// user bank manual verification
+				console.log("manula process****");
 				manualVerification(userId, params, response, res);
 			} else {
 				response["message"] = "Invalid Data!!";
