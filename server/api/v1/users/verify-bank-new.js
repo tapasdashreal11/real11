@@ -35,11 +35,16 @@ module.exports = async (req, res) => {
 			let userId = req.userId;
 			let instant_verification_free = true;
 			let user = await Users.findOne({ _id: userId ,bank_account_verify:0});
+			let fundAcountCheck = await UserRazopayFundAc.findOne({ user_id: userId });
 			let userCashbalance = user.cash_balance ? user.cash_balance : 0;
 			let userWinBalance = user.winning_balance ? user.winning_balance : 0;
 			let totalBalance = userCashbalance + userWinBalance;
 			let isInstantVerfy = params && params.is_instant_verify && params.is_instant_verify == 1 ? true : false;
-			if (user && isInstantVerfy) {
+			let isFundAcExist = fundAcountCheck && fundAcountCheck.fund_account_id && fundAcountCheck.contact_id == 1 ? true : false;
+			if(isFundAcExist){
+				isInstantVerfy = false;
+			}
+			if (user && isInstantVerfy && !isFundAcExist) {
 				// user instatnt bank verfication and check balance before verification
 				if (totalBalance >= 2 || instant_verification_free) {
 					let remainingFee = 2;
@@ -139,7 +144,7 @@ module.exports = async (req, res) => {
 													let userFundRes = await razopayFundAccount(fundAccount);
 													//console.log(userFundRes);
 													if (userFundRes && userFundRes.id) {
-														await UserRazopayFundAc.updateOne({ user_id: userId, contact_id: fundAcount.contact_id }, { $set: { change_bank_req_accept: false, fund_account_id: userFundRes.id, old_func_account_id: fundAcount.fund_account_id } });
+														await UserRazopayFundAc.updateOne({ user_id: userId}, { $set: { change_bank_req_accept: false, fund_account_id: userFundRes.id, old_func_account_id: fundAcount.fund_account_id } });
 													}
 												}
 											}
