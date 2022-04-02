@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
 			let userWinBalance = user.winning_balance ? user.winning_balance : 0;
 			let totalBalance = userCashbalance + userWinBalance;
 			let isInstantVerfy = params && params.is_instant_verify && params.is_instant_verify == 1 ? true : false;
-			let isFundAcExist = fundAcountCheck && fundAcountCheck.fund_account_id ? true : false;
+			let isFundAcExist = fundAcountCheck && fundAcountCheck.user_id ? true : false;
 			if(isFundAcExist){
 				console.log("manula process status check****");
 				isInstantVerfy = false;
