@@ -175,7 +175,6 @@ module.exports = async (req, res) => {
 				}
 			} else if (user && !isInstantVerfy) {
 				// user bank manual verification
-				console.log("manula process****");
 				manualVerification(userId, params, response, res);
 			} else {
 				response["message"] = "Invalid Data!!";
