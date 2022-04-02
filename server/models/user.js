@@ -137,6 +137,7 @@ const AdminSchema = mongoose.Schema({
     bank_xtra_amount: {type: Number, default: 0},
     win_dis_status: { type: Boolean, default: false},
     app_source: {type: String},
+    user_type: {type: Number}
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },
