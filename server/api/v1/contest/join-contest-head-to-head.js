@@ -479,7 +479,7 @@ module.exports = async (req, res) => {
                                                                                 }
 
                                                                             } catch (error) {
-                                                                                console.log("error",error);
+                                                                                //console.log("error",error);
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
                                                                                 await setTranscation(decoded, match_sport, contest_id);
