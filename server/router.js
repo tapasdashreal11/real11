@@ -331,7 +331,7 @@ router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.
 router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtLogin, joinContestWalletAmountMultiple);
-router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
+router.post('/api/v1/join-contest1', auth.authenticate.jwtLogin, joinContest);
 router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
 router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); // 
 router.post('/api/v1/perm-join-contest', permJoinContest); 
