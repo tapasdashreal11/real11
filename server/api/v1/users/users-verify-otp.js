@@ -112,7 +112,7 @@ module.exports = async (req, res) => {
 							rf_xtra_amount = 75;
 						}
 					}catch(errrrr){}
-					
+					updateObj.bonus_amount = rf_bonous_amount;
 					await transactionAtSignupBonous(user._id,rf_bonous_amount,rf_xtra_amount);
 					setDataToAppsflyer(user);
 					setFacebookEventAtSingup(user,userIp);

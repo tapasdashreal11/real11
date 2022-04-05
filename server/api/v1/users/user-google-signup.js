@@ -123,7 +123,7 @@ module.exports = {
                             }
                         }
                         insertData.team_name = createTeamName(params.email);
-                        insertData.bonus_amount = config.referral_bouns_amount;
+                        insertData.bonus_amount = 0;// config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
@@ -372,7 +372,7 @@ module.exports = {
                         }
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString();
-                        insertData.bonus_amount = config.referral_bouns_amount;
+                        insertData.bonus_amount = 0; //config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
@@ -642,7 +642,7 @@ module.exports = {
 
                         let userName = await getUserName();
                         insertData.team_name = userName + new Date().getUTCMilliseconds().toString();
-                        insertData.bonus_amount = config.referral_bouns_amount;
+                        insertData.bonus_amount = 0; //config.referral_bouns_amount;
                         insertData.extra_amount = rf_xtra_amount; // first time user signup
                         insertData.image = '';
                         insertData.status = 0;
