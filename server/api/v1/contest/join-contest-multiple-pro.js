@@ -152,7 +152,7 @@ module.exports = async (req, res) => {
                                                 contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                 contest.sport = match_sport;
                                                 if(authUser && authUser.user_type && authUser.user_type == 55){
-                                                    contest.isPermainan = true;
+                                                   // contest.isPermainan = true;
                                                 }
                                                 contestDataArray.push(contest);
                                             }

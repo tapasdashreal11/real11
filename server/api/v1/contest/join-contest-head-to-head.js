@@ -228,7 +228,7 @@ module.exports = async (req, res) => {
                                                         let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                                                         let isOfferused = false;
                                                         if(authUser && authUser.user_type && authUser.user_type == 55){
-                                                            contest.isPermainan = true;
+                                                            //contest.isPermainan = true;
                                                         }
                                                         try {
                                                             let cashAmount = 0;
