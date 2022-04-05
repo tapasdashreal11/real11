@@ -36,14 +36,14 @@ module.exports = async (req, res) => {
         const { } = req.params;
         const { team_id, contest_id, series_id, match_id, sport } = req.body;
         let match_sport = sport ? parseInt(sport) : 1;
-
+       
         let decoded = {
             match_id: parseInt(match_id),
             series_id: parseInt(series_id),
             contest_id: contest_id,
             user_id: user_id
         }
-
+        return res.send(ApiUtility.failed('Please Update your app with latest version !!'));
         var totalContestKey = 0;
         var mycontId = 0;
         if (match_id && series_id && contest_id && user_id) {

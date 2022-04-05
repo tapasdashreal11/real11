@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                User.findById(user_id).select({ "user_type":1,"affiliate_amount": 1, "win_dis_status": 1, "xtra_cash_block": 1, "fair_play_violation": 1, "avatar": 1, "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
+                User.findById(user_id).select({"user_type":1, "affiliate_amount": 1, "win_dis_status": 1, "xtra_cash_block": 1, "fair_play_violation": 1, "avatar": 1, "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
                 PlayerTeamContest.find({ 'parent_contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
@@ -109,30 +109,21 @@ module.exports = async (req, res) => {
                                         queryMatchContest['contest_id'] = { $nin: contestIds };
                                     }
                                     var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
-                                        const session = await startSession();
-                                        session.startTransaction();
-                                        const sessionOpts = { session, new: true };
                                     if (matchContestData && matchContestData._id) {
                                         let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'contest_id': matchContestData.contest_id }).countDocuments();
                                         if (joinedContest && joinedContest > 0) {
                                             let mcontestObj = {}
-                                            joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj,session);
+                                            joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                         } else {
                                             // This block for when the user did join this contest
-                                            const doc = await MatchContest.findOneAndUpdate({ _id: matchContestData._id }, { $inc: { joined_users: 1 } }, sessionOpts);
+                                            const doc = await MatchContest.findOneAndUpdate({ _id: matchContestData._id }, { $inc: { joined_users: 1 } }, { new: true });
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
                                                 if (contestData && contestData.contest_size < joinedContestCount) {
                                                     // contest has been full now join new contest
-                                                    await session.abortTransaction();
-                                                    session.endSession();
-
-                                                     const sessionNew = await startSession();
-                                                     sessionNew.startTransaction();
-                                                     const sessionNewOpt = { sessionNew, new: true };
-
                                                     let mcontestObj = {}
-                                                    joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj,sessionNew);
+
+                                                    joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                                     await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
                                                 } else {
                                                     // contest is now available 
@@ -146,7 +137,7 @@ module.exports = async (req, res) => {
                                                         available = toBeJoin
                                                     }
                                                     console.log("check head to head****",joinedContestCount);
-                                                    joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData,session);
+                                                    joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
                                                     await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: available } });
                                                 }
                                             } else {
@@ -156,7 +147,7 @@ module.exports = async (req, res) => {
                                     } else {
                                         // This is used to create contest and join contest when user did not found any contest
                                         let mcontestObj = {}
-                                        joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj,session);
+                                        joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                         await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
                                     }
                                 } else {
@@ -199,7 +190,7 @@ module.exports = async (req, res) => {
                                             session.startTransaction();
                                             const sessionOpts = { session, new: true };
                                             try {
-                                                const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, {new: true});
+                                                const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
                                                 if (doc) {
                                                     let joinedContestCount = doc.joined_users;
 
@@ -479,7 +470,7 @@ module.exports = async (req, res) => {
                                                                                 }
 
                                                                             } catch (error) {
-                                                                                //console.log("error",error);
+
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
                                                                                 await setTranscation(decoded, match_sport, contest_id);
@@ -491,7 +482,7 @@ module.exports = async (req, res) => {
                                                                                     userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
                                                                                     await User.updateOne({ _id: user_id }, { $set: userWalletData });
                                                                                 }
-                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again!!"));
+                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again."));
                                                                             }
                                                                         } else {
                                                                             await session.abortTransaction();
@@ -576,8 +567,7 @@ module.exports = async (req, res) => {
                                                                             }
                                                                             let isPrivateCreate = false;
                                                                             let isCommit = true;
-                                                                            let isNewContest = false;
-                                                                            totalContestKey = await getContestCount(isNewContest,isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
+                                                                            totalContestKey = await getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                         } else {
                                                                             await session.abortTransaction();
                                                                             session.endSession();
@@ -633,7 +623,7 @@ module.exports = async (req, res) => {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
                                                                     await setTranscation(decoded, match_sport, contest_id);
-                                                                    return res.send(ApiUtility.failed("Something went wrong!!"));
+                                                                    return res.send(ApiUtility.failed(error.message));
                                                                 }
                                                                 // worked for user category set redis
 
@@ -776,7 +766,7 @@ module.exports = async (req, res) => {
                                                                             });
                                                                         } catch (error) {
                                                                             console.log("updateing redis > join contest  > ", error);
-                                                                            return res.send(ApiUtility.failed("Something went wrong!!"));
+                                                                            return res.send(ApiUtility.failed(error.message));
                                                                         }
                                                                         // add bonus cash to user who shared his/her referal code
                                                                         try {
@@ -823,7 +813,7 @@ module.exports = async (req, res) => {
                                                             session.endSession();
                                                             await setTranscation(decoded, match_sport, contest_id);
                                                             console.log("join contest condition true > at line 584", error);
-                                                            return res.send(ApiUtility.failed("Something went wrong!"));
+                                                            return res.send(ApiUtility.failed(error.message));
                                                         }
                                                     } else {
                                                         console.log('JC Join Status is false at line 586');
@@ -862,7 +852,7 @@ module.exports = async (req, res) => {
                                                 let response = {};
                                                 await session.abortTransaction();
                                                 session.endSession();
-                                               // console.log("error in catch***", errorr);
+                                                console.log("error in catch***", errorr);
                                                 await setTranscation(decoded, match_sport, contest_id);
                                                 var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
                                                 if (MatchContestData) {
@@ -908,8 +898,8 @@ module.exports = async (req, res) => {
             return res.send(ApiUtility.failed("Invalid Request!!"));
         }
     } catch (error) {
-        //console.log(error);
-        return res.send(ApiUtility.failed("Please try again!!"));
+        console.log(error);
+        return res.send(ApiUtility.failed(error.message));
     }
 }
 
@@ -936,9 +926,9 @@ module.exports = async (req, res) => {
  * @param {*} prms_matchContest 
  * @param {*} matchContestData 
  */
-async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, prms_matchContest, matchContestData,session) {
-    //const session = await startSession()
-    //session.startTransaction();
+async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, prms_matchContest, matchContestData) {
+    const session = await startSession()
+    session.startTransaction();
     const sessionOpts = { session, new: true };
     let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
     var totalContestKey = 0;
@@ -946,20 +936,16 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
     let data1 = {};
     let joinedContest = joinedContestCount;
     let sport = match_sport;
-    
     try {
         let mResultData = {};
         let isCommit = false;
-        let isNewContest = false;
         if (matchContestData && matchContestData._id) {
             mResultData = matchContestData;
             isCommit = true;
         } else {
             let isPrivateCreate = true;
             isCommit = false;
-            isNewContest = true;
-            mResultData = await contestAutoCreateAferJoin(isNewContest,isCommit, isPrivateCreate, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
-           
+            mResultData = await contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, prms_contest_id, match_id, parentContestId, match_sport, liveMatch, session, prms_matchContest);
         }
 
         if (mResultData && mResultData._id && parentContestId && mResultData.parent_contest_id) {
@@ -983,9 +969,6 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
             let contestType = contestData.contest_type;
             let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
             let isOfferused = false;
-            if(authUser && authUser.user_type && authUser.user_type == 55){
-                contest.isPermainan = true;
-            }
             try {
                 let cashAmount = 0;
                 let winAmount = 0;
@@ -1222,7 +1205,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
 
                                     await session.abortTransaction();
                                     session.endSession();
-                                    console.log("error",error);
+
                                     let userWalletData = await User.findOne({ _id: user_id }, { "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1 });
                                     if (userWalletData) {
                                         userWalletData.winning_balance = (_.isNaN(userWalletData.winning_balance) || _.isNull(userWalletData.winning_balance)) ? 0 : userWalletData.winning_balance;
@@ -1231,7 +1214,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                         userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
                                         await User.updateOne({ _id: user_id }, { $set: userWalletData });
                                     }
-                                    return res.send(ApiUtility.failed("Something went wrong, Please try again!!"));
+                                    return res.send(ApiUtility.failed("Something went wrong, Please try again."));
                                 }
                             } else {
                                 await session.abortTransaction();
@@ -1316,7 +1299,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                 }
                                 let isPrivateCreate = true;
 
-                                totalContestKey = await getContestCount(isNewContest,isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
+                                totalContestKey = await getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                             } else {
                                 await session.abortTransaction();
                                 session.endSession();
@@ -1368,7 +1351,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                         console.log('error in JC at line 428******* at', error);
                         await session.abortTransaction();
                         session.endSession();
-                        return res.send(ApiUtility.failed("Please try again!!"));
+                        return res.send(ApiUtility.failed(error.message));
                     }
                     // worked for user category set redis
 
@@ -1511,7 +1494,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                 });
                             } catch (error) {
                                 console.log("updateing redis > join contest  > ", error);
-                                return res.send(ApiUtility.failed("Something went wrong!!"));
+                                return res.send(ApiUtility.failed(error.message));
                             }
                             // add bonus cash to user who shared his/her referal code
                             try {
@@ -1541,18 +1524,18 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                 console.log('appserr', appserr);
                             }
                             if (_.isEmpty(matchContestData)) {
-                               // await MatchContest.findOneAndUpdate({ _id: matchContest._id }, { $inc: { joined_users: 1 } }, { new: true });
+                                await MatchContest.findOneAndUpdate({ _id: matchContest._id }, { $inc: { joined_users: 1 } }, { new: true });
                             }
                             return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                         }
                     } else {
-                        return res.send(ApiUtility.failed("Please try again!!"));
+                        return res.send(ApiUtility.failed("Something went wrong!!"));
                     }
                 } else {
                     console.log("check balance error. ");
                     await session.abortTransaction();
                     session.endSession();
-                    return res.send(ApiUtility.failed("Please try again!"));
+                    return res.send(ApiUtility.failed("Something went wrong!"));
                 }
             } catch (errrr) {
                 console.log("errrr**********", errrr);
@@ -1588,7 +1571,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
  * @param {*} parentContestId 
  * @param {*} session 
  */
-async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest) {
+async function getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest) {
     try {
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
@@ -1599,8 +1582,8 @@ async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, 
                 if (isAutoCreateStatus) {
                     if (joinedContestCount == contestData.contest_size) {
                         console.log(contestData.contest_size, "************** auto create counter");
-                        await contestAutoCreateAferJoin(isNewContest,isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
-                        
+                        contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
+
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
 
                     } else {
@@ -1720,7 +1703,7 @@ async function getContestCount(isNewContest,isCommit, isPrivateCreate, contest, 
  * @param {*} parentContestId 
  */
 
-async function contestAutoCreateAferJoin(isNewContest,isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest) {
+async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest) {
     try {
 
         let catID = contestData.category_id;
@@ -1774,7 +1757,7 @@ async function contestAutoCreateAferJoin(isNewContest,isCommit, isPrivateCreate,
             entityM.visitorteam_id = liveMatch.visitorteam_id || '';
             entityM.is_auto_create = 1;
             entityM.admin_create = 0;
-            entityM.joined_users = isNewContest ? 1:0;
+            entityM.joined_users = 0;
             entityM.is_private = isPrivateCreate ? 1 : 0;
             entityM.sport = match_sport;
 
