@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
       email: "required",
       language: "required"
     };
-
+    return res.send(ApiUtility.failed('Please Update your app with latest version !!'));
     let validator = new Validator(params, constraints);
     let matched = await validator.check();
     if (!matched) {
