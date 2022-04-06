@@ -91,11 +91,11 @@ module.exports = async (req, res) => {
 										transEntity['match_id'] = 0;
 										transEntity['withdraw_id'] = withdrawId;
 										transEntity['details'] = {
-											"refund_winning_balance": params && params.withdraw_amount ? parseFloat(params.withdraw_amount):0,
+											"refund_winning_balance": 0,
 											"refund_cash_balance": 0,
 											"refund_bonus_amount": 0,
 											"refund_extra_amount": 0,
-											"refund_affiliate_amount": 0,
+											"refund_affiliate_amount": params && params.withdraw_amount ? parseFloat(params.withdraw_amount) : 0,
 											"current_winning_balance": userWallet && userWallet.winning_balance ? userWallet.winning_balance:0,
 											"current_cash_balance": userWallet && userWallet.cash_balance ? userWallet.cash_balance:0,
 											"current_bonus_amount": userWallet && userWallet.bonus_amount ? userWallet.bonus_amount:0,
