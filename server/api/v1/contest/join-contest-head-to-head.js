@@ -26,6 +26,7 @@ const { appsFlyerEntryService } = require("../users/appsflyer-api");
 const Helper = require('./../common/helper');
 
 module.exports = async (req, res) => {
+    // prod h2h
     try {
         let data1 = {};
         let startTime = Date.now();
@@ -48,7 +49,7 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                User.findById(user_id).select({"user_type":1, "affiliate_amount": 1, "win_dis_status": 1, "xtra_cash_block": 1, "fair_play_violation": 1, "avatar": 1, "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
+                User.findById(user_id).select({ "affiliate_amount": 1, "win_dis_status": 1, "xtra_cash_block": 1, "fair_play_violation": 1, "avatar": 1, "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
                 PlayerTeamContest.find({ 'parent_contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
@@ -227,9 +228,6 @@ module.exports = async (req, res) => {
                                                         let contestType = contestData.contest_type;
                                                         let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                                                         let isOfferused = false;
-                                                        if(authUser && authUser.user_type && authUser.user_type == 55){
-                                                            //contest.isPermainan = true;
-                                                        }
                                                         try {
                                                             let cashAmount = 0;
                                                             let winAmount = 0;

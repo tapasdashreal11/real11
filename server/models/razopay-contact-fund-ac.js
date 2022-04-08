@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const razopayFundAc = mongoose.Schema({
     contact_id: { type: String },
     fund_account_id: { type: String},
-    user_id: { type: mongoose.Schema.Types.ObjectId, unique: true },
+    user_id: { type: mongoose.Schema.Types.ObjectId },
     change_bank_req_accept: {type: Boolean, default: false},
-    old_func_account_id: { type: mongoose.Schema.Types.ObjectId, unique: true },
+    old_func_account_id: { type: mongoose.Schema.Types.ObjectId },
 }, {
         timestamps: { createdAt: 'created', updatedAt: 'modified' },
         toObject: { getters: true, setters: true },

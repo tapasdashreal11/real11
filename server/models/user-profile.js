@@ -40,7 +40,7 @@ var Schema = mongoose.Schema,ObjectId = Schema.ObjectId;
 const AdminSchema = mongoose.Schema({
     
     contest_level: { type: Number, default: 0 },
-    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },    
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },    
     paid_contest_count: { type: Number, default: 0.00 },  
     
 

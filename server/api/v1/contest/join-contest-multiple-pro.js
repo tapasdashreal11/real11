@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
-                User.findById(user_id).select({"user_type":1,"affiliate_amount":1,"win_dis_status":1,"xtra_cash_block":1,"fair_play_violation":1, "avatar": 1,"winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
+                User.findById(user_id).select({"affiliate_amount":1,"win_dis_status":1,"xtra_cash_block":1,"fair_play_violation":1, "avatar": 1,"winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
                 PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
@@ -151,15 +151,12 @@ module.exports = async (req, res) => {
                                                 contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
                                                 contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                 contest.sport = match_sport;
-                                                if(authUser && authUser.user_type && authUser.user_type == 55){
-                                                   // contest.isPermainan = true;
-                                                }
                                                 contestDataArray.push(contest);
                                             }
 
                                             let totalTeamJoinedCount = contestDataArray.length;
                                             let total_team_number = totalTeamJoinedCount;
-                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, {new: true});
+                                            const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, { new: true});
                                             if (doc) {
                                                 let joinedContestCount = doc.joined_users;
 
@@ -446,7 +443,7 @@ module.exports = async (req, res) => {
                                                                     await session.abortTransaction();
                                                                     session.endSession();
                                                                     await setTranscation(decoded,match_sport,contest_id,total_team_number);
-                                                                    return res.send(ApiUtility.failed('Please try again!!'));
+                                                                    return res.send(ApiUtility.failed('something went wrong!!'));
 
                                                                 }
                                                             } else if (calEntryFees == 0 && retention_bonus_amount > 0) {
@@ -491,7 +488,7 @@ module.exports = async (req, res) => {
                                                                 await session.abortTransaction();
                                                                 session.endSession();
                                                                 await setTranscation(decoded,match_sport,contest_id,total_team_number);
-                                                                return res.send(ApiUtility.failed('Please try again!!'));
+                                                                return res.send(ApiUtility.failed('something went wrong!!'));
 
                                                             }
                                                         }
@@ -579,7 +576,7 @@ module.exports = async (req, res) => {
                                                                 await session.abortTransaction();
                                                                 session.endSession();
                                                                 await setTranscation(decoded,match_sport,contest_id,total_team_number);
-                                                                return res.send(ApiUtility.failed("Please try again!!"));
+                                                                return res.send(ApiUtility.failed(error.message));
                                                             }
                                                             // worked for user category set redis
 
@@ -721,7 +718,7 @@ module.exports = async (req, res) => {
                                                                         });
                                                                     } catch (error) {
                                                                         console.log("updateing redis > join contest  > ", error);
-                                                                        return res.send(ApiUtility.failed("Please try again!!"));
+                                                                        return res.send(ApiUtility.failed(error.message));
                                                                     }
                                                                     // add bonus cash to user who shared his/her referal code
 
@@ -769,7 +766,7 @@ module.exports = async (req, res) => {
                                                         session.endSession();
                                                         await setTranscation(decoded,match_sport,contest_id,total_team_number);
                                                         console.log("join contest condition true > at line 584", error);
-                                                        return res.send(ApiUtility.failed("Please try again!!"));
+                                                        return res.send(ApiUtility.failed(error.message));
                                                     }
                                                 } else {
                                                     console.log('JC Join Status is false at line 586');
@@ -810,7 +807,7 @@ module.exports = async (req, res) => {
                                             session.endSession();
                                             let tLength = teamArray && teamArray.length > 0 ? teamArray.length : 1; 
                                             await setTranscation(decoded,match_sport,contest_id,tLength);
-                                           // console.log("error in catch***", errorr);
+                                            console.log("error in catch***", errorr);
                                             var MatchContestData = await MatchContest.findOne({ 'parent_contest_id': parentContestId, match_id: match_id, 'sport': match_sport, is_full: { $ne: 1 } }).sort({ _id: -1 });
                                             if (MatchContestData) {
                                                 response.status = false;
@@ -820,7 +817,7 @@ module.exports = async (req, res) => {
                                                 return res.json(response);
                                             } else {
                                                 response.status = false;
-                                                response.message = "Please try again!!";
+                                                response.message = "This contest is full, please join other contest.";
                                                 response.error_code = null;
                                                 return res.json(response);
                                             }
@@ -855,7 +852,7 @@ module.exports = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        return res.send(ApiUtility.failed("Please try again!!"));
+        return res.send(ApiUtility.failed(error.message));
     }
 }
 
@@ -1294,4 +1291,4 @@ async function removeDuplicateEntry(data) {
 
 async function setTranscation(decoded,match_sport,contest_id,total_team){
     await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - total_team } });
-} 
+}

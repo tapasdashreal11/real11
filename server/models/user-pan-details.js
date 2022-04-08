@@ -9,7 +9,7 @@ const AdminSchema = mongoose.Schema({
     
     pan_card: { type: String },
     pan_name: { type: String },
-    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },    
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },    
     date_of_birth: { type: String },
     state: { type: String },
     pan_image: { type: String },    
