@@ -241,12 +241,15 @@ async function transactionAtSignupBonous(userId,rf_bonous_amount,rf_xtra_amount)
  */
 async function setDataToAppsflyer(params){
     try {
+		let eName = params && params.app_source == "playstore" ? "SignUpPlayStore":"SignUp";
+		let bundleName = params && params.app_source == "playstore" ? "ps.real11":"os.real11";
         let appsflyerURL = "";
         if (params && params.device_type) {
             if (params.device_type == "Android") {
                 appsflyerURL = config.appsFlyerAndroidUrl;
             } else {
-                appsflyerURL = config.appsFlyeriPhoneUrl;
+				appsflyerURL = config.appsFlyeriPhoneUrl;
+				bundleName = "com.apps.REAL11";
             }
         }
         if (params && params.appsflayer_id) {
@@ -258,12 +261,13 @@ async function setDataToAppsflyer(params){
                 'advertising_id': params && params.user_gaid ? params.user_gaid : ''
             };
             var signUpBody = {
-                "eventName": "SignUp",
+                "eventName": eName,
                 "appsflyer_id": params.appsflayer_id || '',
                 "customer_user_id": params._id || '',
                 "eventTime": new Date(),
                 'advertising_id': params && params.user_gaid ? params.user_gaid : '',
-                "eventValue": JSON.stringify(event_val)
+				"eventValue": JSON.stringify(event_val),
+				"bundleIdentifier":bundleName
             };
 
             if (!params.is_refered_by) {
