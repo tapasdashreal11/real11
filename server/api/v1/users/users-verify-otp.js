@@ -97,6 +97,7 @@ module.exports = async (req, res) => {
 					finalResponse['phone'] = user.temp_phone;
 					let rf_bonous_amount = config.referral_bouns_amount;
 					let rf_xtra_amount = 0;
+					console.log("test on first time*****************");
 					try{
 						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id },{referal_code:1,sub_referal_code:1});
 						if (referalUser && referalUser.sub_referal_code && _.isEqual(referalUser.sub_referal_code,"IPL200")) {
@@ -241,6 +242,7 @@ async function transactionAtSignupBonous(userId,rf_bonous_amount,rf_xtra_amount)
  */
 async function setDataToAppsflyer(params){
     try {
+		console.log("test on first time*****************");
 		let eName = params && params.app_source == "playstore" ? "SignUpPlayStore":"SignUp";
 		let bundleName = params && params.app_source == "playstore" ? "ps.real11":"os.real11";
         let appsflyerURL = "";
@@ -256,7 +258,7 @@ async function setDataToAppsflyer(params){
             let event_val = {
                 "appsflyer_id": params.appsflayer_id || '',
                 "af_customer_user_id": params.clevertap_id || '',
-                "af_email": params.email || '',
+				"af_email": params.email || '',
                 "af_mobile": params.temp_phone || '',
                 'advertising_id': params && params.user_gaid ? params.user_gaid : ''
             };
@@ -269,11 +271,12 @@ async function setDataToAppsflyer(params){
 				"eventValue": JSON.stringify(event_val),
 				"bundleIdentifier":bundleName
             };
-
-            if (!params.is_refered_by) {
+			appsFlyerEntryService(signUpBody, appsflyerURL);
+			// This code is block till IPL
+           /* if (!params.is_refered_by) {
 				appsFlyerEntryService(signUpBody, appsflyerURL);
 				
-            }
+            }*/
         }
 
     } catch (errr) {
