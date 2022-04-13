@@ -829,12 +829,12 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                         contestAutoCreateAferJoin(contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest);
                         await MatchContest.findOneAndUpdate({ 'match_id': parseInt(match_id), 'sport': match_sport, 'contest_id': contest_id }, { $set: { joined_users: contestData.contest_size, "is_full": 1 } });
                     } else {
-                        await session.commitTransaction();
-                        session.endSession();
+                       // await session.commitTransaction();
+                       // session.endSession();
                     }
                 } else {
-                    await session.commitTransaction();
-                    session.endSession();
+                   // await session.commitTransaction();
+                   // session.endSession();
                 }
                 // This is used for user referal for contest upto ten friends and get bopnous
                 try {
@@ -1010,8 +1010,8 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
 
             const dd = await MatchContest.insertMany([entityM], { session: session });
 
-            await session.commitTransaction();
-            session.endSession();
+          //  await session.commitTransaction();
+           // session.endSession();
 
             try {
                 let matchContestKey = RedisKeys.MATCH_CONTEST_LIST + match_id;
@@ -1046,8 +1046,8 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         }
 
     } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
+        //await session.abortTransaction();
+        //session.endSession();
         console.log('sometjhing went wrong in autocreate***************************wrong in auto error');
         return {}
     }
