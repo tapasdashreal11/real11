@@ -423,7 +423,7 @@ module.exports = async (req, res) => {
                                             }
                                             let totalEntryAmount = cashAmount + winAmount + bonusAmount + extraAmount;
 
-                                            redis.redisObj.get(mcontestIncKey, (erri, dataInc) => {
+                                            redis.redisObj.get(mcontestIncKey, async (erri, dataInc) => {
                                                 let mIcount = (dataInc) ? parseInt(dataInc) : 1;
                                                 if (mIcount >= contestData.contest_size) {
                                                     return res.send(ApiUtility.failed("Contest is full!!."));
