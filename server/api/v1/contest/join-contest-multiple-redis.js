@@ -425,7 +425,8 @@ module.exports = async (req, res) => {
 
                                             redis.redisObj.get(mcontestIncKey, async (erri, dataInc) => {
                                                 let mIcount = (dataInc) ? parseInt(dataInc) : 0;
-                                                if (mIcount >= contestData.contest_size) {
+                                                
+                                                if (mIcount >= contestData.contest_size && infinteStatus) {
                                                     return res.send(ApiUtility.failed("Contest is full!!."));
                                                 } else {
                                                     console.log("test*****************",mIcount);
@@ -682,6 +683,43 @@ module.exports = async (req, res) => {
                                                                                 totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                                 let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
                                                                                 redis.setRedisMyMatches(myJoinedContestListKey, {});
+                                                                                let playerContest = {};
+                                                                                playerContest.id = newContestId;
+                                                                                if (playerContest.id) {
+                                                                                    let joinedTeamsCountKey = `${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`;
+                                                                                    redis.getRedis(joinedTeamsCountKey, (err, data) => {
+                                                                                        if (data) {
+                                                                                            let userContests = data;
+                                                                                            if (userContests[contest_id]) {
+                                                                                                userContests[contest_id] = joinedContest + 1;
+                                                                                            } else {
+                                                                                                userContests[contest_id] = joinedContest + 1;
+                                                                                            }
+                                                                                            data = userContests;
+                                                                                        } else {
+                                                                                            data = {}
+                                                                                            data[contest_id] = joinedContest + 1;
+                                                                                        }
+                                                                                        mqtt.publishContestTeamCounts(match_id, JSON.stringify(data));
+                                                                                        redis.setRedis(joinedTeamsCountKey, data);
+                                                                                    });
+
+                                                                                    let joinedContestCountData = {};
+                                                                                    joinedContestCountData[contest_id] = joinedContest + 1;
+                                                                                    mqtt.publishContestTeamCounts(match_id, JSON.stringify(joinedContestCountData));
+
+                                                                                    redis.redisObj.get('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id, (err, data) => {
+                                                                                        let count = (data) ? parseInt(data) : 1;
+                                                                                        // mqtt.publishUserJoinedTeamCounts(match_id,user_id,JSON.stringify({team_count:count}))
+                                                                                        redis.redisObj.del('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id) //force user to get data from db
+                                                                                    });
+
+                                                                                    let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${user_id}`;
+                                                                                    redis.redisObj.del(joinedContestKey); //force user to get data from db
+                                                                                    
+                                                                                    let matchContestUserKey = RedisKeys.MY_MATCHES_LIST + user_id + "_" + match_sport;
+                                                                                    redis.setRedisMyMatches(matchContestUserKey, results);
+                                                                                }
                                                                                 return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                                             } else {
                                                                                 await session.abortTransaction();
