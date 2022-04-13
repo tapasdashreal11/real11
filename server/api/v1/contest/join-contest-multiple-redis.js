@@ -462,12 +462,16 @@ module.exports = async (req, res) => {
                                                                             if ((contestType == "Paid" && totalEntryAmount == calEntryFees && transactionList.length > 0) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid" && transactionList.length > 0)) {
                                                                                 const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, { new: true });
                                                                                 let joinedContestCount = doc.joined_users;
-                                                                                if(totalEntryAmount == calEntryFees){
-                                                                                    await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
-                                                                                }
-                                                                                await Transaction.insertMany(transactionList, { session: session });
-                                                                                await multipleJoinContestDetail(session, contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
-                                                                                totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
+                                                                                await session.withTransaction(async () => {
+                                                                                    // Your transaction methods
+                                                                                    if(totalEntryAmount == calEntryFees){
+                                                                                        await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
+                                                                                    }
+                                                                                    await Transaction.insertMany(transactionList, { session: session });
+                                                                                    await multipleJoinContestDetail(session, contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                                    totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
+                                                                                });
+                                                                                
                                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
                                                                                     if (retention_bonus_amount > 0 && userBounousData && userBounousData._id && isOfferused) {
                                                                                         if (userBounousData.is_offer_type == 1) {
