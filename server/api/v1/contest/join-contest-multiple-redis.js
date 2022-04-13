@@ -166,7 +166,7 @@ module.exports = async (req, res) => {
                                             let extraAmount = 0;
                                             let remainingFee = 0;
                                             let userWalletStatus = false;
-
+                                            let updateUserData = {};
                                             if (matchContest.usable_bonus_time) {
                                                 if (moment().isBefore(matchContest.usable_bonus_time)) {
                                                     useableBonusPer = matchContest.before_time_bonus;
@@ -325,7 +325,7 @@ module.exports = async (req, res) => {
                                                             let total_balance = winning_balance + cash_balance + bonus_balance + extra_amount;
 
                                                             try {
-                                                                let updateUserData = {
+                                                                 updateUserData = {
                                                                     cons_winning_balance: cons_winning_balance,
                                                                     cons_cash_balance: cons_cash_balance,
                                                                     cons_bonus_amount: cons_bonus_amount,
@@ -428,7 +428,7 @@ module.exports = async (req, res) => {
                                                 if (mIcount >= contestData.contest_size) {
                                                     return res.send(ApiUtility.failed("Contest is full!!."));
                                                 } else {
-                                                    console.log("test*****************");
+                                                    console.log("test*****************",mIcount);
                                                     let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
                                                     if (mcRedisIncData < contestData.contest_size) {
                                                         let joinStatus = false;
