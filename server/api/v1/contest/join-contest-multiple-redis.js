@@ -325,7 +325,7 @@ module.exports = async (req, res) => {
                                                             let total_balance = winning_balance + cash_balance + bonus_balance + extra_amount;
 
                                                             try {
-                                                                 updateUserData = {
+                                                                updateUserData = {
                                                                     cons_winning_balance: cons_winning_balance,
                                                                     cons_cash_balance: cons_cash_balance,
                                                                     cons_bonus_amount: cons_bonus_amount,
@@ -430,13 +430,13 @@ module.exports = async (req, res) => {
                                                     return res.send(ApiUtility.failed("Contest is full!!."));
                                                 } else if (totalBeforJoin > contestData.contest_size && infinteStatus) {
                                                     let diffSlot = contestData.contest_size - mIcount;
-                                                    let mszSlot = diffSlot == 1 ? "Please try with one team !!": "Only " + diffSlot+ " teams are reaming.Please try again!!"
+                                                    let mszSlot = diffSlot == 1 ? "Please try with one team !!" : "Only " + diffSlot + " teams are reaming.Please try again!!"
                                                     return res.send(ApiUtility.failed(mszSlot));
                                                 } else {
-                                                    console.log("test*****************",mIcount);
+                                                    console.log("test*****************", mIcount);
                                                     let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
-                                                     joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
-                                                    if ((mcRedisIncData < contestData.contest_size) || (contestData &&  contestData.contest_size == 0 && contestData.infinite_contest_size == 1)) {
+                                                    joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
+                                                    if ((mcRedisIncData < contestData.contest_size) || (contestData && contestData.contest_size == 0 && contestData.infinite_contest_size == 1)) {
                                                         let joinStatus = false;
                                                         joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
                                                         if (joinStatus) {
@@ -467,14 +467,14 @@ module.exports = async (req, res) => {
                                                                             if ((contestType == "Paid" && totalEntryAmount == calEntryFees && transactionList.length > 0) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid" && transactionList.length > 0)) {
                                                                                 const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, { new: true });
                                                                                 let joinedContestCount = doc.joined_users;
-                                                                               // transaction methods
-                                                                               if(totalEntryAmount == calEntryFees){
-                                                                                await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
+                                                                                // transaction methods
+                                                                                if (totalEntryAmount == calEntryFees) {
+                                                                                    await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
                                                                                 }
                                                                                 await Transaction.insertMany(transactionList, { session: session });
                                                                                 await multipleJoinContestDetail(session, contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
                                                                                 totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
-                                                                                
+
                                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
                                                                                     if (retention_bonus_amount > 0 && userBounousData && userBounousData._id && isOfferused) {
                                                                                         if (userBounousData.is_offer_type == 1) {
@@ -731,12 +731,15 @@ module.exports = async (req, res) => {
                                                                             } else {
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
+                                                                                await redis.redisObj.decrby(mcontestIncKey, totalTeamJoinedCount);
                                                                                 return res.send(ApiUtility.failed("Somehing went wrong1."));
                                                                             }
                                                                         } catch (error) {
-                                                                            console.log("error",error)
+                                                                            console.log("error", error)
                                                                             await session.abortTransaction();
                                                                             session.endSession();
+                                                                            await redis.redisObj.decrby(mcontestIncKey, totalTeamJoinedCount);
+                                                                            setTranscation(decoded, match_sport, contest_id, totalTeamJoinedCount)
                                                                             return res.send(ApiUtility.failed("Somehing went wrong2."));
                                                                         } finally {
                                                                             // ending the session
@@ -963,7 +966,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         entity.is_auto_create = 2;
         const newDataC = await Contest.insertMany([entity], { session: session });
         var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
-        console.log("cResult",cResult);
+        console.log("cResult", cResult);
         let inviteCode = Helper.createUserReferal(6);
         if (cResult && cResult._id) {
             let newContestId = cResult._id;
