@@ -682,19 +682,19 @@ module.exports = async (req, res) => {
                                                                             } else {
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
-                                                                                return res.send(ApiUtility.failed("Somehing went wrong."));
+                                                                                return res.send(ApiUtility.failed("Somehing went wrong1."));
                                                                             }
                                                                         } catch (error) {
                                                                             await session.abortTransaction();
                                                                             session.endSession();
-                                                                            return res.send(ApiUtility.failed("Somehing went wrong."));
+                                                                            return res.send(ApiUtility.failed("Somehing went wrong2."));
                                                                         } finally {
                                                                             // ending the session
                                                                             session.endSession();
                                                                         }
                                                                     } else {
                                                                         console.log("Team data not match before join");
-                                                                        return res.send(ApiUtility.failed("Somehing went wrong."));
+                                                                        return res.send(ApiUtility.failed("Somehing went wrong3."));
                                                                     }
                                                                 }
                                                             } else {
