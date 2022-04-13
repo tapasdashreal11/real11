@@ -428,6 +428,7 @@ module.exports = async (req, res) => {
                                                 if (mIcount >= contestData.contest_size) {
                                                     return res.send(ApiUtility.failed("Contest is full!!."));
                                                 } else {
+                                                    console.log("test*****************");
                                                     let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
                                                     if (mcRedisIncData < contestData.contest_size) {
                                                         let joinStatus = false;
@@ -685,6 +686,7 @@ module.exports = async (req, res) => {
                                                                                 return res.send(ApiUtility.failed("Somehing went wrong1."));
                                                                             }
                                                                         } catch (error) {
+                                                                            console.log("error",error)
                                                                             await session.abortTransaction();
                                                                             session.endSession();
                                                                             return res.send(ApiUtility.failed("Somehing went wrong2."));
