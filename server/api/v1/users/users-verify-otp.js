@@ -269,8 +269,6 @@ async function setDataToAppsflyer(params){
                 'advertising_id': params && params.user_gaid ? params.user_gaid : '',
 				"eventValue": JSON.stringify(event_val)
 			};
-			console.log("appsflyerURL***",appsflyerURL);
-			console.log("eName***",eName);
 			appsFlyerEntryService(signUpBody, appsflyerURL);
 			// This code is block till IPL
            /* if (!params.is_refered_by) {
