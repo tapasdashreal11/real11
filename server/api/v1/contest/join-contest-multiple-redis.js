@@ -462,15 +462,13 @@ module.exports = async (req, res) => {
                                                                             if ((contestType == "Paid" && totalEntryAmount == calEntryFees && transactionList.length > 0) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid" && transactionList.length > 0)) {
                                                                                 const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, { new: true });
                                                                                 let joinedContestCount = doc.joined_users;
-                                                                                await session.withTransaction(async () => {
-                                                                                    // Your transaction methods
-                                                                                    if(totalEntryAmount == calEntryFees){
-                                                                                        await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
-                                                                                    }
-                                                                                    await Transaction.insertMany(transactionList, { session: session });
-                                                                                    await multipleJoinContestDetail(session, contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
-                                                                                    totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
-                                                                                });
+                                                                               // transaction methods
+                                                                               if(totalEntryAmount == calEntryFees){
+                                                                                await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
+                                                                                }
+                                                                                await Transaction.insertMany(transactionList, { session: session });
+                                                                                await multipleJoinContestDetail(session, contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+                                                                                totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                                 
                                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
                                                                                     if (retention_bonus_amount > 0 && userBounousData && userBounousData._id && isOfferused) {
@@ -958,8 +956,9 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             entity.parent_id = contestData._id;
         }
         entity.is_auto_create = 2;
-        const newDataC = await Contest.create([entity], { session: session });
+        const newDataC = await Contest.insertMany([entity], { session: session });
         var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
+        console.log("cResult",cResult);
         let inviteCode = Helper.createUserReferal(6);
         if (cResult && cResult._id) {
             let newContestId = cResult._id;
