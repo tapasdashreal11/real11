@@ -424,7 +424,7 @@ module.exports = async (req, res) => {
                                             let totalEntryAmount = cashAmount + winAmount + bonusAmount + extraAmount;
 
                                             redis.redisObj.get(mcontestIncKey, async (erri, dataInc) => {
-                                                let mIcount = (dataInc) ? parseInt(dataInc) : 1;
+                                                let mIcount = (dataInc) ? parseInt(dataInc) : 0;
                                                 if (mIcount >= contestData.contest_size) {
                                                     return res.send(ApiUtility.failed("Contest is full!!."));
                                                 } else {
@@ -682,6 +682,7 @@ module.exports = async (req, res) => {
                                                                                 totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                                 let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
                                                                                 redis.setRedisMyMatches(myJoinedContestListKey, {});
+                                                                                return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                                             } else {
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
