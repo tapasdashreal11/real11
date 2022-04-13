@@ -818,7 +818,6 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
         return new Promise(async (resolve, reject) => {
             await PlayerTeamContest.insertMany(contest, { session: session }).then(async (newDataPTC) => {
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
-                console.log('newPTC',newPTC)
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
                 if (isAutoCreateStatus) {
                     if (joinedContestCount == contestData.contest_size) {
