@@ -465,7 +465,7 @@ module.exports = async (req, res) => {
                                                                                 if(totalEntryAmount == calEntryFees){
                                                                                     await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
                                                                                 }
-                                                                                await Transaction.create(transactionList, { session: session });
+                                                                                await Transaction.insertMany(transactionList, { session: session });
                                                                                 await multipleJoinContestDetail(session, contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
                                                                                 totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest);
                                                                                 if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
@@ -716,7 +716,7 @@ module.exports = async (req, res) => {
 
                                                                                     let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${user_id}`;
                                                                                     redis.redisObj.del(joinedContestKey); //force user to get data from db
-                                                                                    
+
                                                                                     let matchContestUserKey = RedisKeys.MY_MATCHES_LIST + user_id + "_" + match_sport;
                                                                                     redis.setRedisMyMatches(matchContestUserKey, results);
                                                                                 }
@@ -1004,7 +1004,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             };
 
 
-            const dd = await MatchContest.create([entityM], { session: session });
+            const dd = await MatchContest.insertMany([entityM], { session: session });
 
             await session.commitTransaction();
             session.endSession();
@@ -1226,7 +1226,7 @@ async function multipleJoinContestDetail(session, contestTeamData, decoded, bonu
         saveEntity.retention_bonus = retention_bonus_amount || 0;
         jcdArray.push(saveEntity);
     }
-    await JoinContestDetail.create(jcdArray, { session: session });
+    await JoinContestDetail.insertMany(jcdArray, { session: session });
 
 }
 
