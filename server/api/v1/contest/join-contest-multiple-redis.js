@@ -425,9 +425,13 @@ module.exports = async (req, res) => {
 
                                             redis.redisObj.get(mcontestIncKey, async (erri, dataInc) => {
                                                 let mIcount = (dataInc) ? parseInt(dataInc) : 0;
-                                                
+                                                let totalBeforJoin = mIcount + totalTeamJoinedCount;
                                                 if (mIcount >= contestData.contest_size && infinteStatus) {
                                                     return res.send(ApiUtility.failed("Contest is full!!."));
+                                                } else if (totalBeforJoin > contestData.contest_size && infinteStatus) {
+                                                    let diffSlot = totalBeforJoin - contestData.contest_size;
+                                                    let mszSlot = diffSlot == 1 ? "Please try with one team !!": "Only " + diffSlot+ " teams are reaming.Please try again!!"
+                                                    return res.send(ApiUtility.failed(mszSlot));
                                                 } else {
                                                     console.log("test*****************",mIcount);
                                                     let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
