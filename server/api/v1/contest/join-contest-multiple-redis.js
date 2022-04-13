@@ -431,7 +431,7 @@ module.exports = async (req, res) => {
                                                 } else {
                                                     console.log("test*****************",mIcount);
                                                     let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
-                                                    if (mcRedisIncData < contestData.contest_size) {
+                                                    if ((mcRedisIncData < contestData.contest_size) || (contestData &&  contestData.contest_size == 0 && contestData.infinite_contest_size == 1)) {
                                                         let joinStatus = false;
                                                         joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
                                                         if (joinStatus) {
