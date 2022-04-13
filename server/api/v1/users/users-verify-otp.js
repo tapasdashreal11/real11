@@ -97,7 +97,6 @@ module.exports = async (req, res) => {
 					finalResponse['phone'] = user.temp_phone;
 					let rf_bonous_amount = config.referral_bouns_amount;
 					let rf_xtra_amount = 0;
-					console.log("test on first time*****************");
 					try{
 						let referalUser = await ReferralCodeDetails.findOne({ user_id: user._id },{referal_code:1,sub_referal_code:1});
 						if (referalUser && referalUser.sub_referal_code && _.isEqual(referalUser.sub_referal_code,"IPL200")) {
@@ -242,7 +241,6 @@ async function transactionAtSignupBonous(userId,rf_bonous_amount,rf_xtra_amount)
  */
 async function setDataToAppsflyer(params){
     try {
-		console.log("test on first time*****************");
 		let eName = params && params.app_source == "playstore" ? "SignUpPlayStore":"SignUp";
 		let bundleName = params && params.app_source == "playstore" ? "ps.real11":"os.real11";
         let appsflyerURL = "";
