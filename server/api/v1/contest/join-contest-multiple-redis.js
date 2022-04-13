@@ -429,7 +429,7 @@ module.exports = async (req, res) => {
                                                 if (mIcount >= contestData.contest_size && infinteStatus) {
                                                     return res.send(ApiUtility.failed("Contest is full!!."));
                                                 } else if (totalBeforJoin > contestData.contest_size && infinteStatus) {
-                                                    let diffSlot = totalBeforJoin - contestData.contest_size;
+                                                    let diffSlot = contestData.contest_size - mIcount;
                                                     let mszSlot = diffSlot == 1 ? "Please try with one team !!": "Only " + diffSlot+ " teams are reaming.Please try again!!"
                                                     return res.send(ApiUtility.failed(mszSlot));
                                                 } else {
