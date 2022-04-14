@@ -558,6 +558,10 @@ module.exports = {
                      entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                      contestSize = (contestData && contestData.contest_size) ? (contestData.contest_size) :(contestData.infinite_contest_size ? 100 : 2);
                     
+                     if(userdata && userdata.is_beginner_user == 0 && matchContestData && ObjectId(matchContestData.category_id).equals(ObjectId(config.user_category.beginner_cat))){
+                        return res.send(ApiUtility.failed("You can't join this contest. This is only for beginners users!!"));
+                     }
+
                      if(cSaleData && cSaleData._id){
                         couponSaleData =cSaleData.coupon_contest_data && cSaleData.coupon_contest_data.length > 0 ? cSaleData.coupon_contest_data:[]; 
                         
