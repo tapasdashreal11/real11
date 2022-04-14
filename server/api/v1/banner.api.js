@@ -1,5 +1,6 @@
 const Banner = require('../../models/banner');
 const DepositBanner = require('../../models/deposit-banner');
+const PlaystoreBanner = require('../../models/playstore-banner');
 const User = require('../../models/user');
 const ApiUtility = require('../api.utility');
 const config = require('../../config');
@@ -46,6 +47,23 @@ module.exports = {
 
             // bannerData = await (new ModelService(Banner)).getBannerList();
             // return res.send(ApiUtility.success(bannerData));
+        } catch (error){
+            res.send(ApiUtility.failed(error.message));
+        }
+    },
+    playstoreBannerList: async (req, res) => {
+        try {
+            let bannerData = [];
+            let playstoreBannerListKey = RedisKeys.PLAYSTORE_BANNER_LIST; 
+            redis.getRedis(playstoreBannerListKey, async (err, bannerData) =>{
+                if(!bannerData){
+                    bannerData = await (new ModelService(PlaystoreBanner)).playstoreBannerList();
+                    redis.setRedis(playstoreBannerListKey,bannerData,RedisKeys.TIME_10_DAYS);
+                    return res.send(ApiUtility.success(bannerData));
+                } else {
+                    return res.send(ApiUtility.success(bannerData));
+                }
+            });
         } catch (error){
             res.send(ApiUtility.failed(error.message));
         }

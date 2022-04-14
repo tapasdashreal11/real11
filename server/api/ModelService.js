@@ -2021,6 +2021,38 @@ class ModelService {
         });
     }
     
+    playstoreBannerList() {
+        return new Promise((resolve, reject) => {
+            try{
+                this.collection.aggregate([
+                    {
+                        $match: {status:1}
+                    },
+                    { $sort : { sequence : 1} },
+                    {
+                        $project : {
+                            "_id":"$_id",
+                            "image" : {$concat : [`${config.imageBaseUrl}/`,"$image"]},
+                            "status":"$status",
+                            "url" : "$url",
+                            "type":"$banner_type",
+                        }
+                    }
+                ], (err, data) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    if (!err) {
+                        resolve(data);
+                    }
+                });
+            }
+            catch(error) {
+                console.log("error", error)
+            }
+        });
+    }
+    
     getContestCount(friendUserId, sport) {
         return new Promise((resolve, reject) => {
             try{

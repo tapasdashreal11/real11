@@ -11,6 +11,7 @@ const redisKeys = {
     USER_DATA:'user-data-',
     BANNER_LIST:'banner-list',
     ADD_CASH_BANNER_LIST:'add-cash-banner-list',
+    PLAYSTORE_BANNER_LIST:'playstore-banner-list',
     CONTEST_DETAIL_API_DATA:'contest-detail-api-',
     MY_MATCHES_LIST:'my-matches-list-',
     PLAYER_STATS:'player-stats-',
