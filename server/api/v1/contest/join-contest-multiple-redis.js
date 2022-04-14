@@ -563,13 +563,8 @@ module.exports = async (req, res) => {
                                                                                         redis.redisObj.del(joinedContestKey); //force user to get data from db
 
                                                                                         try {
-                                                                                            //console.log("user_id", user_id, decoded['match_id'])
                                                                                             let matchContestUserKey = RedisKeys.MY_MATCHES_LIST + user_id + "_" + match_sport;
                                                                                             var datsse = moment().subtract('30', 'days').toDate();
-                                                                                            let filterm = {
-                                                                                                "user_id": user_id,
-                                                                                                "createdAt": { $gte: datsse }
-                                                                                            };
                                                                                             let sortm = { createdAt: -1 }
                                                                                             let serverTimeu = moment(Date.now()).format(config.DateFormat.datetime);
                                                                                             await redis.getRedisMyMatches(matchContestUserKey, function (err, contestData) { // Get Redis
@@ -649,35 +644,8 @@ module.exports = async (req, res) => {
                                                                                             console.log("updateing redis > join contest  > ", error);
                                                                                             return res.send(ApiUtility.failed(error.message));
                                                                                         }
-                                                                                        // add bonus cash to user who shared his/her referal code
-
-                                                                                        try {
-                                                                                            if (authUser && authUser.appsflayer_id) {
-                                                                                                let appsflyerURL = config.appsFlyerAndroidUrl;
-                                                                                                let event_val = {
-                                                                                                    "appsflyer_id": authUser.appsflayer_id || '',
-                                                                                                    "af_customer_user_id": authUser.clevertap_id || '',
-                                                                                                    "match_id": match_id || '',
-                                                                                                    "sport": sport || '',
-                                                                                                    "contest_id": contest_id || '',
-                                                                                                    "team_joined": team_data.length || 1,
-                                                                                                    'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid : ''
-                                                                                                };
-                                                                                                var joinContestAppslyeBd = {
-                                                                                                    "eventName": "JoinContestS2S",
-                                                                                                    "appsflyer_id": authUser.appsflayer_id || '',
-                                                                                                    "customer_user_id": authUser._id || '',
-                                                                                                    "eventTime": new Date(),
-                                                                                                    'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid : '',
-                                                                                                    "eventValue": JSON.stringify(event_val)
-                                                                                                };
-                                                                                                await appsFlyerEntryService(joinContestAppslyeBd, appsflyerURL);
-                                                                                            }
-
-                                                                                        } catch (appserr) {
-                                                                                            console.log('appserr', appserr);
-                                                                                        }
-
+                                                                                        // call for send data to appsflyer
+                                                                                        await setJoinContestDataToAppsflyer(authUser,match_id,sport,contest_id,team_data);
                                                                                         return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                                                     }
                                                                                 } else {
@@ -1248,4 +1216,40 @@ async function removeDuplicateEntry(data) {
 
 async function setTranscation(decoded, match_sport, contest_id, total_team) {
     await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: - total_team } });
+}
+
+/**
+ * This is used to send join contest data to appsflyer
+ * @param {*} authUser 
+ * @param {*} match_id 
+ * @param {*} sport 
+ * @param {*} contest_id 
+ * @param {*} team_data 
+ */
+async function setJoinContestDataToAppsflyer(authUser,match_id,sport,contest_id,team_data){
+    try {
+        if (authUser && authUser.appsflayer_id) {
+            let appsflyerURL = config.appsFlyerAndroidUrl;
+            let event_val = {
+                "appsflyer_id": authUser.appsflayer_id || '',
+                "af_customer_user_id": authUser.clevertap_id || '',
+                "match_id": match_id || '',
+                "sport": sport || '',
+                "contest_id": contest_id || '',
+                "team_joined": team_data.length || 1,
+                'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid : ''
+            };
+            var joinContestAppslyeBd = {
+                "eventName": "JoinContestS2S",
+                "appsflyer_id": authUser.appsflayer_id || '',
+                "customer_user_id": authUser._id || '',
+                "eventTime": new Date(),
+                'advertising_id': authUser && authUser.user_gaid ? authUser.user_gaid : '',
+                "eventValue": JSON.stringify(event_val)
+            };
+            await appsFlyerEntryService(joinContestAppslyeBd, appsflyerURL);
+        }
+    } catch (appserr) {
+        console.log('appserr at join contest', appserr);
+    }
 }

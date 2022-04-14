@@ -241,7 +241,7 @@ async function transactionAtSignupBonous(userId,rf_bonous_amount,rf_xtra_amount)
  */
 async function setDataToAppsflyer(params){
     try {
-		let eName = params && params.app_source == "playstore" ? "SignUpPlayStore":"SignUp";
+		let eName = params && params.app_source == "playstore" ? "SignUp":"SignUp";
         let appsflyerURL = "";
         if (params && params.device_type) {
             if (params.device_type == "Android") {
