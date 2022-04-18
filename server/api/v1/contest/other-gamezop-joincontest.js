@@ -321,7 +321,7 @@ module.exports = async (req, res) => {
                                                         },
                                                         maxPlayers: contestData.contest_size,
                                                         minPlayers: contestData.contest_size,
-                                                        maxWait: 60,
+                                                        maxWait: 120,
                                                         rounds: 1,
                                                         cta: "BRIDGE.postMessage",
                                                         text: "go_home"
