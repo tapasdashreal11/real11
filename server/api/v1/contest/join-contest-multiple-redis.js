@@ -153,7 +153,7 @@ module.exports = async (req, res) => {
 
                                             let totalTeamJoinedCount = contestDataArray.length;
                                             let total_team_number = totalTeamJoinedCount;
-                                            let mcontestIncKey = 'mci-' + match_id + '-' + match_sport + '-' + contest_id;
+                                            let mcontestIncKey = 'mci_' + match_id + '_' + match_sport + '_' + contest_id;
                                             // payment calcuation
                                             let useableBonusPer = contestData.used_bonus || 0;
                                             let contestType = contestData.contest_type;
