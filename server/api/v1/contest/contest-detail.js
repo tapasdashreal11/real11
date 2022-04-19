@@ -136,12 +136,12 @@ module.exports = {
                         let userJoinedContest = _.map(ptcJoinedRecords, 'contest_id');
                         let queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: 1 };
                         if(_.isEqual(matchContestDetail.category_slug, 'last-man-standing')){
-                            let maxTeam = matchContestDetail.contest && matchContestDetail.contest.contest_size ? matchContestDetail.contest.contest_size:0;
+                            let maxTeam = matchContestDetail.contest && matchContestDetail.contest.contest_size ? matchContestDetail.contest.contest_size:4;
                             queryMatchContest = { 'parent_contest_id': matchContestDetail.contest_id, match_id: decoded['match_id'], sport: sport, joined_users: {$nin:[0,maxTeam]} };
                          }
 
                         if (userJoinedContest && userJoinedContest.length > 0) {
-                            queryMatchContest['contest_id'] = { $nin: userJoinedContest };
+                          //  queryMatchContest['contest_id'] = { $nin: userJoinedContest };
                         }
                         var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
                         if (matchContestData && matchContestData._id && matchContestData.contest_id) {

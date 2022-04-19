@@ -152,7 +152,7 @@ module.exports = async (req, res) => {
                                                             available = toBeJoin
                                                         }
                                                         console.log("check head to head****", joinedContestCount);
-                                                       await joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
+                                                        await joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
                                                         if(queryMatchContest.contest_id){
                                                             delete queryMatchContest.contest_id;
                                                          }
