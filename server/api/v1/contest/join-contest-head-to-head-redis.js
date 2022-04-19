@@ -128,14 +128,15 @@ module.exports = async (req, res) => {
                                                     if(queryMatchContest.contest_id){
                                                         delete queryMatchContest.contest_id;
                                                      }
-                                                    var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
-                                                    let attendeeCount = matchContestData && matchContestData._id ? matchContestData.joined_users:1;
+                                                    var mcData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                                                    let attendeeCount = mcData && mcData._id ? mcData.joined_users:1;
                                                     await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
                                                 } else {
                                                     // contest is now available 
                                                     let totalTeamJoinedCount = 1;
                                                     let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
                                                     if (mcRedisIncData < contestData.contest_size) {
+                                                        console.log("matchContestData****",matchContestData);
                                                         const doc = await MatchContest.findOneAndUpdate({ _id: matchContestData._id }, { $inc: { joined_users: 1 } }, { new: true });
                                                         let joinedContestCount = doc.joined_users;
                                                         if(joinedContestCount>contestData.contest_size){
@@ -155,8 +156,8 @@ module.exports = async (req, res) => {
                                                         if(queryMatchContest.contest_id){
                                                             delete queryMatchContest.contest_id;
                                                          }
-                                                        var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
-                                                        let attendeeCount = matchContestData && matchContestData._id ? matchContestData.joined_users:1;
+                                                        var mcData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                                                        let attendeeCount = mcData && mcData._id ? mcData.joined_users:1;
                                                         await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
                                                     }
 
@@ -170,8 +171,8 @@ module.exports = async (req, res) => {
                                         if(queryMatchContest.contest_id){
                                             delete queryMatchContest.contest_id;
                                          }
-                                        var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
-                                        let attendeeCount = matchContestData && matchContestData._id ? matchContestData.joined_users:1;
+                                        var mcData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                                        let attendeeCount = mcData && mcData._id ? mcData.joined_users:1;
                                         await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
                                     }
                                 } else {
