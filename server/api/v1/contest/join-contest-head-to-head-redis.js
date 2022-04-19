@@ -124,8 +124,13 @@ module.exports = async (req, res) => {
                                                 if (mIcount >= contestData.contest_size && infinteStatus) {
                                                     // contest has been full now join new contest
                                                     let mcontestObj = {}
-                                                    joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
-                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
+                                                    await joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
+                                                    if(queryMatchContest.contest_id){
+                                                        delete queryMatchContest.contest_id;
+                                                     }
+                                                    var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                                                    let attendeeCount = matchContestData && matchContestData._id ? matchContestData.joined_users:1;
+                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
                                                 } else {
                                                     // contest is now available 
                                                     let totalTeamJoinedCount = 1;
@@ -146,8 +151,13 @@ module.exports = async (req, res) => {
                                                             available = toBeJoin
                                                         }
                                                         console.log("check head to head****", joinedContestCount);
-                                                        joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
-                                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: available } });
+                                                       await joinContestGlobal(res, refer_by_user, refer_code, joinedContestCount, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, matchContestData);
+                                                        if(queryMatchContest.contest_id){
+                                                            delete queryMatchContest.contest_id;
+                                                         }
+                                                        var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                                                        let attendeeCount = matchContestData && matchContestData._id ? matchContestData.joined_users:1;
+                                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
                                                     }
 
                                                 }
@@ -157,7 +167,12 @@ module.exports = async (req, res) => {
                                         // This is used to create contest and join contest when user did not found any contest
                                         let mcontestObj = {}
                                         joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
-                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: 1 } });
+                                        if(queryMatchContest.contest_id){
+                                            delete queryMatchContest.contest_id;
+                                         }
+                                        var matchContestData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
+                                        let attendeeCount = matchContestData && matchContestData._id ? matchContestData.joined_users:1;
+                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId, 'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
                                     }
                                 } else {
                                     // This section for all contest to join contest
