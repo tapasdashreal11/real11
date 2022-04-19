@@ -166,7 +166,7 @@ module.exports = async (req, res) => {
                                     } else {
                                         // This is used to create contest and join contest when user did not found any contest
                                         let mcontestObj = {}
-                                        joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
+                                        await joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                         if(queryMatchContest.contest_id){
                                             delete queryMatchContest.contest_id;
                                          }
@@ -1158,9 +1158,49 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
 
                         }
 
+                        let playerContest = {};
+                        playerContest.id = newContestId;
+                        if (playerContest.id) {
+                            let joinedTeamsCountKey = `${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`;
+                            redis.getRedis(joinedTeamsCountKey, (err, data) => {
+                                if (data) {
+                                    let userContests = data;
+                                    if (userContests[contest_id]) {
+                                        userContests[contest_id] = joinedContest + 1;
+                                    } else {
+                                        userContests[contest_id] = joinedContest + 1;
+                                    }
+                                    data = userContests;
+                                } else {
+                                    data = {}
+                                    data[contest_id] = joinedContest + 1;
+                                }
+                                mqtt.publishContestTeamCounts(match_id, JSON.stringify(data));
+                                redis.setRedis(joinedTeamsCountKey, data);
+                            });
 
-                        let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
-                        redis.setRedisMyMatches(myJoinedContestListKey, {});
+                            let joinedContestCountData = {};
+                            joinedContestCountData[contest_id] = joinedContest + 1;
+                            mqtt.publishContestTeamCounts(match_id, JSON.stringify(joinedContestCountData));
+
+                            redis.redisObj.get('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id, (err, data) => {
+                                let count = (data) ? parseInt(data) : 1;
+                                // mqtt.publishUserJoinedTeamCounts(match_id,user_id,JSON.stringify({team_count:count}))
+                                redis.redisObj.del('user-teams-count-' + match_id + '-' + match_sport + '-' + user_id) //force user to get data from db
+                            });
+
+                            let joinedContestKey = `${RedisKeys.CONTEST_JOINED_LIST}${series_id}-${match_id}-${user_id}`;
+                            redis.redisObj.del(joinedContestKey); //force user to get data from db
+
+                            if (_.isEmpty(matchContestData)) {
+                                await MatchContest.findOneAndUpdate({ _id: matchContest._id }, { $inc: { joined_users: 1 } }, { new: true });
+                            }
+    
+                            let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
+                            redis.setRedisMyMatches(myJoinedContestListKey, {});
+                            return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
+                        }
+                        
                     } catch (error) {
                         console.log('error in JC at line 428******* at', error);
                         await redis.redisObj.decrby(mcontestIncKey, 1);
