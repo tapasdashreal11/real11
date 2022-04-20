@@ -423,7 +423,7 @@ module.exports = async (req, res) => {
                                             }
                                             let totalEntryAmount = cashAmount + winAmount + bonusAmount + extraAmount;
 
-                                            redis.redisObj.get(mcontestIncKey, async (erri, dataInc) => {
+                                            redis.redisForContestObj.get(mcontestIncKey, async (erri, dataInc) => {
                                                 let mIcount = (dataInc) ? parseInt(dataInc) : 0;
                                                 let totalBeforJoin = mIcount + totalTeamJoinedCount;
                                                 if (mIcount >= contestData.contest_size && infinteStatus) {
@@ -434,9 +434,9 @@ module.exports = async (req, res) => {
                                                     return res.send(ApiUtility.failed(mszSlot));
                                                 } else {
                                                     console.log("test*****************", mIcount);
-                                                    let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
+                                                    let mcRedisIncData = await redis.redisForContestObj.incrby(mcontestIncKey, totalTeamJoinedCount);
                                                     joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
-                                                    if ((mcRedisIncData < contestData.contest_size) || (contestData && contestData.contest_size == 0 && contestData.infinite_contest_size == 1)) {
+                                                    if ((mcRedisIncData <= contestData.contest_size) || (contestData && contestData.contest_size == 0 && contestData.infinite_contest_size == 1)) {
                                                         let joinStatus = false;
                                                         joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
                                                         if (joinStatus) {
@@ -700,14 +700,14 @@ module.exports = async (req, res) => {
                                                                             } else {
                                                                                 await session.abortTransaction();
                                                                                 session.endSession();
-                                                                                await redis.redisObj.decrby(mcontestIncKey, totalTeamJoinedCount);
+                                                                                await redis.redisForContestObj.decrby(mcontestIncKey, totalTeamJoinedCount);
                                                                                 return res.send(ApiUtility.failed("Somehing went wrong1."));
                                                                             }
                                                                         } catch (error) {
                                                                             console.log("error", error)
                                                                             await session.abortTransaction();
                                                                             session.endSession();
-                                                                            await redis.redisObj.decrby(mcontestIncKey, totalTeamJoinedCount);
+                                                                            await redis.redisForContestObj.decrby(mcontestIncKey, totalTeamJoinedCount);
                                                                             setTranscation(decoded, match_sport, contest_id, totalTeamJoinedCount)
                                                                             return res.send(ApiUtility.failed("Somehing went wrong2."));
                                                                         } finally {

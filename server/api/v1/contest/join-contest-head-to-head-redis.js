@@ -118,7 +118,7 @@ module.exports = async (req, res) => {
                                         } else {
                                             let mcontestIncKey = 'mci_' + match_id + '_' + match_sport + '_' + matchContestData.contest_id;
                                             // This block for when the user did join this contest
-                                            redis.redisObj.get(mcontestIncKey, async (erri, dataInc) => {
+                                            redis.redisForContestObj.get(mcontestIncKey, async (erri, dataInc) => {
                                                 let mIcount = (dataInc) ? parseInt(dataInc) : 0;
                                                 let totalBeforJoin = mIcount + 1;
                                                 if (mIcount >= contestData.contest_size && infinteStatus) {
@@ -134,7 +134,7 @@ module.exports = async (req, res) => {
                                                 } else {
                                                     // contest is now available 
                                                     let totalTeamJoinedCount = 1;
-                                                    let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
+                                                    let mcRedisIncData = await redis.redisForContestObj.incrby(mcontestIncKey, totalTeamJoinedCount);
                                                     if (mcRedisIncData < contestData.contest_size) {
                                                         const doc = await MatchContest.findOneAndUpdate({ _id: matchContestData._id }, { $inc: { joined_users: 1 } }, { new: true });
                                                         let joinedContestCount = doc.joined_users;
@@ -221,7 +221,7 @@ module.exports = async (req, res) => {
                                              * take steps to join the contest else gives the msz to user. 
                                              */
                                             let mcontestIncKey = 'mci_' + match_id + '_' + match_sport + '_' + contest_id;
-                                            redis.redisObj.get(mcontestIncKey, async (erri, dataInc) => {
+                                            redis.redisForContestObj.get(mcontestIncKey, async (erri, dataInc) => {
                                                 let mIcount = (dataInc) ? parseInt(dataInc) : 0;
                                                 let totalBeforJoin = mIcount + 1;
                                                 if (mIcount < contestData.contest_size && infinteStatus) {
@@ -562,7 +562,7 @@ module.exports = async (req, res) => {
 
                                                                                     try {
                                                                                         if (_.has(contest, "player_team_id") && _.has(contest, "team_count") && _.has(contest, "team_name") && contest.team_name != '' && contest.player_team_id != null && contest.player_team_id != '' && contest.team_count != null && contest.team_count != '' && contest.team_count > 0) {
-                                                                                            let mcRedisJoinedInc = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
+                                                                                            let mcRedisJoinedInc = await redis.redisForContestObj.incrby(mcontestIncKey, totalTeamJoinedCount);
                                                                                             if (mcRedisJoinedInc <= contestData.contest_size && infinteStatus) {
                                                                                                 isIncrBy = true;
                                                                                                 const docNew = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: 1 } }, { new: true });
@@ -583,7 +583,7 @@ module.exports = async (req, res) => {
                                                                                             } else if (mcRedisJoinedInc > contestData.contest_size && infinteStatus) {
                                                                                                 await session.abortTransaction();
                                                                                                 session.endSession();
-                                                                                                await redis.redisObj.decrby(mcontestIncKey, totalTeamJoinedCount);
+                                                                                                await redis.redisForContestObj.decrby(mcontestIncKey, totalTeamJoinedCount);
                                                                                                 return res.send(ApiUtility.failed("This contest is full.Please join another contest!!"));
                                                                                             } else {
                                                                                                 await session.abortTransaction();
@@ -601,7 +601,7 @@ module.exports = async (req, res) => {
                                                                                         await session.abortTransaction();
                                                                                         session.endSession();
                                                                                         if (isIncrBy) {
-                                                                                            await redis.redisObj.decrby(mcontestIncKey, totalTeamJoinedCount);
+                                                                                            await redis.redisForContestObj.decrby(mcontestIncKey, totalTeamJoinedCount);
                                                                                             await setTranscation(decoded, match_sport, contest_id);
                                                                                         }
                                                                                         return res.send(ApiUtility.failed("Something went wrong.Please try again!!"));
@@ -1150,14 +1150,14 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                 } else {
                                     await session.abortTransaction();
                                     session.endSession();
-                                    await redis.redisObj.decrby(mcontestIncKey, 1);
+                                    await redis.redisForContestObj.decrby(mcontestIncKey, 1);
                                     return res.send(ApiUtility.failed("Player team not found. Please try again!!"));
                                 }
                             } catch (ssErr) {
                                 console.log('ssErr***', ssErr);
                                 await session.abortTransaction();
                                 session.endSession();
-                                await redis.redisObj.decrby(mcontestIncKey, 1);
+                                await redis.redisForContestObj.decrby(mcontestIncKey, 1);
                                 //await setTranscation(decoded, match_sport, contest_id);
                                 return res.send(ApiUtility.failed("Something went wrong.Please try again!!"));
                             }
@@ -1272,13 +1272,13 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
 
                     } catch (error) {
                         console.log('error in JC at line 428******* at', error);
-                        await redis.redisObj.decrby(mcontestIncKey, 1);
+                        await redis.redisForContestObj.decrby(mcontestIncKey, 1);
                         return res.send(ApiUtility.failed(error.message));
                     }
 
                 } else {
                     console.log("check balance error. ");
-                    await redis.redisObj.decrby(mcontestIncKey, 1);
+                    await redis.redisForContestObj.decrby(mcontestIncKey, 1);
                     return res.send(ApiUtility.failed("Something went wrong!"));
                 }
             } catch (errrr) {
