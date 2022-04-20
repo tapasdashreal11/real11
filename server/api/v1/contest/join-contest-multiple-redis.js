@@ -694,7 +694,7 @@ module.exports = async (req, res) => {
 
                                                                                     let matchContestUserKey = RedisKeys.MY_MATCHES_LIST + user_id + "_" + match_sport;
                                                                                     console.log("test for results",results);
-                                                                                    redis.setRedisMyMatches(matchContestUserKey, results);
+                                                                                    redis.setRedisMyMatches(matchContestUserKey, []);
                                                                                 }
                                                                                 return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                                             } else {
