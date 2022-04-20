@@ -136,7 +136,6 @@ module.exports = async (req, res) => {
                                                     let totalTeamJoinedCount = 1;
                                                     let mcRedisIncData = await redis.redisObj.incrby(mcontestIncKey, totalTeamJoinedCount);
                                                     if (mcRedisIncData < contestData.contest_size) {
-                                                        console.log("matchContestData****",matchContestData);
                                                         const doc = await MatchContest.findOneAndUpdate({ _id: matchContestData._id }, { $inc: { joined_users: 1 } }, { new: true });
                                                         let joinedContestCount = doc.joined_users;
                                                         if(joinedContestCount>contestData.contest_size){
@@ -869,7 +868,6 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                 let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
                 if (contestType == 'Paid') {
                     // work for user rentation and cal amount for data
-
                     //let fileds = {match_name:1,match_id:1,user_id:1,series_id:1,is_offer_type:1,contest_ids:1,sport:1,offer_amount:1,offer_percent:1,is_offer_repeat:1};
                     let rdata = await UserAnalysis.findOne({ user_id: user_id, match_id: decoded['match_id'], sport: match_sport });
                     let cSaleData = await CouponSale.findOne({ user_id: ObjectId(user_id), status: 1, expiry_date: { $gte: new Date() } });
@@ -1159,6 +1157,61 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
 
                         }
 
+                        /**
+                         * This section is used to calculate the retention bonous after join and update the data in db
+                         */
+
+                        if ((contestType == "Paid" && totalEntryAmount == calEntryFees) || (calEntryFees == 0 && userOfferAmount > 0 && contestType == "Paid")) {
+
+                            // await Contest.saveJoinContestDetailNew(decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
+
+                            if (retention_bonus_amount > 0 && userBounousData && userBounousData._id && isOfferused) {
+
+                                if (userBounousData.is_offer_type == 1) {
+                                    await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_amount": -retention_bonus_amount } });
+                                    userBounousData.offer_amount = ((userBounousData.offer_amount) - retention_bonus_amount);
+                                    redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
+                                } else if (userBounousData.is_offer_type == 2 && userBounousData.is_offer_repeat && userBounousData.is_offer_repeat == 2) {
+                                    let percent = userBounousData.offer_percent ? parseFloat(userBounousData.offer_percent) : 0;
+                                    await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $inc: { "offer_percent": -percent } });
+
+                                    //redis.userAnalysisRedisObj.del(redisKeyForRentation);
+                                    userBounousData.offer_percent = 0;
+                                    redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
+
+                                }
+                                else if (userBounousData.is_offer_type == 3 && userBounousData.is_offer_repeat && userBounousData.is_offer_repeat == 2) {
+                                    let pContestId = ObjectId(contest_id);
+                                    let prContestId = matchContest && matchContest.parent_contest_id ? ObjectId(matchContest.parent_contest_id) : pContestId;
+                                    let cBonus = userBounousData && userBounousData.contest_bonous ? userBounousData.contest_bonous : [];
+                                    let c_bonous = [];
+                                    cBonus.find(function (e2) {
+                                        if (ObjectId(e2.contest_id).equals(ObjectId(prContestId)) || ObjectId(e2.contest_id).equals(ObjectId(pContestId))) {
+                                        } else { c_bonous.push(e2); }
+                                    });
+                                    userBounousData.contest_bonous = c_bonous;
+                                    await UserAnalysis.updateOne({ _id: ObjectId(userBounousData._id) }, { $set: { "contest_bonous": c_bonous } });
+                                    redis.setRedisForUserAnaysis(redisKeyForRentation, userBounousData);
+                                }
+
+                            }
+
+                        }
+
+                        /**
+                         * Set User category after contest join in redis.if new user is then add entry in db
+                         */
+                        setCategoryUser(contestData, authUser, user_id);
+
+                        /**
+                         * Reset the joined contest list after user join contest
+                         */
+
+                        let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
+                        redis.setRedisMyMatches(myJoinedContestListKey, {});
+
+
+
                         let playerContest = {};
                         playerContest.id = newContestId;
                         if (playerContest.id) {
@@ -1196,9 +1249,8 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                             if (_.isEmpty(matchContestData)) {
                                 await MatchContest.findOneAndUpdate({ _id: matchContest._id }, { $inc: { joined_users: 1 } }, { new: true });
                             }
-    
-                            let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
-                            redis.setRedisMyMatches(myJoinedContestListKey, {});
+                            let matchContestUserKey = RedisKeys.MY_MATCHES_LIST + user_id + "_" + match_sport;
+                            redis.setRedisMyMatches(matchContestUserKey, []);
                             return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                         }
                         

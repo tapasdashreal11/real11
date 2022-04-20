@@ -693,6 +693,7 @@ module.exports = async (req, res) => {
                                                                                     redis.redisObj.del(joinedContestKey); //force user to get data from db
 
                                                                                     let matchContestUserKey = RedisKeys.MY_MATCHES_LIST + user_id + "_" + match_sport;
+                                                                                    console.log("test for results",results);
                                                                                     redis.setRedisMyMatches(matchContestUserKey, results);
                                                                                 }
                                                                                 return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
