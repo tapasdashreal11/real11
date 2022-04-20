@@ -706,7 +706,11 @@ module.exports = async (req, res) => {
                                                                                      * This is used to send join contest data event to appsflyer
                                                                                      */
                                                                                     setJoinContestDataToAppsflyer(authUser, match_id, sport, contest_id);
-
+                                                                                    /**
+                                                                                     * This is used to reset my match list
+                                                                                     */
+                                                                                    let matchContestUserKey = RedisKeys.MY_MATCHES_LIST + user_id + "_" + match_sport;
+                                                                                    redis.setRedisMyMatches(matchContestUserKey, []);
                                                                                     /**
                                                                                      * This is finla response after successfull contest join
                                                                                      */
