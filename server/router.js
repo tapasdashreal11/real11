@@ -402,7 +402,7 @@ router.get('/api/v1/view-add-cash-coupon',auth.authenticate.jwtLogin,redis.cache
 router.post('/api/v1/generate-phonepe-checksum',auth.authenticate.jwtLogin, generatePhonePeChecksum);
 router.post('/api/v1/check-phonepe-transaction-status',auth.authenticate.jwtLogin, checkPhonePeTransactionStatus);
 router.post('/api/v1/check-mobikwik-transaction-status',auth.authenticate.jwtLogin, checkMobikwikTransactionStatus);
-router.post('/api/v1/payUmoneyCheckStatus', auth.authenticate.jwtLogin, generatePayUMoneyHash);
+router.post('/api/v1/generate-payumoney-hash', auth.authenticate.jwtLogin, generatePayUMoneyHash);
 
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
