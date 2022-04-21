@@ -141,7 +141,8 @@ const {
     generatePhonePeChecksum,
     checkPhonePeTransactionStatus,
     checkMobikwikTransactionStatus,
-    generatePayUMoneyHash
+    generatePayUMoneyHash,
+    checkPayUMoneyTransactionStatus
 } = require('./api/v1/transaction.api');
 
 const { matchList,fiveOverliveFantasyMatchList } = require('./api/v1/contest/match-list');
@@ -403,6 +404,7 @@ router.post('/api/v1/generate-phonepe-checksum',auth.authenticate.jwtLogin, gene
 router.post('/api/v1/check-phonepe-transaction-status',auth.authenticate.jwtLogin, checkPhonePeTransactionStatus);
 router.post('/api/v1/check-mobikwik-transaction-status',auth.authenticate.jwtLogin, checkMobikwikTransactionStatus);
 router.post('/api/v1/generate-payumoney-hash', auth.authenticate.jwtLogin, generatePayUMoneyHash);
+router.post('/api/v1/check-payumoney-transaction-status',auth.authenticate.jwtLogin, checkPayUMoneyTransactionStatus);
 
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
@@ -436,6 +438,7 @@ router.post('/cron/paytmwebhook', function(req, res) {
 });
 
 router.post('/payumoney/webhook', function(req, res) {
+    // https://real11.biz/payumoney/webhook
     console.log("payumoney callback data", req.body)
     if (req.body.status && req.body.status == "Success") {
         updateTransactionFromWebhook(req.body.merchantTransactionId, 'payumoney', req.body.amount);

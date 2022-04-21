@@ -1503,7 +1503,7 @@ module.exports = {
                 }
             });
         } catch(error) {
-            console.log(error);
+            console.log("check mobikwik txn status > ",error);
             return res.send(ApiUtility.failed(error.message));
         }
     },
@@ -1538,8 +1538,30 @@ module.exports = {
         }
     },
     checkPayUMoneyTransactionStatus: async(req,res) => {
-        console.log(req.body);
-        return false;
+        // console.log(req.body);
+        // return false;
+        try {
+            let transactionId   =   req.body.transaction_id;
+            const userId = req.userId;
+            const txnAmount = req.body.amount ? req.body.amount : 0;
+            if(txnAmount > 0) {
+                await checkPayUMoneyStatus(transactionId, async function(result) {
+                    let response    =   JSON.parse(result);
+                    // console.log(response.transaction_details[transactionId]);
+                    // return false
+                    if(response && response.status === 1 && response.transaction_details && response.transaction_details[transactionId]) {
+                        return res.send(ApiUtility.success(response.transaction_details[transactionId], "Success."));
+                    } else {
+                        return res.send(ApiUtility.failed("Your transaction has been failed."));
+                    }
+                });
+            } else {
+                return res.send(ApiUtility.failed("Your transaction has been failed."));
+            }
+        } catch(error) {
+            console.log("check payUmoeny txn status > ",error);
+            return res.send(ApiUtility.failed(error.message));
+        }
     }
 }
 
@@ -1848,6 +1870,32 @@ async function checkMobikwikStatus(txnId, cb) {
     request(options, function (error, response) {
         if (error) throw new Error(error);
         // console.log(response.body, "Mobikwik txn_status");
+        cb(response.body);
+    });
+}
+
+async function checkPayUMoneyStatus(txnId, cb) {
+    let hashKey =   sha512(`${process.env.PAYUMONEY_KEY}|verify_payment|${txnId}|${process.env.PAYUMONEY_SALT}`);
+
+    let formData    =   {
+        'key': process.env.PAYUMONEY_KEY,
+        'command': 'verify_payment',
+        'var1': txnId,
+        'hash': hashKey
+    };
+    var options = {
+        'method': 'POST',
+        'url': 'https://info.payu.in/merchant/postservice?form=2',
+        'headers': {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        form: formData
+    };
+
+    request(options, function (error, response) {
+        if (error) throw new Error(error);
+        // console.log(response.body, "PayUMoney txn_status");
         cb(response.body);
     });
 }
