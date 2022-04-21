@@ -1086,9 +1086,10 @@ module.exports = {
                             _.forEach(pleasrTeamData, async function (i, k) {
                                 var pT = await PlayerTeam.findOne({'_id':decoded['team_id'][k]});
                                 var count =  pT && pT.team_count ? pT.team_count:1;
+                                let sport = liveMatch && liveMatch.sport ? liveMatch.sport:1;
                                 switchTeamFn(i._id, decoded['team_id'][k],count);
                                 if (k === (decoded['team_id'].length - 1)) {
-                                    const matchContest = await MatchContest.findOne({ 'match_id': decoded['match_id'], 'series_id': decoded['series_id'], 'contest_id': decoded['contest_id'] });
+                                    const matchContest = await MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': sport, 'contest_id': decoded['contest_id'] });
                                     if (matchContest && matchContest.category_slug && (_.isEqual(matchContest.category_slug, 'head-to-head') || _.isEqual(matchContest.category_slug, 'last-man-standing'))) {
                                        if(matchContest.is_full){
                                         let leaderboardKey = 'leaderboard-' + matchContest.sport + '-' + decoded['match_id'] + '-' + decoded['contest_id'];
