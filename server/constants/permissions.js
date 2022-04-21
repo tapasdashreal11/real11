@@ -17,7 +17,7 @@ const TransactionTypesByValues =  [
   "Coupon Bonus",
   "Withdrawal",
   "Friend Used Invite Code",
-  "Withdraw Pending",
+  "Withdraw Initiated",
   "Withdraw Rejected",
   "Withdraw Confirmed",
   "Admin Added",
