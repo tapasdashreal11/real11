@@ -1512,8 +1512,8 @@ module.exports = {
         try {
             let param = req.body;
             if(param) {
-                let vasMobileSdk    =   sha512(`${param.merchant_key}|vas_for_mobile_sdk|default|${param.salt}`);
-                let paymentMobileSdk=   sha512(`${param.merchant_key}|payment_related_details_for_mobile_sdk|${param.merchant_key}:${param.email}|${param.salt}`);
+                let vasMobileSdk    =   sha512(`${process.env.PAYUMONEY_KEY}|vas_for_mobile_sdk|default|${process.env.PAYUMONEY_SALT}`);
+                let paymentMobileSdk=   sha512(`${process.env.PAYUMONEY_KEY}|payment_related_details_for_mobile_sdk|${process.env.PAYUMONEY_KEY}:${param.email}|${process.env.PAYUMONEY_SALT}`);
                 
                 let respponse   =   {
                     "vas_mobile_sdk": vasMobileSdk,
@@ -1537,6 +1537,10 @@ module.exports = {
             return res.send(ApiUtility.failed(err.message));
         }
     },
+    checkPayUMoneyTransactionStatus: async(req,res) => {
+        console.log(req.body);
+        return false;
+    }
 }
 
 async function checkPhonePeStatus(txnId, cb) {
