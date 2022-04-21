@@ -1506,7 +1506,37 @@ module.exports = {
             console.log(error);
             return res.send(ApiUtility.failed(error.message));
         }
-    }
+    },
+
+    generatePayUMoneyHash: async (req, res) => {
+        try {
+            let param = req.body;
+            if(param) {
+                let vasMobileSdk    =   sha512(`${param.merchant_key}|vas_for_mobile_sdk|default|${param.salt}`);
+                let paymentMobileSdk=   sha512(`${param.merchant_key}|payment_related_details_for_mobile_sdk|${param.merchant_key}:${param.email}|${param.salt}`);
+                
+                let respponse   =   {
+                    "vas_mobile_sdk": vasMobileSdk,
+                    "payment_mobile_sdk": paymentMobileSdk
+                }
+                return res.send(ApiUtility.success(respponse, "Success!!"));
+            } else {
+                return res.send(ApiUtility.failed("Invalid request." ));
+            }
+            
+            // sha512(`chzhybqc|check_payment|625fe36baf51741d81498775||||||||||||||P6FBpJPo7A`)
+            // let checksumString = `chzhyBqC|verify_payment|625fcc5b5db7b41b425a198d|P6FBpJPo7A`;
+            
+            // const cryp = crypto.createHash('sha512');
+            // const text = 'chzhyBqC|verify_payment|625fcc5b5db7b41b425a198d|P6FBpJPo7A';
+            // cryp.update(text);
+            // console.log(cryp.digest('hex'));
+            
+            // console.log(hash, "checksum", checksum);
+        } catch(err) {
+            return res.send(ApiUtility.failed(err.message));
+        }
+    },
 }
 
 async function checkPhonePeStatus(txnId, cb) {
