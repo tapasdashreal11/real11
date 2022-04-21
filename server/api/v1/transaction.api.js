@@ -764,6 +764,18 @@ module.exports = {
                             return res.send(ApiUtility.failed("Your transaction has been failed."));
                         }
                     });
+                } else if (decoded['gateway_name'] == 'PAYUMONEY') {
+                    await checkPayUMoneyStatus(txn_id, async function (result) {
+                        let response = JSON.parse(result);
+                        
+                        if(response && response.status === 1 && response.transaction_details && response.transaction_details[txn_id]) {
+                            await updateTransactionAllGetway(decoded, function (txn_res) {
+                                return res.send(txn_res);
+                            });
+                        } else {
+                            return res.send(ApiUtility.failed("Your transaction has been failed."));
+                        }
+                    });
                 } else {
                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                 }
