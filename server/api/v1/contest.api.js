@@ -1097,9 +1097,9 @@ module.exports = {
                                             match_id: decoded['match_id'],
                                             sport: matchContest.sport,
                                             contest_id: decoded['contest_id'] ,
-                                           }).limit(10).sort({ _id: -1 });
+                                            }).limit(10).sort({ _id: -1 });
                                            if (matchContest.contest && matchContest.contest.contest_size == allTeams.length) {
-                                            await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                                             await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                                            }
                                         }
                                         
