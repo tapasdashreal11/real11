@@ -43,7 +43,9 @@ async function getMyContestList(skip, pagesize, filter, type, sort, sport, callb
 async function switchTeamFn(id, team_id,count) {
     try {
         if(!_.isNull(team_id) && !_.isNull(id)){
+            console.log("call2");
             await PlayerTeamContest.findByIdAndUpdate(ObjectId(id), { "player_team_id": team_id,"team_count":count }, { new: true });
+            console.log("call3");
         }
         
     } catch (error) {
@@ -1087,8 +1089,10 @@ module.exports = {
                                 var pT = await PlayerTeam.findOne({'_id':decoded['team_id'][k]});
                                 var count =  pT && pT.team_count ? pT.team_count:1;
                                 let sport = liveMatch && liveMatch.sport ? liveMatch.sport:1;
-                                switchTeamFn(i._id, decoded['team_id'][k],count);
+                                console.log("call1");
+                                await switchTeamFn(i._id, decoded['team_id'][k],count);
                                 if (k === (decoded['team_id'].length - 1)) {
+                                    console.log("call4");
                                     const matchContest = await MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': sport, 'contest_id': decoded['contest_id'] });
                                     if (matchContest && matchContest.category_slug && (_.isEqual(matchContest.category_slug, 'head-to-head') || _.isEqual(matchContest.category_slug, 'last-man-standing'))) {
                                        if(matchContest.is_full){
