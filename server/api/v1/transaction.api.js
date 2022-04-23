@@ -1574,7 +1574,44 @@ module.exports = {
             console.log("check payUmoeny txn status > ",error);
             return res.send(ApiUtility.failed(error.message));
         }
+    },
+    generateCashfreeToken: async(req, res) => {
+        try {
+            let param = req.body;
+            if(param) {
+                let payload =   {
+                    "orderId": param.order_id,
+                    "orderAmount": parseFloat(param.txn_amount),
+                    "orderCurrency": "INR"
+                }
+                var options = {
+                'method': 'POST',
+                'url': process.env.CASHFREE_APIENDPOINT + 'api/v2/cftoken/order',
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'x-client-id': process.env.CASHFREE_APPID,
+                    'x-client-secret': process.env.CASHFREE_SECRETKEY
+                },
+                body: JSON.stringify(payload)
+    
+                };
+                request(options, function (error, response) {
+                    if(response && response.body) {
+                        let bodyRes =   JSON.parse(response.body)
+                        if(bodyRes.status && bodyRes.status == "OK") {
+                            return res.send(ApiUtility.success({"token": bodyRes.cftoken}, bodyRes.message));
+                        }
+                    }
+                    if (error) console.log(error);
+                    return res.send(ApiUtility.failed("Something went wrong!!"));
+                });
+            }
+
+        } catch(err) {
+            return res.send(ApiUtility.failed(err.message));
+        }
     }
+    
 }
 
 async function checkPhonePeStatus(txnId, cb) {

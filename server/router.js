@@ -142,7 +142,8 @@ const {
     checkPhonePeTransactionStatus,
     checkMobikwikTransactionStatus,
     generatePayUMoneyHash,
-    checkPayUMoneyTransactionStatus
+    checkPayUMoneyTransactionStatus,
+    generateCashfreeToken
 } = require('./api/v1/transaction.api');
 
 const { matchList,fiveOverliveFantasyMatchList } = require('./api/v1/contest/match-list');
@@ -405,6 +406,7 @@ router.post('/api/v1/check-phonepe-transaction-status',auth.authenticate.jwtLogi
 router.post('/api/v1/check-mobikwik-transaction-status',auth.authenticate.jwtLogin, checkMobikwikTransactionStatus);
 router.post('/api/v1/generate-payumoney-hash', auth.authenticate.jwtLogin, generatePayUMoneyHash);
 router.post('/api/v1/check-payumoney-transaction-status',auth.authenticate.jwtLogin, checkPayUMoneyTransactionStatus);
+router.post('/api/v1/generate-cashfree-token',auth.authenticate.jwtLogin, generateCashfreeToken);
 
 
 router.post('/api/v1/change_pasword', auth.authenticate.jwtLogin, changePassword);
