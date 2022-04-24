@@ -504,6 +504,15 @@ router.post('/mobikwik/webhook', function(req, res) {
     }
 });
 
+router.post('/cashfree/webhook', function(req, res) {
+    console.log("cashfree callback data", req.body)
+    // if (req.body.STATUS && req.body.STATUS == "TXN_SUCCESS") {
+    //     updateTransactionFromWebhook(req.body.ORDERID, 'PAYTM', req.body.TXNAMOUNT);
+    // }
+    // return res.send({ status: 'success' });
+});
+
+
 // live fantasy api section 
  router.get('/api/v1/lf-match-list/:pmatch_id/:sport', liveFantasyMatchList); 
  router.get('/api/v1/lf-contest-list/:match_id/:sport/:series_id',auth.authenticate.jwtLogin,redis.cacheMiddle,liveFantasyMatchContestList);
