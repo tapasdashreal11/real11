@@ -509,7 +509,7 @@ router.post('/cashfree/webhook', function(req, res) {
     // if (req.body.STATUS && req.body.STATUS == "TXN_SUCCESS") {
     //     updateTransactionFromWebhook(req.body.ORDERID, 'PAYTM', req.body.TXNAMOUNT);
     // }
-    // return res.send({ status: 'success' });
+    return res.send({ status: 'success' });
 });
 
 
