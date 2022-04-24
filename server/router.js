@@ -506,6 +506,7 @@ router.post('/mobikwik/webhook', function(req, res) {
 
 router.post('/cashfree/webhook', function(req, res) {
     console.log("cashfree callback data", req.body)
+    console.log("cashfree callback header", req.headers);
     // if (req.body.STATUS && req.body.STATUS == "TXN_SUCCESS") {
     //     updateTransactionFromWebhook(req.body.ORDERID, 'PAYTM', req.body.TXNAMOUNT);
     // }
