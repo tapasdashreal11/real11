@@ -776,6 +776,22 @@ module.exports = {
                             return res.send(ApiUtility.failed("Your transaction has been failed."));
                         }
                     });
+                } else if (decoded['gateway_name'] == 'CASH_FREE') {
+                    await checkCashfreeStatus(txn_id, async function (result) {
+                        let response = JSON.parse(result);
+                        console.log(req.body.checksum);
+                        if(response && response.status == "OK" && response.txStatus === "SUCCESS" && response.orderStatus === "PAID" ) {
+                            // let cashFreeData = response.referenceId + response.txStatus + response.paymentMode + response.txMsg + response.txTime;
+                            // let signature = JSsha256.hmac(cashFreeData, process.env.CASHFREE_SECRETKEY);
+                            // let computedSignature = Buffer.from(signature).toString('base64')
+                            // console.log(signature, computedSignature);return false
+                            await updateTransactionAllGetway(decoded, function (txn_res) {
+                                return res.send(txn_res);
+                            });
+                        } else {
+                            return res.send(ApiUtility.failed("Your transaction has been failed."));
+                        }
+                    });
                 } else {
                     return res.send(ApiUtility.success({}, 'Amount added successfully'));
                 }
@@ -1940,6 +1956,24 @@ async function checkPayUMoneyStatus(txnId, cb) {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         form: formData
+    };
+
+    request(options, function (error, response) {
+        if (error) throw new Error(error);
+        // console.log(response.body, "PayUMoney txn_status");
+        cb(response.body);
+    });
+}
+
+async function checkCashfreeStatus(txnId, cb) {
+    var options = {
+        'method': 'GET',
+        'url': process.env.CASHFREE_APIENDPOINT + 'api/v2/orders/'+ txnId +'/status',
+        'headers': {
+            "Content-Type": "application/json",
+            "x-client-id": process.env.CASHFREE_APPID,
+            "x-client-secret": process.env.CASHFREE_SECRETKEY
+        },
     };
 
     request(options, function (error, response) {
