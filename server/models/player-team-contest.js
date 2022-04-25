@@ -86,6 +86,9 @@ var playerTeamContestSchema = new Schema({
   points: {
     type: Number, default: 0
   },
+  c_count: {
+    type: Number
+  },
   pid: {
     type: ObjectId
   },
