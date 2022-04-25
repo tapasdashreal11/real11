@@ -800,6 +800,7 @@ module.exports = {
                             teamData[teamCount]['is_aakash_team'] = _.isEqual(ObjectId(userTeam.user_id), ObjectId(aakashData._id)) ? true : false;
                             teamData[teamCount]['champ_type'] = contestDetail && contestDetail.champ_type ? contestDetail.champ_type : 0;
                             teamData[teamCount]['player_team_id'] = userTeam.player_team_id;
+                            teamData[teamCount]['c_count'] = userTeam.c_count ? userTeam.c_count:0;
                         }
                         teamCount++;
                     }
