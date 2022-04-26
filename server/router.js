@@ -143,7 +143,8 @@ const {
     checkMobikwikTransactionStatus,
     generatePayUMoneyHash,
     checkPayUMoneyTransactionStatus,
-    generateCashfreeToken
+    generateCashfreeToken,
+    updateTransactionCashfreeWebhook
 } = require('./api/v1/transaction.api');
 
 const { matchList,fiveOverliveFantasyMatchList } = require('./api/v1/contest/match-list');
@@ -442,9 +443,9 @@ router.post('/cron/paytmwebhook', function(req, res) {
 router.post('/payumoney/webhook', function(req, res) {
     // https://real11.biz/payumoney/webhook
     console.log("payumoney callback data", req.body)
-    if (req.body.status && req.body.status == "Success") {
-        updateTransactionFromWebhook(req.body.merchantTransactionId, 'payumoney', req.body.amount);
-    }
+    // if (req.body.status && req.body.status == "Success") {
+    //     updateTransactionFromWebhook(req.body.merchantTransactionId, 'payumoney', req.body.amount);
+    // }
     return res.send({ status: 'success' });
 });
 
@@ -505,11 +506,20 @@ router.post('/mobikwik/webhook', function(req, res) {
 });
 
 router.post('/cashfree/webhook', function(req, res) {
-    console.log("cashfree callback data", req.body)
+    console.log("cashfree callback data", req.body.data, req.body.data.payment.payment_method)
     console.log("cashfree callback header", req.headers);
-    // if (req.body.STATUS && req.body.STATUS == "TXN_SUCCESS") {
-    //     updateTransactionFromWebhook(req.body.ORDERID, 'PAYTM', req.body.TXNAMOUNT);
-    // }
+    if(req.body && req.body.data) {
+        let bodyRes =   req.body.data;
+        // if (bodyRes && bodyRes.order && bodyRes.order.order_id !== "" && bodyRes.payment && bodyRes.payment.payment_status == "SUCCESS"  ) {
+        //     // console.log('zsxdcfvbnb');
+        //     updateTransactionCashfreeWebhook(bodyRes, req.headers, 'CASH_FREE', function(resResult) {
+        //         return res.send(resResult)
+        //     });
+        // }
+    } else {
+        return res.send({ status: false, "message":"Something went wrong..!!" });
+    }
+
     return res.send({ status: 'success' });
 });
 
