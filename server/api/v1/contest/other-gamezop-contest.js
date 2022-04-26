@@ -1,4 +1,5 @@
 const OtherGamesContes = require('../../../models/other_games_contest');
+const UserOtherInfo = require('../../../models/user-other-info');
 const ApiUtility = require('../../api.utility');
 const ObjectId = require('mongoose').Types.ObjectId;
 const { RedisKeys } = require('../../../constants/app');
@@ -14,19 +15,21 @@ try {
         let match_sport = sport ? parseInt(sport) : 3;
         let filter = {"match_id": parseInt(match_id),"sport": match_sport,is_full: 0};
         let queryArray = [await getContestListForOthergames(filter,false)];
+        let userLudoPlayedKey = "user_ludo_played" + user_id
         const mcResult = await Promise.all(queryArray);
         if (mcResult && mcResult.length > 0) {
             let match_contest_data = mcResult && mcResult[0] ? mcResult[0] : []
             try {
                     redis.setRedis("match-contest-other-" + req.params.match_id, match_contest_data);
                     redis.setRedis("match-contest-other-view-" + user_id, {status:true});
+                    let appSData = await getPromiseForAppSetting(userLudoPlayedKey,"{}");
                     let newMatchContestData = match_contest_data;
                     let resObj = {
                         match_contest: newMatchContestData,
                         user_rentation_bonous: {},
                         user_coupons: {},
                         user_favourite_contest: {},
-                        user_ludo_played:true
+                        user_ludo_played:false
                     };
                 var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);
@@ -155,4 +158,23 @@ async function getContestListForOthergames(filter,is_all){
             reject(err);
         } 
     });
+}
+
+async function getPromiseForUserPlayed(key, user_id,defaultValue){
+    return new Promise((resolve, reject) => {
+        redis.redisObj.get(key, async (err, data) => {
+            if (err) { 
+                reject(defaultValue);
+            }
+            if (data == null) {
+                const userOtherInfo = await UserOtherInfo.findOne({user_id:user_id});
+                if(userOtherInfo && userOtherInfo._id){
+                    data = true;
+                } else {
+                    data = defaultValue;
+                }
+            }
+            resolve(data)
+        })
+    })
 }
