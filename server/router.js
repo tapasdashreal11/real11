@@ -506,13 +506,13 @@ router.post('/mobikwik/webhook', function(req, res) {
 });
 
 router.post('/cashfree/webhook', function(req, res) {
-    console.log("cashfree callback data", req.body.data, req.body.data.payment.payment_method)
+    console.log("cashfree callback data", req.body, req.body.data.payment.payment_method)
     console.log("cashfree callback header", req.headers);
     if(req.body && req.body.data) {
         let bodyRes =   req.body.data;
         // if (bodyRes && bodyRes.order && bodyRes.order.order_id !== "" && bodyRes.payment && bodyRes.payment.payment_status == "SUCCESS"  ) {
         //     // console.log('zsxdcfvbnb');
-        //     updateTransactionCashfreeWebhook(bodyRes, req.headers, 'CASH_FREE', function(resResult) {
+        //     updateTransactionCashfreeWebhook(bodyRes, req.body, req.headers, 'CASH_FREE', function(resResult) {
         //         return res.send(resResult)
         //     });
         // }
