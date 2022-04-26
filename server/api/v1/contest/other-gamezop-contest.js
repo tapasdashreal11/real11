@@ -15,21 +15,22 @@ try {
         let match_sport = sport ? parseInt(sport) : 3;
         let filter = {"match_id": parseInt(match_id),"sport": match_sport,is_full: 0};
         let queryArray = [await getContestListForOthergames(filter,false)];
-        let userLudoPlayedKey = "user_ludo_played" + user_id
+        let userLudoPlayedKey = "user_ludo_played" + user_id;
         const mcResult = await Promise.all(queryArray);
         if (mcResult && mcResult.length > 0) {
             let match_contest_data = mcResult && mcResult[0] ? mcResult[0] : []
             try {
                     redis.setRedis("match-contest-other-" + req.params.match_id, match_contest_data);
                     redis.setRedis("match-contest-other-view-" + user_id, {status:true});
-                    let appSData = await getPromiseForAppSetting(userLudoPlayedKey,"{}");
+                    let playedData = await getPromiseForUserPlayed(userLudoPlayedKey,user_id,"{}");
+                    let playedDataItem = playedData ?  JSON.parse(playedData) :{};
                     let newMatchContestData = match_contest_data;
                     let resObj = {
                         match_contest: newMatchContestData,
                         user_rentation_bonous: {},
                         user_coupons: {},
                         user_favourite_contest: {},
-                        user_ludo_played:false
+                        user_ludo_played: playedDataItem && playedDataItem.status ? playedDataItem.status : false
                     };
                 var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);
@@ -169,7 +170,8 @@ async function getPromiseForUserPlayed(key, user_id,defaultValue){
             if (data == null) {
                 const userOtherInfo = await UserOtherInfo.findOne({user_id:user_id});
                 if(userOtherInfo && userOtherInfo._id){
-                    data = true;
+                    data = JSON.stringify({status:true});
+                    redis.setRedis(key + user_id, {status:true});
                 } else {
                     data = defaultValue;
                 }
