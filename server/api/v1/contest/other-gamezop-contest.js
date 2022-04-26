@@ -30,7 +30,7 @@ try {
                         user_rentation_bonous: {},
                         user_coupons: {},
                         user_favourite_contest: {},
-                        user_ludo_played: playedDataItem && playedDataItem.status ? playedDataItem.status : false
+                       // user_ludo_played: playedDataItem && playedDataItem.status ? playedDataItem.status : false
                     };
                 var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);
