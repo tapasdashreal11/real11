@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
                 session.startTransaction();
                 try {
                     let userDataList = await User.find({ _id: { $in: playersIds},fair_play_violation:0 });
-                    if(local_match_id ==111) await checkUserLudoPlayed(user_id);
+                    
                     
                     if (userDataList && userDataList.length > 0 && matchContest && playersIds && playersIds.length == userDataList.length) {
                         local_match_id = matchContest.match_id;
@@ -55,6 +55,8 @@ module.exports = async (req, res) => {
                         let ptcArray = [];
                         let userArray = [];
                         let zop_match_id = await generateZopMatchId();
+                        if(local_match_id ==111) await checkUserLudoPlayed(userDataList);
+                        
                         if (contestType == "Paid") {
                             for (const userId of playersIds) {
                                 let singleUserDataItem = _.find(userDataList, { _id: userId });
@@ -320,13 +322,27 @@ async function calculateAdminComission(contestData) {
 /**
  * Check user is ludo player or not
  * If not then create a record during match 
- * @param {*} user_id 
+ * @param {*} userList 
  */
-async function checkUserLudoPlayed(user_id){
+async function checkUserLudoPlayed(userList){
     try{
-        let userOtherInfo = await UserOtherInfo.findOne({ user_id: ObjectId(user_id) });
-        if(!userOtherInfo._id){
-            await UserOtherInfo.create({ user_id: ObjectId(user_id), is_ludo_played:1 });
+        let UsersIds = _.map(userList,'_id');
+        let userOtherInfo = await UserOtherInfo.find({ user_id:{$in:UsersIds} });
+        if(UsersIds){
+            console.log("userOtherInfo",userOtherInfo);
+            userOtherInfo ? userOtherInfo:[]; 
+            let result = userList.filter(o1 => !userOtherInfo.some(o2 =>  o1._id.equals(ObjectId(o2.user_id))));
+           if(result && result.length>0){
+                console.log("userOtherInfo result",result);
+                let playedList =[];
+                for (const userItem of result) {
+                    playedList.push({ user_id: userItem._id, is_ludo_played:1 })
+                }
+                if(playedList && playedList.length>0){
+                    console.log(playedList);
+                    await UserOtherInfo.insertMany(playedList);
+                } 
+           }
         }
     }catch(error){
     }
