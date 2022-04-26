@@ -4,6 +4,7 @@ const ApiUtility = require('../../api.utility');
 const OtherGamesPtc = require('../../../models/other-games-ptc');
 const OtherGamesContest = require('../../../models/other_games_contest');
 const OtherGames = require('../../../models/other_game');
+const UserOtherInfo = require('../../../models/user-other-info');
 const ObjectId = require('mongoose').Types.ObjectId;
 const OtherGameTransaction = require('../../../models/other-games-transaction');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
@@ -37,6 +38,7 @@ module.exports = async (req, res) => {
                 session.startTransaction();
                 try {
                     let userDataList = await User.find({ _id: { $in: playersIds},fair_play_violation:0 });
+                    await checkUserLudoPlayed(user_id);
                     if (userDataList && userDataList.length > 0 && matchContest && playersIds && playersIds.length == userDataList.length) {
                         local_match_id = matchContest.match_id;
                         let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
@@ -186,7 +188,7 @@ module.exports = async (req, res) => {
             } else if (status == 'NO_MATCH_FOUND') {
 
                 let teamLength = playersIds && playersIds.length > 0 ? playersIds.length : 1;
-                await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0 }, { $inc: { joined_users: -teamLength } });
+                await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0,joined_users:{$gte:teamLength} }, { $inc: { joined_users: -teamLength } });
                 response["success"] = true;
                 response["matchId"] = "";
                 if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + local_match_id, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
@@ -312,5 +314,19 @@ async function calculateAdminComission(contestData) {
     } else {
         comission = 0;
         return comission;
+    }
+}
+/**
+ * Check user is ludo player or not
+ * If not then create a record during match 
+ * @param {*} user_id 
+ */
+async function checkUserLudoPlayed(user_id){
+    try{
+        let userOtherInfo = await UserOtherInfo.findOne({ user_id: ObjectId(user_id) });
+        if(!userOtherInfo._id){
+            await UserOtherInfo.create({ user_id: ObjectId(user_id), is_ludo_played:1 });
+        }
+    }catch(error){
     }
 }

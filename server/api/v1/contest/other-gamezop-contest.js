@@ -25,7 +25,8 @@ try {
                         match_contest: newMatchContestData,
                         user_rentation_bonous: {},
                         user_coupons: {},
-                        user_favourite_contest: {}
+                        user_favourite_contest: {},
+                        user_ludo_played:true
                     };
                 var finalResult = ApiUtility.success(resObj);
                 return res.send(finalResult);

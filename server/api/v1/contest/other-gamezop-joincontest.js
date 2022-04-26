@@ -509,7 +509,7 @@ async function contestAutoCreateAferJoin(contestData, contest_id, match_id, pare
             maximum_team_size: contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
         };
 
-        const dd = await OtherGamesContest.create([entityM], { session: session });
+        const dd = await OtherGamesContest.insertMany([entityM], { session: session });
 
         await session.commitTransaction();
         session.endSession();
