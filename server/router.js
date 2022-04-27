@@ -507,6 +507,7 @@ router.post('/mobikwik/webhook', function(req, res) {
 
 router.post('/cashfree/webhook', function(req, res) {
     console.log("cashfree callback data", req.body, req.body.data.payment.payment_method)
+    console.log("cashfree callback data type", typeof req.body)
     console.log("cashfree callback header", req.headers);
     if(req.body && req.body.data) {
         let bodyRes =   req.body.data;
