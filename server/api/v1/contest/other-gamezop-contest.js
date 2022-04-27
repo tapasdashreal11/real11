@@ -172,7 +172,7 @@ async function getPromiseForUserPlayed(key, user_id,defaultValue){
                 const userOtherInfo = await UserOtherInfo.findOne({user_id:user_id});
                 if(userOtherInfo && userOtherInfo._id){
                     data = JSON.stringify({status:true});
-                    redis.setRedis(key + user_id, {status:true});
+                    redis.setRedis(key, {status:true});
                 } else {
                     data = defaultValue;
                 }
