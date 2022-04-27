@@ -16,6 +16,7 @@ try {
         let filter = {"match_id": parseInt(match_id),"sport": match_sport,is_full: 0};
         let queryArray = [await getContestListForOthergames(filter,false)];
         let userLudoPlayedKey = "user_ludo_played" + user_id;
+        console.log("from contest list************************************");
         const mcResult = await Promise.all(queryArray);
         if (mcResult && mcResult.length > 0) {
             let match_contest_data = mcResult && mcResult[0] ? mcResult[0] : []
