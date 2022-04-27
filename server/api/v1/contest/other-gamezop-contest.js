@@ -15,7 +15,7 @@ try {
         let match_sport = sport ? parseInt(sport) : 3;
         let filter = {"match_id": parseInt(match_id),"sport": match_sport,is_full: 0};
         let queryArray = [await getContestListForOthergames(filter,false)];
-        let userLudoPlayedKey = "user_ludo_played" + user_id;
+        let userLudoPlayedKey = "user_ludo_played_" + user_id;
         console.log("from contest list************************************");
         const mcResult = await Promise.all(queryArray);
         if (mcResult && mcResult.length > 0) {
@@ -23,7 +23,7 @@ try {
             try {
                     redis.setRedis("match-contest-other-" + req.params.match_id, match_contest_data);
                     redis.setRedis("match-contest-other-view-" + user_id, {status:true});
-                    let playedData = await getPromiseForUserPlayed(userLudoPlayedKey,user_id,"{}");
+                    let playedData = await getPromiseForUserPlayed(userLudoPlayedKey,user_id,"{status:true}");
                     let playedDataItem = playedData ?  JSON.parse(playedData) :{};
                     let newMatchContestData = match_contest_data;
                     let resObj = {
@@ -175,6 +175,7 @@ async function getPromiseForUserPlayed(key, user_id,defaultValue){
                     redis.setRedis(key, {status:true});
                 } else {
                     data = defaultValue;
+                    redis.setRedis(key, defaultValue);
                 }
             }
             resolve(data)

@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
                         let userArray = [];
                         let zop_match_id = await generateZopMatchId();
                         if(local_match_id ==111) await checkUserLudoPlayed(userDataList);
-                        
+
                         if (contestType == "Paid") {
                             for (const userId of playersIds) {
                                 let singleUserDataItem = _.find(userDataList, { _id: userId });
@@ -336,7 +336,9 @@ async function checkUserLudoPlayed(userList){
                 console.log("userOtherInfo result",result);
                 let playedList =[];
                 for (const userItem of result) {
-                    playedList.push({ user_id: userItem._id, is_ludo_played:1 })
+                    let key = "user_ludo_played_" + userItem._id;
+                    playedList.push({ user_id: userItem._id, is_ludo_played:1 });
+                    redis.setRedis(key, {status:true});
                 }
                 if(playedList && playedList.length>0){
                     console.log(playedList);
