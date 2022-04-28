@@ -11,6 +11,7 @@ const UserCouponCodes = require('../../models/user-coupon-codes');
 const { TransactionTypes } = require('../../constants/app');
 var sha512 = require('js-sha512');
 var JSsha256 = require('js-sha256');
+var crypto = require('crypto');
 const paytm = require('../../../lib/paytm/checksum');
 const paytmAllInOne = require('../../../lib/paytm/PaytmChecksum')
 const request = require('request');
@@ -779,12 +780,8 @@ module.exports = {
                 } else if (decoded['gateway_name'] == 'CASH_FREE') {
                     await checkCashfreeStatus(txn_id, async function (result) {
                         let response = JSON.parse(result);
-                        console.log(req.body.checksum);
-                        if(response && response.status == "OK" && response.txStatus === "SUCCESS" && response.orderStatus === "PAID" ) {
-                            // let cashFreeData = response.referenceId + response.txStatus + response.paymentMode + response.txMsg + response.txTime;
-                            // let signature = JSsha256.hmac(cashFreeData, process.env.CASHFREE_SECRETKEY);
-                            // let computedSignature = Buffer.from(signature).toString('base64')
-                            // console.log(signature, computedSignature);return false
+                        // if(response && response.status == "OK" && response.txStatus === "SUCCESS" && response.orderStatus === "PAID" ) {
+                        if(response[0] && response[0].payment_status == "SUCCESS" && response[0].is_captured === true) {
                             await updateTransactionAllGetway(decoded, function (txn_res) {
                                 return res.send(txn_res);
                             });
@@ -1551,16 +1548,6 @@ module.exports = {
             } else {
                 return res.send(ApiUtility.failed("Invalid request." ));
             }
-            
-            // sha512(`chzhybqc|check_payment|625fe36baf51741d81498775||||||||||||||P6FBpJPo7A`)
-            // let checksumString = `chzhyBqC|verify_payment|625fcc5b5db7b41b425a198d|P6FBpJPo7A`;
-            
-            // const cryp = crypto.createHash('sha512');
-            // const text = 'chzhyBqC|verify_payment|625fcc5b5db7b41b425a198d|P6FBpJPo7A';
-            // cryp.update(text);
-            // console.log(cryp.digest('hex'));
-            
-            // console.log(hash, "checksum", checksum);
         } catch(err) {
             return res.send(ApiUtility.failed(err.message));
         }
@@ -1625,6 +1612,36 @@ module.exports = {
 
         } catch(err) {
             return res.send(ApiUtility.failed(err.message));
+        }
+    },
+    updateTransactionCashfreeWebhook: async(responseData, reqBody, headerRes, gateway = null, cb) => {
+        try {
+            let timestamp = headerRes["x-webhook-timestamp"]; 
+            let signature = headerRes["x-webhook-signature"]; 
+            
+            // console.log(signature, timestamp);
+            await checkCashfreeStatus(responseData.order.order_id, async function (result) {
+                let response = JSON.parse(result);
+                // console.log(response[0]);
+                // return false;
+                if(response[0] && response[0].payment_status == "SUCCESS" && response[0].is_captured === true) {
+                    // console.log(response[0].order_amount)
+                    await module.exports.updateTransactionFromWebhook(responseData.order.order_id, gateway, response[0].order_amount);
+                    cb({"message":"Amount Added successfully.", "status": true});
+                    // let signedPayload =  timestamp.concat(JSON.stringify(reqBody));
+                    // const expectedSignature = crypto
+                    //     .createHmac('sha256', process.env.CASHFREE_SECRETKEY)
+                    //     .update(signedPayload)
+                    //     .digest('base64');
+
+                    //     console.log(expectedSignature);
+                } else {
+                    cb({ "message":"Your transaction has been failed.", status:false });
+                }
+            });
+        } catch(error) {
+            console.log(error)
+            cb({ "message":error.message, status:false });
         }
     }
     
@@ -1950,7 +1967,7 @@ async function checkPayUMoneyStatus(txnId, cb) {
     };
     var options = {
         'method': 'POST',
-        'url': 'https://info.payu.in/merchant/postservice?form=2',
+        'url': process.env.PAYUMONEY_ENDPOINT + 'merchant/postservice?form=2',
         'headers': {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -1968,11 +1985,13 @@ async function checkPayUMoneyStatus(txnId, cb) {
 async function checkCashfreeStatus(txnId, cb) {
     var options = {
         'method': 'GET',
-        'url': process.env.CASHFREE_APIENDPOINT + 'api/v2/orders/'+ txnId +'/status',
+        // 'url': process.env.CASHFREE_APIENDPOINT + 'api/v2/orders/'+ txnId +'/status',
+        'url': process.env.CASHFREE_APIENDPOINT + 'pg/orders/'+ txnId +'/payments',
         'headers': {
             "Content-Type": "application/json",
             "x-client-id": process.env.CASHFREE_APPID,
-            "x-client-secret": process.env.CASHFREE_SECRETKEY
+            "x-client-secret": process.env.CASHFREE_SECRETKEY,
+            'x-api-version': '2022-01-01',
         },
     };
 
