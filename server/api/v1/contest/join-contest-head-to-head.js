@@ -130,7 +130,9 @@ module.exports = async (req, res) => {
                                                     }
                                                     var mcData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
                                                     let attendeeCount = mcData && mcData._id ? mcData.joined_users : 1;
-                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
+                                                    if(attendeeCount < contestData.contest_size){
+                                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
+                                                    }
                                                 } else {
                                                     // contest is now available 
                                                     let available = 0;
@@ -149,7 +151,9 @@ module.exports = async (req, res) => {
                                                     }
                                                     var mcData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
                                                     let attendeeCount = mcData && mcData._id ? mcData.joined_users : 1;
-                                                    await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
+                                                    if(attendeeCount < contestData.contest_size){
+                                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
+                                                    }
                                                 }
                                             } else {
                                                 return res.send(ApiUtility.failed("Please try again!!"));
@@ -164,7 +168,9 @@ module.exports = async (req, res) => {
                                         }
                                         var mcData = await MatchContest.findOne(queryMatchContest).sort({ _id: 1 });
                                         let attendeeCount = mcData && mcData._id ? mcData.joined_users : 1;
-                                        await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
+                                        if(attendeeCount < contestData.contest_size){
+                                            await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
+                                        }
                                     }
                                 } else {
                                     // This section for all contest to join contest
