@@ -15,6 +15,7 @@ module.exports = async (req, res) => {
   try {
     var response = { status: false, message: "Invalid Request", data: {} };
     let params = req.body;
+    let userId = req.userId || null;
     let constraints = {
       state: "required",
       pan_name: "required",
@@ -33,7 +34,7 @@ module.exports = async (req, res) => {
     console.log("panDataRes",panDataRes);
     if(panDataRes && panDataRes.success) {
     try {
-      let userId = req.userId || null;
+      
       // const user = await (new ModelService(Users)).getUserDetail(userId);
       let user = await Users.findOne({ _id: userId });
       let pdNumberMatch = await PanDetails.findOne({ pan_card: params.pan_number });
@@ -86,8 +87,44 @@ module.exports = async (req, res) => {
       return res.json(response);
     }
     } else {
-      response["message"] = "Invalid Details";
-      return res.json(response);
+
+      let user = await Users.findOne({ _id: userId });
+      let pdNumberMatch = await PanDetails.findOne({ pan_card: params.pan_number });
+      if(pdNumberMatch && pdNumberMatch._id){
+         response["message"] = "This Pan Card is already exists.";
+         return res.json(response);
+      } else {
+        if(user && user.status == 1) {
+          let panDetail = await PanDetails.findOne({ user_id: userId });
+          
+          let updatedData = {};
+          updatedData.state = params.state || null;
+          updatedData.pan_name = params.pan_name || null;
+          updatedData.date_of_birth = params.date_of_birth || null;
+          updatedData.pan_card = params.pan_number || null;
+          updatedData.aadhar_card = params.aadhar_card || null;
+          updatedData.user_id = userId;
+          updatedData.is_verified = 0;
+  
+          if (params.image) {
+            updatedData.pan_image = params.image;
+          }
+          if(!panDetail) {
+            await PanDetails.create(updatedData);
+          } else {
+            const result = await PanDetails.updateOne({ user_id: user._id }, { $set: updatedData });
+          }
+          await Users.updateOne({ _id: userId }, { $set: {pen_verify:1} });
+          response["message"] = "Pan card detail updated successfully!!.";
+          response["status"] = true;
+          response["data"] = updatedData;
+          return res.json(response);
+
+        } else {
+          response["message"] = "Before verifing pan, please verify your phone number.";
+          return res.json(response);
+        }
+      }
     }  
   } catch (error) {
     logger.error("LOGIN_ERROR", error.message);
