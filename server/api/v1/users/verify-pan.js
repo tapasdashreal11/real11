@@ -30,8 +30,7 @@ module.exports = async (req, res) => {
       return res.json(response);
     }
     var convertDOB = moment(params.date_of_birth,'DD-MM-YYYY').format('YYYY-MM-DD');
-    var panDataRes = await panVerification({"id_number": params.pan_number,"dob": convertDOB,"full_name": params.pan_name})
-    console.log("panDataRes",panDataRes);
+    var panDataRes = await panVerification({"id_number": params.pan_number,"dob": convertDOB,"full_name": params.pan_name});
     if(panDataRes) {
     try {
       // const user = await (new ModelService(Users)).getUserDetail(userId);
