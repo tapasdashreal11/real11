@@ -15,7 +15,6 @@ module.exports = async (req, res) => {
   try {
     var response = { status: false, message: "Invalid Request", data: {} };
     let params = req.body;
-    let userId = req.userId || null;
     let constraints = {
       state: "required",
       pan_name: "required",
@@ -30,9 +29,11 @@ module.exports = async (req, res) => {
       return res.json(response);
     }
     var convertDOB = moment(params.date_of_birth,'DD-MM-YYYY').format('YYYY-MM-DD');
-    var panDataRes = await panVerification({"id_number": params.pan_number,"dob": convertDOB,"full_name": params.pan_name});
-    if(panDataRes) {
+    var panDataRes = await panVerification({"id_number": params.pan_number,"dob": convertDOB,"full_name": params.pan_name})
+    
+    if(panDataRes && panDataRes.success) {
     try {
+      let userId = req.userId || null;
       // const user = await (new ModelService(Users)).getUserDetail(userId);
       let user = await Users.findOne({ _id: userId });
       let pdNumberMatch = await PanDetails.findOne({ pan_card: params.pan_number });
@@ -51,7 +52,7 @@ module.exports = async (req, res) => {
           updatedData.pan_card = params.pan_number || null;
           updatedData.aadhar_card = params.aadhar_card || null;
           updatedData.user_id = userId;
-          updatedData.is_verified = panDataRes && panDataRes.success ? 1 :0;
+          updatedData.is_verified = 1;
   
           if (params.image) {
             updatedData.pan_image = params.image;
@@ -61,16 +62,13 @@ module.exports = async (req, res) => {
           } else {
             const result = await PanDetails.updateOne({ user_id: user._id }, { $set: updatedData });
           }
-          let panUpdateSataus =  panDataRes && panDataRes.success ? 2 :1;
-          await Users.updateOne({ _id: userId }, { $set: {pen_verify:panUpdateSataus} });
+          await Users.updateOne({ _id: userId }, { $set: {pen_verify:2} });
           // This reward goes to refered by user.Now this is stop
           //await (new ModelService()).referalManageAtVerification(userId,true,false,false);
           let typeOfReward = TransactionTypes.FRIEND_PAN_VERIFY_XCASH_REWARD;
           // This reward to goes to refered by user. Now this is stop 
          // await (new ModelService()).referalxCashRewardAtPanVerify(userId,typeOfReward,10);
-          if(panDataRes && panDataRes.success){
-            await transactionAtPanVerfiy(user);
-           }
+          await transactionAtPanVerfiy(user);
           response["message"] = "Pan card detail updated successfully.";
           response["status"] = true;
           response["data"] = updatedData;
@@ -88,8 +86,8 @@ module.exports = async (req, res) => {
       return res.json(response);
     }
     } else {
-      // When data is not valid
-      res.send(ApiUtility.failed("Invalid data!!"));
+      response["message"] = "Invalid Details";
+      return res.json(response);
     }  
   } catch (error) {
     logger.error("LOGIN_ERROR", error.message);
