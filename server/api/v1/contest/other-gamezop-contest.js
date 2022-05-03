@@ -24,7 +24,7 @@ try {
                     redis.setRedis("match-contest-other-" + req.params.match_id, match_contest_data);
                     redis.setRedis("match-contest-other-view-" + user_id, {status:true});
                     let playedData = await getPromiseForUserPlayed(userLudoPlayedKey,user_id,"{status:true}");
-                    console.log("playedData",playedData);
+                    console.log("playedData", typeof playedData);
                     let playedDataItem = playedData ?  JSON.parse(playedData) :{};
                     let newMatchContestData = match_contest_data;
                     let resObj = {
