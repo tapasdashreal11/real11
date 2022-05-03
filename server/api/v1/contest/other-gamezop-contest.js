@@ -37,7 +37,8 @@ try {
                 return res.send(finalResult);
 
             } catch (errs) {
-                return res.send(ApiUtility.failed('Something went wrong!!'));
+                console.log("errs",errs);
+                return res.send(ApiUtility.failed('Something went wrong!!!'));
             }
 
         } else {
