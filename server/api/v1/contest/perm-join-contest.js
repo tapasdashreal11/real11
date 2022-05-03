@@ -449,4 +449,3 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
 }
 
 
-
