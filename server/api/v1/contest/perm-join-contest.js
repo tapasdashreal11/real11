@@ -269,8 +269,9 @@ async function getContestCount(contest, match_id, series_id,contest_id, contestD
                                     let queyUpdate = {'contest_id': macthContestData.parent_contest_id, match_id: match_id, sport: match_sport};
                                     if(_.isEqual(matchContest.category_slug, 'head-to-head')){
                                         queyUpdate.attendee =1;
+                                        await MatchContest.findOneAndUpdate(queyUpdate,{ $set: { attendee: 0 } });
                                     }
-                                    await MatchContest.findOneAndUpdate(queyUpdate,{ $set: { attendee: 0 } });
+                                    
                                 }
                             }
                             
