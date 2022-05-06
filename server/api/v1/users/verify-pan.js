@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
     }
     var convertDOB = moment(params.date_of_birth,'DD-MM-YYYY').format('YYYY-MM-DD');
     var panDataRes = await panVerification({"id_number": params.pan_number,"dob": convertDOB,"full_name": params.pan_name})
-    
+    console.log(panDataRes);
     if(panDataRes && panDataRes.success) {
     try {
       let userId = req.userId || null;
