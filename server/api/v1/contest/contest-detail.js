@@ -516,6 +516,8 @@ module.exports = {
                     champ_type: contestDetail && contestDetail.champ_type ? contestDetail.champ_type : 0,
                     amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget : "",
                     category_slug: matchContestDetail && matchContestDetail.category_slug ? matchContestDetail.category_slug : '',
+                    is_offerable_multiple: matchContestDetail && matchContestDetail.is_offerable_multiple && matchContestDetail.is_offerable_multiple == 1 ? true : false,
+                    offer_join_team: matchContestDetail && matchContestDetail.offer_join_team  ? matchContestDetail.offer_join_team : []
                 }
                 if (totalChildContestJoined > 0) {
                     contestData['total_child_joined'] = totalChildContestJoined;
