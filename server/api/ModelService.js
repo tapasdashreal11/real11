@@ -241,7 +241,9 @@ class ModelService {
                                         "is_attendee": {$cond: { if: { $in: [ "$$sec.category_slug", ["head-to-head","last-man-standing"] ] }, then: true, else: false }},
                                         "category_slug":{ $ifNull: [ "$$sec.category_slug", "" ] },
                                         "is_x_win": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "x_win_breakup" ] }, then: true, else: false }},
-                                        "entry_fee_ranges":"$$sec.contest.entry_fee_range"
+                                        "entry_fee_ranges":"$$sec.contest.entry_fee_range",
+                                        "offer_join_team":"$$sec.offer_join_team",
+                                        "is_offerable_multiple":"$$sec.is_offerable_multiple"
                                     }
                                 }
                             },
