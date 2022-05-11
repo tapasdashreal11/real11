@@ -689,12 +689,12 @@ module.exports = {
                             let offerList = matchContestData &&  matchContestData.offer_join_team ? matchContestData.offer_join_team :[];
                              if(offerList && offerList.length>0){
                                 offerList = offerList.sort((firstItem, secondItem) => firstItem.offer_team_no - secondItem.offer_team_no);
-                                console.log("offerList",offerList);
                                 offerList.find(listElement =>{
                                      let offeTeam = listElement.offer_team_no;
                                      let offAmount  = listElement && listElement.offer_amouunt ? listElement.offer_amouunt:0;
+                                     console.log('offeTeam',offeTeam,'offAmount',offAmount,'totalJoinedTeam',totalJoinedTeam,'calJoinTeam',calJoinTeam);
                                      if(offeTeam > totalJoinedTeam && offeTeam < calJoinTeam && offAmount>0){
-                                         console.log('offeTeam',offeTeam,'offAmount',offAmount);
+                                         console.log('offeTeam***',offeTeam,'offAmount**',offAmount);
                                         if(calEntryFees > 0){
                                             offerableAppled = false;
                                             let recalcalEntryFees = calEntryFees;
