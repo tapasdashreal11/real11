@@ -243,7 +243,7 @@ class ModelService {
                                         "is_x_win": {$cond: { if: { $eq: [ "$$sec.contest.amount_gadget", "x_win_breakup" ] }, then: true, else: false }},
                                         "entry_fee_ranges":"$$sec.contest.entry_fee_range",
                                         "offer_join_team":"$$sec.offer_join_team",
-                                        "is_offerable_multiple":"$$sec.is_offerable_multiple"
+                                        "is_offerable_multiple": {$cond: { if: { $eq: [ "$$sec.is_offerable_multiple", 1 ] }, then: true, else: false }}
                                     }
                                 }
                             },
