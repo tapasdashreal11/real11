@@ -691,7 +691,7 @@ module.exports = {
                                 offerList = offerList.sort((firstItem, secondItem) => firstItem.offer_team_no - secondItem.offer_team_no);
                                 offerList.find(listElement =>{
                                      let offeTeam = listElement.offer_team_no;
-                                     let offAmount  = listElement && listElement.offer_amouunt ? listElement.offer_amouunt:0;
+                                     let offAmount  = listElement && listElement.offer_amount ? listElement.offer_amount:0;
                                      if(offeTeam >= totalJoinedTeam && offeTeam < calJoinTeam && offAmount>0){
                                         console.log('offeTeam',offeTeam,'offAmount',offAmount,'totalJoinedTeam',totalJoinedTeam,'calJoinTeam',calJoinTeam);
                                         if(calEntryFees > 0){

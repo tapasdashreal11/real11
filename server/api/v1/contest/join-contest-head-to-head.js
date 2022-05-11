@@ -381,6 +381,34 @@ module.exports = async (req, res) => {
                                                                             retention_bonus_amount = totalOfferdAmount;
                                                                         }
                                                                     }
+                                                                } else if(matchContest && matchContest.is_offerable_multiple){
+                                                                    let mParentId = matchContest && matchContest.parent_contest_id ? matchContest.parent_contest_id :matchContest.contest_id;
+                                                                    let newJoinedParentCounts = await PlayerTeamContest.find({ 'contest_id': matchContest.contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
+                                                                    
+                                                                    if ((matchContest && matchContest.is_auto_create) || (matchContest && matchContest.contest && matchContest.contest.auto_create &&  _.isEqual( matchContest.contest.auto_create,'yes') )) {
+                                                                         newJoinedParentCounts = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
+                                                                         
+                                                                        }
+                                                                    let totalJoinedTeam = newJoinedParentCounts;
+                                                                    let calJoinTeam = 1 + totalJoinedTeam;
+                                                                    let offerList = matchContest &&  matchContest.offer_join_team ? matchContest.offer_join_team :[];
+                                                                     if(offerList && offerList.length>0){
+                                                                        offerList = offerList.sort((firstItem, secondItem) => firstItem.offer_team_no - secondItem.offer_team_no);
+                                                                        offerList.find(listElement =>{
+                                                                             let offeTeam = listElement.offer_team_no;
+                                                                             let offAmount  = listElement && listElement.offer_amount ? listElement.offer_amount:0;
+                                                                             if(offeTeam >= totalJoinedTeam && offeTeam < calJoinTeam && offAmount>0){
+                                                                                if(calEntryFees > 0){
+                                                                                    offerableAppled = false;
+                                                                                    let recalcalEntryFees = calEntryFees;
+                                                                                    calEntryFees = offAmount >= calEntryFees ? 0: (calEntryFees - offAmount );
+                                                                                    let offerdAmount = offAmount >= recalcalEntryFees ? recalcalEntryFees: offAmount;
+                                                                                    let totalOfferdAmount = retention_bonus_amount + offerdAmount;
+                                                                                    retention_bonus_amount = totalOfferdAmount;
+                                                                                }
+                                                                              }
+                                                                         });
+                                                                     }
                                                                 }
 
                                                                 if (calEntryFees > 0) {
