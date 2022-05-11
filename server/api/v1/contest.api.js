@@ -692,9 +692,8 @@ module.exports = {
                                 offerList.find(listElement =>{
                                      let offeTeam = listElement.offer_team_no;
                                      let offAmount  = listElement && listElement.offer_amouunt ? listElement.offer_amouunt:0;
-                                     console.log('offeTeam',offeTeam,'offAmount',offAmount,'totalJoinedTeam',totalJoinedTeam,'calJoinTeam',calJoinTeam);
                                      if(offeTeam >= totalJoinedTeam && offeTeam < calJoinTeam && offAmount>0){
-                                         console.log('offeTeam***',offeTeam,'offAmount**',offAmount);
+                                        console.log('offeTeam',offeTeam,'offAmount',offAmount,'totalJoinedTeam',totalJoinedTeam,'calJoinTeam',calJoinTeam);
                                         if(calEntryFees > 0){
                                             offerableAppled = false;
                                             let recalcalEntryFees = calEntryFees;
