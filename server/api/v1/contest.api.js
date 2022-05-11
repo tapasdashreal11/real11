@@ -677,7 +677,7 @@ module.exports = {
                                     retention_bonus_amount = totalOfferdAmount;
                                 }
                              } 
-                           } else if(matchContest && matchContest.is_offerable_multiple){
+                           } else if(matchContestData && matchContestData.is_offerable_multiple){
                             //let totalJoinedTeam = joinedContestWithTeamCounts;
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
                             if ((matchContestData && matchContestData.is_auto_create) || (matchContestData && matchContestData.contest && matchContestData.contest.auto_create && _.isEqual( matchContestData.contest.auto_create,'yes')) ) {
@@ -686,7 +686,7 @@ module.exports = {
                                  totalJoinedTeam = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
                             }
                             let calJoinTeam = total_team_number + totalJoinedTeam;
-                            let offerList = matchContest &&  matchContest.offer_join_team ? matchContest.offer_join_team :[];
+                            let offerList = matchContestData &&  matchContestData.offer_join_team ? matchContestData.offer_join_team :[];
                              if(offerList && offerList.length>0){
                                 offerList = offerList.sort((firstItem, secondItem) => firstItem.offer_team_no - secondItem.offer_team_no);
                                 offerList.find(listElement =>{
