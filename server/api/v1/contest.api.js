@@ -693,7 +693,7 @@ module.exports = {
                                      let offeTeam = listElement.offer_team_no;
                                      let offAmount  = listElement && listElement.offer_amouunt ? listElement.offer_amouunt:0;
                                      console.log('offeTeam',offeTeam,'offAmount',offAmount,'totalJoinedTeam',totalJoinedTeam,'calJoinTeam',calJoinTeam);
-                                     if(offeTeam > totalJoinedTeam && offeTeam < calJoinTeam && offAmount>0){
+                                     if(offeTeam >= totalJoinedTeam && offeTeam < calJoinTeam && offAmount>0){
                                          console.log('offeTeam***',offeTeam,'offAmount**',offAmount);
                                         if(calEntryFees > 0){
                                             offerableAppled = false;
