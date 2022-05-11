@@ -77,6 +77,8 @@ var matchContestSchema = new Schema({
   expect_entry_fee: { type: Number },
   contest_comment: { type: String, default: '' },
   attendee: { type: Number },
+  is_offerable_multiple: { type: Number, default:0 },
+  offer_join_team: { type: Array },
 },{
   timestamps:true
 });

@@ -677,7 +677,35 @@ module.exports = {
                                     retention_bonus_amount = totalOfferdAmount;
                                 }
                              } 
+                           } else if(matchContest && matchContest.is_offerable_multiple){
+                            //let totalJoinedTeam = joinedContestWithTeamCounts;
+                            let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
+                            if ((matchContestData && matchContestData.is_auto_create) || (matchContestData && matchContestData.contest && matchContestData.contest.auto_create && _.isEqual( matchContestData.contest.auto_create,'yes')) ) {
+                                
+                                 let mParentId = matchContestData && matchContestData.parent_contest_id ? matchContestData.parent_contest_id :matchContestData.contest_id;
+                                 totalJoinedTeam = await PlayerTeamContest.find({ 'parent_contest_id': mParentId, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
+                            }
+                            let calJoinTeam = total_team_number + totalJoinedTeam;
+                            let offerList = matchContest &&  matchContest.offer_join_team ? matchContest.offer_join_team :[];
+                             if(offerList && offerList.length>0){
+                                offerList = offerList.sort((firstItem, secondItem) => firstItem.offer_team_no - secondItem.offer_team_no);
+                                offerList.find(listElement =>{
+                                     let offeTeam = listElement.offer_team_no;
+                                     let offAmount  = listElement && listElement.offer_amouunt ? listElement.offer_amouunt:0;
+                                     if(offeTeam > totalJoinedTeam && offeTeam < calJoinTeam && offAmount>0){
+                                        if(calEntryFees > 0){
+                                            offerableAppled = false;
+                                            let recalcalEntryFees = calEntryFees;
+                                            calEntryFees = offAmount >= calEntryFees ? 0: (calEntryFees - offAmount );
+                                            let offerdAmount = offAmount >= recalcalEntryFees ? recalcalEntryFees: offAmount;
+                                            let totalOfferdAmount = retention_bonus_amount + offerdAmount;
+                                            retention_bonus_amount = totalOfferdAmount;
+                                        }
+                                      }
+                                 });
+                             }
                           }
+
                         if (userdata) {
                             if (decoded['contest_id'] || is_private_create) {
                                 if(retention_bonus_amount > 0 && !offerableAppled){
