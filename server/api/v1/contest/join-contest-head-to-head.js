@@ -382,6 +382,7 @@ module.exports = async (req, res) => {
                                                                         }
                                                                     }
                                                                 } else if(matchContest && matchContest.is_offerable_multiple){
+                                                                    // This will be used to calculate multiple_team offer 
                                                                     let mParentId = matchContest && matchContest.parent_contest_id ? matchContest.parent_contest_id :matchContest.contest_id;
                                                                     let newJoinedParentCounts = await PlayerTeamContest.find({ 'contest_id': matchContest.contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport }).countDocuments();
                                                                     
