@@ -321,6 +321,7 @@ module.exports = async (req, res) => {
                                                                     }
                                                                  } 
                                                               } else if(matchContest && matchContest.is_offerable_multiple){
+                                                                // This is used to calculate offer for multiple team  
                                                                 let totalJoinedTeam = joinedContestWithTeamCounts;
                                                                 let calJoinTeam = total_team_number + totalJoinedTeam;
                                                                 let offerList = matchContest &&  matchContest.offer_join_team ? matchContest.offer_join_team :[];
