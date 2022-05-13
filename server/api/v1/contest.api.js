@@ -677,7 +677,7 @@ module.exports = {
                                     retention_bonus_amount = totalOfferdAmount;
                                 }
                              } 
-                           } else if(matchContestData && matchContestData.is_offerable_multiple){
+                           } else if (matchContestData && matchContestData.is_offerable_multiple){
                             //let totalJoinedTeam = joinedContestWithTeamCounts;
                             // This is used to set offers for multiple team
                             let totalJoinedTeam = await PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': decoded['user_id'], 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments();
