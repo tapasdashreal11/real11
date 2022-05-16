@@ -507,7 +507,7 @@ module.exports = async (req, res) => {
                                                                                 let walletRes = await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
 
                                                                                 if (walletRes && walletRes.nModified > 0) {
-                                                                                    await Transaction.create([entity], { session: session });
+                                                                                    await Transaction.insertMany([entity], { session: session });
                                                                                     userWalletStatus = true;
                                                                                 } else {
                                                                                     userWalletStatus = false;
@@ -581,7 +581,7 @@ module.exports = async (req, res) => {
                                                                         }
                                                                     };
 
-                                                                    await Transaction.create([entity], { session: session });
+                                                                    await Transaction.insertMany([entity], { session: session });
                                                                     userWalletStatus = true;
                                                                 } else {
                                                                     userWalletStatus = false;
@@ -1260,7 +1260,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                     let walletRes = await User.updateOne({ _id: user_id }, { $set: updateUserData, $inc: { cash_balance: -cashAmount, bonus_amount: -bonusAmount, winning_balance: -winAmount, extra_amount: -extraAmount } }, sessionOpts);
 
                                     if (walletRes && walletRes.nModified > 0) {
-                                        await Transaction.create([entity], { session: session });
+                                        await Transaction.insertMany([entity], { session: session });
                                         userWalletStatus = true;
                                     } else {
                                         userWalletStatus = false;
@@ -1334,7 +1334,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                             }
                         };
 
-                        await Transaction.create([entity], { session: session });
+                        await Transaction.insertMany([entity], { session: session });
                         userWalletStatus = true;
                     } else {
                         userWalletStatus = false;
@@ -1643,7 +1643,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
 async function getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest) {
     try {
         return new Promise(async (resolve, reject) => {
-            await PlayerTeamContest.create([contest], { session: session }).then(async (newDataPTC) => {
+            await PlayerTeamContest.insertMany([contest], { session: session }).then(async (newDataPTC) => {
 
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
 
@@ -1803,7 +1803,7 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
         }
         entity.is_auto_create = 2;
         // console.log('cResult************** before');
-        const newDataC = await Contest.create([entity], { session: session });
+        const newDataC = await Contest.insertMany([entity], { session: session });
         var cResult = newDataC && newDataC.length > 0 ? newDataC[0] : {};
         let inviteCode = Helper.createUserReferal(6);
         if (cResult && cResult._id) {
@@ -1838,6 +1838,7 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
 
             entityM.is_offerable_multiple = matchContest && matchContest.is_offerable_multiple ? matchContest.is_offerable_multiple : 0;
             if(matchContest && matchContest.is_offerable_multiple){
+                // ofeer multiple then add offer data in autocreate
                 entityM.offer_join_team = matchContest && matchContest.offer_join_team ? matchContest.offer_join_team : [];
             }
             entityM.category_slug = matchContest && matchContest.category_slug ? matchContest.category_slug : '';
@@ -1864,7 +1865,7 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
                 is_private: isPrivateCreate ? 1 : 0,
                 maximum_team_size: contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : ((contestData.multiple_team == "yes") ? 9 : 1)
             };
-            const match_contest_new = await MatchContest.create([entityM], { session: session });
+            const match_contest_new = await MatchContest.insertMany([entityM], { session: session });
             if (isCommit) {
                 await session.commitTransaction();
                 session.endSession();
@@ -2073,7 +2074,7 @@ async function saveJoinContestDetailAtJoin(jcd_contest_id,session, decoded, bonu
     saveEntity.admin_comission = comission ? parseFloat(comission) : 0;
     saveEntity.player_team_contest_id = playerTeamContestId;
     saveEntity.retention_bonus = retention_bonus_amount || 0;
-    await JoinContestDetail.create([saveEntity], { session: session });
+    await JoinContestDetail.insertMany([saveEntity], { session: session });
 
 }
 
