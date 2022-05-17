@@ -100,10 +100,10 @@ module.exports = async (req, res) => {
                                 if (matchContest && matchContest.category_slug && (_.isEqual(matchContest.category_slug, 'head-to-head') || _.isEqual(matchContest.category_slug, 'last-man-standing')) && (match_sport ==1 || match_sport == 2 )) {
                                     // Check Contest as a parent contest
                                     let userPtcData = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'user_id': user_id, 'parent_contest_id': parentContestId }, { 'contest_id': 1 });
-                                    let queryMatchContest = { 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, joined_users: { $ne: 2 } };
+                                    let queryMatchContest = { 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, joined_users: { $lt: 2 } };
                                     if(_.isEqual(matchContest.category_slug, 'last-man-standing')){
                                         let lmsSize= contestData && contestData.contest_size ? contestData.contest_size:0;
-                                        queryMatchContest = { 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, joined_users: { $ne: lmsSize } };
+                                        queryMatchContest = { 'parent_contest_id': parentContestId, match_id: match_id, sport: match_sport, joined_users: { $lt: lmsSize } };
                                     }
                                     if (userPtcData && userPtcData.length > 0) {
                                         let contestIds = _.map(userPtcData, 'contest_id');
@@ -132,6 +132,8 @@ module.exports = async (req, res) => {
                                                     let attendeeCount = mcData && mcData._id ? mcData.joined_users : 1;
                                                     if(attendeeCount < contestData.contest_size){
                                                         await MatchContest.findOneAndUpdate({ contest_id: parentContestId,'match_id': decoded['match_id'], 'sport': match_sport }, { $set: { attendee: attendeeCount } });
+                                                    }else if(attendeeCount > contestData.contest_size){
+                                                        await MatchContest.findOneAndUpdate({ _id:mcData._id}, { $set: { joined_users: contestData.contest_size } });
                                                     }
                                                 } else {
                                                     // contest is now available 
