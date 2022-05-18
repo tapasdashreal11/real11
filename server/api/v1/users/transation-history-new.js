@@ -43,7 +43,11 @@ module.exports = async (req, res, dbs) => {
 						"team_name": userData.team_name || "",
 						"date": moment(i.txn_date).format("YYYY-MM-DD")
 					}
-					if(_.indexOf([3, 11, 12, 13,23], i.added_type) >=0){
+					// if(_.indexOf([3, 11, 12, 13,23], i.added_type) >=0){
+					// 	tItem['total_team_joined'] = i.total_team_joined || 1
+					// 	tItem['contest_entry_fee'] = i && i.contest_entry_fee ? parseInt(i.contest_entry_fee):0;
+					// }
+					if(_.indexOf([3], i.added_type) >=0){
 						tItem['total_team_joined'] = i.total_team_joined || 1
 						tItem['contest_entry_fee'] = i && i.contest_entry_fee ? parseInt(i.contest_entry_fee):0;
 					}
