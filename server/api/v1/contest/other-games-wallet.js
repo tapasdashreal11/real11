@@ -85,6 +85,7 @@ module.exports = {
                         try {
                             redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                                 const ludoOffer = await LudoOffer.findOne({user_id:ObjectId(req.userId),match_id:parseInt(match_id),status: 1 });
+                                console.log(ludoOffer);
                                 if(ludoOffer && ludoOffer._id){
                                     let cBonus =  ludoOffer && ludoOffer.contest_bonous?ludoOffer.contest_bonous:[]; 
                                     let cBonusItem =  cBonus.find(function(el){
