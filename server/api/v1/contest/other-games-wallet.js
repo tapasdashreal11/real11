@@ -86,7 +86,6 @@ module.exports = {
                             redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                                 const ludoOffer = await LudoOffer.findOne({});
                                 console.log(ludoOffer);
-                                let offerContests = rdata.contest_ids || [];
                                 let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):matchContestData.contest_id;
                                 if(ludoOffer && ludoOffer._id){
                                     let cBonus =  ludoOffer && ludoOffer.contest_bonous?ludoOffer.contest_bonous:[]; 
