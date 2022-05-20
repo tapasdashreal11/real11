@@ -101,6 +101,7 @@ module.exports = {
                         {
                             $match: { 'series_id': decoded['series_id'], 'match_id': decoded['match_id'] }
                         },
+                        { $sort: {point:-1} },
                         {
                             $group: {
                                 _id: "$team_id",
