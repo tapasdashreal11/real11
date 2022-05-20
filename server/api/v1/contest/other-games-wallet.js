@@ -42,6 +42,7 @@ module.exports = {
                 adminPer = 0; //(setting.admin_percentage) ? setting.admin_percentage : 0;
                 let useableBonusPer = adminPer;
                 let entryFee = 0;
+                    
                     matchContestData = await OtherGamesContest.findOne({ 'contest_id': decoded['contest_id'],sport: match_sport, match_id: match_id });
                     if(matchContestData && matchContestData._id && matchContestData.contest){
                         if (decoded['contest_id']) {
@@ -86,6 +87,7 @@ module.exports = {
                             redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
                                 const ludoOffer = await LudoOffer.findOne({user_id:ObjectId(decoded['user_id']),status: 1,expiry_date:{$gte:new Date()} });
                                 console.log(ludoOffer);
+                                console.log("req.userId***",req.userId);
                                 let pContestId = contest_id; //ObjectId(contest_id);
                                 let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):matchContestData.contest_id;
                                 if(ludoOffer && ludoOffer._id){
