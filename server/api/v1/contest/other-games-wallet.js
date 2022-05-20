@@ -84,7 +84,7 @@ module.exports = {
                         let calEntryFees = entryFee;
                         try {
                             redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
-                                const ludoOffer = await LudoOffer.findOne({});
+                                const ludoOffer = await LudoOffer.findOne({user_id:ObjectId(decoded['user_id']),status: 1,expiry_date:{$gte:new Date()} });
                                 console.log(ludoOffer);
                                 let pContestId = contest_id; //ObjectId(contest_id);
                                 let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):matchContestData.contest_id;
