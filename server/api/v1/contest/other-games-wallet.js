@@ -1,6 +1,7 @@
 const { ObjectId } = require('mongodb');
 const OtherGamesContest = require('../../../models/other_games_contest');
 const CouponSale = require("../../../models/coupon-sale");
+const LudoOffer = require("../../../models/ludo_offer");
 const User = require('../../../models/user');
 const ApiUtility = require('../../api.utility');
 const config = require('../../../config');
@@ -45,15 +46,12 @@ module.exports = {
                     if(matchContestData && matchContestData._id && matchContestData.contest){
                         if (decoded['contest_id']) {
                             let contestData = {};  // await OtherGamesContest.findOne({ 'contest_id': decoded['contest_id'] });
-                            const cSaleData = await CouponSale.findOne({user_id:ObjectId(req.userId),status: 1,expiry_date:{$gte:new Date()} });
-                            //console.log("cSaleData***",cSaleData);
+                            //console.log("ludoOffer***",ludoOffer);
                              
                              contestData = matchContestData.contest;
 
                              entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
-                             if(cSaleData && cSaleData._id){
-                                couponSaleData =cSaleData.coupon_credit > cSaleData.coupon_used ? cSaleData.coupon_contest_data:[]; 
-                             }
+                             
                             if (matchContestData && matchContestData.usable_bonus_time) {
                                 //////console.log("matchInviteCode", matchContest, moment().isBefore(matchContest.usable_bonus_time))
                                 if (moment().isBefore(matchContestData.usable_bonus_time)) {
@@ -86,55 +84,22 @@ module.exports = {
                         let calEntryFees = entryFee;
                         try {
                             redis.getRedisForUserAnaysis(redisKeyForRentation, async (err, rdata) => {
-                                // console.log('couponSaleData****',couponSaleData,"matchContestData.category_id",matchContestData.category_id);
-                                let catid = matchContestData.category_id;
-                                if(couponSaleData && couponSaleData.length>0){
-                                    couponSaleData = couponSaleData.map(item => {
-                                        let container = {};
-                                        container.category_id = ObjectId(item.category_id);
-                                        container.offer_data = item.offer_data;
-                                        return container;
-                                    });
-                                    let  constestIdsData  =  _.find(couponSaleData,{category_id:ObjectId(catid)});
-                                    if(constestIdsData && constestIdsData.category_id){
-                                       let offDataArray = constestIdsData.offer_data;
-                                       let offDataItem = _.find(offDataArray,{amount:entryFee});
-                                          if(offDataItem){
-                                           userOfferAmount = offDataItem.offer ? offDataItem.offer : 0;
-                                           calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
-                                           retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                const ludoOffer = await LudoOffer.findOne({user_id:ObjectId(req.userId),match_id: match_id,status: 1,expiry_date:{$gte:new Date()} });
+                                if(ludoOffer && ludoOffer._id){
+                                    let cBonus =  ludoOffer && ludoOffer.contest_bonous?ludoOffer.contest_bonous:[]; 
+                                    let cBonusItem =  cBonus.find(function(el){
+                                        if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))){
+                                            return el
                                           }
-                                           
-                                     }
-                                   } 
-                                   if (rdata && entryFee>0 && userOfferAmount ==0) {
-                                    // console.log('popup redis before join contest *********');
-                                    userOfferAmount = rdata.is_offer_type == 1 ? rdata.offer_amount:eval((rdata.offer_percent/100)*entryFee);
-                                    let pContestId = contest_id; //ObjectId(contest_id);
-                                    let offerContests = rdata.contest_ids || [];
-                                    let prContestId = matchContestData && matchContestData.parent_contest_id ? String(matchContestData.parent_contest_id):pContestId;
-                                    let cBonus =  rdata && rdata.contest_bonous?rdata.contest_bonous:[];  //config && config.contest_bonous ? config.contest_bonous:[];
-                                    let cBonusItem = {};
-                                    if(rdata.is_offer_type == 3){
-                                        cBonusItem =  cBonus.find(function(el){
-                                            if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))){
-                                                return el
-                                            }
                                         });
-                                    }
-                                    if((userOfferAmount > 0 && rdata.is_offer_type === 1) || (userOfferAmount > 0 && rdata.is_offer_type == 2 && offerContests.length > 0  && (_.includes(offerContests,pContestId) || _.includes(offerContests,prContestId)))){
-                                        calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
-                                        retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
-                                        
-                                    } else if(rdata.is_offer_type == 3 && cBonusItem && cBonusItem.contest_id ){
+                                     if(cBonusItem && cBonusItem.contest_id ){
                                         userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
                                         calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                         retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
                                         is_offer_applied = true;
-                                    }    
+                                      }   
+                                    
                                 }
-                                
-                                 
                                 if (userdata) {
                                     if (decoded['contest_id']) {
                                         if(retention_bonus_amount > 0){
@@ -168,6 +133,7 @@ module.exports = {
                                     winningBalance = userdata.winning_balance;
                                    
                                 }
+                                console.log("retention_bonus_amount",retention_bonus_amount);
                                 data['cash_balance'] = (cashBalance) ? cashBalance : 0;
                                 data['winning_balance'] = (winningBalance) ? winningBalance : 0;
                                 data['usable_bonus'] = usableAmt ? parseFloat(usableAmt.toFixed(2)) : 0;
