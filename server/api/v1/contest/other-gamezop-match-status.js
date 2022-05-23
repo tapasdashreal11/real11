@@ -13,6 +13,7 @@ const { Validator } = require("node-input-validator");
 const { startSession } = require('mongoose');
 const moment = require('moment');
 const redis = require('../../../../lib/redis');
+const LudoOffer = require("../../../models/ludo_offer");
 
 module.exports = async (req, res) => {
     try {
@@ -33,6 +34,7 @@ module.exports = async (req, res) => {
             let playersIds = players.map(s => ObjectId(s));
             let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
             local_match_id = matchContest && matchContest.match_id ? matchContest.match_id:111;
+            const ludoOffer = await LudoOffer.find({match_id:local_match_id,status: 1,user_id:{ $in: playersIds},expiry_date:{$gte:new Date()} });
             if (status == 'MATCH_FOUND' && matchContest && matchContest.is_full) {
                 const session = await startSession()
                 session.startTransaction();
@@ -47,15 +49,19 @@ module.exports = async (req, res) => {
                         let contestType = contestData.contest_type;
                         let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                         let contestSizeCal = (contestData && contestData.contest_size) ? (contestData.contest_size) : (contestData.infinite_contest_size ? 2 : 2);
-                        let calEntryFees = entryFee;
-                        let retention_bonus_amount = 0;
+                        
+                        
                         let date = new Date();
                         let caculateAdminComision = await calculateAdminComission(contestData);
                         let transactionArray = [];
                         let ptcArray = [];
                         let userArray = [];
+                        let userOfferArray =[]
                         let zop_match_id = await generateZopMatchId();
                         if(local_match_id ==111) await checkUserLudoPlayed(userDataList);
+
+                        let pContestId = matchContest.contest_id;
+                        let prContestId = matchContest && matchContest.parent_contest_id ? String(matchContest.parent_contest_id):matchContest.contest_id;
 
                         if (contestType == "Paid") {
                             for (const userId of playersIds) {
@@ -70,7 +76,35 @@ module.exports = async (req, res) => {
                                 contest.team_name = singleUserDataItem.team_name;
                                 contest.total_amount = contestData.entry_fee;
                                 contest.avatar = singleUserDataItem.avatar || '';
+                                let retention_bonus_amount = 0;
+                                let calEntryFees = entryFee;
+                                // Check user has ludo offer 
+                                if(ludoOffer && ludoOffer.length>0){
+                                    let checkUserOffer =  ludoOffer.find((el) => el && el.user_id && (ObjectId(el.user_id).equals(ObjectId(userId))));
+                                    let cBonus =  checkUserOffer && checkUserOffer.contest_bonous?checkUserOffer.contest_bonous:[]; 
+                                    let cBonusItem =  cBonus.find((el)=> (ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))) );
+                                    if(cBonusItem && cBonusItem.contest_id ){
+                                        let userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
+                                        calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
+                                        retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                    }
+                                    let c_bonous = [];
+                                    cBonus.find(function (e2) {
+                                        if (ObjectId(e2.contest_id).equals(ObjectId(prContestId)) || ObjectId(e2.contest_id).equals(ObjectId(pContestId))) {
+                                        } else { c_bonous.push(e2); }
+                                    });
 
+                                    // Check if user get retention amount then update again into LudoOffer after deduction
+                                    if(retention_bonus_amount>0 && checkUserOffer && checkUserOffer._id){
+                                        userOfferArray.push({
+                                            updateOne: {
+                                                "filter": { "_id": checkUserOffer._id },
+                                                "update":{ $set: { "contest_bonous": c_bonous } }
+                                            }
+                                        });
+                                    }
+                                }
+                                
                                 if (matchContest.usable_bonus_time) {
                                     if (moment().isBefore(matchContest.usable_bonus_time)) {
                                         useableBonusPer = matchContest.before_time_bonus;
@@ -151,9 +185,11 @@ module.exports = async (req, res) => {
                                 await OtherGameTransaction.insertMany(transactionArray, { session: session });
                                 await OtherGamesPtc.insertMany(ptcArray, { session: session });
                                 await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) }, { $set: { zop_match_id: zop_match_id } }, { session: session });
+                                if(userOfferArray && userOfferArray.length > 0){
+                                  await LudoOffer.bulkWrite(userOfferArray, { session: session });
+                                }
                                 await session.commitTransaction();
                                 session.endSession();
-
                                 response["success"] = true;
                                 response["matchId"] = zop_match_id;
                                 return res.json(response);
