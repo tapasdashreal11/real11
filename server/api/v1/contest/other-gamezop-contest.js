@@ -6,6 +6,7 @@ const { RedisKeys } = require('../../../constants/app');
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const config = require('./../../../config');
+const LudoOffer = require("../../../models/ludo_offer");
 
 module.exports = async (req, res) => {
 
@@ -16,6 +17,7 @@ module.exports = async (req, res) => {
         let filter = { "match_id": parseInt(match_id), "sport": match_sport, is_full: 0 };
         let queryArray = [await getContestListForOthergames(filter, false)];
         let userLudoPlayedKey = "user_ludo_played_" + user_id;
+        let redisKeyForUserAnalysisOthers = 'app-analysis-otgames' + user_id + '-' + match_id;
         const mcResult = await Promise.all(queryArray);
         if (mcResult && mcResult.length > 0) {
             let match_contest_data = mcResult && mcResult[0] ? mcResult[0] : []
@@ -23,11 +25,12 @@ module.exports = async (req, res) => {
                 redis.setRedis("match-contest-other-" + req.params.match_id, match_contest_data);
                 redis.setRedis("match-contest-other-view-" + user_id, { status: true });
                 let playedData = await getPromiseForUserPlayed(userLudoPlayedKey, user_id, '{"status":true}');
+                let retentionData = await getOfferRedisData(redisKeyForUserAnalysisOthers,user_id,match_id);
                 let playedDataItem = playedData && playedData.length > 0 ? JSON.parse(playedData) : {};
                 let newMatchContestData = match_contest_data;
                 let resObj = {
                     match_contest: newMatchContestData,
-                    user_rentation_bonous: {},
+                    user_rentation_bonous: retentionData,
                     user_coupons: {},
                     user_favourite_contest: {},
                     user_ludo_played: playedDataItem && playedDataItem.status ? playedDataItem.status : false
@@ -183,4 +186,22 @@ async function getPromiseForUserPlayed(key, user_id, defaultValue) {
             resolve(data)
         })
     })
+}
+
+async function getOfferRedisData(redisKeyForUserAnalysis,user_id,match_id) {
+    return new Promise((resolve, reject) => {
+        redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
+            if (data) {
+                resolve(data);
+            } else {
+                const userAnalysisData = await LudoOffer.findOne({user_id:user_id,status: 1,match_id: match_id,expiry_date:{$gte:new Date()}  });
+                if (userAnalysisData && userAnalysisData._id) {
+                    redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, userAnalysisData);
+                    resolve(userAnalysisData);
+                } else {
+                    resolve({});
+                }
+            }
+        });
+    });
 }
