@@ -169,8 +169,20 @@ module.exports = {
 async function cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
     try {
         let data    =   [];
+        let matchType   =   { series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport };
+        if(liveMatch && liveMatch.type == "T10") {
+            matchType.t10   =   true;
+        } else if(liveMatch && liveMatch.type == "T20") {
+            matchType.t20   =   true;
+        } else if(liveMatch && liveMatch.type == "TEST") {
+            matchType.test   =   true;
+        } else if(liveMatch && liveMatch.type == "ODI") {
+            matchType.odi   =   true;
+        } else if(liveMatch && liveMatch.type == "T100") {
+            matchType.t100   =   true;
+        }
         // let playerRecord = await PlayerRecord.find({ player_id: { $in: player_list }, series_id: series_id, sport: sport });
-        let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport });
+        let teamData = await SeriesPlayer.find(matchType);
         if (!_.isEmpty(teamData) && (teamData.length == 11 || teamData.length == 5)) {
             let playerData = {};
             for (const value of teamData) {
