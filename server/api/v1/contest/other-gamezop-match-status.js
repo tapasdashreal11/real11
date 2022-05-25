@@ -102,6 +102,9 @@ module.exports = async (req, res) => {
                                                 "update":{ $set: { "contest_bonous": c_bonous } }
                                             }
                                         });
+                                        checkUserOffer.contest_bonous = c_bonous
+                                        let redisKeyForUserAnalysisOthers = 'other-games-offer-' + userId + '-'  + local_match_id;
+                                        redis.setRedisForUserAnaysis(redisKeyForUserAnalysisOthers, checkUserOffer);
                                     }
                                     console.log("userOfferArray status **",userOfferArray);
                                 }
