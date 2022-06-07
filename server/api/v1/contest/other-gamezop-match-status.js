@@ -9,6 +9,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const OtherGameTransaction = require('../../../models/other-games-transaction');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 const _ = require("lodash");
+const ludoMqtt = require('../../../../lib/other-games-mqtt');
 const { Validator } = require("node-input-validator");
 const { startSession } = require('mongoose');
 const moment = require('moment');
@@ -231,9 +232,11 @@ module.exports = async (req, res) => {
             } else if (status == 'NO_MATCH_FOUND') {
 
                 let teamLength = playersIds && playersIds.length > 0 ? playersIds.length : 1;
-                await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0,joined_users:{$gte:teamLength} }, { $inc: { joined_users: -teamLength } });
+                let doc= await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0,joined_users:{$gte:teamLength} }, { $inc: { joined_users: -teamLength } });
                 response["success"] = true;
                 response["matchId"] = "";
+                let joinedContestCount = doc.joined_users;
+                ludoMqtt.publishOtherGameJoinedUserCounts(local_match_id,contest_id,JSON.stringify({joined_count:joinedContestCount}));
                 if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + local_match_id, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
                 return res.json(response);
             }
