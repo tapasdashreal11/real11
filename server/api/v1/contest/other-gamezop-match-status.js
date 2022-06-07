@@ -232,7 +232,7 @@ module.exports = async (req, res) => {
             } else if (status == 'NO_MATCH_FOUND') {
 
                 let teamLength = playersIds && playersIds.length > 0 ? playersIds.length : 1;
-                let doc= await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0,joined_users:{$gte:teamLength} }, { $inc: { joined_users: -teamLength } });
+                let doc= await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0,joined_users:{$gte:teamLength} }, { $inc: { joined_users: -teamLength } },{new: true });
                 response["success"] = true;
                 response["matchId"] = "";
                 let joinedContestCount = doc.joined_users;
