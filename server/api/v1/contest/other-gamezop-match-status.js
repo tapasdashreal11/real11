@@ -236,7 +236,7 @@ module.exports = async (req, res) => {
                 response["success"] = true;
                 response["matchId"] = "";
                 let joinedContestCount = doc.joined_users;
-                ludoMqtt.publishOtherGameJoinedUserCounts(local_match_id,contest_id,JSON.stringify({joined_count:joinedContestCount}));
+                ludoMqtt.publishOtherGameJoinedUserCounts(local_match_id,roomId,JSON.stringify({joined_count:joinedContestCount}));
                 if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + local_match_id, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
                 return res.json(response);
             }
