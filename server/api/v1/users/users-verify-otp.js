@@ -95,6 +95,7 @@ module.exports = async (req, res) => {
 					updateObj['phone'] = user.temp_phone;
 					updateObj['temp_phone'] = '';
 					finalResponse['phone'] = user.temp_phone;
+					finalResponse['temp_email'] = user && user.temp_email ? user.temp_email : "";
 					let rf_bonous_amount = config.referral_bouns_amount;
 					let rf_xtra_amount = 0;
 					try{
@@ -116,6 +117,8 @@ module.exports = async (req, res) => {
 					await transactionAtSignupBonous(user._id,rf_bonous_amount,rf_xtra_amount);
 					setDataToAppsflyer(user);
 					setFacebookEventAtSingup(user,userIp);
+				} else {
+					finalResponse['temp_email'] = user && user.email ? user.email : "";
 				} 
 				      
 				await Users.updateOne({ _id: user._id }, { $set:updateObj });

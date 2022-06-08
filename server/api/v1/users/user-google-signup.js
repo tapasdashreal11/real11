@@ -71,6 +71,9 @@ module.exports = {
                             try {
                                 delete finalResponse.password;
                                 delete finalResponse.otp;
+                               
+                                finalResponse.temp_email = userGmailsignup && userGmailsignup.email ? userGmailsignup.email:"";
+                                
                             } catch (eror) { }
                             //****************Set Toen In Redis**************** */
                             var newTokenObj = { user_id: userGmailsignup._id, token: token }
