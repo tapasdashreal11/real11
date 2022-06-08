@@ -171,7 +171,7 @@ async function getPromiseForUserPlayed(key, user_id, defaultValue) {
     return new Promise((resolve, reject) => {
         redis.redisObj.get(key, async (err, data) => {
             if (err) {
-                resolve(JSON.stringify({ status: false }));
+                resolve(JSON.stringify({ status: true }));
             }
             if (data == null) {
                 const userOtherInfo = await UserOtherInfo.findOne({ user_id: user_id });
@@ -179,7 +179,8 @@ async function getPromiseForUserPlayed(key, user_id, defaultValue) {
                     data = JSON.stringify({ status: true });
                     redis.setRedis(key, { status: true });
                 } else {
-                    data = JSON.stringify({ status: false });
+                    data = JSON.stringify({ status: true }); // temporarily we do on
+                   // data = JSON.stringify({ status: false });
                    // redis.setRedis(key, { status: false });
                 }
             }
