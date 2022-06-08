@@ -180,7 +180,7 @@ async function getPromiseForUserPlayed(key, user_id, defaultValue) {
                     redis.setRedis(key, { status: true });
                 } else {
                     data = JSON.stringify({ status: false });
-                    redis.setRedis(key, { status: false });
+                   // redis.setRedis(key, { status: false });
                 }
             }
             resolve(data)
