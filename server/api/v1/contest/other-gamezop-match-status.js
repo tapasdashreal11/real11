@@ -235,7 +235,7 @@ module.exports = async (req, res) => {
                 let doc= await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0,joined_users:{$gte:teamLength} }, { $inc: { joined_users: -teamLength } },{new: true });
                 response["success"] = true;
                 response["matchId"] = "";
-                let joinedContestCount = doc.joined_users;
+                //let joinedContestCount = doc.joined_users;
                // ludoMqtt.publishOtherGameJoinedUserCounts(local_match_id,roomId,JSON.stringify({joined_count:joinedContestCount}));
                 if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + local_match_id, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
                 return res.json(response);
