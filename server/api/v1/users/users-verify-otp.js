@@ -118,7 +118,7 @@ module.exports = async (req, res) => {
 					setDataToAppsflyer(user);
 					setFacebookEventAtSingup(user,userIp);
 				} else {
-					finalResponse['temp_email'] = user && user.email ? user.email : (user && user.temp_email ? user.temp_email : "");
+					finalResponse['temp_email'] = user && user.email ? user.email : (user && user.temp_email ? user.temp_email : (user && user.new_email ? user.new_email : ""));
 				} 
 				      
 				await Users.updateOne({ _id: user._id }, { $set:updateObj });
