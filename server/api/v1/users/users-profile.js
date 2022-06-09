@@ -141,6 +141,7 @@ module.exports = {
           data.xtra_cash_block = user && user.xtra_cash_block ? true : false;
           data.bonus_amount_block = user && user.bonus_amount_block ? true : false;
           try{
+            
              let appSeetingData = await getAppSetting();
              if (appSeetingData) {
               if (appSeetingData && appSeetingData.is_instant_withdraw === 1) 
@@ -148,7 +149,7 @@ module.exports = {
               else
               data.withdraw_message = "";
              }
-          }catch(setting_err){
+          } catch(setting_err){
             data.withdraw_message = "";
           }
           

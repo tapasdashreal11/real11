@@ -9,7 +9,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const OtherGameTransaction = require('../../../models/other-games-transaction');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 const _ = require("lodash");
-//const ludoMqtt = require('../../../../lib/other-games-mqtt');
+const ludoMqtt = require('../../../../lib/other-games-mqtt');
 const { Validator } = require("node-input-validator");
 const { startSession } = require('mongoose');
 const moment = require('moment');
@@ -235,8 +235,8 @@ module.exports = async (req, res) => {
                 let doc= await OtherGamesContest.findOneAndUpdate({ contest_id: ObjectId(roomId), is_full: 0,joined_users:{$gte:teamLength} }, { $inc: { joined_users: -teamLength } },{new: true });
                 response["success"] = true;
                 response["matchId"] = "";
-                //let joinedContestCount = doc.joined_users;
-               // ludoMqtt.publishOtherGameJoinedUserCounts(local_match_id,roomId,JSON.stringify({joined_count:joinedContestCount}));
+                let joinedContestCount = doc && doc.joined_users ? doc.joined_users: 0 ;
+                ludoMqtt.publishOtherGameJoinedUserCounts(local_match_id,roomId,JSON.stringify({joined_count:joinedContestCount}));
                 if (playersIds && playersIds.length > 0) redis.setRedis("match-contest-other-" + local_match_id, []);  //redis.setRedis("match-contest-other-view-" + playersIds[0], {});
                 return res.json(response);
             }
@@ -372,11 +372,11 @@ async function checkUserLudoPlayed(userList){
         let UsersIds = _.map(userList,'_id');
         let userOtherInfo = await UserOtherInfo.find({ user_id:{$in:UsersIds} });
         if(UsersIds){
-            console.log("userOtherInfo",userOtherInfo);
+           // console.log("userOtherInfo",userOtherInfo);
             userOtherInfo ? userOtherInfo:[]; 
             let result = userList.filter(o1 => !userOtherInfo.some(o2 =>  o1._id.equals(ObjectId(o2.user_id))));
            if(result && result.length>0){
-                console.log("userOtherInfo result",result);
+                //console.log("userOtherInfo result",result);
                 let playedList =[];
                 for (const userItem of result) {
                     let key = "user_ludo_played_" + userItem._id;
@@ -384,7 +384,7 @@ async function checkUserLudoPlayed(userList){
                     redis.setRedis(key, {status:true});
                 }
                 if(playedList && playedList.length>0){
-                    console.log(playedList);
+                   // console.log(playedList);
                     await UserOtherInfo.insertMany(playedList);
                 } 
            }

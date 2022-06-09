@@ -179,9 +179,9 @@ async function getPromiseForUserPlayed(key, user_id, defaultValue) {
                     data = JSON.stringify({ status: true });
                     redis.setRedis(key, { status: true });
                 } else {
-                    data = JSON.stringify({ status: true }); // temporarily we do on
-                   // data = JSON.stringify({ status: false });
-                   // redis.setRedis(key, { status: false });
+                    //data = JSON.stringify({ status: true }); // temporarily we do on
+                    data = JSON.stringify({ status: false });
+                    redis.setRedis(key, { status: false });
                 }
             }
             resolve(data)
