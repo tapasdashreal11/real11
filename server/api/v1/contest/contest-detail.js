@@ -82,6 +82,7 @@ async function getCategoryRedis(category_id) {
 module.exports = {
     contestDetailNewLatest: async (req, res) => {
         try {
+            console.log("resid********0");
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = { match_id: parseInt(match_id), contest_id: contest_id, user_id: user_id, sport: parseInt(sport) || 1, };
@@ -644,6 +645,7 @@ module.exports = {
     },
     contestDetailLatest: async (req, res) => {
         try {
+            console.log("resid********2");
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
