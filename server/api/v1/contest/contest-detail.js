@@ -746,7 +746,7 @@ module.exports = {
                     let allTeams = [];
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
                         allTeams = await getRedisLeaderboard(match_id, contest_id, sport);
-
+                        console.log("redis data length*********",allTeams.length);
                         if (_.isEmpty(allTeams)) {
                             let leaderboardKey = 'leaderboard-' + sport + '-' + match_id + '-' + contest_id;
                             if (contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
@@ -766,7 +766,8 @@ module.exports = {
                                 }).limit(100).sort({ "rank": 1 });
                             }
                             if ((reviewMatch.time >= Date.now() && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
-                               // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                               console.log("redis cclll for set*********");
+                                // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                             }
 
                         }
