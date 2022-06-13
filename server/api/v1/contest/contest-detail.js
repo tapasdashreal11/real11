@@ -82,7 +82,6 @@ async function getCategoryRedis(category_id) {
 module.exports = {
     contestDetailNewLatest: async (req, res) => {
         try {
-            console.log("resid********0");
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = { match_id: parseInt(match_id), contest_id: contest_id, user_id: user_id, sport: parseInt(sport) || 1, };
@@ -539,7 +538,6 @@ module.exports = {
     },
     contestLeaderboardLatest: async (req, res) => {
         try {
-            console.log("resid********");
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
@@ -585,7 +583,7 @@ module.exports = {
                     }).limit(100).sort({ _id: -1 });
                 }
                 if (allTeams && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) {
-                   // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                    await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                 }
                 mergedTeam = allTeams;
             }
@@ -768,7 +766,7 @@ module.exports = {
                                 }).limit(100).sort({ "rank": 1 });
                             }
                             if ((reviewMatch.time >= Date.now() && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
-                                await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                               // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                             }
 
                         }
