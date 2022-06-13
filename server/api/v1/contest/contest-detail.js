@@ -127,7 +127,7 @@ module.exports = {
                     totalChildContestJoined = ptcJoinedRecords && ptcJoinedRecords.length > 0 ? ptcJoinedRecords.length : 0;
                 }
                 // This is used to show h2h/LMS team of user when comes on parent contest of H2H/LMS for circket and footbal
-                if (matchContestDetail && matchContestDetail.category_slug && (_.isEqual(matchContestDetail.category_slug, 'head-to-head') || _.isEqual(matchContestDetail.category_slug, 'last-man-standing')) && (sport == 1 || sport == 2)) {
+                if (matchContestDetail && matchContestDetail.category_slug && (_.isEqual(matchContestDetail.category_slug, 'head-to-head') || _.isEqual(matchContestDetail.category_slug, 'last-man-standing')) && (sport == 1 || sport == 2 || sport == 4)) {
                     if (matchContestDetail.parent_contest_id) {
                         // This is child contest so show only join team of child contest.
                         joinedTeams = await PlayerTeamContest.find({ 'match_id': match_id, 'contest_id': contest_id, sport: sport }).countDocuments();
