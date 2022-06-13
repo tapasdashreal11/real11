@@ -746,7 +746,7 @@ module.exports = {
                     let allTeams = [];
                     if ((reviewMatch.time >= Date.now() && contestDetail.contest_size <= 50) || reviewMatch.match_status == "Finished" || reviewMatch.match_status == "In Progress" || reviewMatch.time <= Date.now()) {
                         allTeams = await getRedisLeaderboard(match_id, contest_id, sport);
-                        console.log("redis data length*********",allTeams.length);
+                        console.log("redis data length*********",allTeams);
                         if (_.isEmpty(allTeams)) {
                             let leaderboardKey = 'leaderboard-' + sport + '-' + match_id + '-' + contest_id;
                             if (contestDetail.amount_gadget == 'aakash' && !_.isEmpty(aakashData)) {
