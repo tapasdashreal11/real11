@@ -24,10 +24,12 @@ async function getRedisLeaderboard(matchId, contestId, sport) {
     try {
         return new Promise(async (resolve, reject) => {
             let leaderboardRedis = 'leaderboard-' + sport + '-' + matchId + '-' + contestId;
+            console.log('key',leaderboardRedis)
             await redis.getRedisLeaderboard(leaderboardRedis, function (err, contestData) {
                 if (contestData) {
                     return resolve(contestData);
                 } else {
+                    console.log("err***",err);
                     return resolve(false);
                 }
             })
