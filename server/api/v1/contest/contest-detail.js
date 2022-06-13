@@ -538,6 +538,7 @@ module.exports = {
     },
     contestLeaderboardLatest: async (req, res) => {
         try {
+            console.log("resid********");
             let { match_id, contest_id, sport } = req.params;
             const user_id = req.userId;
             let decoded = {
@@ -583,7 +584,7 @@ module.exports = {
                     }).limit(100).sort({ _id: -1 });
                 }
                 if (allTeams && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) {
-                    await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                   // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                 }
                 mergedTeam = allTeams;
             }
