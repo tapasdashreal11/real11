@@ -103,7 +103,10 @@ var playerTeamContestSchema = new Schema({
   },  
   isPermainan: {
     type: Boolean
-  }
+  },
+  commision: {
+    type: Number
+  },
 },{
   timestamps:true
 });
