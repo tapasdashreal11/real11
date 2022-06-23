@@ -52,6 +52,7 @@ module.exports = async (req, res) => {
                 let matchTieStatus = allEqual(rankData);
                 if (matchTieStatus) {
                     // When match tie status is happening
+                    console.log("matchTieStatus*********",matchTieStatus,rankData);
 
                     let matchContest = await OtherGamesContest.findOne({ 'contest_id': ObjectId(roomId), sport: match_sport });
                     let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
@@ -83,6 +84,7 @@ module.exports = async (req, res) => {
                             let contestData = matchContestData.contest;
                             let contestType = contestData.contest_type;
                             if (contestType == "Paid" || (matchContestData.contest &&  matchContestData.contest.winning_amount>0) ) {
+                                console.log("contestType*********",contestType);
                                 var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
                                 let breakup = contestData.breakup ? _.sortBy(contestData.breakup, ['startRank']) : [];
                                 if (playerContestData && playerContestData.length > 0) {
