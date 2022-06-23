@@ -82,7 +82,7 @@ module.exports = async (req, res) => {
                         if (matchContestData && matchContestData._id && matchContestData.contest) {
                             let contestData = matchContestData.contest;
                             let contestType = contestData.contest_type;
-                            if (contestType == "Paid") {
+                            if (contestType == "Paid" || (matchContestData.contest &&  matchContestData.contest.winning_amount>0) ) {
                                 var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
                                 let breakup = contestData.breakup ? _.sortBy(contestData.breakup, ['startRank']) : [];
                                 if (playerContestData && playerContestData.length > 0) {
