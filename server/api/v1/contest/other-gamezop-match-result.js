@@ -156,7 +156,7 @@ module.exports = async (req, res) => {
                                     return res.json(response);
                                 } else {
                                     // already distributed and update score
-                                    console.log("check in else*****");
+                                    console.log("check in else*****",playerTeamRes);
                                     response["success"] = false;
                                     response["scores"] = [];
                                     return res.json(response);
