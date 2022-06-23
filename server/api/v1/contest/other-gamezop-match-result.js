@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
                             let contestData = matchContestData.contest;
                             let contestType = contestData.contest_type;
                             if (contestType == "Paid" || (matchContestData.contest &&  matchContestData.contest.winning_amount>0) ) {
-                                console.log("contestType*********",contestType);
+                                console.log("contestType*********",contestType,scores);
                                 var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
                                 let breakup = contestData.breakup ? _.sortBy(contestData.breakup, ['startRank']) : [];
                                 if (playerContestData && playerContestData.length > 0) {
@@ -156,7 +156,7 @@ module.exports = async (req, res) => {
                                     return res.json(response);
                                 } else {
                                     // already distributed and update score
-    
+                                    console.log("check in else*****");
                                     response["success"] = false;
                                     response["scores"] = [];
                                     return res.json(response);
