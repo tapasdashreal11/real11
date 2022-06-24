@@ -312,8 +312,9 @@ async function cancelContestAtResult(zop_match_id, room_id) {
 
 }
 
-async function freegiveaway(breakup,rankData,scores,roomId){
+async function freegiveaway(match_sport,matchContestData,breakup,rankData,scores,roomId){
     let finalScoreData = [];
+    let transactionData = [];
     for (const contestTeam of scores) {
         console.log("contestTeam****",contestTeam);
         let oPTCuserItem = _.find(rankData, { user_id: ObjectId(contestTeam.sub)});
