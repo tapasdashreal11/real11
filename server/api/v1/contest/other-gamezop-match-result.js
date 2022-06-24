@@ -158,7 +158,7 @@ module.exports = async (req, res) => {
                                     // already distributed and update score
                                     if (contestType == "Free"  && (matchContestData.contest &&  matchContestData.contest.winning_amount>0) ) {
                                         console.log("check in freegive away*****",playerTeamRes);
-                                       return await freegiveaway(breakup,rankData,scores,roomId);
+                                       return await freegiveaway(match_sport,matchContestData,breakup,rankData,scores,roomId);
                                      }else{
                                         console.log("check in else*****",playerTeamRes);
                                         response["success"] = false;
