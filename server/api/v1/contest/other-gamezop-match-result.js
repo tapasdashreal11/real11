@@ -156,9 +156,10 @@ module.exports = async (req, res) => {
                                     return res.json(response);
                                 } else {
                                     // already distributed and update score
-                                    if (contestType == "Free"  && (matchContestData.contest &&  matchContestData.contest.winning_amount>0) ) {
+                                    if (contestType == "Free"  && scores.length > 1 && (matchContestData.contest &&  matchContestData.contest.winning_amount>0) ) {
                                         console.log("check in freegive away*****",playerTeamRes);
-                                       return await freegiveaway(match_sport,matchContestData,breakup,rankData,scores,roomId);
+                                       let responseData = await freegiveaway(match_sport,matchContestData,breakup,rankData,scores,roomId);
+                                       return res.json(responseData);
                                      }else{
                                         console.log("check in else*****",playerTeamRes);
                                         response["success"] = false;
@@ -167,6 +168,7 @@ module.exports = async (req, res) => {
                                      }
                                 }
                             } else {
+                                console.log("tie status 6********************");
                                 response.success = true;
                                 let scoresData = scores.map(v => ({ ...v, prize: 0, currencyIcon: "icon.png" }))
                                 response.scores = scoresData;
@@ -174,12 +176,13 @@ module.exports = async (req, res) => {
                                 return res.json(response);
                             }
                         } else {
-    
+                            console.log("tie status 5********************");
                             response["success"] = false;
                             response["scores"] = [];
                             return res.json(response);
                         }
                     } else {
+                        console.log("tie status 4********************");
                         response["success"] = false;
                         response["scores"] = [];
                         return res.json(response);
@@ -188,11 +191,13 @@ module.exports = async (req, res) => {
                 }
 
             } else {
+                console.log("tie status 3********************");
                 response["success"] = false;
                 response["scores"] = [];
                 return res.json(response);
             }
         } else {
+            console.log("tie status 2********************");
             let response = {};
             response["success"] = false;
             response["message"] = "Wrong api key!!";
@@ -200,7 +205,7 @@ module.exports = async (req, res) => {
         }
 
     } catch (error) {
-
+       console.log("tie status********************");
         let response = {};
         response["success"] = false;
         response["scores"] = [];
@@ -381,6 +386,6 @@ async function freegiveaway(match_sport,matchContestData,breakup,rankData,scores
     response.success = true;
     response.scores = finalScoreData;
     console.log("final outpot",response);
-    return res.json(response);
+    return response;
 }
 
