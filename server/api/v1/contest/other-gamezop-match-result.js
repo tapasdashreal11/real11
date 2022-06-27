@@ -322,10 +322,8 @@ async function freegiveaway(match_sport,matchContestData,breakup,rankData,scores
     let finalScoreData = [];
     let transactionData = [];
     for (const contestTeam of scores) {
-        console.log("contestTeam****",contestTeam);
         let oPTCuserItem = _.find(rankData, { user_id: ObjectId(contestTeam.sub)});
         if (oPTCuserItem && oPTCuserItem.user_id) {
-           // console.log("oPTCuserItem****",oPTCuserItem);
             let rank = oPTCuserItem.rank ? oPTCuserItem.rank : 0;
             let score = oPTCuserItem.score ? oPTCuserItem.score : 0;
             let finalScoreDataObj = { rank: rank, score: score, sub: "" + oPTCuserItem.user_id, currencyIcon: "icon.png" };
@@ -345,7 +343,7 @@ async function freegiveaway(match_sport,matchContestData,breakup,rankData,scores
                     const priceWin = perTeamPrice / priceGroup.length;
                     if (priceWin > 0){
                         let updatedUserData =   await User.findOneAndUpdate({ _id: oPTCuserItem.user_id }, { $inc: { winning_balance: parseFloat(priceWin) } },{new: true});
-                       // console.log("updatedUserData **",updatedUserData);
+                      
                         win_amount = priceWin;
                         pricewin_amount = priceWin;
                         transactionData.push({
@@ -378,14 +376,12 @@ async function freegiveaway(match_sport,matchContestData,breakup,rankData,scores
         }
     }
     if (transactionData && transactionData.length > 0) {
-       // console.log("final outpot transactionData",transactionData);
         await OtherGameTransaction.insertMany(transactionData, { ordered: false });
     }
     await OtherGamesContest.updateOne({ contest_id: ObjectId(roomId) }, { $set: { is_distributed: 1 } });
     let response = {};
     response.success = true;
     response.scores = finalScoreData;
-    console.log("final outpot",response);
     return response;
 }
 
