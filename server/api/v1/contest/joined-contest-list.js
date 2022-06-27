@@ -650,6 +650,7 @@ module.exports = {
                                 if (!contestValue || !contestValue.contest) {
                                     continue;
                                 }
+                                let isCancelShow = false;
                                 let mcObj = _.find(matchContestWithCodeList, { 'contest_id': contestValue.doc.contest_id });
                                 let inviteCode = mcObj && mcObj.invite_code ? mcObj.invite_code : '';
                                 myTeamRank.push((contestValue.doc.rank) ? contestValue.doc.rank : 0);
@@ -659,7 +660,11 @@ module.exports = {
                                     customBreakup = contestValue.contest.breakup[contestValue.contest.breakup.length - 1];
                                 }
                                 toalWinner = customBreakup && customBreakup.endRank ? customBreakup.endRank : ((customBreakup) ? customBreakup.startRank : 0);
-
+                                if (mcObj && mcObj.category_slug && (_.isEqual(mcObj.category_slug, 'head-to-head') || _.isEqual(mcObj.category_slug, 'last-man-standing'))) {
+                                   if(mcObj.isCanceled){
+                                    isCancelShow = true;
+                                   }
+                                }
                                 let joinedTeamCount = mcObj && mcObj.joined_users ? mcObj.joined_users : 0;
                                 let myTeamIds = [];
                                 let myTeamNo = [];
@@ -804,6 +809,7 @@ module.exports = {
                                 contest[contestKey]['is_infinite'] = (contestValue.contest.infinite_contest_size == 1) ? true : false;
                                 contest[contestKey]['infinite_breakup'] = finiteBreakupDetail;
                                 contest[contestKey]['is_aakash_team'] = aakashLeague;
+                                contest[contestKey]['is_cancel_show'] = isCancelShow;
                                 contest[contestKey]['maximum_team_size'] = (contestValue && contestValue.doc && contestValue.doc.contest && contestValue.doc.contest.multiple_team && contestValue.doc.contest.multiple_team == 'yes') ? (contestValue.doc.contest.maximum_team_size) : 1;
                                 contestKey++;
                             }
