@@ -52,8 +52,6 @@ module.exports = async (req, res) => {
                 let matchTieStatus = allEqual(rankData);
                 if (matchTieStatus) {
                     // When match tie status is happening
-                    console.log("matchTieStatus*********",matchTieStatus,rankData);
-
                     let matchContest = await OtherGamesContest.findOne({ 'contest_id': ObjectId(roomId), sport: match_sport });
                     let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
                     let contestType = contestData.contest_type;
@@ -84,7 +82,7 @@ module.exports = async (req, res) => {
                             let contestData = matchContestData.contest;
                             let contestType = contestData.contest_type;
                             if (contestType == "Paid" || (matchContestData.contest &&  matchContestData.contest.winning_amount>0) ) {
-                                console.log("contestType*********",contestType,scores);
+                                
                                 var playerContestData = playerTeamRes.filter(item => Number(item.winning_amount) == 0);
                                 let breakup = contestData.breakup ? _.sortBy(contestData.breakup, ['startRank']) : [];
                                 if (playerContestData && playerContestData.length > 0) {
@@ -157,18 +155,18 @@ module.exports = async (req, res) => {
                                 } else {
                                     // already distributed and update score
                                     if (contestType == "Free"  && scores.length > 1 && (matchContestData.contest &&  matchContestData.contest.winning_amount>0) ) {
-                                        console.log("check in freegive away*****",playerTeamRes);
+                                        
                                        let responseData = await freegiveaway(match_sport,matchContestData,breakup,rankData,scores,roomId);
                                        return res.json(responseData);
                                      }else{
-                                        console.log("check in else*****",playerTeamRes);
+                                        
                                         response["success"] = false;
                                         response["scores"] = [];
                                         return res.json(response);
                                      }
                                 }
                             } else {
-                                console.log("tie status 6********************");
+                                
                                 response.success = true;
                                 let scoresData = scores.map(v => ({ ...v, prize: 0, currencyIcon: "icon.png" }))
                                 response.scores = scoresData;
@@ -176,13 +174,13 @@ module.exports = async (req, res) => {
                                 return res.json(response);
                             }
                         } else {
-                            console.log("tie status 5********************");
+                           
                             response["success"] = false;
                             response["scores"] = [];
                             return res.json(response);
                         }
                     } else {
-                        console.log("tie status 4********************");
+                        
                         response["success"] = false;
                         response["scores"] = [];
                         return res.json(response);
@@ -191,13 +189,13 @@ module.exports = async (req, res) => {
                 }
 
             } else {
-                console.log("tie status 3********************");
+                
                 response["success"] = false;
                 response["scores"] = [];
                 return res.json(response);
             }
         } else {
-            console.log("tie status 2********************");
+            
             let response = {};
             response["success"] = false;
             response["message"] = "Wrong api key!!";
@@ -205,7 +203,7 @@ module.exports = async (req, res) => {
         }
 
     } catch (error) {
-       console.log("tie status********************");
+      
         let response = {};
         response["success"] = false;
         response["scores"] = [];
