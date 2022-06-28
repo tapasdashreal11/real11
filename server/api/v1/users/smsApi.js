@@ -20,7 +20,7 @@ const sendSMS = (mobile, message) => {
                 //"path": `/api/sendhttp.php?country=${countryCode}&sender=${SENDERID}&route=${route}&mobiles=${mobile}&authkey=${smsAuthKey}&message=${encodeMsg}`,
                 "headers": {}
             };
-            console.log(options);
+            console.log(options);//
             
             var req = http.request(options, function (res) {
                 var chunks = [];
