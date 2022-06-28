@@ -10,7 +10,7 @@ const sendSMS = (mobile, message) => {
             let route = 4;
             let countryCode = `91`;
             let smsAuthKey = '261610AJCwPyJoSj5c5aad29';
-            let tempId = '1307161518116652375';
+            let tempId = '60461d588d65c6109f642fb1';
             var options = {
                 "method": "GET",
                 "hostname": "api.msg91.com",
