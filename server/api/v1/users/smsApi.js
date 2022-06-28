@@ -10,11 +10,13 @@ const sendSMS = (mobile, message) => {
             let route = 4;
             let countryCode = `91`;
             let smsAuthKey = '261610AJCwPyJoSj5c5aad29';
+            let tempId = '1307161518116652375';
             var options = {
                 "method": "GET",
                 "hostname": "api.msg91.com",
                 "port": null,
-                "path": `/api/sendhttp.php?country=${countryCode}&sender=${SENDERID}&route=${route}&mobiles=${mobile}&authkey=${smsAuthKey}&message=${encodeMsg}`,
+                "path": "/api/v5/otp?template_id=${tempId}&mobile=${mobile}&authkey=${smsAuthKey}",
+                //"path": `/api/sendhttp.php?country=${countryCode}&sender=${SENDERID}&route=${route}&mobiles=${mobile}&authkey=${smsAuthKey}&message=${encodeMsg}`,
                 "headers": {}
             };
             
