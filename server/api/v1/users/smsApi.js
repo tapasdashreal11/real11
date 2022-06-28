@@ -11,14 +11,16 @@ const sendSMS = (mobile, message) => {
             let countryCode = `91`;
             let smsAuthKey = '261610AJCwPyJoSj5c5aad29';
             let tempId = '60461d588d65c6109f642fb1';
+            let newMob = countryCode + mobile;
             var options = {
                 "method": "GET",
                 "hostname": "api.msg91.com",
                 "port": null,
-                "path": `/api/v5/otp?template_id=${tempId}&mobile=${mobile}&authkey=${smsAuthKey}&otp=${message}&otp_length=6`,
+                "path": `/api/v5/otp?template_id=${tempId}&mobile=${newMob}&authkey=${smsAuthKey}&otp=${message}&otp_length=6`,
                 //"path": `/api/sendhttp.php?country=${countryCode}&sender=${SENDERID}&route=${route}&mobiles=${mobile}&authkey=${smsAuthKey}&message=${encodeMsg}`,
                 "headers": {}
             };
+            console.log(options);
             
             var req = http.request(options, function (res) {
                 var chunks = [];
