@@ -11,7 +11,9 @@ const sendSMS = (mobile, message) => {
             let countryCode = `91`;
             let smsAuthKey = '261610AJCwPyJoSj5c5aad29';
             let tempId = '60461d588d65c6109f642fb1';
+            console.log("dd***");
             let newMob = countryCode + mobile;
+            console.log("dd2***");
             var options = {
                 "method": "GET",
                 "hostname": "api.msg91.com",
