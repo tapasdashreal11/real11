@@ -28,6 +28,7 @@ async function getRedisLeaderboard(matchId, contestId, sport) {
                 if (contestData) {
                     return resolve(contestData);
                 } else {
+                    console.log("leaderboardRedis",err);
                     return resolve(false);
                 }
             })
@@ -1676,3 +1677,4 @@ async function getMatchList(key, defaultValue) {
         })
     })
 }
+
