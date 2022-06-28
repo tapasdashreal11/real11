@@ -4,11 +4,8 @@ var http = require("http");
 
 const sendSMS = (mobile, message) => {
     return new Promise((resolve, reject) => {
-        console.log("dd0***",!isEmpty(mobile),!isEmpty(""+message));
         if(!isEmpty(mobile) && !isEmpty(""+message)){
-            console.log("dd200***");
             //var encodeMsg = encodeURI(message); 
-            console.log("dd2434***");
             let SENDERID = 'IMReal';
             let route = 4;
             let countryCode = `91`;
@@ -16,7 +13,6 @@ const sendSMS = (mobile, message) => {
             let tempId = '60461d588d65c6109f642fb1';
             console.log("dd***");
             let newMob = countryCode + mobile;
-            console.log("dd2***");
             var options = {
                 "method": "GET",
                 "hostname": "api.msg91.com",
@@ -25,7 +21,6 @@ const sendSMS = (mobile, message) => {
                 //"path": `/api/sendhttp.php?country=${countryCode}&sender=${SENDERID}&route=${route}&mobiles=${mobile}&authkey=${smsAuthKey}&message=${encodeMsg}`,
                 "headers": {}
             };
-            console.log(options);//
             
             var req = http.request(options, function (res) {
                 var chunks = [];
