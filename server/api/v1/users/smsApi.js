@@ -4,7 +4,7 @@ var http = require("http");
 
 const sendSMS = (mobile, message) => {
     return new Promise((resolve, reject) => {
-        console.log("dd0***");
+        console.log("dd0***",mobile,message);
         if(!isEmpty(mobile) && !isEmpty(message)){
             console.log("dd200***");
             var encodeMsg = encodeURI(message); 
