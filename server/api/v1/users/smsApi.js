@@ -4,10 +4,10 @@ var http = require("http");
 
 const sendSMS = (mobile, message) => {
     return new Promise((resolve, reject) => {
-        console.log("dd0***",mobile,message);
+        console.log("dd0***",!isEmpty(mobile),!isEmpty(message));
         if(!isEmpty(mobile) && !isEmpty(message)){
             console.log("dd200***");
-            var encodeMsg = encodeURI(message); 
+            //var encodeMsg = encodeURI(message); 
             console.log("dd2434***");
             let SENDERID = 'IMReal';
             let route = 4;
