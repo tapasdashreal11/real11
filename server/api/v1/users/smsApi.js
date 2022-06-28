@@ -15,7 +15,7 @@ const sendSMS = (mobile, message) => {
                 "method": "GET",
                 "hostname": "api.msg91.com",
                 "port": null,
-                "path": "/api/v5/otp?template_id=${tempId}&mobile=${mobile}&authkey=${smsAuthKey}",
+                "path": `/api/v5/otp?template_id=${tempId}&mobile=${mobile}&authkey=${smsAuthKey}`,
                 //"path": `/api/sendhttp.php?country=${countryCode}&sender=${SENDERID}&route=${route}&mobiles=${mobile}&authkey=${smsAuthKey}&message=${encodeMsg}`,
                 "headers": {}
             };
