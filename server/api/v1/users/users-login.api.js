@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
 
 				const msg = otp + " is the OTP for your Real11 account. Never share your OTP with anyone.";
 				let userMobile = user.phone || '';
-				sendSMS(userMobile, otp)
+				sendSMS(userMobile, msg)
 					.then(() => { })
 					.catch(err => {
 						console.log("error in sms API ", err);
