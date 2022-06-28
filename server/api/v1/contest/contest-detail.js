@@ -767,7 +767,7 @@ module.exports = {
                             }
                             if ((reviewMatch.time >= Date.now() && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
                                
-                                 await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                                // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                             }
 
                         }
