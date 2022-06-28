@@ -755,7 +755,7 @@ module.exports = {
                                     match_id: parseInt(match_id),
                                     sport: sport,
                                     contest_id: ObjectId(contest_id),
-                                    user_id: { $ne: ObjectId(user_id) }
+                                    //user_id: { $ne: ObjectId(user_id) }
                                 }).limit(100).sort({ "rank": 1 });
                             } else {
 
@@ -767,7 +767,7 @@ module.exports = {
                             }
                             if ((reviewMatch.time >= Date.now() && (allTeams.length == 100 || contestDetail.contest_size == allTeams.length)) || reviewMatch.match_status == "In Progress" || reviewMatch.match_status == "Finished") {
                                
-                                // await redis.setRedisLeaderboard(leaderboardKey, allTeams);
+                                 await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                             }
 
                         }
