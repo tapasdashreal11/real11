@@ -11,8 +11,8 @@ module.exports = {
         try {
            let {s_id,user_id,page} = req.params; 
            let v_page = page ? parseInt(page): 1;
-            let v_skip = v_page ?  (v_page - 1)*1: 0;
-            let v_limit = 1;
+            let v_skip = v_page ?  (v_page - 1)*20: 0;
+            let v_limit = 20;
            let redisKeyForSeriesWeekBoardMeta = 'mega-lb-total-points-';
            redis.getRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, async (err, data) => {
             if (data) {
@@ -23,7 +23,7 @@ module.exports = {
             } else {
                 let seriesData = await Series.find({mega_leaderboard:1,id_api:s_id});
                 if(seriesData && seriesData.length>0){
-                let data = await MeagaLbTotalPoint.find({series_id:s_id,user_id:user_id}).skip(v_skip).limit(v_limit);
+                let data = await MeagaLbTotalPoint.find({series_id:s_id,user_id:user_id}).skip(v_skip).limit(v_limit).sort({_id:-1});
                  // redis.setRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, newSeriesData);
                  response["data"] = data ? data : [];
                  response["message"] = "";
