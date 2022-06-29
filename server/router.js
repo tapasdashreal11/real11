@@ -380,7 +380,7 @@ router.get('/api/v1/week-leaderboard-series-data/:s_id/:w_count/:page',auth.auth
 router.get('/api/v1/series-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, seriesLeaderBoardData);
 router.get('/api/v1/mega-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, megaLeaderBoardData); 
 
-router.get('/api/v1/mega-leaderboard-total-data/:s_id/user_id',auth.authenticate.jwtLogin, megaLeaderBoardTotalPointsCal);
+router.get('/api/v1/mega-leaderboard-total-data/:s_id/:user_id',auth.authenticate.jwtLogin, megaLeaderBoardTotalPointsCal);
 
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
 router.get('/api/v1/app-setting', appSettingApi); 
