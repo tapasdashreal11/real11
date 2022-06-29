@@ -107,6 +107,7 @@ const  RazopayWithdrawReq   = require('./api/v1/users/razopay-withdraw-req');
 const  RazopayWebhook   = require('./api/v1/users/razopay-webhook');
 
 const  { weekLeaderBoardSeriesApi,weekLeaderBoardSeriesWeeksData,seriesLeaderBoardData,megaLeaderBoardData }  = require('./api/v1/users/week-leaderboard-series-api');
+const  { megaLeaderBoardTotalPointsCal}  = require('./api/v1/users/leaderboard-total-points');
 
 const {userResendOtp,userRefStaticData,userGoogleSignIn,userGoogleSignUpDetailAdd,userAppleSignUpDetailAdd,userSignup,userNormalSignUpDetailUpdate,userAvtarUpdate,userAppleSignIn,userAddInFairPlayViolation,userDeactivate} = require('./api/v1/users/user-google-signup');
 const appSettingApi = require("./api/v1/common/app-settings");
@@ -377,8 +378,9 @@ router.post('/api/v1/retention-bonous-three-create', retentionBonousThreeType);
 router.get('/api/v1/week-leaderboard-series',auth.authenticate.jwtLogin, weekLeaderBoardSeriesApi);
 router.get('/api/v1/week-leaderboard-series-data/:s_id/:w_count/:page',auth.authenticate.jwtLogin, weekLeaderBoardSeriesWeeksData);
 router.get('/api/v1/series-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, seriesLeaderBoardData);
-router.get('/api/v1/mega-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, megaLeaderBoardData);
+router.get('/api/v1/mega-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, megaLeaderBoardData); // 
 
+router.get('/api/v1/mega-leaderboard-total-data/:s_id',auth.authenticate.jwtLogin, megaLeaderBoardTotalPointsCal);
 
 router.get('/api/v1/user_offers/:series_id/:match_id/:sport',auth.authenticate.jwtLogin, user_offers);
 router.get('/api/v1/app-setting', appSettingApi); 
