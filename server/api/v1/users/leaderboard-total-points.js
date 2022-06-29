@@ -21,7 +21,7 @@ module.exports = {
                 let seriesData = await Series.find({mega_leaderboard:1,id_api:s_id});
                 if(seriesData && seriesData.length>0){
                 let data = await MeagaLbTotalPoint.find({series_id:s_id,user_id:user_id});
-                 // consoleredis.setRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, newSeriesData);
+                 // redis.setRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, newSeriesData);
                  response["data"] = data ? data : [];
                  response["message"] = "";
                  response["status"] = true;
