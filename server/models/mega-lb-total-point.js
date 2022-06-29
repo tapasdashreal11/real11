@@ -19,6 +19,18 @@ var megaLeaderBoardTotalPointsSchema = new Schema({
     },
     total_points: {
         type: Number,
-    }
+    },
+    visitor_flag: {
+        type: String, default:''
+    },
+    local_flag: {
+        type: String,default:''
+    },
+    localteam_short_name: {
+        type: String,default:'TBA'
+    },
+    visitorteam_short_name: {
+        type: String,default:'TBA'
+    },
 });
 module.exports = mongoose.model('mega_lb_total_points', megaLeaderBoardTotalPointsSchema, 'mega_lb_total_points');

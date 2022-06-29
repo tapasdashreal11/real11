@@ -378,7 +378,7 @@ router.post('/api/v1/retention-bonous-three-create', retentionBonousThreeType);
 router.get('/api/v1/week-leaderboard-series',auth.authenticate.jwtLogin, weekLeaderBoardSeriesApi);
 router.get('/api/v1/week-leaderboard-series-data/:s_id/:w_count/:page',auth.authenticate.jwtLogin, weekLeaderBoardSeriesWeeksData);
 router.get('/api/v1/series-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, seriesLeaderBoardData);
-router.get('/api/v1/mega-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, megaLeaderBoardData); // 
+router.get('/api/v1/mega-leaderboard-data/:s_id/:page',auth.authenticate.jwtLogin, megaLeaderBoardData); 
 
 router.get('/api/v1/mega-leaderboard-total-data/:s_id',auth.authenticate.jwtLogin, megaLeaderBoardTotalPointsCal);
 

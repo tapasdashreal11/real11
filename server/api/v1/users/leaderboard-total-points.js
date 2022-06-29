@@ -23,7 +23,7 @@ module.exports = {
                 if(seriesData && seriesData.length>0){
                 let data = await MeagaLbTotalPoint.find({series_id:s_id,user_id:userId});
                  // consoleredis.setRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, newSeriesData);
-                 response["data"] = data ? data:[];
+                 response["data"] = data ? data : [];
                  response["message"] = "";
                  response["status"] = true;
                 } else {
