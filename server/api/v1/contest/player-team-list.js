@@ -117,7 +117,6 @@ module.exports = {
                         var loginUserId = ObjectId(user_id);
                         var mStatus = liveMatch.match_status;
                         // !loginUserId.equals(teamuserId) &&  mStatus == "In Progress" ||
-                        console.log("liveMatch",liveMatch);
                         if(!loginUserId.equals(teamuserId) && cat_id && !_.isUndefined(cat_id) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && ( mStatus == "In Progress" || mStatus == "Not Started") ){
                             return res.send(ApiUtility.failed("Please wait for a few seconds to view other teams!!"))
                          } else {
