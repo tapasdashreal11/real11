@@ -11,8 +11,8 @@ module.exports = {
         try {
            let {s_id,user_id,page} = req.params; 
            let v_page = page ? parseInt(page): 1;
-            let v_skip = v_page ?  (v_page - 1)*20: 0;
-            let v_limit = 20;
+            let v_skip = v_page ?  (v_page - 1)*1: 0;
+            let v_limit = 1;
            let redisKeyForSeriesWeekBoardMeta = 'mega-lb-total-points-';
            redis.getRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, async (err, data) => {
             if (data) {
