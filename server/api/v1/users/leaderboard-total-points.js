@@ -11,9 +11,9 @@ module.exports = {
         try {
            let {s_id,user_id,rank,page} = req.params; 
            let v_page = page ? parseInt(page): 1;
-            let v_skip = v_page ?  (v_page - 1)*20: 0;
-            let v_limit = 20;
-           let redisKeyForSeriesWeekBoardMeta = 'mega-lb-total-points-';
+           let v_skip = v_page ?  (v_page - 1)*20: 0;
+           let v_limit = 20;
+           let redisKeyForSeriesWeekBoardMeta = 'mega-lb-total-points-' + "-" + s_id + "-" + user_id + "-"+page;
            redis.getRedisForLf(redisKeyForSeriesWeekBoardMeta, async (err, data) => {
             if (data) {
                 console.log("redis data is coming");
