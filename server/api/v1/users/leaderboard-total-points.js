@@ -10,6 +10,7 @@ module.exports = {
         var response = { status: false, message: "Invalid Request", data: {} };
         try {
            let {s_id,user_id,rank,page} = req.params; 
+           let userRank = rank > 0 ? rank:600; // Only make redis under 500 rank users so we pass default 600
            let v_page = page ? parseInt(page): 1;
            let v_skip = v_page ?  (v_page - 1)*20: 0;
            let v_limit = 20;
@@ -25,7 +26,7 @@ module.exports = {
                 let seriesData = await Series.find({mega_leaderboard:1,id_api:s_id});
                 if(seriesData && seriesData.length>0){
                 let data = await MeagaLbTotalPoint.find({series_id:s_id,user_id:user_id}).skip(v_skip).limit(v_limit).sort({_id:-1});
-                if(rank<=500){
+                if(userRank<=500){
                   redis.setRedisForLf(redisKeyForSeriesWeekBoardMeta, data);
                  } 
                  response["data"] = data ? data : [];
