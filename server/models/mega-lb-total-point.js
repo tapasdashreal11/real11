@@ -20,6 +20,9 @@ var megaLeaderBoardTotalPointsSchema = new Schema({
     total_points: {
         type: Number,
     },
+    series_name: {
+        type: String, default:''
+    },
     visitor_flag: {
         type: String, default:''
     },

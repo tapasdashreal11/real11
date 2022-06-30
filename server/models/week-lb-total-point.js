@@ -23,6 +23,9 @@ var weekLeaderBoardTotalPointsSchema = new Schema({
     week_count: {
         type: Number,
     },
+    series_name: {
+        type: String, default:''
+    },
     visitor_flag: {
         type: String, default:''
     },
