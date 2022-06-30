@@ -26,7 +26,7 @@ module.exports = {
                 if(seriesData && seriesData.length>0){
                 let data = await MeagaLbTotalPoint.find({series_id:s_id,user_id:user_id}).skip(v_skip).limit(v_limit).sort({_id:-1});
                 if(rank<=500){
-                  redis.setRedisForLf(redisKeyForSeriesWeekBoardMeta, newSeriesData);
+                  redis.setRedisForLf(redisKeyForSeriesWeekBoardMeta, data);
                  } 
                  response["data"] = data ? data : [];
                  response["message"] = "";
