@@ -1,5 +1,6 @@
 const Series = require("../../../models/series");
 const MeagaLbTotalPoint = require("../../../models/mega-lb-total-point");
+const SeriesLbTotalPoint = require("../../../models/series-lb-total-point");
 const _ = require('lodash');
 const { ObjectId } = require("mongodb");
 const redis = require('../../../../lib/redis');
@@ -14,8 +15,8 @@ module.exports = {
            let v_page = page ? parseInt(page): 1;
            let v_skip = v_page ?  (v_page - 1)*20: 0;
            let v_limit = 20;
-           let redisKeyForSeriesWeekBoardMeta = 'mega-lb-total-points-' + "-" + s_id + "-" + user_id + "-"+page;
-           redis.getRedisForLf(redisKeyForSeriesWeekBoardMeta, async (err, data) => {
+           let redisKeyForMegaTotalPoints = 'mega-lb-total-points-' + "-" + s_id + "-" + user_id + "-"+page;
+           redis.getRedisForLf(redisKeyForMegaTotalPoints, async (err, data) => {
             if (data) {
                 console.log("redis data is coming");
                  response["data"] = data;
@@ -27,7 +28,7 @@ module.exports = {
                 if(seriesData && seriesData.length>0){
                 let data = await MeagaLbTotalPoint.find({series_id:s_id,user_id:user_id}).skip(v_skip).limit(v_limit).sort({_id:-1});
                 if(userRank<=500){
-                  redis.setRedisForLf(redisKeyForSeriesWeekBoardMeta, data);
+                  redis.setRedisForLf(redisKeyForMegaTotalPoints, data);
                  } 
                  response["data"] = data ? data : [];
                  response["message"] = "";
@@ -45,16 +46,18 @@ module.exports = {
             return res.json(response);
         }
     },
-    weelLeaderBoardTotalPointsCal1: async (req, res) => {
+    seriesLeaderBoardTotalPointsCal: async (req, res) => {
         var response = { status: false, message: "Invalid Request", data: {} };
         try {
-            let {s_id,user_id,page} = req.params; 
-            let v_page = page ? parseInt(page): 1;
-            let v_skip = v_page ?  (v_page - 1)*20: 0;
-            let v_limit = 20;
-            let redisKeyForSeriesWeekBoardMeta = 'mega-lb-total-points-';
-            redis.getRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, async (err, data) => {
+           let {s_id,user_id,rank,page} = req.params; 
+           let userRank = rank > 0 ? rank:600; // Only make redis under 500 rank users so we pass default 600
+           let v_page = page ? parseInt(page): 1;
+           let v_skip = v_page ?  (v_page - 1)*20: 0;
+           let v_limit = 20;
+           let redisKeyForSeriesTotalPoints = 'series-lb-total-points-' + "-" + s_id + "-" + user_id + "-"+page;
+           redis.getRedisForLf(redisKeyForSeriesTotalPoints, async (err, data) => {
             if (data) {
+                console.log("redis data is coming");
                  response["data"] = data;
                  response["message"] = "";
                  response["status"] = true;
@@ -62,8 +65,10 @@ module.exports = {
             } else {
                 let seriesData = await Series.find({mega_leaderboard:1,id_api:s_id});
                 if(seriesData && seriesData.length>0){
-                let data = await MeagaLbTotalPoint.find({series_id:s_id,user_id:userId});
-                 // consoleredis.setRedisWeekLeaderboard(redisKeyForSeriesWeekBoardMeta, newSeriesData);
+                let data = await SeriesLbTotalPoint.find({series_id:s_id,user_id:user_id}).skip(v_skip).limit(v_limit).sort({_id:-1});
+                if(userRank<=500){
+                  redis.setRedisForLf(redisKeyForSeriesTotalPoints, data);
+                 } 
                  response["data"] = data ? data : [];
                  response["message"] = "";
                  response["status"] = true;
@@ -76,7 +81,7 @@ module.exports = {
             }
            });
         } catch (err) {
-            response["msg"] = err.message;
+            response["msg"] = "Something went wrong!!";
             return res.json(response);
         }
     }
