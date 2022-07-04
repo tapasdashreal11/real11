@@ -19,7 +19,7 @@ module.exports = {
             let redisKeyForMegaTotalPoints = 'mega-lb-total-points-' + "-" + s_id + "-" + user_id + "-" + page;
             redis.getRedisForLf(redisKeyForMegaTotalPoints, async (err, data) => {
                 if (data) {
-                    console.log("redis data is coming");
+                    console.log("redis data is coming mega leader");
                     response["data"] = data;
                     response["message"] = "";
                     response["status"] = true;
@@ -58,7 +58,7 @@ module.exports = {
             let redisKeyForSeriesTotalPoints = 'series-lb-total-points-' + "-" + s_id + "-" + user_id + "-" + page;
             redis.getRedisForLf(redisKeyForSeriesTotalPoints, async (err, data) => {
                 if (data) {
-                    console.log("redis data is coming");
+                    console.log("redis data is coming series leader");
                     response["data"] = data;
                     response["message"] = "";
                     response["status"] = true;
@@ -97,7 +97,7 @@ module.exports = {
             let redisKeyForWeekTotalPoints = 'week-lb-total-points-' + "-" + s_id +"-"+w_count +"-" + user_id + "-" + page;
             redis.getRedisForLf(redisKeyForWeekTotalPoints, async (err, data) => {
                 if (data) {
-                    console.log("redis data is coming");
+                    console.log("redis data is coming for week leader");
                     response["data"] = data;
                     response["message"] = "";
                     response["status"] = true;
