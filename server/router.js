@@ -187,6 +187,11 @@ const lfTransactionHistory = require('./api/v1/live-fantasy/lf-transation-histor
 const { lfJoinedContestMatches } = require('./api/v1/live-fantasy/lf-joined-contest-matches');
 const  { lfContestDetailNew,lfContestLeaderboard,lfLivecontestDetailLB }  = require('./api/v1/live-fantasy/lf-contest-detail');
 
+// Unity Ludo
+
+const  unityMatchResult  = require('./api/v1/contest/unity-match-result');
+const  unityMatchStatus  = require('./api/v1/contest/unity-match-status');
+
 const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
@@ -357,6 +362,11 @@ router.post('/gamezop/match-status',gamezopMatchStatus);
 router.post('/gamezop/match-result',gamezopMatchResult); 
 router.get('/api/v1/gamezop-game-win-list/:room_id',auth.authenticate.jwtLogin, gamezopMatchResultForuser);
 router.post('/api/v1/other-games-create-private-contest',auth.authenticate.jwtLogin, createPrivateContestOG);
+
+// Unity Ludo api 
+
+router.post('/api/v1/unity-match-result', unityMatchResult); 
+router.post('/api/v1/unity-match-status',unityMatchStatus);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
