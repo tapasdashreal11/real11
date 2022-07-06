@@ -20,7 +20,6 @@ const { startSession } = require('mongoose');
 
 module.exports = async (req, res) => {
 	try {
-		console.log("calling***");
 		var response = { status: false, message: "Invalid Request", data: {} };
 		var userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 		let params = req.body;
