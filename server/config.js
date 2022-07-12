@@ -236,6 +236,14 @@ config.ludo_mqtt = {
   username: process.env.LUDO_MQTT_USER || "",
   password: process.env.LUDO_MQTT_PASS || "",
 }
+
+config.other_games_mqtt = {
+  host: process.env.OTHER_GAME_MQTT_HOST || '13.232.103.230',
+  port: process.env.OTHER_GAME_MQTT_PORT || 1883,
+  username: process.env.OTHER_GAME_USER || "",
+  password: process.env.OTHER_GAME_PASS || "",
+  keepalive: 1
+}
  
 // This is used to define cat for user according to contest cat
 config.user_category = {
