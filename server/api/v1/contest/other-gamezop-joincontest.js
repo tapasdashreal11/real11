@@ -335,7 +335,7 @@ module.exports = async (req, res) => {
                                                         data1.game_url = "https://www.gamezop.com/g/" + liveMatch.game_code + "?" + liveMatch.game_sub_url + "&roomDetails=" + encodeData;
                                                         //console.log("Game URL", data1.game_url);
                                                         redis.setRedis("match-contest-other-view-" + authUser._id, {});
-                                                        let contestLudoJoin = joinedContestCount >= contestData.contest_size ? 0: joinedContestCount;
+                                                        let contestLudoJoin = joinedContestCount >= contestData.contest_size ? 0 : joinedContestCount;
                                                         ludoMqtt.publishOtherGameJoinedUserCounts(liveMatch.match_id,contest_id,JSON.stringify({joined_count:contestLudoJoin}));
                                                         return res.send(ApiUtility.success(data1, 'Contest Joined successfully.'));
                                                     } else {
