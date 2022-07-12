@@ -238,7 +238,7 @@ config.ludo_mqtt = {
 }
 
 config.other_games_mqtt = {
-  host: process.env.OTHER_GAME_MQTT_HOST || '13.232.103.230',
+  host: process.env.OTHER_GAME_MQTT_HOST || '',
   port: process.env.OTHER_GAME_MQTT_PORT || 1883,
   username: process.env.OTHER_GAME_USER || "",
   password: process.env.OTHER_GAME_PASS || "",
