@@ -133,7 +133,7 @@ module.exports = {
                     });
                 }
             } else {
-                return res.send(ApiUtility.failed("Server error"))
+                return res.send(ApiUtility.failed("Server error!!"))
             }
         } catch (error) {
             console.log(error);
