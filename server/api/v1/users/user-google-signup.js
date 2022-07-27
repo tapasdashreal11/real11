@@ -1,12 +1,13 @@
 const { ObjectId } = require('mongodb');
-const BankDetails = require("../../../models/user-bank-details");
+// const BankDetails = require("../../../models/user-bank-details");
 const Users = require("../../../models/user");
+const PaymentOptions = require("../../../models/payment-options");
 const Tokens = require("../../../models/token");
-const PanDetails = require("../../../models/user-pan-details");
+// const PanDetails = require("../../../models/user-pan-details");
 const UserReferral = require("../../../models/user-referral-code-details");
 const Profile = require("../../../models/user-profile");
 const { Validator } = require("node-input-validator");
-const ApiUtility = require("../../api.utility");
+// const ApiUtility = require("../../api.utility");
 const { sendSMS } = require("./smsApi");
 const logger = require("../../../../utils/logger")(module);
 const { currentDateTimeFormat, createUserReferal, generateTransactionId, generateClientToken, createTeamName, sendSMTPMail } = require("../common/helper");
@@ -15,7 +16,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const redis = require('../../../../lib/redis');
 const Helper = require('./../common/helper');
-var sha256 = require('sha256');
+// var sha256 = require('sha256');
 const { RedisKeys } = require('../../../constants/app');
 const ReferalUsersAminMetaData = require("../../../models/ref-user-admin-meta");
 const AppSettings = require("../../../models/settings");
@@ -857,24 +858,17 @@ module.exports = {
                     { "item": "You would not be able to change a bank account if your previous account verification/withdrawal is pending or in process." },
                 ]
             }
-            /*let appSData = await getPromiseForAppSetting('app-setting',"{}");
-            let isPaytmOn = appSData && appSData.is_paytm_on ? true :  false;
-            let isPhonepeOn = appSData && appSData.is_phonepe_on ? true :  false;
-            let isMobikwikON = appSData && appSData.is_mobikwik_on ? true :  false;
-            let isPayumoneyOn = appSData && appSData.is_payumoney_on ? true :  false;
-            let isPaybizOn = appSData && appSData.is_paybiz_on ? true :  false;*/
-
-            // let depoistPaymentGateway = [{ 'type': 'Card', 'options': [{ 'name': 'Debit Card', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': false, 'show': 'b', 'icon': 'debit', 'mode': 'DEBIT_CARD' }, { 'name': 'Credit Card', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': false, 'show': 'b', 'icon': 'credit', 'mode': 'CREDIT_CARD' }] }, { 'type': 'Wallet', 'options': [{ 'name': 'Paytm', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': true, 'show': 'b', 'icon': 'paytm1', 'mode': '' }, { 'name': 'PhonePe', 'type': 'PHONEPE', 'status': isPhonepeOn, 'offer_available': true, 'show': 'a', 'icon': 'phonepe_icon', 'mode': '' }, { 'name': 'MobiKwik', 'type': 'MOBIKWIK', 'status': isMobikwikON, 'offer_available': false, 'show': 'a', 'icon': 'mobikwik', 'mode': '' }, { 'name': 'Other Wallet', 'type': 'PAYUBIZ', 'status': isPaybizOn, 'offer_available': false, 'show': 'b', 'icon': 'payubiz', 'mode': '' }] }, { 'type': 'UPI/Google Pay/BHIM', 'options': [{ 'name': 'Paytm UPI', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': false, 'show': 'b', 'icon': 'plus', 'mode': 'UPI_INTENT' }] }, { 'type': 'NETBANKING', 'options': [{ 'name': 'VIEW ALL Net Banking', 'type': 'PAYTM_ALL_IN_ONE', 'status': isPaytmOn, 'offer_available': false, 'show': 'b', 'icon': 'bankaccounticon', 'mode': 'NET_BANKING' }, { 'name': 'Net Banking', 'type': 'PAYUMONEY', 'status': isPayumoneyOn, 'offer_available': false, 'show': 'b', 'icon': 'payumoney', 'mode': '' }] }];
-           /* let depoistPaymentGateway = [
-                { 'type': 'Card', 'options': [{ 'name': 'Debit/Credit Card', 'type': 'CASH_FREE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'debit', 'mode': 'DEBIT_CARD' }, { 'name': 'Credit Card', 'type': 'CASH_FREE', 'status': false, 'offer_available': false, 'show': 'b', 'icon': 'credit', 'mode': 'CREDIT_CARD' }] },
-                { 'type': 'Wallet', 'options': [{ 'name': 'Paytm', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': true, 'show': 'b', 'icon': 'paytm1', 'mode': '' }, { 'name': 'PhonePe', 'type': 'PHONEPE', 'status': true, 'offer_available': true, 'show': 'a', 'icon': 'phonepe_icon', 'mode': '' },
-                { 'name': 'Other Wallets', 'type': 'CASH_FREE', 'status': true, 'offer_available': false, 'show': 'a', 'icon': 'plus', 'mode': '' },
-                { 'name': 'MobiKwik', 'type': 'MOBIKWIK', 'status': false, 'offer_available': true, 'show': 'a', 'icon': 'mobikwik', 'mode': '' }, { 'name': 'Other Wallet', 'type': 'PAYUBIZ', 'status': false, 'offer_available': false, 'show': 'b', 'icon': 'payubiz', 'mode': '' }] },
-                { 'type': 'UPI/Google Pay/BHIM', 'options': [{ 'name': 'Paytm UPI', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'plus', 'mode': 'UPI_INTENT' }] },
-                { 'type': 'NETBANKING', 'options': [{ 'name': 'VIEW ALL Net Banking', 'type': 'CASH_FREE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'bankaccounticon', 'mode': 'NET_BANKING' },{ 'name': 'Paytm Net Banking', 'type': 'PAYTM_ALL_IN_ONE', 'status': true, 'offer_available': false, 'show': 'b', 'icon': 'paytm1', 'mode': 'NET_BANKING' }, { 'name': 'Net Banking', 'type': 'PAYUMONEY', 'status': false, 'offer_available': false, 'show': 'b', 'icon': 'payumoney', 'mode': '' }], }
-            ];*/
-           // let depoistPaymentGateway = [{'type':'Card','options':[{'name':'Debit/Credit Card','type':'CASH_FREE','status':true,'offer_available':false,'offer_comment':'','show':'b','icon':'debit','mode':'DEBIT_CARD'},{'name':'Credit Card','type':'CASH_FREE','status':false,'offer_available':false,'offer_comment':'','show':'b','icon':'credit','mode':'CREDIT_CARD'}]},{'type':'Recommendation','options':[{'name':'PhonePe/BHIM UPI','type':'PHONEPE','status':false,'offer_available':true,'offer_comment':'This is testing offer to use for deposit','show':'a','icon':'phonepe_icon','mode':''}]},{'type':'Wallet','options':[{'name':'Paytm','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':true,'offer_comment':'Get ₹30 Paytm Cashback on a min. transaction of ₹1000 via Paytm Payments Net Banking! T&C Apply.','show':'b','icon':'paytm1','mode':''},{'name':'PhonePe','type':'PHONEPE','status':true,'offer_available':true,'offer_comment':'Get upto ₹500 Cashback on first 5 txn. Min txn 500. T&C Apply.','show':'a','icon':'phonepe_icon','mode':''},{'name':'Other Wallets','type':'CASH_FREE','status':true,'offer_available':false,'show':'a','icon':'plus','mode':''},{'name':'MobiKwik','type':'MOBIKWIK','status':false,'offer_available':true,'show':'a','icon':'mobikwik','mode':''},{'name':'Other Wallet','type':'PAYUBIZ','status':false,'offer_available':false,'show':'b','icon':'payubiz','mode':''}]},{'type':'UPI/Google Pay/BHIM','options':[{'name':'UPI','type':'CASH_FREE','status':true,'offer_available':true,'offer_comment':'Get flat 10% Paytm Cashback rewards on a min dep. of ₹30. T&C Apply.', 'show':'b','icon':'plus','mode':'UPI_INTENT'}]},{'type':'NETBANKING','options':[{'name':'VIEW ALL Net Banking','type':'CASH_FREE','status':true,'offer_available':false,'show':'b','icon':'bankaccounticon','mode':'NET_BANKING'},{'name':'Paytm Net Banking','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':false,'offer_comment':'Get ₹30 Paytm Cashback on a min. transaction of ₹1000 via Paytm Payments Net Banking! T&C Apply.','show':'b','icon':'paytm1','mode':'NET_BANKING'},{'name':'Net Banking','type':'PAYUMONEY','status':false,'offer_available':false,'show':'b','icon':'payumoney','mode':''}],}];
-           let depoistPaymentGateway = [{'type':'Card','options':[{'name':'Debit/Credit Card','type':'CASH_FREE','status':true,'offer_available':false,'offer_comment':'','show':'b','icon':'debit','mode':'DEBIT_CARD'},{'name':'Credit Card','type':'CASH_FREE','status':false,'offer_available':false,'offer_comment':'','show':'b','icon':'credit','mode':'CREDIT_CARD'}]},{'type':'Recommendation','options':[{'name':'PhonePe/BHIM UPI','type':'PHONEPE','status':false,'offer_available':true,'offer_comment':'This is testing offer to use for deposit','show':'a','icon':'phonepe_icon','mode':''}]},{'type':'Wallet','options':[{'name':'Paytm','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':true,'offer_comment':'Get flat 10% Paytm Cashback rewards on a min dep. of ₹30. T&C Apply.','show':'b','icon':'paytm1','mode':''},{'name':'PhonePe','type':'PHONEPE','status':true,'offer_available':false,'offer_comment':'Get upto ₹500 Cashback on first 5 txn. Min txn 500. T&C Apply.','show':'a','icon':'phonepe_icon','mode':''},{'name':'Other Wallets','type':'CASH_FREE','status':true,'offer_available':false,'show':'a','icon':'plus','mode':''},{'name':'MobiKwik','type':'MOBIKWIK','status':false,'offer_available':true,'show':'a','icon':'mobikwik','mode':''},{'name':'Other Wallet','type':'PAYUBIZ','status':false,'offer_available':false,'show':'b','icon':'payubiz','mode':''}]},{'type':'UPI/Google Pay/BHIM','options':[{'name':'Paytm UPI','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':false,'show':'b','icon':'plus','mode':'UPI_INTENT'}]},{'type':'NETBANKING','options':[{'name':'VIEW ALL Net Banking','type':'CASH_FREE','status':true,'offer_available':false,'show':'b','icon':'bankaccounticon','mode':'NET_BANKING'},{'name':'Paytm Net Banking','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':true,'offer_comment':'Get up to ₹60 Cashback on a min. transaction of ₹500 via Paytm Payments bank Net Banking! T&C Apply','show':'b','icon':'paytm1','mode':'NET_BANKING'},{'name':'Net Banking','type':'PAYUMONEY','status':false,'offer_available':false,'show':'b','icon':'payumoney','mode':''}],}]; 
+            
+            let depoistPaymentGateway   =   await depositPaymentOptions();
+            // console.log(depoistPaymentGateway);
+            if(!depoistPaymentGateway) {
+                let paymentOptionsData  =   await PaymentOptions.findOne({"options_type":"payment" });
+                if(paymentOptionsData) {
+                    depoistPaymentGateway   =   paymentOptionsData["deposit_pay_gateway"];
+                    redis.setRedis("deposit-payment-gateway",depoistPaymentGateway);
+                }
+            }
+            // let depoistPaymentGateway = [{'type':'Card','options':[{'name':'Debit/Credit Card','type':'CASH_FREE','status':true,'offer_available':false,'offer_comment':'','show':'b','icon':'debit','mode':'DEBIT_CARD'},{'name':'Credit Card','type':'CASH_FREE','status':false,'offer_available':false,'offer_comment':'','show':'b','icon':'credit','mode':'CREDIT_CARD'}]},{'type':'Recommendation','options':[{'name':'PhonePe/BHIM UPI','type':'PHONEPE','status':false,'offer_available':true,'offer_comment':'This is testing offer to use for deposit','show':'a','icon':'phonepe_icon','mode':''}]},{'type':'Wallet','options':[{'name':'Paytm','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':true,'offer_comment':'Get flat 10% Paytm Cashback rewards on a min dep. of ₹30. T&C Apply.','show':'b','icon':'paytm1','mode':''},{'name':'PhonePe','type':'PHONEPE','status':true,'offer_available':false,'offer_comment':'Get upto ₹500 Cashback on first 5 txn. Min txn 500. T&C Apply.','show':'a','icon':'phonepe_icon','mode':''},{'name':'Other Wallets','type':'CASH_FREE','status':true,'offer_available':false,'show':'a','icon':'plus','mode':''},{'name':'MobiKwik','type':'MOBIKWIK','status':false,'offer_available':true,'show':'a','icon':'mobikwik','mode':''},{'name':'Other Wallet','type':'PAYUBIZ','status':false,'offer_available':false,'show':'b','icon':'payubiz','mode':''}]},{'type':'UPI/Google Pay/BHIM','options':[{'name':'Paytm UPI','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':false,'show':'b','icon':'plus','mode':'UPI_INTENT'}]},{'type':'NETBANKING','options':[{'name':'VIEW ALL Net Banking','type':'CASH_FREE','status':true,'offer_available':false,'show':'b','icon':'bankaccounticon','mode':'NET_BANKING'},{'name':'Paytm Net Banking','type':'PAYTM_ALL_IN_ONE','status':true,'offer_available':true,'offer_comment':'Get up to ₹60 Cashback on a min. transaction of ₹500 via Paytm Payments bank Net Banking! T&C Apply','show':'b','icon':'paytm1','mode':'NET_BANKING'},{'name':'Net Banking','type':'PAYUMONEY','status':false,'offer_available':false,'show':'b','icon':'payumoney','mode':''}],}]; 
            let sportTypes = [{"sport":1,"name":"Cricket","active":true,"allow":"b","icon":"cricket_selector"},{"sport":4,"name":"Kabaddi","active":false,"allow":"b","icon":"kabbadi_selector"},{"sport":3,"name":"Games","active":true,"allow":"a","icon":"game_selector"},{"sport":2,"name":"Football","active":true,"allow":"b","icon":"football_selector"}];
             response["message"] = "";
             response["data"] = {sport_type:sportTypes,max_team_create:20,total_earn:"5,000" ,ref_now: ref_now, bank_change_req_txt: bank_change_req_txt, deposit_pay_gateway: depoistPaymentGateway };
@@ -1056,4 +1050,21 @@ async function getPromiseForAppSetting(key, defaultValue) {
         resolve(data)
       })
     })
+}
+
+async function depositPaymentOptions() {
+    try {
+        return new Promise(async (resolve, reject) => {
+            let redisKey = 'deposit-payment-gateway';
+            await redis.getRedis(redisKey, function (err, contestData) {
+                if (contestData) {
+                    return resolve(contestData);
+                } else {
+                    return resolve(false);
+                }
+            })
+        });
+    } catch (error) {
+        console.log('redis leaderboard > ', error);
+    }
 }
