@@ -5,15 +5,15 @@ const PlayerTeam = require('../../../models/player-team');
 const LiveScore = require('../../../models/live-score')
 
 const ApiUtility = require('../../api.utility');
-const ModelService = require("../../ModelService");
+// const ModelService = require("../../ModelService");
 const { ObjectId } = require('mongodb');
-const moment = require('moment');
-const config = require('../../../config');
+// const moment = require('moment');
+// const config = require('../../../config');
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
-const mqtt = require('../../../../lib/mqtt');
+// const mqtt = require('../../../../lib/mqtt');
 const PlayerTeamService = require('../../Services/PlayerTeamService');
-const { RedisKeys } = require('../../../constants/app');
+// const { RedisKeys } = require('../../../constants/app');
 
 
 module.exports = {
@@ -195,7 +195,7 @@ module.exports = {
 
 }
 
-async function cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
+async function cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, player_team_id, cb) {
     try {
         let data    =   [];
         let matchType   =   { series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport };
@@ -358,7 +358,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
     }
 }
 
-async function footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, cb) {
+async function footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, player_team_id, cb) {
     try {
         let data    =   [];
         let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list },team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport });
@@ -489,7 +489,7 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
             if(liveMatch.match_status == "Finished" && liveMatch.win_flag == 1) {
                 redis.setRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id, data);
             }
-            
+
             cb(ApiUtility.success(data));
         } else {
             cb(ApiUtility.failed("Server error"));
