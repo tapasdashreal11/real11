@@ -59,12 +59,12 @@ module.exports = {
 
                 let player_list = result && result.players ? result.players : [];
                 if(sport === 1) {
-                    cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
+                    cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, '', function (result) {
                         return res.send(result);
                     });
                 } else {
                     
-                    footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
+                    footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, '', function (result) {
                         return res.send(result);
                     });
                 }
@@ -93,7 +93,7 @@ module.exports = {
                 series_id: series_id,
                 match_id: match_id,
                 sport: sport,
-            }, {playing_11:1, xfactors:1, localteam_id: 1,match_status:1,show_preview:1,is_parent:1,time: 1, date: 1, type: 1, visitorteam_id: 1 });
+            }, {playing_11:1, xfactors:1, localteam_id: 1,match_status:1,show_preview:1,is_parent:1,time: 1, date: 1, type: 1, visitorteam_id: 1, win_flag: 1 });
 
             if (!liveMatch) {
                 return res.send(ApiUtility.failed('Match Detail not found'));
@@ -101,9 +101,6 @@ module.exports = {
             let filter = { user_id: user_id, match_id: match_id, series_id: series_id, sport: sport };
             
             if (player_team_id) {
-                // redis.getRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id,async (err, previewData) => {
-
-                // });
                 redis.getRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id,async (err, previewData) => {
                     if(previewData){
                         let resultNew;
@@ -137,30 +134,7 @@ module.exports = {
                         }
                     }
                 });
-                // let result;
-                // result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
-                // let player_list = result && result.players ? result.players : [];
-                // if(sport === 1) {
-                //     if(result &&  result.user_id){
-                //         var teamuserId = ObjectId(result.user_id);
-                //         var loginUserId = ObjectId(user_id);
-                //         var mStatus = liveMatch.match_status;
-                //         // !loginUserId.equals(teamuserId) &&  mStatus == "In Progress" ||
-                //         if(!loginUserId.equals(teamuserId) && cat_id && !_.isUndefined(cat_id) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && ( mStatus == "In Progress" || mStatus == "Not Started") ){
-                //             return res.send(ApiUtility.failed("Please wait for a few seconds to view other teams!!"))
-                //          } else {
-                //             cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
-                //                 return res.send(result);
-                //             });
-                //          }
-                //     } else {
-                //         return res.send(ApiUtility.failed('Something went wrong!!'));
-                //     }
-                // } else {
-                //     footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
-                //         return res.send(result);
-                //     });
-                // }
+                
             } else {
                 return res.send(ApiUtility.failed("Something went wrong !!"))
             }
@@ -217,8 +191,6 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
             for (const value of teamData) {
                 playerData[value.player_id] = value;
             }
-    // console.log(playerData);
-    // return false;
             // let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list }, team_id: {$in:[liveMatch.localteam_id, liveMatch.visitorteam_id]}, sport: sport });
             let localPlayers = [];
     
@@ -341,7 +313,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                 data[key]['my_contests'] = 0;
             }
             data1 = data;
-            
+
             var mStatus = liveMatch.match_status;
             var winFlag = liveMatch.win_flag;
             if(mStatus == "Finished" && winFlag == 1) {
@@ -489,7 +461,6 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
             if(liveMatch.match_status == "Finished" && liveMatch.win_flag == 1) {
                 redis.setRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id, data);
             }
-
             cb(ApiUtility.success(data));
         } else {
             cb(ApiUtility.failed("Server error"));
