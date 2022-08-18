@@ -77,7 +77,6 @@ module.exports = {
         }
     },
     previewPlayerTeamList: async (req, res) => {
-        // var _this = this;
         try {
             let { match_id, series_id, team_no, player_team_id, sport,cat_id } = req.params;
            
@@ -86,15 +85,10 @@ module.exports = {
             match_id = parseInt(match_id);
             series_id = parseInt(series_id);
 
-            // let data = [];
-            // let data1 = [];
-
             if (!user_id || !match_id || !series_id || !player_team_id) {
                 return res.send(ApiUtility.failed('user id, match id team id or series id are empty.'));
             }
 
-            // let myContest = 0;
-            // let myTeams = 0;
             let liveMatch = await SeriesSquad.findOne({
                 series_id: series_id,
                 match_id: match_id,
@@ -107,31 +101,66 @@ module.exports = {
             let filter = { user_id: user_id, match_id: match_id, series_id: series_id, sport: sport };
             
             if (player_team_id) {
-               // filter['team_count'] = parseInt(team_no);
-                let result;
-                result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
-                let player_list = result && result.players ? result.players : [];
-                if(sport === 1) {
-                    if(result &&  result.user_id){
-                        var teamuserId = ObjectId(result.user_id);
-                        var loginUserId = ObjectId(user_id);
-                        var mStatus = liveMatch.match_status;
-                        // !loginUserId.equals(teamuserId) &&  mStatus == "In Progress" ||
-                        if(!loginUserId.equals(teamuserId) && cat_id && !_.isUndefined(cat_id) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && ( mStatus == "In Progress" || mStatus == "Not Started") ){
-                            return res.send(ApiUtility.failed("Please wait for a few seconds to view other teams!!"))
-                         } else {
-                            cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
+                // redis.getRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id,async (err, previewData) => {
+
+                // });
+                redis.getRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id,async (err, previewData) => {
+                    if(previewData){
+                        let resultNew;
+                        resultNew = ApiUtility.success(previewData);
+                        return res.send(resultNew);
+                    } else {
+                        let result;
+                        result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
+                        let player_list = result && result.players ? result.players : [];
+                        if(sport === 1) {
+                            if(result &&  result.user_id){
+                                var teamuserId = ObjectId(result.user_id);
+                                var loginUserId = ObjectId(user_id);
+                                var mStatus = liveMatch.match_status;
+                                var winFlag = liveMatch.win_flag;
+                                // !loginUserId.equals(teamuserId) &&  mStatus == "In Progress" ||
+                                if(!loginUserId.equals(teamuserId) && cat_id && !_.isUndefined(cat_id) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && ( mStatus == "In Progress" || mStatus == "Not Started") ){
+                                    return res.send(ApiUtility.failed("Please wait for a few seconds to view other teams!!"))
+                                } else {
+                                    cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, player_team_id, function (result) {
+                                        return res.send(result);
+                                    });
+                                }
+                            } else {
+                                return res.send(ApiUtility.failed('Something went wrong!!'));
+                            }
+                        } else {
+                            footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, player_team_id, function (result) {
                                 return res.send(result);
                             });
-                         }
-                    } else {
-                        return res.send(ApiUtility.failed('Something went wrong!!'));
+                        }
                     }
-                } else {
-                    footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
-                        return res.send(result);
-                    });
-                }
+                });
+                // let result;
+                // result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
+                // let player_list = result && result.players ? result.players : [];
+                // if(sport === 1) {
+                //     if(result &&  result.user_id){
+                //         var teamuserId = ObjectId(result.user_id);
+                //         var loginUserId = ObjectId(user_id);
+                //         var mStatus = liveMatch.match_status;
+                //         // !loginUserId.equals(teamuserId) &&  mStatus == "In Progress" ||
+                //         if(!loginUserId.equals(teamuserId) && cat_id && !_.isUndefined(cat_id) && liveMatch && liveMatch.is_parent && liveMatch.show_preview == 0 && ( mStatus == "In Progress" || mStatus == "Not Started") ){
+                //             return res.send(ApiUtility.failed("Please wait for a few seconds to view other teams!!"))
+                //          } else {
+                //             cricketPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
+                //                 return res.send(result);
+                //             });
+                //          }
+                //     } else {
+                //         return res.send(ApiUtility.failed('Something went wrong!!'));
+                //     }
+                // } else {
+                //     footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, function (result) {
+                //         return res.send(result);
+                //     });
+                // }
             } else {
                 return res.send(ApiUtility.failed("Something went wrong !!"))
             }
@@ -312,7 +341,13 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
                 data[key]['my_contests'] = 0;
             }
             data1 = data;
-    
+            
+            var mStatus = liveMatch.match_status;
+            var winFlag = liveMatch.win_flag;
+            if(mStatus == "Finished" && winFlag == 1) {
+                redis.setRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id, data1);
+            }
+
             cb(ApiUtility.success(data1));
     
         } else {
@@ -451,7 +486,10 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
                 data[key]['my_contests'] = 0;
             }
             // data1 = data;
-
+            if(liveMatch.match_status == "Finished" && liveMatch.win_flag == 1) {
+                redis.setRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id, data);
+            }
+            
             cb(ApiUtility.success(data));
         } else {
             cb(ApiUtility.failed("Server error"));
