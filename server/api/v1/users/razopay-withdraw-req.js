@@ -17,6 +17,7 @@ const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac");
 const { razopayPayoutToUserFundAc } = require("./razopay-contact-fund-ac");
 const RazopayPayoutStatus = require("../../../models/razopay-payout-status");
 const { startSession } = require('mongoose');
+const moment = require('moment');
 
 module.exports = async (req, res) => {
 	try {
@@ -45,7 +46,7 @@ module.exports = async (req, res) => {
 			return res.json(response);
 		}
 		try {
-			let userId = req.userId;
+			let userId =req.userId;
 			let user = await Users.findOne({ _id: userId, fair_play_violation: 0 });
 			let userRazopayData = await UserRazopayFundAc.findOne({ user_id: userId });
 			if (userRazopayData && userRazopayData.contact_id && userRazopayData.fund_account_id) {
@@ -132,6 +133,7 @@ module.exports = async (req, res) => {
 								response["message"] = "The amount you have entered is more than your total available winnings for withdrawal, please enter a realistic amount.";
 								return res.json(response);
 							} else {
+								params.instant_withdraw = "1";
 								let updatedData = {};
 								let remainingAmount = winning_balance - params.withdraw_amount;
 								updatedData.amount = remainingAmount;
@@ -156,12 +158,17 @@ module.exports = async (req, res) => {
 										return res.json(response);
 									}
 									if (params.instant_withdraw && params.instant_withdraw == "1") {
+										let todayStartDate = moment().startOf('day').utc().toDate();
+									    let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),created:{$gte:todayStartDate}}).count();
+									    
 										let instantComm = 0;
-										if (params.type == "bank") {
+										if (params.type == "bank" && totalUserReqOnToday >2) {
 											instantComm = config.withdraw_commission;
 										} else {
-											let commAmt = 1 / 100 * parseFloat(params.withdraw_amount);
-											instantComm = commAmt;
+											if(totalUserReqOnToday >2){
+												let commAmt = 1 / 100 * parseFloat(params.withdraw_amount);
+												instantComm = commAmt;
+											}
 										}
 										updatedData.instant_withdraw_comm = instantComm;
 									}
