@@ -134,6 +134,7 @@ module.exports = async (req, res) => {
 								return res.json(response);
 							} else {
 								params.instant_withdraw = "1";
+								isInstant = 1
 								let updatedData = {};
 								let remainingAmount = winning_balance - params.withdraw_amount;
 								updatedData.amount = remainingAmount;
