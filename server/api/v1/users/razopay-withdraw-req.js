@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
 			return res.json(response);
 		}
 		try {
-			let userId ="6171105acd54863bd0c02c17" //req.userId;
+			let userId = req.userId;
 			let user = await Users.findOne({ _id: userId, fair_play_violation: 0 });
 			let userRazopayData = await UserRazopayFundAc.findOne({ user_id: userId });
 			if (userRazopayData && userRazopayData.contact_id && userRazopayData.fund_account_id) {
@@ -147,12 +147,7 @@ module.exports = async (req, res) => {
 								let settingData = {};
 								let appSettingData = {};
 								redis.getRedis('app-setting', async (err, data) => {
-									let todayStartDate = moment().startOf('day').utc().toDate();
-									const start = new Date(new Date().setDate(new Date().getDate() - 1));
-
-                                    start.setUTCHours(18,30,0,0);
-							 		let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),created:{$gte:start}}).count();
-									console.log("totalUserReqOnToday",start,totalUserReqOnToday);
+									
 									if (data) {
 										settingData = data;
 									} else {
@@ -164,8 +159,10 @@ module.exports = async (req, res) => {
 										return res.json(response);
 									}
 									if (params.instant_withdraw && params.instant_withdraw == "1") {
-										
-									    
+									   const start = new Date(new Date().setDate(new Date().getDate() - 1));
+                                       start.setUTCHours(18,30,0,0);
+							 		   let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),created:{$gte:start}}).count();
+									   
 										let instantComm = 0;
 										if (params.type == "bank" && totalUserReqOnToday >2) {
 											instantComm = config.withdraw_commission;
