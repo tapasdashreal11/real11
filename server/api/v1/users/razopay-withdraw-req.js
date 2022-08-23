@@ -133,8 +133,8 @@ module.exports = async (req, res) => {
 								response["message"] = "The amount you have entered is more than your total available winnings for withdrawal, please enter a realistic amount.";
 								return res.json(response);
 							} else {
-								params.instant_withdraw = "0";
-								isInstant = 0
+								params.instant_withdraw = "1";
+								isInstant = 1
 								let updatedData = {};
 								let remainingAmount = winning_balance - params.withdraw_amount;
 								updatedData.amount = remainingAmount;
