@@ -148,7 +148,8 @@ module.exports = async (req, res) => {
 								let appSettingData = {};
 								redis.getRedis('app-setting', async (err, data) => {
 									let todayStartDate = moment().startOf('day').utc().toDate();
-									var start = new Date();
+									const start = new Date(new Date().setDate(new Date().getDate() - 1));
+
                                     start.setUTCHours(18,30,0,0);
 							 		let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),created:{$gte:start}}).count();
 									console.log("totalUserReqOnToday",start,totalUserReqOnToday);
