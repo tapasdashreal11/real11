@@ -148,8 +148,10 @@ module.exports = async (req, res) => {
 								let appSettingData = {};
 								redis.getRedis('app-setting', async (err, data) => {
 									let todayStartDate = moment().startOf('day').utc().toDate();
-									let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),created:{$gte:todayStartDate}}).count();
-									console.log("totalUserReqOnToday",todayStartDate,totalUserReqOnToday);
+									var start = new Date();
+                                    start.setUTCHours(0,0,0,0);
+							 		let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),created:{$gte:start}}).count();
+									console.log("totalUserReqOnToday",start,totalUserReqOnToday);
 									if (data) {
 										settingData = data;
 									} else {
