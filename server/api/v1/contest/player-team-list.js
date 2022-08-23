@@ -5,16 +5,10 @@ const PlayerTeam = require('../../../models/player-team');
 const LiveScore = require('../../../models/live-score')
 
 const ApiUtility = require('../../api.utility');
-// const ModelService = require("../../ModelService");
 const { ObjectId } = require('mongodb');
-// const moment = require('moment');
-// const config = require('../../../config');
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
-// const mqtt = require('../../../../lib/mqtt');
 const PlayerTeamService = require('../../Services/PlayerTeamService');
-// const { RedisKeys } = require('../../../constants/app');
-
 
 module.exports = {
     
@@ -101,7 +95,7 @@ module.exports = {
             let filter = { user_id: user_id, match_id: match_id, series_id: series_id, sport: sport };
             
             if (player_team_id) {
-                redis.getRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id,async (err, previewData) => {
+                redis.getRedisForLf("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id,async (err, previewData) => {
                     if(previewData){
                         let resultNew;
                         resultNew = ApiUtility.success(previewData);
@@ -317,7 +311,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
             var mStatus = liveMatch.match_status;
             var winFlag = liveMatch.win_flag;
             if(mStatus == "Finished" && winFlag == 1) {
-                redis.setRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id, data1);
+                redis.setRedisForLf("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id, data1);
             }
 
             cb(ApiUtility.success(data1));
@@ -459,7 +453,7 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
             }
             // data1 = data;
             if(liveMatch.match_status == "Finished" && liveMatch.win_flag == 1) {
-                redis.setRedis("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id, data);
+                redis.setRedisForLf("match-preview-"+sport+"-"+series_id+"-"+match_id+"-"+player_team_id, data);
             }
             cb(ApiUtility.success(data));
         } else {
