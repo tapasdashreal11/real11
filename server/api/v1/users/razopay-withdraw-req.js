@@ -159,11 +159,11 @@ module.exports = async (req, res) => {
 										response["message"] = settingData.instant_withdraw_msg;
 										return res.json(response);
 									}
-									if (params.instant_withdraw && params.instant_withdraw == "0") {
+									if (params && params.instant_withdraw == "0") {
 									   const start = new Date(new Date().setDate(new Date().getDate() - 1));
                                        start.setUTCHours(18,30,0,0);
 							 		   let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
-									   
+									   console.log("totalUserReqOnToday**",request_status);
 										let instantComm = 0;
 										if (params.type == "bank" && totalUserReqOnToday >2) {
 											instantComm = config.withdraw_commission;
