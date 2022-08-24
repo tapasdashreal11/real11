@@ -133,8 +133,8 @@ module.exports = async (req, res) => {
 								response["message"] = "The amount you have entered is more than your total available winnings for withdrawal, please enter a realistic amount.";
 								return res.json(response);
 							} else {
-								params.instant_withdraw = "0";
-								isInstant = 0
+								params.instant_withdraw = "1";
+								isInstant = 1
 								let updatedData = {};
 								let remainingAmount = winning_balance - params.withdraw_amount;
 								updatedData.amount = remainingAmount;
@@ -159,11 +159,11 @@ module.exports = async (req, res) => {
 										response["message"] = settingData.instant_withdraw_msg;
 										return res.json(response);
 									}
-									if (params && params.instant_withdraw == "0") {
+									if (params.instant_withdraw && params.instant_withdraw == "1") {
 									   const start = new Date(new Date().setDate(new Date().getDate() - 1));
                                        start.setUTCHours(18,30,0,0);
 							 		   let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
-									   console.log("totalUserReqOnToday**",totalUserReqOnToday);
+									   
 										let instantComm = 0;
 										if (params.type == "bank" && totalUserReqOnToday >=2) {
 											instantComm = config.withdraw_commission;
