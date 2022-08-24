@@ -15,6 +15,8 @@ const { startSession } = require('mongoose');
 const btoa = require('btoa');
 const redis = require('../../../../lib/redis');
 var imageurl = config.imageBaseUrl;
+const LudoOffer = require("../../../models/ludo_offer");
+
 module.exports = async (req, res) => {
     try {
         let data1 = {};
