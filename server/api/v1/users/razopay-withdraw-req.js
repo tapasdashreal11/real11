@@ -165,10 +165,10 @@ module.exports = async (req, res) => {
 							 		   let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
 									   console.log("totalUserReqOnToday**",totalUserReqOnToday);
 										let instantComm = 0;
-										if (params.type == "bank" && totalUserReqOnToday >2) {
+										if (params.type == "bank" && totalUserReqOnToday >=2) {
 											instantComm = config.withdraw_commission;
 										} else {
-											if(totalUserReqOnToday >2){
+											if(totalUserReqOnToday >=2){
 												let commAmt = 1 / 100 * parseFloat(params.withdraw_amount);
 												instantComm = commAmt;
 											}
