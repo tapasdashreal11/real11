@@ -327,7 +327,7 @@ async function cricketPreview(series_id, match_id, user_id, sport, player_list, 
 async function footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, player_team_id, cb) {
     try {
         let data    =   [];
-        let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list },team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport });
+        let teamData = await SeriesPlayer.find({ series_id: series_id, player_id: { $in: player_list },team_id: {$in: [liveMatch.localteam_id,liveMatch.visitorteam_id]}, sport: sport, player_status:1 });
         if (teamData && ((sport == 2 && teamData.length == 11) || (sport == 4 && teamData.length == 7)) ) {
             let playerData = {};
             for (const value of teamData) {
