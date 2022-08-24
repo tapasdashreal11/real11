@@ -126,6 +126,28 @@ module.exports = async (req, res) => {
                                             let userBounousData = {};
                                             let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
                                             if (contestType == 'Paid') {
+                                                //************Ludo offer calculation ***************/
+                                                const ludoOffer = await LudoOffer.findOne({user_id:user_id,status: 1,expiry_date:{$gte:new Date()}  });
+                                                console.log(ludoOffer);
+                                                console.log("req.userId***",req.userId);
+                                                let pContestId = contest_id; //ObjectId(contest_id);
+                                                let prContestId = matchContest && matchContest.parent_contest_id ? String(matchContest.parent_contest_id):matchContest.contest_id;
+                                                if(ludoOffer && ludoOffer._id){
+                                                    let cBonus =  ludoOffer && ludoOffer.contest_bonous?ludoOffer.contest_bonous:[]; 
+                                                    let cBonusItem =  cBonus.find(function(el){
+                                                        if(ObjectId(el.contest_id).equals(ObjectId(prContestId)) || ObjectId(el.contest_id).equals(ObjectId(pContestId))){
+                                                            return el
+                                                          }
+                                                        });
+                                                     if(cBonusItem && cBonusItem.contest_id ){
+                                                         userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
+                                                        calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
+                                                        retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
+                                                        is_offer_applied = true;
+                                                      }   
+                                                    
+                                                }
+                                                //**************************************** */
                                                 let contestSizeCal = (contestData && contestData.contest_size) ? (contestData.contest_size) : (contestData.infinite_contest_size ? 2 : 2);
                                                 if (calEntryFees > 0) {
                                                     const paymentCal = await joinContestPaymentCalculation(contestSizeCal, useableBonusPer, authUser, calEntryFees, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount);
