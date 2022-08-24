@@ -163,7 +163,7 @@ module.exports = async (req, res) => {
 									   const start = new Date(new Date().setDate(new Date().getDate() - 1));
                                        start.setUTCHours(18,30,0,0);
 							 		   let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
-									   console.log("totalUserReqOnToday**",request_status);
+									   console.log("totalUserReqOnToday**",totalUserReqOnToday);
 										let instantComm = 0;
 										if (params.type == "bank" && totalUserReqOnToday >2) {
 											instantComm = config.withdraw_commission;
