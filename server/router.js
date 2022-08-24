@@ -119,7 +119,6 @@ const {
     joinContestWalletAmount,
     joinContestWalletAmountMultiple,
     joinContestWithMultipleTeam,
-    // applyContestInviteCode,
    // categoryContestList,
     switchTeam,
     // contestPrizeBreakup,
@@ -301,7 +300,7 @@ router.get('/api/v1/contest-list-new-latest/:match_id/:sport?/:series_id?', auth
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);
 router.get('/api/v1/other-game-contest-list/:match_id/:sport',auth.authenticate.jwtLogin, otherGameContestList);
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
-router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
+router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList); //need to check in use or not
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
 router.post('/api/v1/create-contest',auth.authenticate.jwtLogin, createPrivateContest);
 router.get('/api/v1/user-download/:dcode/:clevertap_id', userAppDownlad);

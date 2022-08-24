@@ -187,7 +187,6 @@ config.redis = {
 }
 
 config.leaderboard_redis = {
-  // host: 'localhost', //'redis-leaderboard.k6nkix.ng.0001.aps1.cache.amazonaws.com',
   host: process.env.LEARBOARD_REDIS_HOST || 'localhost',
   port: process.env.REDIS_PORT || 6379
 }
@@ -335,3 +334,8 @@ config.aws_remote_config= {
 }
 
 config.withdraw_commission = 10
+config.ent_redis = {
+  host: process.env.ENT_REDIS_HOST || 'localhost',
+  port: 16433
+}
+
