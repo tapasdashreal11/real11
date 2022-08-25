@@ -140,10 +140,9 @@ module.exports = async (req, res) => {
                                                           }
                                                         });
                                                      if(cBonusItem && cBonusItem.contest_id ){
-                                                         userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
+                                                        userOfferAmount = cBonusItem.bonus_amount ? cBonusItem.bonus_amount : 0;
                                                         calEntryFees = userOfferAmount > entryFee ? 0: (entryFee - userOfferAmount );
                                                         retention_bonus_amount = userOfferAmount > entryFee ? entryFee: userOfferAmount;
-                                                        is_offer_applied = true;
                                                       }   
                                                     
                                                 }
