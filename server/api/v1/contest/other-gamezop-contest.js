@@ -195,11 +195,11 @@ async function getOfferRedisData(redisKeyForUserAnalysis,user_id,match_id) {
             if (data) {
                 resolve(data);
             } else {
-                let userAnalysisData = await LudoOffer.findOne({user_id:user_id,status: 1,match_id: match_id,expiry_date:{$gte:new Date()}  });
+                let userAnalysisData = await LudoOffer.findOne({user_id:user_id,status: 1,match_id: match_id,expiry_date:{$gte:new Date()}  }).exec();
                 if (userAnalysisData && userAnalysisData._id) {
                      if(userAnalysisData && userAnalysisData.expiry_date){
                         let offerExpireDate = userAnalysisData.expiry_date.toISOString().replace('Z', '').replace('T', ' ').replace('.000', '');
-                        console.log("offerExpireDate***",offerExpireDate);
+                        console.log("offerExpireDate",offerExpireDate);
                         userAnalysisData.expiry_date = offerExpireDate
                     } 
                     
