@@ -199,11 +199,10 @@ async function getOfferRedisData(redisKeyForUserAnalysis,user_id,match_id) {
                 if (userAnalysisData && userAnalysisData._id) {
                      if(userAnalysisData && userAnalysisData.expiry_date){
                         let offerExpireDate = userAnalysisData.expiry_date.toISOString().replace('Z', '').replace('T', ' ').replace('.000', '');
-                         console.log("offerExpireDate",offerExpireDate);
-                         let formedObj = {expiry_date:offerExpireDate}
-                         let newObj  = {...userAnalysisData, ...formedObj}
-                         redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, newObj);
-                         resolve(newObj);
+                         var newObject = JSON.parse(JSON.stringify(userAnalysisData));
+                         newObject.expiry_date = offerExpireDate;
+                         redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, newObject);
+                         resolve(newObject);
                     }else{
                         redis.setRedisForUserAnaysis(redisKeyForUserAnalysis, userAnalysisData);
                         resolve(userAnalysisData);
