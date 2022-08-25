@@ -130,9 +130,7 @@ module.exports = async (req, res) => {
                                             if (contestType == 'Paid') {
                                                 //************Ludo offer calculation ***************/
                                                 const ludoOffer = await LudoOffer.findOne({user_id:user_id,status: 1,expiry_date:{$gte:new Date()}  });
-                                                console.log(ludoOffer);
-                                                console.log("req.userId***",req.userId);
-                                                let pContestId = contest_id; //ObjectId(contest_id);
+                                                let pContestId = contest_id;
                                                 let prContestId = matchContest && matchContest.parent_contest_id ? String(matchContest.parent_contest_id):matchContest.contest_id;
                                                 if(ludoOffer && ludoOffer._id){
                                                     let cBonus =  ludoOffer && ludoOffer.contest_bonous?ludoOffer.contest_bonous:[]; 
