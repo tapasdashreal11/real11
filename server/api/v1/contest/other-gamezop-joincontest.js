@@ -129,7 +129,7 @@ module.exports = async (req, res) => {
                                             let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
                                             if (contestType == 'Paid') {
                                                 //************Ludo offer calculation ***************/
-                                                const ludoOffer = await LudoOffer.findOne({user_id:user_id,status: 1,expiry_date:{$gte:new Date()}  });
+                                                const ludoOffer = await LudoOffer.findOne({user_id:user_id,status: 1,'match_id': decoded['match_id'],expiry_date:{$gte:new Date()}  });
                                                 let pContestId = contest_id;
                                                 let prContestId = matchContest && matchContest.parent_contest_id ? String(matchContest.parent_contest_id):matchContest.contest_id;
                                                 if(ludoOffer && ludoOffer._id){
