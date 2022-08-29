@@ -5,6 +5,9 @@ const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 
+// @response
+// {"response":{"status":true,"message":null,"data":{"total_earnd":0,"to_be_earnd":0,"total_fields":0,"friend_detail":[]}}}
+
 
   module.exports = async (req, res) => {
   try {
