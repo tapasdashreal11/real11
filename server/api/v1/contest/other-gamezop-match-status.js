@@ -105,6 +105,10 @@ module.exports = async (req, res) => {
                                         });
                                         checkUserOffer.contest_bonous = c_bonous
                                         let redisKeyForUserAnalysisOthers = 'other-games-offer-' + userId + '-'  + local_match_id;
+                                        if(checkUserOffer && checkUserOffer.expiry_date){
+                                            let offerExpireDate = checkUserOffer.expiry_date.toISOString().replace('Z', '').replace('T', ' ').replace('.000', '');
+                                             checkUserOffer.expiry_date = offerExpireDate;
+                                        }
                                         redis.setRedisForUserAnaysis(redisKeyForUserAnalysisOthers, checkUserOffer);
                                     }
                                     console.log("userOfferArray status **",userOfferArray);
@@ -256,6 +260,10 @@ module.exports = async (req, res) => {
     }
 }
 
+/**
+ * This is used to generate zop match Id. We send this id to third party to create a game
+ */
+
 async function generateZopMatchId() {
     var text = "";
     var possible = "0123456789";
@@ -264,6 +272,18 @@ async function generateZopMatchId() {
     return parseInt(text);
 }
 
+/**
+ * We have payment calcualtion to cut the contest join amount. 
+ * @param {*} contest_size 
+ * @param {*} useableBonusPer 
+ * @param {*} authUser 
+ * @param {*} entryFee 
+ * @param {*} winAmount 
+ * @param {*} cashAmount 
+ * @param {*} bonusAmount 
+ * @param {*} extraAmount 
+ * @param {*} retention_bonus_amount 
+ */
 
 async function joinContestPaymentCalculation(contest_size, useableBonusPer, authUser, entryFee, winAmount, cashAmount, bonusAmount, extraAmount, retention_bonus_amount) {
     let useAmount = (useableBonusPer / 100) * entryFee;
@@ -347,6 +367,10 @@ async function joinContestPaymentCalculation(contest_size, useableBonusPer, auth
 
 }
 
+/**
+ * Admin commision calcution of contest and we get commision amount of contest
+ * @param {*} contestData 
+ */
 async function calculateAdminComission(contestData) {
     let adminComission = contestData.admin_comission || 0;
     let winningAmount = contestData.winning_amount || 0;
