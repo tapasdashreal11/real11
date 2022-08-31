@@ -193,6 +193,10 @@ async function getOfferRedisData(redisKeyForUserAnalysis,user_id,match_id) {
     return new Promise((resolve, reject) => {
         redis.getRedisForUserAnaysis(redisKeyForUserAnalysis, async (err, data) => {
             if (data) {
+                if(data && data.expiry_date){
+                    let offerExpireDate = data.expiry_date.replace('Z', '').replace('T', ' ').replace('.000', '');
+                     data.expiry_date = offerExpireDate;
+                  }
                 resolve(data);
             } else {
                 let userAnalysisData = await LudoOffer.findOne({user_id:user_id,status: 1,match_id: match_id,expiry_date:{$gte:new Date()}  });
