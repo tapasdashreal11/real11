@@ -16,6 +16,7 @@ const fs = require('fs');
 const ID = '';
 const SECRET = '';
 
+// test routeing 
 // The name of the bucket that you have created
 // const BUCKET_NAME = 'real11-images';
 const BUCKET_NAME = process.env.BUCKET_NAME || 'real11-prod-images';
