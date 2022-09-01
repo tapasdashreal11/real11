@@ -240,7 +240,7 @@ async function cancelContestAtResult(zop_match_id, room_id) {
                         let winAmount = jcd && jcd.deduct_winning_amount && jcd.deduct_winning_amount > 0 ? jcd.deduct_winning_amount : 0;
                         let total_amount = jcd && jcd.total_amount && jcd.total_amount > 0 ? jcd.total_amount : 0;
                         let retention_bonus = jcd && jcd.retention_bonus && jcd.retention_bonus > 0 ? jcd.retention_bonus : 0;
-                        if(retention_bonus>0 && retention_bonus <= total_amount) total_amount = total_amount - retention_bonus;
+                        //if(retention_bonus>0 && retention_bonus <= total_amount) total_amount = total_amount - retention_bonus;
     
                         let r_winning_balance = singleUserDataItem && singleUserDataItem['winning_balance'] ? singleUserDataItem['winning_balance'] + winAmount :0;
                         let r_cash_balance = singleUserDataItem && singleUserDataItem['cash_balance'] ? singleUserDataItem['cash_balance'] + cashAmount :0;
