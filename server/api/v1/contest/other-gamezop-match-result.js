@@ -211,6 +211,11 @@ module.exports = async (req, res) => {
     }
 }
 
+/**
+ * This is used to cancel contest and refund process to users.This is happen when data is miss match or data is not proper as our records.
+ * @param {*} zop_match_id 
+ * @param {*} room_id 
+ */
 async function cancelContestAtResult(zop_match_id, room_id) {
     const session = await startSession()
     session.startTransaction();
@@ -234,6 +239,8 @@ async function cancelContestAtResult(zop_match_id, room_id) {
                         let xtraAmount = jcd && jcd.deduct_extra_amount && jcd.deduct_extra_amount > 0 ? jcd.deduct_extra_amount : 0;
                         let winAmount = jcd && jcd.deduct_winning_amount && jcd.deduct_winning_amount > 0 ? jcd.deduct_winning_amount : 0;
                         let total_amount = jcd && jcd.total_amount && jcd.total_amount > 0 ? jcd.total_amount : 0;
+                        let retention_bonus = jcd && jcd.retention_bonus && jcd.retention_bonus > 0 ? jcd.retention_bonus : 0;
+                        if(retention_bonus>0 && retention_bonus <= total_amount) total_amount = total_amount - retention_bonus;
     
                         let r_winning_balance = singleUserDataItem && singleUserDataItem['winning_balance'] ? singleUserDataItem['winning_balance'] + winAmount :0;
                         let r_cash_balance = singleUserDataItem && singleUserDataItem['cash_balance'] ? singleUserDataItem['cash_balance'] + cashAmount :0;
@@ -255,7 +262,7 @@ async function cancelContestAtResult(zop_match_id, room_id) {
                         const txnId = (new Date()).getTime() + otherPtcItem.user_id;
                         let entity = {
                             user_id: otherPtcItem.user_id, contest_id: otherPtcItem.contest_id, match_id: matchContest.match_id, sport: 3, txn_amount: total_amount, currency: "INR",
-                            retantion_amount: 0,
+                            retantion_amount: retention_bonus,
                             txn_date: Date.now(),
                             local_txn_id: txnId,
                             added_type: 6,
@@ -316,6 +323,15 @@ async function cancelContestAtResult(zop_match_id, room_id) {
 
 }
 
+/**
+ * Freegiveway distribution when user join the contest of zero amount and contest have winning breakup
+ * @param {*} match_sport 
+ * @param {*} matchContestData 
+ * @param {*} breakup 
+ * @param {*} rankData 
+ * @param {*} scores 
+ * @param {*} roomId 
+ */
 async function freegiveaway(match_sport,matchContestData,breakup,rankData,scores,roomId){
     let finalScoreData = [];
     let transactionData = [];
