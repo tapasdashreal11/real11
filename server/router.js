@@ -92,8 +92,8 @@ const  joinContestMultipleTeam  = require('./api/v1/contest/join-contest-multipl
 const  joinContestMultipleTeamNew  = require('./api/v1/contest/join-contest-multiple-redis');
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
-const  otherGameContestList  = require('./api/v1/contest/other-games-contest');
-const  contestList  = require('./api/v1/contest/contest-list');
+const  otherGameContestList  = require('./api/v1/contest/other-games-contest');  // not in use for now
+const  contestList  = require('./api/v1/contest/contest-list');  // not in use for now
 const  contestListNew  =   require('./api/v1/contest/contest-m-list');  // require('./api/v1/contest/contest-list-new');
 const  contestListNewLatest  = require('./api/v1/contest/contest-m-list');
 const  { contestDetailNew,contestLeaderboard, contestDetail,contestDetailNewLatest,contestLeaderboardLatest,contestDetailLatest }  = require('./api/v1/contest/contest-detail');
@@ -295,11 +295,11 @@ router.get('/api/v1/banner-list', bannerList);
 router.get('/api/v1/deposit-banner-list', depositBannerList);
 router.get('/api/v1/playstore-banner-list', playstoreBannerList);
 //router.get('/api/v1/contest-list/:match_id/:sport?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
-router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
+router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList); // not in use for now
 router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
 router.get('/api/v1/contest-list-new-latest/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewLatest);
-router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);
-router.get('/api/v1/other-game-contest-list/:match_id/:sport',auth.authenticate.jwtLogin, otherGameContestList);
+router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);  // not in use for now
+router.get('/api/v1/other-game-contest-list/:match_id/:sport',auth.authenticate.jwtLogin, otherGameContestList);   // not in use for now
 router.get('/api/v1/category-contest-list/:match_id/:sport?/:category_id?', auth.authenticate.jwtLogin, categoryContestList);
 router.get('/api/v1/category-contest-list/:match_id/:category_id?', auth.authenticate.jwtLogin, categoryContestList); //need to check in use or not
 router.post('/api/v1/apply-coupon-code', auth.authenticate.jwtLogin, applyCouponCode);
