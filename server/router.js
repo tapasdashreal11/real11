@@ -192,6 +192,11 @@ const  { lfContestDetailNew,lfContestLeaderboard,lfLivecontestDetailLB }  = requ
 const  unityMatchResult  = require('./api/v1/contest/unity-match-result');
 const  unityMatchStatus  = require('./api/v1/contest/unity-match-status');
 
+// Quiz Question answer
+
+const  {quizQuestion,quizQuestionAnsSubmit,userSubmitedQuestionList}  = require('./api/v1/quiz/quiz-question');
+
+
 const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
@@ -367,6 +372,12 @@ router.post('/api/v1/other-games-create-private-contest',auth.authenticate.jwtLo
 
 router.post('/api/v1/unity-match-result', unityMatchResult); 
 router.post('/api/v1/unity-match-status',unityMatchStatus);
+
+// Quiz API
+
+router.get('/api/v1/quiz-question-list',auth.authenticate.jwtLogin, quizQuestion);
+router.get('/api/v1/quiz-question-submit/:q_id/:option_id',auth.authenticate.jwtLogin, quizQuestionAnsSubmit);
+router.get('/api/v1/quiz-submited-list',auth.authenticate.jwtLogin, userSubmitedQuestionList);
 
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
