@@ -62,10 +62,10 @@ module.exports = async (req, res) => {
 					let totalDeductedAmount = cashAmount + winAmount;
 					if (totalDeductedAmount == 2 || instant_verification_free) {
 						bankVerificationToken(params, function (resToken) {
-							console.log("bank token******",resToken.token)
+							//console.log("bank token******",resToken.token)
 							if (resToken.status == true && resToken.token) {
 								bankVerification(params, user.phone, resToken.token, async function (veriyRes) {
-									console.log("ddddd*****", veriyRes);
+									//console.log("ddddd*****", veriyRes);
 									if (veriyRes && veriyRes.status == true) {
 
 										let bankDetail = await BankDetails.findOne({ user_id: userId });
@@ -127,10 +127,10 @@ module.exports = async (req, res) => {
 											if (!instant_verification_free) {
 												await Transaction.create(entity);
 											}
-											console.log('enter 1*******');
+											//console.log('enter 1*******');
 											let fundAcount = await UserRazopayFundAc.findOne({ user_id: user._id });
 											if (!_.isEmpty(fundAcount) && fundAcount.change_bank_req_accept == true) {
-												 console.log("fundAcount****",fundAcount);
+												// console.log("fundAcount****",fundAcount);
 												let userBankDeatail = await BankDetails.findOne({ user_id: userId })
 												if (!_.isEmpty(userBankDeatail)) {
 													let fundAccount = {
