@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
             response["matchId"] = "";
             return res.json(response);
         }
-        console.log("req.body ludo",req.body);
+        //console.log("req.body ludo",req.body);
         if (_.isEqual(apiKey, config.gamezop_api_key)) {
             let playersIds = players.map(s => ObjectId(s));
             let matchContest = await OtherGamesContest.findOne({ contest_id: ObjectId(roomId) });
