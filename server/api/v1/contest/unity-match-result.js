@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
         var apiKey = req.headers['api-key'];
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
-        console.log("scores at Unity",scores,contestId,apiKey);
+        console.log("scores at Unity",scores,contestId,matchId);
         let match_sport = 3;
         if (scores && scores.length == 0 && contestId && matchId) {
 
@@ -47,6 +47,7 @@ module.exports = async (req, res) => {
             if (rankData && rankData.length > 0) {
                 const allEqual = arr => arr.every(v => v.rank === arr[0].rank);
                 let matchTieStatus = allEqual(rankData);
+                console.log("rankData",rankData,matchTieStatus);
                 if (matchTieStatus) {
                     // When match tie status is happening
 
@@ -72,7 +73,7 @@ module.exports = async (req, res) => {
                     // If match tie does not exists
                     let userIds = _.map(rankData, 'user_id');
                     let zopmatchId = parseInt(matchId);
-                    let playerTeamRes = await UnityGamesPtc.find({ contest_id: ObjectId(contestId), zop_match_id: zopmatchId, user_id: { $in: userIds }, is_deleted: 0, winning_amount_distributed: 0 });
+                    let playerTeamRes = await UnityGamesPtc.find({ contest_id: ObjectId(contestId), unity_room_id: zopmatchId, user_id: { $in: userIds }, is_deleted: 0, winning_amount_distributed: 0 });
 
                     let matchContestData = await OtherGamesContest.findOne({ 'contest_id': ObjectId(contestId), sport: match_sport });
                     if(matchContestData && scores && matchContestData.contest && matchContestData.contest.contest_size && matchContestData.contest.contest_size == scores.length){
