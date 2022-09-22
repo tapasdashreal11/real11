@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
         var apiKey = req.headers['api-key'];
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
-        //console.log("scores",scores);
+        console.log("scores at Unity",scores);
         let match_sport = 3;
         if (scores && scores.length == 0 && contestId && matchId) {
 
