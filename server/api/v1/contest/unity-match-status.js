@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
         var apiKey = req.headers['api-key'];
         let local_match_id;
         let match_sport = 3;
-        console.log("Unity Ludo status*** ", contestId, status, players);
+        console.log("Unity Ludo status*** ", contestId, status, players,apiKey);
         if (!matched) {
             response["success"] = false;
             response["matchId"] = "";
