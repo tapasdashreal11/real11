@@ -16,9 +16,9 @@ const LudoOffer = require("../../../models/ludo_offer");
 
 module.exports = async (req, res) => {
     try {
-        const { contestId, status, players, roomId } = req.body;
+        const { contestId, status, players, roomId, unity_room_id } = req.body;
         let response = {};
-        let constraints = { contestId: "required", status: "required", players: "required", roomId: "required" };
+        let constraints = { contestId: "required", status: "required", players: "required", roomId: "required", unity_room_id: "required" };
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
         var apiKey = req.headers['api-key'];
@@ -152,7 +152,8 @@ module.exports = async (req, res) => {
                                     let r_extra_amount = singleUserDataItem && singleUserDataItem['extra_amount'] ? singleUserDataItem['extra_amount'] - extraAmount:0 ;
 
                                     contest.join_contest_detail = jcd;
-                                    contest.zop_match_id = roomId; //zop_match_id;
+                                    contest.zop_match_id = ObjectId(roomId); //zop_match_id;
+                                    contest.unity_room_id = unity_room_id;
                                     ptcArray.push(contest);
                                     let entity = {
                                         user_id: userId, contest_id: contestId, match_id: local_match_id, sport: match_sport, txn_amount: txnAmount, currency: "INR",
