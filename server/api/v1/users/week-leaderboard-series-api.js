@@ -19,7 +19,7 @@ module.exports = {
                  response["status"] = true;
                  return res.json(response);
             } else {
-                let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1},{mega_leaderboard:1}]});
+                let seriesData = await Series.find({$or:[{week_leaderboard:1},{series_leaderboard:1},{mega_leaderboard:1}]}).sort({ start_date: -1 });
                 if(seriesData && seriesData.length>0){
                  let newSeriesData = seriesData.map((val)=>{
                      let return_data = JSON.parse(JSON.stringify(val));
