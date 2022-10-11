@@ -18,6 +18,7 @@ module.exports = async (req, res) => {
     try {
         const { contestId, status, players, roomId, unity_room_id } = req.body;
         let response = {};
+        console.log(req.headers, req.body);
         let constraints = { contestId: "required", status: "required", players: "required", roomId: "required", unity_room_id: "required" };
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
