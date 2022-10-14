@@ -252,6 +252,9 @@ async function setDataToAppsflyer(params){
 				if(params && params.app_source == "playstore"){
 					appsflyerURL = config.appsFlyerAndroidPlaystorUrl;
 				}
+				if(params && params.app_source == "playstore_pro"){
+					appsflyerURL = config.appsFlyerAndroidPlaystorProUrl;
+				}
             } else {
 				appsflyerURL = config.appsFlyeriPhoneUrl;
             }

@@ -974,6 +974,7 @@ class ModelService {
                             "is_notification":{$cond: { if: { $eq: [ "$notification_status", 'active' ] }, then: true, else: false }},
                             "notification_title":"$notification_title",
                             "match_banner":{$cond: { if: { $eq: [ "$match_banner", '' ] }, then: "", else: { $concat: [ imageurl, "/", "$match_banner" ] } }},
+                            "match_banner_url":{$cond: { if: { $eq: [ "$match_banner_url", '' ] }, then: "", else: { $concat: ["real11.com" ] } }},
                             "active_giveaway":{ $ifNull: [ "$active_giveaway", false ] },
                             "live_fantasy":{ $ifNull: [ "$custom_live_fantasy", false ] },
                             "local_color_code":{ $ifNull: [ "$local_color_code", '' ] },
