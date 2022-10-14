@@ -938,6 +938,7 @@ module.exports = {
                 let contestData = {
                     match_status: (reviewMatch) ? reviewMatch.status : '',
                     live_match_banner: (reviewMatch && reviewMatch.live_match_banner) ? imageurl + "/" + reviewMatch.live_match_banner : '',
+                    live_match_banner_url: 'https://real11.com/about-us',
                     prize_money: prizeMoney,
                     usable_bonus_time: matchInviteCode.usable_bonus_time,
                     before_time_bonus: matchInviteCode.before_time_bonus,
