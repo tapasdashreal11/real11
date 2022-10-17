@@ -14,7 +14,6 @@ const appsFlyerEntryService = (appsflyerdata,appsflyerUrl) => {
                 "body":appsflyerdata
             };
             request(options, function (error,res,body) {
-                console.log("appsflayer res >>>>>>>>>>>>>>>",body);
                 return resolve(body);
             });
            

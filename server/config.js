@@ -308,6 +308,7 @@ config.total_user_ref_earned = 75;
 // Appsflyer URL for Android and iphone
 config.appsFlyerAndroidUrl = "https://api2.appsflyer.com/inappevent/os.real11";
 config.appsFlyerAndroidPlaystorUrl = "https://api2.appsflyer.com/inappevent/ps.real11";
+config.appsFlyerAndroidPlaystorProUrl = "https://api2.appsflyer.com/inappevent/ps.pro.real11";
 config.appsFlyeriPhoneUrl = "https://api2.appsflyer.com/inappevent/id1455728625";
 
 config.imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://real11-images.s3.ap-south-1.amazonaws.com';
@@ -317,7 +318,7 @@ config.maxPhotoUploadSize = 6 * 1024 * 1024; // 6M
 config.sendgridApiKey = "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"; 
 config.fcmKey = process.env.FCM_KEY || "";
 
-config.developerEmail = process.env.DEVELOPER_EMAIL || 'nidhimittal@real11.com, shashijangir@real11.com';
+config.developerEmail = process.env.DEVELOPER_EMAIL || 'nidhimittal@real11.com';
 
 
 config.series_squad_table= 'series_squad',
