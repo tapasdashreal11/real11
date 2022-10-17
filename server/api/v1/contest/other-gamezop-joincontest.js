@@ -353,7 +353,10 @@ module.exports = async (req, res) => {
                                                     // data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&roomDetails="+encodeData; // For Prod
                                                     // data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
                                                     if (decoded['match_id'] && liveMatch.match_id && liveMatch.game_code && liveMatch.game_sub_url) {
-                                                        data1.game_url = "https://www.gamezop.com/g/" + liveMatch.game_code + "?" + liveMatch.game_sub_url + "&roomDetails=" + encodeData;
+                                                        // data1.game_url = "https://www.gamezop.com/g/" + liveMatch.game_code + "?" + liveMatch.game_sub_url + "&roomDetails=" + encodeData;
+                                                        let splitURL=   liveMatch.game_sub_url.split("&");
+                                                        let gameEnv =   splitURL && splitURL[1] ? splitURL[1]+"&" : '';
+                                                        data1.game_url = process.env.OTHER_GAME_ENDPOINT + liveMatch.game_code + "?" + gameEnv + "roomDetails=" + encodeData;
                                                         console.log("Game URL >>>>>>>>>>>>>>>>", data1.game_url,">>>>>>>>>>>>>>>");
                                                         redis.setRedis("match-contest-other-view-" + authUser._id, {});
                                                         let contestLudoJoin = joinedContestCount >= contestData.contest_size ? 0 : joinedContestCount;
