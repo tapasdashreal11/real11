@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
         console.log("scores at Unity",scores,contestId,matchId);
         let match_sport = 3;
         if (scores && scores.length == 0 && contestId && matchId) {
-
+            console.log("enter to cancel contest");
             let zop_match_id = parseInt(matchId);
             await cancelContestAtResult(zop_match_id, contestId);
             response["success"] = false;
@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
                     let contestData = matchContest && matchContest.contest ? matchContest.contest : {};
                     let contestType = contestData.contest_type;
                     if (contestType == "Paid") {
-
+                        console.log("enter to pain contest cancel");
                         let zop_match_id = parseInt(matchId);
                         await cancelContestAtResult(zop_match_id, contestId);
                         response["success"] = false;
@@ -152,7 +152,7 @@ module.exports = async (req, res) => {
                                     return res.json(response);
                                 } else {
                                     // already distributed and update score
-    
+                                    console.log("enter to pain contest cancel >>>>>>>>>>>>>");
                                     response["success"] = false;
                                     response["scores"] = [];
                                     return res.json(response);
