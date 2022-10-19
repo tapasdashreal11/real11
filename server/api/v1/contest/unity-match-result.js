@@ -12,10 +12,10 @@ const { startSession } = require('mongoose');
 module.exports = async (req, res) => {
     try {
         // matchId == roomId
-        const { contestId, matchId, scores } = req.body;
-
+        const { contest_id, matchId, scores } = req.body;
+        const contestId =   contest_id;
         let response = {};
-        let constraints = { contestId: "required", matchId: "required", scores: "required" };
+        let constraints = { contest_id: "required", matchId: "required", scores: "required" };
         var apiKey = req.headers['api-key'];
         let validator = new Validator(req.body, constraints);
         let matched = await validator.check();
@@ -152,7 +152,7 @@ module.exports = async (req, res) => {
                                     return res.json(response);
                                 } else {
                                     // already distributed and update score
-                                    console.log("enter to pain contest cancel >>>>>>>>>>>>>");
+                                    console.log("enter to paid contest cancel >>>>>>>>>>>>>");
                                     response["success"] = false;
                                     response["scores"] = [];
                                     return res.json(response);
