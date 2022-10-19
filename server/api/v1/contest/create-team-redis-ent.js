@@ -33,7 +33,7 @@ module.exports = {
             let liveMatch = await SeriesSquad.findOne({ match_id: match_id, series_id: series_id, sport: sport });
             if (liveMatch) {
                 if (liveMatch.time < Date.now() && req.body.teamType != 55) {
-                    //return res.send(ApiUtility.failed('Match Already Closed'));
+                    return res.send(ApiUtility.failed('Match Already Closed'));
                 }
                 if (x_system == 1 && (!liveMatch.is_parent || liveMatch.inning_number !=2)){
                     return res.send(ApiUtility.failed('Something went wrong!!!'));
