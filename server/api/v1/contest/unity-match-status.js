@@ -57,7 +57,7 @@ module.exports = async (req, res) => {
                         let ptcArray = [];
                         let userArray = [];
                         let userOfferArray =[]
-                        let zop_match_id = await generateZopMatchId();
+                        let zop_match_id = ObjectId(roomId); //await generateZopMatchId();
                         if(local_match_id ==111) await checkUserLudoPlayed(userDataList);
 
                         let pContestId = matchContest.contest_id;
@@ -152,7 +152,7 @@ module.exports = async (req, res) => {
                                     let r_extra_amount = singleUserDataItem && singleUserDataItem['extra_amount'] ? singleUserDataItem['extra_amount'] - extraAmount:0 ;
 
                                     contest.join_contest_detail = jcd;
-                                    contest.zop_match_id = ObjectId(roomId); //zop_match_id;
+                                    contest.zop_match_id = zop_match_id;
                                     contest.unity_room_id = unity_room_id;
                                     ptcArray.push(contest);
                                     let entity = {
