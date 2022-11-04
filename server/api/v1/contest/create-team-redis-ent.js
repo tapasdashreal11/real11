@@ -339,7 +339,7 @@ module.exports = {
                             data1.team_count = team_count;
                             //await PlayerTeam.collection.insertOne(team);
                             redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
-                            await createTeamOnS3(match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
+                            await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
                             message = "Team has been created successfully."
                             data1.message = message;
                             // redis.redisObj.get('user-teams-count-' + match_id + '-' + sport + '-' + user_id, (err, data) => {
