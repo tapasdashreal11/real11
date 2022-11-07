@@ -66,7 +66,7 @@ const { favouriteContestCreate,retentionBonousCreate,retentionBonousThreeType } 
 const userAppDownlad = require('./api/v1/users/user-app-download');
 const youtuberAffilWinTransfer = require('./api/v1/users/youtuber_win_transfer');
 
-const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
+// const { joinedContestMatches } = require('./api/v1/contest/joined-contest-matches');
 const { joinedContestMatchesNew } = require('./api/v1/contest/joined-contest-matches-new');
 const  joinContest  = require('./api/v1/contest/join-contest');
 const  joinContestNew  = require('./api/v1/contest/join-contest');
@@ -86,7 +86,7 @@ const  { createPrivateContestOG }  = require('./api/v1/contest/other-game-privat
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-pro');
 const  permJoinContest  = require('./api/v1/contest/perm-join-contest');
 const  joinContestNewOne  = require('./api/v1/contest/join-contest-head-to-head');
-const  joinContestNewOne1  = require('./api/v1/contest/join-contest-head-to-head-redis');
+const  joinContestNewOne1  = require('./api/v1/contest/join-contest-head-to-head-redis');  //not in use for now
 const  joinContestMultipleTeam1  = require('./api/v1/contest/join-contest-multiple-team');
 const  joinContestMultipleTeam  = require('./api/v1/contest/join-contest-multiple-pro');
 const  joinContestMultipleTeamNew  = require('./api/v1/contest/join-contest-multiple-redis');
@@ -155,8 +155,6 @@ const { createTeam } = require('./api/v1/contest/create-team');
 const { createTeamNew } = require('./api/v1/contest/create-team-new');
 const { seriesPlayerList, seriesPlayerListNew } = require('./api/v1/contest/series-player-list');
 const { seriesPlayerDetail } = require('./api/v1/contest/series-player-detail');
-const { createTeamRedisEnt } = require('./api/v1/contest/create-team-redis-ent');
-const { playerTeamListRedisEnt } = require('./api/v1/contest/player-team-list-redis-ent');
 const {
     // createTeam,
     leaderboard,
@@ -193,6 +191,12 @@ const  { lfContestDetailNew,lfContestLeaderboard,lfLivecontestDetailLB }  = requ
 
 const  unityMatchResult  = require('./api/v1/contest/unity-match-result');
 const  unityMatchStatus  = require('./api/v1/contest/unity-match-status');
+
+// Redis Ent Start
+const { createTeamRedisEnt } = require('./api/v1/contest/create-team-redis-ent');
+const { playerTeamListRedisEnt } = require('./api/v1/contest/player-team-list-redis-ent');
+const { playerListRedisEnt } = require('./api/v1/contest/player-list-redis-ent');
+// Redis Ent End
 
 // Quiz Question answer
 
@@ -349,10 +353,6 @@ router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListn);
 router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, leaderboard);
 //router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
 router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
-
-router.post('/api/v1/create-team-redis-ent', auth.authenticate.jwtLogin, createTeamRedisEnt);
-router.get('/api/v1/player-team-list-redis-ent/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListRedisEnt);
-
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtLogin, joinContestWalletAmountMultiple);
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
@@ -374,6 +374,11 @@ router.post('/gamezop/match-result',gamezopMatchResult);
 router.get('/api/v1/gamezop-game-win-list/:room_id',auth.authenticate.jwtLogin, gamezopMatchResultForuser);
 router.post('/api/v1/other-games-create-private-contest',auth.authenticate.jwtLogin, createPrivateContestOG);
 
+// Redis Ent Start
+router.post('/api/v1/create-team-redis-ent', auth.authenticate.jwtLogin, createTeamRedisEnt);
+router.get('/api/v1/player-team-list-redis-ent/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListRedisEnt);
+router.get('/api/v1/player-list-redis-ent/:series_id/:match_id/:sport?', playerListRedisEnt);
+// Redis Ent End
 // Unity Ludo api 
 
 router.post('/api/v1/unity-match-result', unityMatchResult); 
@@ -620,7 +625,7 @@ router.post('/api/v1/verify-bank-detail', auth.authenticate.jwtLogin, [
     function(req, res, next) {
         const fileName = req.file && req.file.filename;
         let filePath = playerImageDirPath + '/' + fileName;
-        uploadFile(filePath, fileName);
+        // uploadFile(filePath, fileName);
         req.body.image = fileName || '';
         return next();
     },

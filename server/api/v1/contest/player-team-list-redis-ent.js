@@ -9,9 +9,12 @@ const { ObjectId } = require('mongodb');
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const redisEnt = require('../../../../lib/redisEnterprise');
+const redisKeys = require('../../../constants/redis-keys');
 const PlayerTeamService = require('../../Services/PlayerTeamService');
+const PlayerTeamServiceRedisEnt = require('../../Services/PlayerTeamServiceRedisEnt');
 const AWS = require('aws-sdk');
 const { isEmpty } = require('lodash');
+const { resolve } = require('path');
 
 module.exports = {
 
@@ -44,11 +47,13 @@ module.exports = {
                         }
                     })
                 } else {
-                    return res.send(ApiUtility.success(data));
+                    let full_team = _.map(data, 'full_team');
+                    return res.send(ApiUtility.success(full_team));
                 }
                 
             } else {
-                return res.send(ApiUtility.success(data));
+                let full_team = _.map(data, 'full_team');
+                return res.send(ApiUtility.success(full_team));
             }
         });
     },
@@ -58,12 +63,12 @@ module.exports = {
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_KEY,
-    Bucket: 'user-player-team'
+    Bucket: process.env.S3_BUCKET_TEAM
 });
 
 async function listAllObjectsFromS3Bucket(prefix, match_id,user_id,sport) {
     let allJoinedTeamTeams = [];
-    let params = { Bucket: 'user-player-team' };
+    let params = { Bucket: process.env.S3_BUCKET_TEAM };
     if (prefix) params.Prefix = prefix;
     try {
         const response = await s3.listObjects(params).promise();
@@ -86,7 +91,7 @@ async function readTeamOns3(key, match_id,user_id,sport) {
 
         const params = {
             Key: key,
-            Bucket: 'user-player-team'
+            Bucket: process.env.S3_BUCKET_TEAM
         };
         
         s3.getObject(params, function (err, data) {

@@ -23,9 +23,9 @@ module.exports = async (req, res) => {
             let match_contest_data = mcResult && mcResult[0] ? mcResult[0] : []
             try {
                 redis.setRedis("match-contest-other-" + req.params.match_id, match_contest_data);
-                redis.setRedis("match-contest-other-view-" + user_id, { status: true });
-                let playedData = await getPromiseForUserPlayed(userLudoPlayedKey, user_id, '{"status":true}');
-                let retentionData = await getOfferRedisData(redisKeyForUserAnalysisOthers,user_id,match_id);
+                redis.setRedis("match-contest-other-view-" + user_id, { status: true });   // show ludo all contest 
+                let playedData = await getPromiseForUserPlayed(userLudoPlayedKey, user_id, '{"status":true}'); // if user played any contest it must be true otherwise it will be false
+                let retentionData = await getOfferRedisData(redisKeyForUserAnalysisOthers,user_id,match_id); // user retention bonus offer
                 let playedDataItem = playedData && playedData.length > 0 ? JSON.parse(playedData) : {};
                 let newMatchContestData = match_contest_data;
                 let resObj = {

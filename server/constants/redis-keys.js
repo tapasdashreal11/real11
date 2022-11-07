@@ -20,6 +20,9 @@ const redisKeys = {
     getMatchPlayerStatsKey: (match_id, sport) => redisKeys.PLAYER_STATS + match_id + '-' + sport,
     getUserDataKey: (user_id) => redisKeys.USER_DATA + user_id,
     getContestDetailAPIKey: (match_id, contest_id) => redisKeys.CONTEST_DETAIL_API_DATA + match_id + '-' + contest_id,
-    }
+
+    // Redis Ent
+    PLAYER_LIST: 'player-list-', //series_id-team_id
+}
     
-    module.exports = redisKeys
+module.exports = redisKeys

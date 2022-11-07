@@ -12,6 +12,7 @@ const PlayerTeamService = require('../../Services/PlayerTeamService');
 const { RedisKeys } = require('../../../constants/app');
 const Settings = require("../../../models/settings");
 const AWS = require('aws-sdk');
+const PlayerTeamServiceRedisEnt = require('../../Services/PlayerTeamServiceRedisEnt');
 
 module.exports = {
 
@@ -23,6 +24,8 @@ module.exports = {
         sport = parseInt(sport) || 1;
         let data1 = {}, message = "";
         let x_system = (xm_system && (xm_system == 1)) ? 1 : 0;
+        let joinedTeamKey11 = `userteam-${match_id}-${sport}-${user_id}`;
+        //console.log("joinedTeamKey11 : ", joinedTeamKey11)
         try {
             
             if (x_system == 0 && (!series_id || !player_id || !captain || !match_id || !vice_captain || !sport)) {
@@ -198,10 +201,12 @@ module.exports = {
                         }
                         if (statusAdd == true) {
                             //await PlayerTeam.updateOne({_id: team_id, user_id: user_id, match_id: Number(match_id), sport: Number(sport)}, { $set: team });
+                            let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team);
+                            team.full_team = fullTeam;
                             redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
                             await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
                             data1.team_id = team_id;
-                            message = "Team has been updated successfully."
+                            message = "Team has been updated successfullyy."
                             data1.message = message;
                             redis.redisnMyTeamsObj.del(RedisKeys.USER_DATA + user_id);
                             return res.send(ApiUtility.success(data1));
@@ -338,6 +343,8 @@ module.exports = {
                             data1.team_id = teamId;
                             data1.team_count = team_count;
                             //await PlayerTeam.collection.insertOne(team);
+                            let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team);
+                            team.full_team = fullTeam;
                             redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
                             await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
                             message = "Team has been created successfully."
@@ -373,7 +380,7 @@ module.exports = {
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_KEY,
-    Bucket: 'user-player-team'
+    Bucket: process.env.S3_BUCKET_TEAM
 });
 
 /** This function for upload on s3 bucket */
@@ -383,7 +390,7 @@ async function createTeamOnS3(key, team) {
         const params = {
             Key: key,
             Body: JSON.stringify(team),
-            Bucket: 'user-player-team'
+            Bucket: process.env.S3_BUCKET_TEAM
         };
         
         s3.putObject(params, function (err, data) {
