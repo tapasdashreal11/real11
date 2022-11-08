@@ -203,13 +203,20 @@ module.exports = {
                             //await PlayerTeam.updateOne({_id: team_id, user_id: user_id, match_id: Number(match_id), sport: Number(sport)}, { $set: team });
                             let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team);
                             team.full_team = fullTeam;
-                            redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
-                            await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
-                            data1.team_id = team_id;
-                            message = "Team has been updated successfullyy."
-                            data1.message = message;
-                            redis.redisnMyTeamsObj.del(RedisKeys.USER_DATA + user_id);
-                            return res.send(ApiUtility.success(data1));
+
+                            let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
+                            if(s3Res) {
+                                redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                                message = "Team has been updated successfully."
+                                data1.message = message;
+                                data1.team_id = team_id;
+                                redis.redisnMyTeamsObj.del(RedisKeys.USER_DATA + user_id);
+                                return res.send(ApiUtility.success(data1));
+                            } else {
+                                message = "Something went wrong."
+                                data1.message = message;
+                                return res.send(ApiUtility.failed(data1));
+                            }
                         } else {
                             message = team_id ? "Same team already exists." : "You have already created this team";
                             return res.send(ApiUtility.failed(message));
@@ -345,17 +352,26 @@ module.exports = {
                             //await PlayerTeam.collection.insertOne(team);
                             let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team);
                             team.full_team = fullTeam;
-                            redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
-                            await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
-                            message = "Team has been created successfully."
-                            data1.message = message;
+                            
+                            let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
+                            if(s3Res) {
+                                redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                                message = "Team has been created successfully."
+                                data1.message = message;
+                                return res.send(ApiUtility.success(data1));
+                            } else {
+                                message = "Something went wrong."
+                                data1.message = message;
+                                return res.send(ApiUtility.failed(data1));
+                            }
+                            
                             // redis.redisObj.get('user-teams-count-' + match_id + '-' + sport + '-' + user_id, (err, data) => {
                             //     let count = (data) ? parseInt(data) + 1 : 1;
                             //     mqtt.publishUserJoinedTeamCounts(match_id, user_id, JSON.stringify({ team_count: count }))
                             //     redis.redisObj.del('user-teams-count-' + match_id + '-' + sport + '-' + user_id) //force user to get data from db
                             // });
                             // redis.redisnMyTeamsObj.del(RedisKeys.USER_DATA + user_id);
-                            return res.send(ApiUtility.success(data1));
+                            
                         } else {
                             return res.send(ApiUtility.failed("You can not create team more than " + totalTemCount + " teams."));
                         }
@@ -385,23 +401,29 @@ const s3 = new AWS.S3({
 
 /** This function for upload on s3 bucket */
 async function createTeamOnS3(key, team) {
+    
     return new Promise((resolve, reject) => {
-
-        const params = {
-            Key: key,
-            Body: JSON.stringify(team),
-            Bucket: process.env.S3_BUCKET_TEAM
-        };
-        
-        s3.putObject(params, function (err, data) {
-            if (err) {
-                createTeamOnS3(key, team)
-                //reject(err)
-            } else {
-                console.log("Successfully uploaded data to bucket");
-                resolve(data);
-            }
-        });
-        
+            const params = {
+                Key: key,
+                Body: JSON.stringify(team),
+                Bucket: process.env.S3_BUCKET_TEAM
+            };
+            
+            s3.putObject(params, function (err, data) {
+                if (err) {
+                    // createTeamOnS3(key, team)
+                    // reject(err.message)
+                    resolve(false);
+                } else {
+                    console.log("Successfully uploaded data to bucket");
+                    // resolve(data);
+                    if(data && data.ETag) {
+                        resolve(true);
+                    } else {
+                        resolve(false);
+                    }
+                }
+            });
     });
+    
 }

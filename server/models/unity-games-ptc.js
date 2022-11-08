@@ -17,7 +17,7 @@ var unityGamesPtcSchema = new Schema({
 	is_deleted: { type: Number, default: 0 },  // contest cancel 
 	user_score: { type: Object,default:{} },
 	price_win: { type: Number,default:0 },
-	zop_match_id: { type: mongoose.Schema.Types.ObjectId },
+	zop_match_id: { type: Number },
 	unity_room_id: {type: Number},
 	game_code: { type: String},
 	avatar: { type: String},
