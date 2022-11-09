@@ -1975,7 +1975,8 @@ class ModelService {
                             "offer" : {
                                 "_id" : "$couponCodes._id",
                                 "coupon_code":"$couponCodes.coupon_code"
-                            }
+                            },
+                            "player_store_banner":false
                         }
                     }
                 ], (err, data) => {
