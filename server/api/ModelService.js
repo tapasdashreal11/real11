@@ -1976,9 +1976,9 @@ class ModelService {
                                 "_id" : "$couponCodes._id",
                                 "coupon_code":"$couponCodes.coupon_code"
                             },
-                            "player_store_banner":false
+                            "player_store_banner":{ $ifNull: [ "$player_store_banner", false ] }
                         }
-                    }
+                    },
                 ], (err, data) => {
                     if (err) {
                         reject(err);
