@@ -26,6 +26,10 @@ var bannerSchema = new Schema({
   },
   "sport": {
     "type": Number
+  },
+  "player_store_banner": {
+    "type": Number,
+    "default": false
   }
 });
 

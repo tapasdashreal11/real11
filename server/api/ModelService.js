@@ -1798,7 +1798,8 @@ class ModelService {
                             "url":"$url",
                             "offer_id":"$offer_id",
                             "sport":"$sport",
-                            "match_id":"$match_id"
+                            "match_id":"$match_id",
+                            "player_store_banner":{$cond: { if: { $ifNull: [ "$player_store_banner", false ] }, then: true, else: false }} 
                         }
                     },
                     {
@@ -1918,23 +1919,6 @@ class ModelService {
                             preserveNullAndEmptyArrays: true // optional
                         }
                     },
-                    // {
-                    //     $lookup: {
-                    //         from: 'match_contest',
-                    //         let: { matchId: "$seriesSquad.match_id" }, 
-                    //         pipeline: [
-                    //             {
-                    //                 $match: {  
-                    //                     $expr:{ 
-                    //                         $eq: [ "$match_id", "$$matchId" ]
-                    //                     }
-                    //                 }
-                    //             },     
-                    //             { $project: { _id:1} },
-                    //         ],
-                    //         as: 'seriesSquad.match_contest_count',
-                    //     }
-                    // },
                     {
                         $lookup: {
                             from: 'coupon_codes',
@@ -1976,7 +1960,7 @@ class ModelService {
                                 "_id" : "$couponCodes._id",
                                 "coupon_code":"$couponCodes.coupon_code"
                             },
-                            "player_store_banner":{ $ifNull: [ "$player_store_banner", false ] }
+                            "player_store_banner":"$player_store_banner"
                         }
                     },
                 ], (err, data) => {
