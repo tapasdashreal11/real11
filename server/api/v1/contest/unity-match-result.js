@@ -25,7 +25,8 @@ module.exports = async (req, res) => {
             console.log("enter to cancel contest");
             let zop_match_id = parseInt(matchId);
             await cancelContestAtResult(zop_match_id, contestId);
-            response["success"] = false;
+            response["success"] = true;
+            response["message"] = "Game is draw, so contest is cancelled.";
             response["scores"] = [];
             return res.json(response);
 

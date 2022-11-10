@@ -173,7 +173,7 @@ module.exports = {
                         message = "Same team already exists."
                         return res.send(ApiUtility.failed(message));
                     } else {
-                        
+                        teamDataa = teamDataa[0];
                         statusAdd = _.isEmpty(teamDataa) ? false : true;
                         let team = {
                             _id: teamDataa._id, user_id: user_id, match_id: match_id, series_id: series_id, players: playerIds, playerStr: teamString, team_count: teamDataa.team_count, sport: sport,
@@ -199,9 +199,9 @@ module.exports = {
                             team['one_five_x'] = vice_captain;
                             team['two_x'] = captain;
                         }
+                        
                         if (statusAdd == true) {
-                            //await PlayerTeam.updateOne({_id: team_id, user_id: user_id, match_id: Number(match_id), sport: Number(sport)}, { $set: team });
-                            let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team);
+                            let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, teamDataa.team_count, team);
                             team.full_team = fullTeam;
 
                             let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
@@ -349,10 +349,8 @@ module.exports = {
                             team._id = teamId;
                             data1.team_id = teamId;
                             data1.team_count = team_count;
-                            //await PlayerTeam.collection.insertOne(team);
-                            let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team);
+                            let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team_count, team);
                             team.full_team = fullTeam;
-                            
                             let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
                             if(s3Res) {
                                 redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);

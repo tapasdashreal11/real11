@@ -254,7 +254,7 @@ class PlayerTeamServiceRedisEnt {
         })
     }
 
-    static async getUserCreatedTeam(series_id, match_id, sport, teamData) {
+    static async getUserCreatedTeam(series_id, match_id, sport, team_count, teamData) {
         const team = [teamData];
         const results = await SeriesSquad.find({'series_id': series_id, 'match_id': match_id, 'sport': sport}, {localteam_id:1, visitorteam_id:1 });
         
@@ -320,7 +320,7 @@ class PlayerTeamServiceRedisEnt {
             data1.total_allrounder = totalAllrounder;
             data1.player_details = playerShortDetails;
             data1.substitute_detail = {};
-            data1.my_teams = 0;
+            data1.my_teams = team_count;
             data1.my_contests = 0;
         }
         return data1
