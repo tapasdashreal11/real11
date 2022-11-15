@@ -290,6 +290,11 @@ class PlayerTeamServiceRedisEnt {
             let totalBatsman = 0;
             let totalWicketkeeper = 0;
             let totalAllrounder = 0;
+            let totalDefender   =   0;  // football && kabaddi player role
+            let totalForward    =   0;  // football player role
+            let totalGoalkeeper =   0;  // football player role
+            let totalMidfielder =   0;  // football player role
+            let totalRaider     =   0;  // kabaddi player role
 
             playerShortDetails = redisData.map(
                 item => {
