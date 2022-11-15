@@ -68,7 +68,6 @@ class PlayerTeamServiceRedisEnt {
             playerRcdData = await SeriesPlayer.find(cond, projection).lean();
             playerIdsArr = _.map(playerRcdData, 'player_id');
         }
-
         SeriesSquad.collection.aggregate([
             {
                 $match: { series_id, match_id, status: 1, sport: sport }
@@ -230,6 +229,23 @@ class PlayerTeamServiceRedisEnt {
                                 playerData.three_x_selected = (playerStats[playerData.player_id]["threexSelected"] && playerStats[playerData.player_id]["threexSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["threexSelected"]}%` : "0%";
                                 playerData.four_x_selected = (playerStats[playerData.player_id]["fourxSelected"] && playerStats[playerData.player_id]["fourxSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["fourxSelected"]}%` : "0%";
                                 playerData.five_x_selected = (playerStats[playerData.player_id]["fivexSelected"] && playerStats[playerData.player_id]["fivexSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["fivexSelected"]}%` : "0%";
+                            }
+                            resultNew.push(playerData);
+                        } else {
+                            if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
+                            if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
+                            
+                            if (playerData.playing_11 && playerData.playing_11.length > 0) {
+                                playerData.is_playing_show = 1
+                                playerData.is_playing = (playerData.playing_11.indexOf(playerData.player_id) > -1) ? 1 : 0;
+                            } else {
+                                playerData.is_playing_show = 0
+                                playerData.is_playing = 0
+                            }
+                            if (playerStats && playerStats[playerData.player_id]) {
+                                playerData.selected_by = (playerStats[playerData.player_id]["selectedBy"] && playerStats[playerData.player_id]["selectedBy"] != "NaN") ? `${playerStats[playerData.player_id]["selectedBy"]}%` : "0%";
+                                playerData.captain_selected = (playerStats[playerData.player_id]["captainSelected"] && playerStats[playerData.player_id]["captainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["captainSelected"]}%` : "0%";
+                                playerData.vice_captain_selected = (playerStats[playerData.player_id]["viceCaptainSelected"] && playerStats[playerData.player_id]["viceCaptainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["viceCaptainSelected"]}%` : "0%";
                             }
                             resultNew.push(playerData);
                         }
