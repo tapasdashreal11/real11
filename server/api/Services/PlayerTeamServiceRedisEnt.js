@@ -293,15 +293,39 @@ class PlayerTeamServiceRedisEnt {
 
             playerShortDetails = redisData.map(
                 item => {
-                    if(_.includes(playerData.players, item.player_id) && item != undefined){
-                        if (item.player_role && item.player_role.indexOf('Wicketkeeper') > -1) {
-                            totalWicketkeeper += 1;
-                        } else if (item.player_role && item.player_role.indexOf('Bowler') > -1) {
-                            totalBowler += 1;
-                        } else if (item.player_role && item.player_role.indexOf('Batsman') > -1) {
-                            totalBatsman += 1;
-                        } else if (item.player_role && item.player_role.indexOf('Allrounder') > -1) {
-                            totalAllrounder += 1;
+                    if(_.includes(playerData.players, item.player_id) && item != undefined) {
+                        if(sport == 1) {
+                            if (item.player_role && item.player_role.indexOf('Wicketkeeper') > -1) {
+                                totalWicketkeeper += 1;
+                            } else if (item.player_role && item.player_role.indexOf('Bowler') > -1) {
+                                totalBowler += 1;
+                            } else if (item.player_role && item.player_role.indexOf('Batsman') > -1) {
+                                totalBatsman += 1;
+                            } else if (item.player_role && item.player_role.indexOf('Allrounder') > -1) {
+                                totalAllrounder += 1;
+                            }
+                        }
+                        if(sport == 2) {
+                            // total player role count for football
+                            if (item.player_role && item.player_role.indexOf('Defender') > -1) {
+                                totalDefender += 1;
+                            } else if (item.player_role && item.player_role.indexOf('Forward') > -1) {
+                                totalForward += 1;
+                            } else if (item.player_role && item.player_role.indexOf('Goalkeeper') > -1) {
+                                totalGoalkeeper += 1;
+                            } else if (item.player_role && item.player_role.indexOf('Midfielder') > -1) {
+                                totalMidfielder += 1;
+                            }
+                        }
+                        if(sport == 4) {
+                            // total player role count for kabaddi
+                            if (item.player_role && item.player_role.indexOf('Defender') > -1) {
+                                totalDefender += 1;
+                            } else if (item.player_role && item.player_role.indexOf('Allrounder') > -1) {
+                                totalAllrounder += 1;
+                            } else if (item.player_role && item.player_role.indexOf('Raider') > -1) {
+                                totalRaider += 1;
+                            }
                         }
                         
                         return {
