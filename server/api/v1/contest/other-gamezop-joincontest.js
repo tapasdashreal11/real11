@@ -21,12 +21,14 @@ module.exports = async (req, res) => {
     try {
         let data1 = {};
         const user_id = req.userId;
-        const { contest_id, match_id, sport, rf_code, refer_by_user_id, game_code } = req.body;
+        const { contest_id, match_id, sport, rf_code, refer_by_user_id, game_code, game_type } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 3;
         let decoded = { match_id: parseInt(match_id), contest_id: contest_id, user_id: user_id }
-        if (match_id && contest_id && user_id && game_code) {
+        // console.log(game_type);
+        // return false;
+        if (match_id && contest_id && user_id) {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
             let apiList = [
@@ -35,6 +37,7 @@ module.exports = async (req, res) => {
                 OtherGames.findOne({ 'match_id': decoded['match_id'], status: 1 }),
             ];
             var results = await Promise.all(apiList);
+            // console.log(results); return false;
             if (results && results.length > 0) {
                 let authUser = results[0] ? results[0] : {};
                 if (authUser) {
@@ -85,10 +88,7 @@ module.exports = async (req, res) => {
                                             return res.json(response);
                                         }
 
-
-
                                     } else {
-
 
                                         let contest = {};
                                         let newContestId = new ObjectId();
@@ -110,7 +110,7 @@ module.exports = async (req, res) => {
                                             let winAmount = 0;
                                             let bonusAmount = 0;
                                             let extraAmount = 0;
-                                            let remainingFee = 0;
+                                            // let remainingFee = 0;
                                             let userWalletStatus = false;
 
                                             if (matchContest.usable_bonus_time) {
@@ -125,8 +125,8 @@ module.exports = async (req, res) => {
                                             let userOfferAmount = 0;
                                             let calEntryFees = entryFee;
                                             let retention_bonus_amount = 0;
-                                            let userBounousData = {};
-                                            let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
+                                            // let userBounousData = {};
+                                            // let redisKeyForRentation = 'app-analysis-' + user_id + '-' + match_id + '-' + match_sport;
                                             if (contestType == 'Paid') {
                                                 //************Ludo offer calculation ***************/
                                                 const ludoOffer = await LudoOffer.findOne({user_id:user_id,status: 1,'match_id': decoded['match_id'],expiry_date:{$gte:new Date()}  });
@@ -155,16 +155,16 @@ module.exports = async (req, res) => {
                                                     bonusAmount = paymentCal.bonusAmount;
                                                     extraAmount = paymentCal.extraAmount;
                                                     let saveData = paymentCal.saveData;
-                                                    let perdayExtraAmount = paymentCal.perdayExtraAmount;
+                                                    // let perdayExtraAmount = paymentCal.perdayExtraAmount;
 
                                                     if (Object.keys(saveData).length > 0) {
-                                                        let date = new Date();
-                                                        let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
+                                                        // let date = new Date();
+                                                        // let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
                                                         userId = user_id;
-                                                        let txnId = joinContestTxnId;
-                                                        let status = TransactionTypes.JOIN_CONTEST;
-                                                        let txnAmount = entryFee;
-                                                        let withdrawId = 0;
+                                                        // let txnId = joinContestTxnId;
+                                                        // let status = TransactionTypes.JOIN_CONTEST;
+                                                        // let txnAmount = entryFee;
+                                                        // let withdrawId = 0;
 
                                                         if (calEntryFees == (winAmount + cashAmount + bonusAmount + extraAmount)) {
                                                             // Transaction.saveTransaction(userId, txnId, status, txnAmount, withdrawId, contest_id, match_id);
@@ -181,14 +181,14 @@ module.exports = async (req, res) => {
                                                             }
                                                             contest.join_contest_detail = jcd;
 
-                                                            let cons_cash_balance = bonusAmount;
-                                                            let cons_winning_balance = winAmount;
-                                                            let cons_bonus_amount = cashAmount;
-                                                            let refund_cash_balance = null;
-                                                            let refund_winning_balance = null;
-                                                            let refund_bonus_amount = null;
-                                                            let extra_amount_date = indianDate;
-                                                            let perday_extra_amount = saveData['perday_extra_amount'] ? saveData['perday_extra_amount'] : perdayExtraAmount;
+                                                            // let cons_cash_balance = bonusAmount;
+                                                            // let cons_winning_balance = winAmount;
+                                                            // let cons_bonus_amount = cashAmount;
+                                                            // let refund_cash_balance = null;
+                                                            // let refund_winning_balance = null;
+                                                            // let refund_bonus_amount = null;
+                                                            // let extra_amount_date = indianDate;
+                                                            // let perday_extra_amount = saveData['perday_extra_amount'] ? saveData['perday_extra_amount'] : perdayExtraAmount;
                                                             let winning_balance = authUser['winning_balance'] - winAmount;
                                                             let cash_balance = authUser['cash_balance'] - cashAmount;
                                                             let bonus_balance = authUser['bonus_amount'] - bonusAmount;
@@ -196,36 +196,36 @@ module.exports = async (req, res) => {
                                                             let total_balance = winning_balance + cash_balance + bonus_balance + extra_amount;
 
                                                             try {
-                                                                let updateUserData = {
-                                                                    cons_winning_balance: cons_winning_balance,
-                                                                    cons_cash_balance: cons_cash_balance,
-                                                                    cons_bonus_amount: cons_bonus_amount,
-                                                                    refund_winning_balance: refund_winning_balance,
-                                                                    refund_cash_balance: refund_cash_balance,
-                                                                    refund_bonus_amount: refund_bonus_amount,
-                                                                    total_balance: total_balance,
-                                                                    extra_amount_date: extra_amount_date,
-                                                                    perday_extra_amount: perday_extra_amount
-                                                                }
+                                                                // let updateUserData = {
+                                                                //     cons_winning_balance: cons_winning_balance,
+                                                                //     cons_cash_balance: cons_cash_balance,
+                                                                //     cons_bonus_amount: cons_bonus_amount,
+                                                                //     refund_winning_balance: refund_winning_balance,
+                                                                //     refund_cash_balance: refund_cash_balance,
+                                                                //     refund_bonus_amount: refund_bonus_amount,
+                                                                //     total_balance: total_balance,
+                                                                //     extra_amount_date: extra_amount_date,
+                                                                //     perday_extra_amount: perday_extra_amount
+                                                                // }
 
-                                                                let entity = {
-                                                                    user_id: userId,
-                                                                    contest_id: contest_id,
-                                                                    match_id: match_id,
-                                                                    sport: match_sport,
-                                                                    txn_amount: txnAmount,
-                                                                    details: {
-                                                                        cons_winning_balance: winAmount,
-                                                                        cons_cash_balance: cashAmount,
-                                                                        cons_bonus_amount: bonusAmount,
-                                                                        cons_extra_amount: extraAmount,
-                                                                    },
-                                                                    retantion_amount: retention_bonus_amount,
-                                                                    currency: "INR",
-                                                                    txn_date: Date.now(),
-                                                                    local_txn_id: txnId,
-                                                                    added_type: parseInt(status)
-                                                                };
+                                                                // let entity = {
+                                                                //     user_id: userId,
+                                                                //     contest_id: contest_id,
+                                                                //     match_id: match_id,
+                                                                //     sport: match_sport,
+                                                                //     txn_amount: txnAmount,
+                                                                //     details: {
+                                                                //         cons_winning_balance: winAmount,
+                                                                //         cons_cash_balance: cashAmount,
+                                                                //         cons_bonus_amount: bonusAmount,
+                                                                //         cons_extra_amount: extraAmount,
+                                                                //     },
+                                                                //     retantion_amount: retention_bonus_amount,
+                                                                //     currency: "INR",
+                                                                //     txn_date: Date.now(),
+                                                                //     local_txn_id: txnId,
+                                                                //     added_type: parseInt(status)
+                                                                // };
                                                                 let userBalance = await User.findById(user_id).select({ "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1 })
                                                                 if (userBalance) {
                                                                     if (userBalance.extra_amount < extraAmount || userBalance.cash_balance < cashAmount || userBalance.winning_balance < winAmount || userBalance.bonus_amount < bonusAmount) {
@@ -275,12 +275,12 @@ module.exports = async (req, res) => {
                                                     }
                                                 } else if (calEntryFees == 0 && retention_bonus_amount > 0) {
 
-                                                    let date = new Date();
-                                                    let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
+                                                    // let date = new Date();
+                                                    // let joinContestTxnId = 'JL' + date.getFullYear() + date.getMonth() + date.getDate() + Date.now() + user_id;
                                                     userId = user_id;
-                                                    let txnId = joinContestTxnId;
-                                                    let status = TransactionTypes.JOIN_CONTEST;
-                                                    let txnAmount = entryFee;
+                                                    // let txnId = joinContestTxnId;
+                                                    // let status = TransactionTypes.JOIN_CONTEST;
+                                                    // let txnAmount = entryFee;
 
                                                     let jcd = {
                                                         deduct_bonus_amount: bonusAmount,
@@ -293,32 +293,30 @@ module.exports = async (req, res) => {
                                                     }
                                                     contest.join_contest_detail = jcd;
 
-                                                    let entity = {
-                                                        user_id: userId,
-                                                        contest_id: contest_id,
-                                                        match_id: match_id,
-                                                        sport: match_sport,
-                                                        txn_amount: txnAmount,
-                                                        details: {
-                                                            cons_winning_balance: winAmount,
-                                                            cons_cash_balance: cashAmount,
-                                                            cons_bonus_amount: bonusAmount,
-                                                            cons_extra_amount: extraAmount,
-                                                        },
-                                                        retantion_amount: retention_bonus_amount,
-                                                        currency: "INR",
-                                                        txn_date: Date.now(),
-                                                        local_txn_id: txnId,
-                                                        added_type: parseInt(status)
-                                                    };
+                                                    // let entity = {
+                                                    //     user_id: userId,
+                                                    //     contest_id: contest_id,
+                                                    //     match_id: match_id,
+                                                    //     sport: match_sport,
+                                                    //     txn_amount: txnAmount,
+                                                    //     details: {
+                                                    //         cons_winning_balance: winAmount,
+                                                    //         cons_cash_balance: cashAmount,
+                                                    //         cons_bonus_amount: bonusAmount,
+                                                    //         cons_extra_amount: extraAmount,
+                                                    //     },
+                                                    //     retantion_amount: retention_bonus_amount,
+                                                    //     currency: "INR",
+                                                    //     txn_date: Date.now(),
+                                                    //     local_txn_id: txnId,
+                                                    //     added_type: parseInt(status)
+                                                    // };
 
-                                                    // await Transaction.create([entity], { session: session });
                                                     userWalletStatus = true;
                                                 } else {
                                                     await session.abortTransaction();
                                                     session.endSession();
                                                     return res.send(ApiUtility.failed('something went wrong!!'));
-
                                                 }
 
                                             }
@@ -328,11 +326,10 @@ module.exports = async (req, res) => {
                                                 try {
                                                     contest.bonus_amount = bonusAmount;
                                                     contest.sport = match_sport;
-                                                    let getCountKey = 0;
-                                                    let playerTeamContestId = newContestId;
+                                                    // let getCountKey = 0;
+                                                    // let playerTeamContestId = newContestId;
                                                     totalContestKey = await getContestCount(matchContest, contest, user_id, match_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user);
-
-
+                                                    
                                                     const roomDetails = {
                                                         roomId: contest_id,
                                                         user: {
@@ -353,11 +350,14 @@ module.exports = async (req, res) => {
                                                     // data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&roomDetails="+encodeData; // For Prod
                                                     // data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
                                                     if (decoded['match_id'] && liveMatch.match_id && liveMatch.game_code && liveMatch.game_sub_url) {
-                                                        // data1.game_url = "https://www.gamezop.com/g/" + liveMatch.game_code + "?" + liveMatch.game_sub_url + "&roomDetails=" + encodeData;
-                                                        let splitURL=   liveMatch.game_sub_url.split("&");
-                                                        let gameEnv =   splitURL && splitURL[1] ? splitURL[1]+"&" : '';
-                                                        data1.game_url = process.env.OTHER_GAME_ENDPOINT + liveMatch.game_code + "?" + gameEnv + "roomDetails=" + encodeData;
-                                                        console.log("Game URL >>>>>>>>>>>>>>>>", data1.game_url,">>>>>>>>>>>>>>>");
+                                                        if(!game_type || (game_type && game_type !== "unity")) {
+                                                        
+                                                            // data1.game_url = "https://www.gamezop.com/g/" + liveMatch.game_code + "?" + liveMatch.game_sub_url + "&roomDetails=" + encodeData;
+                                                            let splitURL=   liveMatch.game_sub_url.split("&");
+                                                            let gameEnv =   splitURL && splitURL[1] ? splitURL[1]+"&" : '';
+                                                            data1.game_url = process.env.OTHER_GAME_ENDPOINT + liveMatch.game_code + "?" + gameEnv + "roomDetails=" + encodeData;
+                                                            console.log("Game URL >>>>>>>>>>>>>>>>", data1.game_url,">>>>>>>>>>>>>>>");
+                                                        }
                                                         redis.setRedis("match-contest-other-view-" + authUser._id, {});
                                                         let contestLudoJoin = joinedContestCount >= contestData.contest_size ? 0 : joinedContestCount;
                                                         ludoMqtt.publishOtherGameJoinedUserCounts(liveMatch.match_id,contest_id,JSON.stringify({joined_count:contestLudoJoin}));
@@ -365,7 +365,6 @@ module.exports = async (req, res) => {
                                                     } else {
                                                         return res.send(ApiUtility.failed("Something went wrong!!"));
                                                     }
-
 
                                                     /*if(decoded['match_id'] == 111){
                                                          data1.game_url ="https://www.gamezop.com/g/SkhljT2fdgb?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
@@ -375,14 +374,11 @@ module.exports = async (req, res) => {
                                                          data1.game_url ="https://www.gamezop.com/g/H1PJn6mqAr?id=3472&gamingEnv=staging&roomDetails="+encodeData; // For test
                                                      }*/
 
-
                                                 } catch (error) {
                                                     await session.abortTransaction();
                                                     session.endSession();
                                                     return res.send(ApiUtility.failed(error.message));
                                                 }
-
-
                                             } else {
                                                 console.log("check balance error. ");
                                                 await session.abortTransaction();
