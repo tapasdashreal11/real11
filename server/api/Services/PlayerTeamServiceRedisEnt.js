@@ -357,7 +357,12 @@ class PlayerTeamServiceRedisEnt {
             data1.total_bowler = totalBowler;
             data1.total_batsman = totalBatsman;
             data1.total_wicketkeeper = totalWicketkeeper;
-            data1.total_allrounder = totalAllrounder;
+            data1.total_allrounder = totalAllrounder; // cricket and kabaddi player
+            data1.total_defender = totalDefender,    // football & kabaddi player
+            data1.total_forward = totalForward,  // football player
+            data1.total_goalkeeper = totalGoalkeeper,    // football player
+            data1.total_midfielder = totalMidfielder,    // football player
+            data1.total_raider = totalRaider,    // kabaddi player
             data1.player_details = playerShortDetails;
             data1.substitute_detail = {};
             data1.my_teams = team_count;
