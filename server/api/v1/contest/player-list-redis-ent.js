@@ -10,6 +10,7 @@ module.exports = {
         let matchData = await getMatchesTeams(req.params);
         req.params.localteamId = matchData.localteam_id
         req.params.visitorteamId = matchData.visitorteam_id
+        req.params.playing_11 = matchData.playing_11
         
         PlayerTeamServiceRedisEnt.getCachePlayerList(req.params, (err, playerList) => {
             if (err) {
@@ -26,7 +27,7 @@ async function getMatchesTeams(reqData) {
     series_id = parseInt(series_id)
     match_id  = parseInt(match_id)
     sport     = parseInt(sport) || 1;
-    const results = await SeriesSquad.find({'series_id': series_id, 'match_id': match_id, 'sport': sport}, {localteam_id:1, visitorteam_id:1 });
+    const results = await SeriesSquad.find({'series_id': series_id, 'match_id': match_id, 'sport': sport}, {localteam_id:1, visitorteam_id:1,playing_11:1 });
     
     return results[0];
 }

@@ -21,10 +21,11 @@ class PlayerTeamServiceRedisEnt {
     }
 
     static async getDbPlayerList(reqData, cb, setCache) {
-        let { series_id, match_id, sport, localteamId, visitorteamId } = reqData;
+        let { series_id, match_id, sport, localteamId, visitorteamId,playing_11 } = reqData;
         series_id = parseInt(series_id)
         match_id  = parseInt(match_id)
         sport     = parseInt(sport) || 1;
+        playing_11     = playing_11 || [];
 
         var newLocalteamIdKey = `${redisKeys.PLAYER_LIST}${series_id}-${localteamId}`;
         var newVisitorteamIdKey = `${redisKeys.PLAYER_LIST}${series_id}-${visitorteamId}`;
@@ -203,16 +204,15 @@ class PlayerTeamServiceRedisEnt {
                             if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
                             if (playerData && playerData.player_record) playerData.player_record.image = (playerData && playerData.image? playerData.image:"");
                             // if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = config.imageBaseUrl + '/player_image/' + playerData.player_record.image;
-                            if (playerData.playing_11 && playerData.playing_11.length > 0) {
+                            
+                            if (playing_11 && playing_11.length > 0) {
                                 playerData.is_playing_show = 1
-                                playerData.is_playing = (playerData.playing_11.indexOf(playerData.player_id) > -1) ? 1 : 0;
-                               if(playerData.playing_11.indexOf(playerData.player_id) > -1) {
-                                playerIds.push(playerData.player_id);
-                               }
+                                playerData.is_playing = (playing_11.indexOf(playerData.player_id) > -1) ? 1 : 0;
                             } else {
                                 playerData.is_playing_show = 0
                                 playerData.is_playing = 0
                             }
+                            
                             if (playerData.xfactors && playerData.xfactors.length > 0) {
                                 playerData.is_xfactor = (playerData.xfactors.indexOf(playerData.player_id) > -1) ? 1 : 0;
                             } else {
@@ -235,13 +235,14 @@ class PlayerTeamServiceRedisEnt {
                             if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
                             if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
                             
-                            if (playerData.playing_11 && playerData.playing_11.length > 0) {
+                            if (playing_11 && playing_11.length > 0) {
                                 playerData.is_playing_show = 1
-                                playerData.is_playing = (playerData.playing_11.indexOf(playerData.player_id) > -1) ? 1 : 0;
+                                playerData.is_playing = (playing_11.indexOf(playerData.player_id) > -1) ? 1 : 0;
                             } else {
                                 playerData.is_playing_show = 0
                                 playerData.is_playing = 0
                             }
+                            
                             if (playerStats && playerStats[playerData.player_id]) {
                                 playerData.selected_by = (playerStats[playerData.player_id]["selectedBy"] && playerStats[playerData.player_id]["selectedBy"] != "NaN") ? `${playerStats[playerData.player_id]["selectedBy"]}%` : "0%";
                                 playerData.captain_selected = (playerStats[playerData.player_id]["captainSelected"] && playerStats[playerData.player_id]["captainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["captainSelected"]}%` : "0%";
