@@ -527,7 +527,8 @@ async function readTeamOns3(key, match_id,user_id,sport) {
         
         s3.getObject(params, function (err, data) {
             if (err) {
-                reject(err)
+                // reject(err)
+                resolve(false);
             } else {
                 let finalData = JSON.parse(data.Body.toString());
                 redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, finalData._id, finalData);
