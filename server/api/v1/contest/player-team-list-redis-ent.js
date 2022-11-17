@@ -48,7 +48,10 @@ module.exports = {
                     })
                 } else {
                     let full_team = _.map(data, 'full_team');
-                    return res.send(ApiUtility.success(full_team));
+                    let team = full_team.sort((a,b)=>{
+                        return a.team_number - b.team_number
+                    })
+                    return res.send(ApiUtility.success(team));
                 }
                 
             } else {
