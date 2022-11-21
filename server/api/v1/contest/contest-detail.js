@@ -518,7 +518,8 @@ module.exports = {
                     amount_gadget: contestDetail && contestDetail.amount_gadget ? contestDetail.amount_gadget : "",
                     category_slug: matchContestDetail && matchContestDetail.category_slug ? matchContestDetail.category_slug : '',
                     is_offerable_multiple: matchContestDetail && matchContestDetail.is_offerable_multiple && matchContestDetail.is_offerable_multiple == 1 ? true : false,
-                    offer_join_team: matchContestDetail && matchContestDetail.offer_join_team  ? matchContestDetail.offer_join_team : []
+                    offer_join_team: matchContestDetail && matchContestDetail.offer_join_team  ? matchContestDetail.offer_join_team : [],
+                    contest_id: contest_id
                 }
                 if (totalChildContestJoined > 0) {
                     contestData['total_child_joined'] = totalChildContestJoined;

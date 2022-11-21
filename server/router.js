@@ -628,7 +628,7 @@ router.post('/api/v1/verify-bank-detail', auth.authenticate.jwtLogin, [
     function(req, res, next) {
         const fileName = req.file && req.file.filename;
         let filePath = playerImageDirPath + '/' + fileName;
-        // uploadFile(filePath, fileName);
+        uploadFile(filePath, fileName);
         req.body.image = fileName || '';
         return next();
     },
