@@ -408,7 +408,7 @@ module.exports = async (req, res) => {
                                 }
 
                             } catch (error) {
-                                console.log("enter to 3 clause");
+                                console.log("enter to 3 clause",error);
                                 let response = {};
                                 await session.abortTransaction();
                                 session.endSession();
