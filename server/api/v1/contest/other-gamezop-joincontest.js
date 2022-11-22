@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 3;
         let decoded = { match_id: parseInt(match_id), contest_id: contest_id, user_id: user_id }
-        // console.log(game_type);
+        console.log("contest_id>>",contest_id);
         // return false;
         if (match_id && contest_id && user_id) {
             let indianDate = Date.now();
@@ -72,6 +72,7 @@ module.exports = async (req, res) => {
                                         let response = {};
                                         var MatchContestData = await OtherGamesContest.findOne({ 'parent_contest_id': parentContestId, 'match_id': decoded['match_id'], is_full: 0 }).sort({ _id: -1 });
                                         if (MatchContestData) {
+                                            console.log("enter to 1 clause");
                                             await session.abortTransaction();
                                             session.endSession();
                                             response.status = false;
@@ -80,6 +81,7 @@ module.exports = async (req, res) => {
                                             response.error_code = null;
                                             return res.json(response);
                                         } else {
+                                            console.log("enter to 2 clause");
                                             await session.abortTransaction();
                                             session.endSession();
                                             response.status = false;
@@ -406,6 +408,7 @@ module.exports = async (req, res) => {
                                 }
 
                             } catch (error) {
+                                console.log("enter to 3 clause");
                                 let response = {};
                                 await session.abortTransaction();
                                 session.endSession();
