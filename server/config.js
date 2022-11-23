@@ -308,7 +308,8 @@ config.total_user_ref_earned = 75;
 // Appsflyer URL for Android and iphone
 config.appsFlyerAndroidUrl = "https://api2.appsflyer.com/inappevent/os.real11";
 config.appsFlyerAndroidPlaystorUrl = "https://api2.appsflyer.com/inappevent/ps.real11";
-config.appsFlyerAndroidPlaystorProUrl = "https://api2.appsflyer.com/inappevent/ps.pro.real11";
+// config.appsFlyerAndroidPlaystorProUrl = "https://api2.appsflyer.com/inappevent/ps.pro.real11";
+config.appsFlyerAndroidPlaystorProUrl = "https://api2.appsflyer.com/inappevent/ps.cash.real11";
 config.appsFlyeriPhoneUrl = "https://api2.appsflyer.com/inappevent/id1455728625";
 
 config.imageBaseUrl = process.env.IMAGE_BASE_URL || 'https://real11-images.s3.ap-south-1.amazonaws.com';
