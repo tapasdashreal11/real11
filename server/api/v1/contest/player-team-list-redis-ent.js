@@ -491,6 +491,35 @@ async function footballPreview(series_id, match_id, user_id, sport, player_list,
     }
 }
 
+async function getFootballPlayerPoint(series_id, match_id, player_ids, captain, viceCaptain, sport) {
+    let point = 0;
+
+    let record = await LiveScore.find({ 'series_id': series_id, 'match_id': match_id, 'player_id': { $in: player_ids }, sport: sport }, { 'point': 1, 'player_name': 1 , "player_id": 1,"player_role":1}).sort({ _id: -1 });
+
+    let teamDataArray = {}
+    if (record) {
+        for (let i = 0; i < record.length; i++) {
+            recordItem = JSON.parse(JSON.stringify(record[i]));
+            point = (recordItem['point']) ? parseFloat(recordItem['point']) : 0;
+
+            let captainPoint = 2;
+            let viceCaptainPoint = 1.5;
+            if (captain == record[i].player_id) {
+                point = point * captainPoint;
+            }
+            if (viceCaptain == record[i].player_id) {
+                point = point * viceCaptainPoint;
+            }
+            
+            // teamDataArray[recordItem.player_id] = point;
+            teamDataArray[recordItem.player_id] = [];
+            teamDataArray[recordItem.player_id]["point"] = point;
+            teamDataArray[recordItem.player_id]['player_role'] = recordItem['player_role'] ? recordItem['player_role'] : '';
+        }
+    }
+    return teamDataArray
+}
+
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_KEY,
