@@ -197,6 +197,7 @@ const { createTeamRedisEnt } = require('./api/v1/contest/create-team-redis-ent')
 const { playerTeamListRedisEnt, previewPlayerTeamListRedisEnt } = require('./api/v1/contest/player-team-list-redis-ent');
 const { playerListRedisEnt } = require('./api/v1/contest/player-list-redis-ent');
 const  contestListNewRedisEnt  =   require('./api/v1/contest/contest-m-list-redis-ent');
+const  { contestDetailRedisEnt }  = require('./api/v1/contest/contest-detail-redis-ent');
 // Redis Ent End
 
 // Quiz Question answer
@@ -381,6 +382,7 @@ router.get('/api/v1/player-team-list-redis-ent/:series_id/:match_id/:user_id?/:s
 router.get('/api/v1/player-list-redis-ent/:series_id/:match_id/:sport?', playerListRedisEnt);
 router.get('/api/v1/preview-player-team-list-redis-ent/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamListRedisEnt);
 router.get('/api/v1/contest-list-new-redis-ent/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEnt);
+router.get('/api/v1/contest-detail-new-redis-ent/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailRedisEnt); // old
 // Redis Ent End
 // Unity Ludo api 
 
