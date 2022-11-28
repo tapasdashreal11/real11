@@ -206,7 +206,10 @@ module.exports = {
 
                             let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
                             if(s3Res) {
+                                // red.publish('player_team', json.dumps(data))
                                 redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                                redisEnt.redisObj.publish(`userteam-${match_id}-${sport}-${user_id}`, JSON.stringify(team))
+
                                 message = "Team has been updated successfully."
                                 data1.message = message;
                                 data1.team_id = team_id;
