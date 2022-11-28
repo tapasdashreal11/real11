@@ -35,7 +35,7 @@ class PlayerTeamServiceRedisEnt {
             redisEnt.getNormalRedis(newVisitorteamIdKey)
         ];
         var redisResults = await Promise.all(apiList);
-        
+
         let playerIdsArr = [];
         let playerRcdData = [];
         if(redisResults && redisResults[0] && redisResults[0] != undefined && redisResults[1] && redisResults[1] != undefined) {
@@ -64,7 +64,8 @@ class PlayerTeamServiceRedisEnt {
                 t20: true,
                 team_name: 1,
                 test: 1,
-                image: 1
+                image: 1,
+                is_lastplayed: 1
             }
             playerRcdData = await SeriesPlayer.find(cond, projection).lean();
             playerIdsArr = _.map(playerRcdData, 'player_id');
@@ -176,7 +177,7 @@ class PlayerTeamServiceRedisEnt {
                     let resultNew = [];
                     let playerIds = [];
                     for (let playerData of playerRcdData) {
-
+                        
                         playerData.match_id = commonData.match_id;
                         playerData.series_id = commonData.series_id;
                         playerData.match_type = commonData.match_type;
@@ -189,6 +190,7 @@ class PlayerTeamServiceRedisEnt {
                         playerData.four_x_selected = commonData.four_x_selected;
                         playerData.five_x_selected = commonData.five_x_selected;
                         playerData.is_local_team = (localteamId==playerData.team_id ? true : false);
+                        playerData.is_last_played = playerData.is_lastplayed;
                         playerData.player_record = {
                             player_id: playerData.player_id,
                             series_id: commonData.series_id,
