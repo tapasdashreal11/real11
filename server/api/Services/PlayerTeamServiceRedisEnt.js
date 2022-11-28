@@ -29,7 +29,7 @@ class PlayerTeamServiceRedisEnt {
 
         var newLocalteamIdKey = `${redisKeys.PLAYER_LIST}${series_id}-${localteamId}`;
         var newVisitorteamIdKey = `${redisKeys.PLAYER_LIST}${series_id}-${visitorteamId}`;
-         
+        
         let apiList = [
             redisEnt.getNormalRedis(newLocalteamIdKey),
             redisEnt.getNormalRedis(newVisitorteamIdKey)
@@ -65,7 +65,7 @@ class PlayerTeamServiceRedisEnt {
                 team_name: 1,
                 test: 1,
                 image: 1,
-                is_lastplayed: 1
+                is_lastplayed: {$cond: { if: { $ifNull: [ "$is_lastplayed", 0 ] }, then: "$is_lastplayed", else: 0}},
             }
             playerRcdData = await SeriesPlayer.find(cond, projection).lean();
             playerIdsArr = _.map(playerRcdData, 'player_id');
@@ -170,7 +170,7 @@ class PlayerTeamServiceRedisEnt {
             }
             if (results && results.length > 0) {
                 
-                getRedis(redisKeys.getMatchPlayerStatsKey(match_id, sport),async (redisErr, playerStats) => {
+                redisEnt.getNormalFunRedis(redisKeys.getMatchPlayerStatsKey(match_id, sport),async (redisErr, playerStats) => {
                     let commonData = results[0];
                     
                     let i = 0;
