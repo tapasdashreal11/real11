@@ -208,7 +208,7 @@ module.exports = {
                             if(s3Res) {
                                 // red.publish('player_team', json.dumps(data))
                                 redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
-                                redisEnt.redisObj.publish(`userteam-${match_id}-${sport}-${user_id}`, JSON.stringify(team))
+                                redisEnt.redisObj.publish('player_team', JSON.stringify(team))
 
                                 message = "Team has been updated successfully."
                                 data1.message = message;

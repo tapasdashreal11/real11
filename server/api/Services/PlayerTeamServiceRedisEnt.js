@@ -2,7 +2,6 @@ const SeriesSquad = require('../../models/series-squad');
 const SeriesPlayer = require('../../models/series-player');
 const LiveScore = require('../../models/live-score');
 const { isEmpty, _ } = require('lodash');
-const { setRedis, getRedis } = require('../../../lib/redis');
 const redisKeys = require('../../constants/redis-keys');
 const redisEnt = require('../../../lib/redisEnterprise');
 
