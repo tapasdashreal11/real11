@@ -412,7 +412,7 @@ module.exports = {
                 }
                 
                 let myTeamsCount = 0;
-                let myTeamCountKey = `userteam-${match_id}-${sport}-${user_id}`;
+                let myTeamCountKey = `${RedisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`;
                 let myTeamCountRedis = await redisEnt.getHashCount(myTeamCountKey);
                 if(myTeamCountRedis) {
                     myTeamsCount = myTeamCountRedis;

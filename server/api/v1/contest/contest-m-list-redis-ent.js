@@ -54,7 +54,7 @@ try {
         if (user_id) {
             let redisKeyForUserCategory = 'user-category-' + user_id;
             let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
-            let myTeamCountKey = `userteam-${match_id}-${match_sport}-${user_id}`;
+            let myTeamCountKey = `${RedisKeys.USER_CREATED_TEAMS}${match_id}-${match_sport}-${user_id}`;
             queryArray.push(
                 redisEnt.getHashCount(myTeamCountKey),
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, parent_contest_id:1,player_team_id: 1 }).exec(),

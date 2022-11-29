@@ -2,14 +2,10 @@ const SeriesSquad = require('../../../models/series-squad');
 const PlayerTeam = require('../../../models/player-team');
 const ApiUtility = require('../../api.utility');
 const { ObjectId } = require('mongodb');
-const moment = require('moment');
-const config = require('../../../config');
 const _ = require("lodash");
-const redis = require('../../../../lib/redis');
 const redisEnt = require('../../../../lib/redisEnterprise');
-const mqtt = require('../../../../lib/mqtt');
-const PlayerTeamService = require('../../Services/PlayerTeamService');
 const { RedisKeys } = require('../../../constants/app');
+const redisKeys = require('../../../constants/redis-keys');
 const Settings = require("../../../models/settings");
 const AWS = require('aws-sdk');
 const PlayerTeamServiceRedisEnt = require('../../Services/PlayerTeamServiceRedisEnt');
@@ -24,8 +20,6 @@ module.exports = {
         sport = parseInt(sport) || 1;
         let data1 = {}, message = "";
         let x_system = (xm_system && (xm_system == 1)) ? 1 : 0;
-        let joinedTeamKey11 = `userteam-${match_id}-${sport}-${user_id}`;
-        //console.log("joinedTeamKey11 : ", joinedTeamKey11)
         try {
             
             if (x_system == 0 && (!series_id || !player_id || !captain || !match_id || !vice_captain || !sport)) {
@@ -45,7 +39,6 @@ module.exports = {
                     return res.send(ApiUtility.failed('This system will not support create team. Please update the app!!'));
                 }
 
-                // let wk = 0, bat = 0, bowl = 0, ar = 0;
                 let playerIds = player_id;
                 let teamString = playerIds.sort().join("|");
                 if (liveMatch.live_fantasy_parent_id) {
@@ -74,7 +67,7 @@ module.exports = {
 
                 let statusAdd = false;
                 let joinedTeamData = false;
-                let joinedTeamKey = `userteam-${match_id}-${sport}-${user_id}`;
+                let joinedTeamKey = `${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`;
                 try {
                     const getData = await redisEnt.getHashRedis(joinedTeamKey)
                     if(getData) {
@@ -206,14 +199,12 @@ module.exports = {
 
                             let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
                             if(s3Res) {
-                                // red.publish('player_team', json.dumps(data))
-                                redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                                redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
                                 redisEnt.redisObj.publish('player_team', JSON.stringify(team))
 
                                 message = "Team has been updated successfully."
                                 data1.message = message;
                                 data1.team_id = team_id;
-                                redis.redisnMyTeamsObj.del(RedisKeys.USER_DATA + user_id);
                                 return res.send(ApiUtility.success(data1));
                             } else {
                                 message = "Something went wrong."
@@ -356,7 +347,7 @@ module.exports = {
                             team.full_team = fullTeam;
                             let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
                             if(s3Res) {
-                                redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                                redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
                                 message = "Team has been created successfully."
                                 data1.message = message;
                                 return res.send(ApiUtility.success(data1));
@@ -365,14 +356,6 @@ module.exports = {
                                 data1.message = message;
                                 return res.send(ApiUtility.failed(data1));
                             }
-                            
-                            // redis.redisObj.get('user-teams-count-' + match_id + '-' + sport + '-' + user_id, (err, data) => {
-                            //     let count = (data) ? parseInt(data) + 1 : 1;
-                            //     mqtt.publishUserJoinedTeamCounts(match_id, user_id, JSON.stringify({ team_count: count }))
-                            //     redis.redisObj.del('user-teams-count-' + match_id + '-' + sport + '-' + user_id) //force user to get data from db
-                            // });
-                            // redis.redisnMyTeamsObj.del(RedisKeys.USER_DATA + user_id);
-                            
                         } else {
                             return res.send(ApiUtility.failed("You can not create team more than " + totalTemCount + " teams."));
                         }

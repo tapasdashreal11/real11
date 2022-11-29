@@ -32,7 +32,7 @@ module.exports = {
         if (!user_id || !match_id || !series_id) {
             return res.send(ApiUtility.failed('user id, match id or series id are empty.'));
         }
-        let joinedTeamKey = `userteam-${match_id}-${sport}-${user_id}`;
+        let joinedTeamKey = `${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`;
         
         redisEnt.getRedis(joinedTeamKey, async (err, data) => {
             if (isEmpty(data)) {
@@ -89,7 +89,7 @@ module.exports = {
             let filter = { user_id: user_id, match_id: match_id, series_id: series_id, sport: sport };
             
             if (player_team_id) {
-                let joinedTeamKey = `userteam-${match_id}-${sport}-${user_id}`;
+                let joinedTeamKey = `${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`;
                 redisEnt.getHGETRedis(joinedTeamKey,player_team_id, async (err, result) => {
                     if(isEmpty(result)) {
                         let key = match_id+"_"+sport+"/"+match_id + "_" + sport + "_" + user_id + "_" + player_team_id + ".json";
@@ -560,7 +560,7 @@ async function readTeamOns3(key, match_id,user_id,sport) {
                 resolve(false);
             } else {
                 let finalData = JSON.parse(data.Body.toString());
-                redisEnt.setRedis(`userteam-${match_id}-${sport}-${user_id}`, finalData._id, finalData);
+                redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, finalData._id, finalData);
                 resolve(finalData);
             }
         });

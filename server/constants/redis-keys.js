@@ -24,6 +24,7 @@ const redisKeys = {
     // Redis Ent
     PLAYER_LIST: 'player-list-', //series_id-team_id
     MATCH_PREVIEW: 'match-preview-', //sport-series_id-match_id-player_team_id
+    USER_CREATED_TEAMS: 'userteam-' //match_id-sport-user_id
 }
     
 module.exports = redisKeys
