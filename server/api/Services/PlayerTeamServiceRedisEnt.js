@@ -360,6 +360,9 @@ class PlayerTeamServiceRedisEnt {
             data1.vice_captain_player_id = playerData.vice_captain;
             data1.one_five_x = playerData.one_five_x;
             data1.two_x = playerData.two_x;
+            three_x = playerData.three_x ? playerData.three_x : 0,
+            four_x = playerData.four_x ? playerData.four_x : 0,
+            five_x = playerData.five_x ? playerData.five_x : 0,
             data1.x_counter = playerData.x_counter;
             data1.total_bowler = totalBowler;
             data1.total_batsman = totalBatsman;
