@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
 						logger.error("MSG_ERROR", err.message);
 					});
 				
-				let mailMessage	=	"<div><h3>OTP Request</h3><p>Hi,</p><p>Your One Time Password(OTP) is <b>"+ otp +"</b></p><p>The password will expire in 10 minutes if not used.</p><p>If you have not made this request, please contact our customer support immidiately.</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
+				let mailMessage	=	"<div><h3>OTP Request</h3><p>Hi,</p><p>Your One Time Password(OTP) is <b>"+ otp +"</b></p><p>The password will expire in 10 minutes if not used.</p><p>If you have not made this request, please contact our customer support immediately.</p><br/ ><p>Thank You,</p><p>Real11 Team</p></div>"
 				let to	=	data.email;
 				let subject	=	"One Time Password (OTP) login to Real11";
 				

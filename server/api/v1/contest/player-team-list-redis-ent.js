@@ -19,7 +19,7 @@ const { resolve } = require('path');
 module.exports = {
 
     playerTeamListRedisEnt: async (req, res) => {
-        var _this = this;
+        // var _this = this;
         let { match_id, series_id, team_no, user_id, sport } = req.params;
         if (!user_id) {
             user_id = req.userId;
