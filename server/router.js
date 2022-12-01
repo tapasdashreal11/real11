@@ -114,15 +114,10 @@ const {userResendOtp,userRefStaticData,userGoogleSignIn,userGoogleSignUpDetailAd
 const appSettingApi = require("./api/v1/common/app-settings");
 const user_offers = require("./api/v1/common/app-analysis-api");
 const { 
-   // contestList,
-    // contestDetail,
-    // joinedContestList,
     joinContestWalletAmount,
     joinContestWalletAmountMultiple,
     joinContestWithMultipleTeam,
-   // categoryContestList,
     switchTeam,
-    // contestPrizeBreakup,
     beforeJoinContest,
     applyCouponCode,
     createContest,
@@ -198,6 +193,7 @@ const { playerTeamListRedisEnt, previewPlayerTeamListRedisEnt } = require('./api
 const { playerListRedisEnt } = require('./api/v1/contest/player-list-redis-ent');
 const  contestListNewRedisEnt  =   require('./api/v1/contest/contest-m-list-redis-ent');
 const  { contestDetailRedisEnt }  = require('./api/v1/contest/contest-detail-redis-ent');
+const  { switchTeamRedisEnt }  = require('./api/v1/contest/switch-team-redis-ent');
 // Redis Ent End
 
 // Quiz Question answer
@@ -383,6 +379,7 @@ router.get('/api/v1/player-list-redis-ent/:series_id/:match_id/:sport?', playerL
 router.get('/api/v1/preview-player-team-list-redis-ent/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamListRedisEnt);
 router.get('/api/v1/contest-list-new-redis-ent/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEnt);
 router.get('/api/v1/contest-detail-new-redis-ent/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailRedisEnt); // old
+router.post('/api/v1/switch-team-redis-ent', auth.authenticate.jwtLogin, switchTeamRedisEnt); // old
 // Redis Ent End
 // Unity Ludo api 
 
