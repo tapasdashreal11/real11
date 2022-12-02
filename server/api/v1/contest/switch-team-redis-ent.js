@@ -113,7 +113,7 @@ module.exports = {
                                         }
                                     }
                                     redis.setRedis(myJoinedContestListKey, joindedContestlistdata)
-                                    console.log(teamIds,myJoinedContestListKey);
+                                    // console.log(teamIds,myJoinedContestListKey);
                                     
                                     return res.send(ApiUtility.success({}, "Team switched successfuly."));
                                 }
