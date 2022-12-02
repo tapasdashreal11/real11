@@ -73,6 +73,7 @@ module.exports = {
                                 return res.send(ApiUtility.failed(error.message));
                             }
                             /** get data from redis first and s3 bucket if not found in redis */
+                            let teamIds =   [];
                             _.forEach(pleasrTeamData, async function (i, k) {
                                 var pT = {};
                                 if(getData) {
@@ -86,6 +87,7 @@ module.exports = {
                                 var count =  pT && pT.team_count ? pT.team_count:1;
                                 // console.log(count);
                                 await switchTeamFn(i._id, decoded['team_id'][k],count);
+                                teamIds.push({"player_team_id": decoded['team_id'][k]});
                                 if (k === (decoded['team_id'].length - 1)) {
                                     const matchContest = await MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': sport, 'contest_id': decoded['contest_id'] });
                                     if (matchContest && matchContest.category_slug && (_.isEqual(matchContest.category_slug, 'head-to-head') || _.isEqual(matchContest.category_slug, 'last-man-standing'))) {
@@ -100,8 +102,19 @@ module.exports = {
                                              await redis.setRedisLeaderboard(leaderboardKey, allTeams);
                                            }
                                         }
-                                        
                                     }
+                                    let myJoinedContestListKey = "joined-contest-list-" + match_id + "-" + series_id + "-" + user_id;
+                                    let joindedContestlistdata = await getPromiseUserJoinedContestList(myJoinedContestListKey);
+                                    if(joindedContestlistdata && joindedContestlistdata.joined_contest) {
+                                        let currentContest = _.find(joindedContestlistdata.joined_contest, {"contest_id": contest_id});
+                                        console.log("currentContest:", currentContest)
+                                        if(currentContest && currentContest.my_team_ids) {
+                                            currentContest.my_team_ids  =   teamIds;
+                                        }
+                                    }
+                                    redis.setRedis(myJoinedContestListKey, joindedContestlistdata)
+                                    console.log(teamIds,myJoinedContestListKey);
+                                    
                                     return res.send(ApiUtility.success({}, "Team switched successfuly."));
                                 }
                             });
@@ -121,4 +134,15 @@ module.exports = {
         }
     },
 
+}
+
+async function getPromiseUserJoinedContestList(key) {
+    return new Promise((resolve, reject) => {
+        redis.getRedisMyMatches(key, async (err, data) => {
+            if (data == null) {
+                data = {};
+            }
+            resolve(data)
+        })
+    })
 }
