@@ -42,6 +42,7 @@ class PlayerTeamServiceRedisEnt {
         }
         
         if (!isEmpty(playerRcdData)) {
+            console.log(playerRcdData, " >>>>>>>>>> in if condn");
             playerIdsArr = _.map(playerRcdData, 'player_id');
         } else {
             let cond = {};
