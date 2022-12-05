@@ -61,6 +61,7 @@ module.exports = {
             if (err) {
                 return res.send(ApiUtility.failed(err.message));
             } else {
+                playerList.server_time = moment(new Date()).format(config.DateFormat.datetime);
                 return res.send(ApiUtility.success(playerList));
             }
         })

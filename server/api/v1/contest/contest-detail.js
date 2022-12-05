@@ -530,6 +530,7 @@ module.exports = {
                 if (seriesSqadData && seriesSqadData.is_parent) {
                     contestData['match_inning_number'] = seriesSqadData.inning_number && seriesSqadData.inning_number == 2 ? 2 : 1;
                 }
+                contestData.server_time = moment(new Date()).format(config.DateFormat.datetime);
                 return res.send(ApiUtility.success(contestData));
             }
 

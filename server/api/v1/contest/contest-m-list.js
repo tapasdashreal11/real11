@@ -180,6 +180,7 @@ try {
                                     resObj['user_rentation_bonous'] = {};
                                 }
                             }
+                            resObj.server_time = moment(new Date()).format(config.DateFormat.datetime);
                             var finalResult = ApiUtility.success(resObj);
                             return res.send(finalResult);
                         });

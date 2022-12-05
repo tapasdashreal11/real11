@@ -561,6 +561,7 @@ module.exports = {
                             data1.my_contests = contest_id_filter && _.isArray(contest_id_filter) ? contest_id_filter.length : 0;
                             data1.my_team_rank = myTeamRank;
                             data1.match_status = reviewStatus;
+                            data1.server_time = moment(new Date()).format(config.DateFormat.datetime);
                             redis.setRedisMyMatches(myJoinedContestListKey, data1);
                             return res.send(ApiUtility.success(data1));
                         } else {
