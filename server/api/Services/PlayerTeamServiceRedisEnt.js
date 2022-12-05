@@ -10,7 +10,7 @@ class PlayerTeamServiceRedisEnt {
     static async getCachePlayerList(reqData, cb) {
         const { match_id, sport } = reqData;
         const mpKey = `${redisKeys.MATCH_PLAYER_LIST}${match_id}-${sport}`
-        
+        return PlayerTeamServiceRedisEnt.getDbPlayerList(reqData, cb, true)
         let redisData = await redisEnt.getNormalRedis(mpKey);
         if (!isEmpty(redisData)) {
             return cb(null, redisData)
@@ -147,6 +147,7 @@ class PlayerTeamServiceRedisEnt {
                     "series_id": 1,
                     "match_id": 1,
                     "player_point": "$liveScore.point",
+                     "player_id": "$seriesScore._id",
                     "series_point": { $cond: { if: { $ne: ["$seriesScore", ''] }, then: "$seriesScore.player_points", else: 0 } },
                     "match_type": { $toLower: "$type" },
                     "selected_by": '0%',
@@ -171,12 +172,12 @@ class PlayerTeamServiceRedisEnt {
                 
                 redisEnt.getNormalFunRedis(redisKeys.getMatchPlayerStatsKey(match_id, sport),async (redisErr, playerStats) => {
                     let commonData = results[0];
-                    
                     let i = 0;
                     let resultNew = [];
                     let playerIds = [];
                     for (let playerData of playerRcdData) {
-                        
+                         var plyrId = _.find(results, {player_id:playerData.player_id});
+                         
                         playerData.match_id = commonData.match_id;
                         playerData.series_id = commonData.series_id;
                         playerData.match_type = commonData.match_type;
@@ -190,6 +191,9 @@ class PlayerTeamServiceRedisEnt {
                         playerData.five_x_selected = commonData.five_x_selected;
                         playerData.is_local_team = (localteamId==playerData.team_id ? true : false);
                         playerData.is_last_played = playerData.is_lastplayed;
+                        if(plyrId && plyrId.series_point) {
+                            playerData.series_point = plyrId.series_point;
+                        }
                         playerData.player_record = {
                             player_id: playerData.player_id,
                             series_id: commonData.series_id,
