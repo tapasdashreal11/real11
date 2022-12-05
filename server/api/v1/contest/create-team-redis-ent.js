@@ -196,6 +196,7 @@ module.exports = {
                         if (statusAdd == true) {
                             let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, teamDataa.team_count, team);
                             team.full_team = fullTeam;
+                            // team.operation = "update";
 
                             let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
                             if(s3Res) {

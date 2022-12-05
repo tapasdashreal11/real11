@@ -34,7 +34,7 @@ class PlayerTeamServiceRedisEnt {
             redisEnt.getNormalRedis(newVisitorteamIdKey)
         ];
         var redisResults = await Promise.all(apiList);
-
+        console.log(redisResults, " >>>>>>>>>>>>>>>>>redisResults");
         let playerIdsArr = [];
         let playerRcdData = [];
         if(redisResults && redisResults[0] && redisResults[0] != undefined && redisResults[1] && redisResults[1] != undefined) {
