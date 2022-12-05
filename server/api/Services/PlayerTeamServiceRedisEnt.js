@@ -34,7 +34,7 @@ class PlayerTeamServiceRedisEnt {
             redisEnt.getNormalRedis(newVisitorteamIdKey)
         ];
         var redisResults = await Promise.all(apiList);
-        console.log(redisResults, " >>>>>>>>>>>>>>>>>redisResults");
+
         let playerIdsArr = [];
         let playerRcdData = [];
         if(redisResults && redisResults[0] && redisResults[0] != undefined && redisResults[1] && redisResults[1] != undefined) {
@@ -67,6 +67,7 @@ class PlayerTeamServiceRedisEnt {
                 is_lastplayed: {$cond: { if: { $ifNull: [ "$is_lastplayed", 0 ] }, then: "$is_lastplayed", else: 0}},
             }
             playerRcdData = await SeriesPlayer.find(cond, projection).lean();
+            console.log(playerRcdData, " >>>>>>>>>>>>>>>>>playerRcdData");
             playerIdsArr = _.map(playerRcdData, 'player_id');
         }
         SeriesSquad.collection.aggregate([
