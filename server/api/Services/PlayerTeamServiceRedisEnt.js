@@ -64,6 +64,7 @@ class PlayerTeamServiceRedisEnt {
                 team_name: 1,
                 test: 1,
                 image: 1,
+                player_status: 1,
                 is_lastplayed: {$cond: { if: { $ifNull: [ "$is_lastplayed", 0 ] }, then: "$is_lastplayed", else: 0}},
             }
             playerRcdData = await SeriesPlayer.find(cond, projection).lean();
@@ -237,7 +238,7 @@ class PlayerTeamServiceRedisEnt {
                             }
                             resultNew.push(playerData);
                         } 
-                        if(sport != 1) {
+                        if(sport != 1 && playerData.player_status == 1) {
                             if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
                             if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
                             
@@ -258,7 +259,7 @@ class PlayerTeamServiceRedisEnt {
                         }
                         i++;
                     }
-                    
+                    resultNew = _.orderBy(resultNew, ['player_credit'], ['desc']);
                     if(playerIds && playerIds.length>=11){
                         await SeriesPlayer.updateMany({series_id:series_id,player_id:{$in:playerIds}},{$set:{is_lastplayed:1}});
                     }
