@@ -232,26 +232,27 @@ class PlayerTeamServiceRedisEnt {
                                 playerData.five_x_selected = (playerStats[playerData.player_id]["fivexSelected"] && playerStats[playerData.player_id]["fivexSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["fivexSelected"]}%` : "0%";
                             }
                             resultNew.push(playerData);
-                        } else {
-                            console.log(playerData.player_record, " in else........");
-                            if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
-                            if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
+                        } 
+                        // else {
+                        //     console.log(playerData.player_record, " in else........");
+                        //     if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
+                        //     if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
                             
-                            if (playing_11 && playing_11.length > 0) {
-                                playerData.is_playing_show = 1
-                                playerData.is_playing = (playing_11.indexOf(playerData.player_id) > -1) ? 1 : 0;
-                            } else {
-                                playerData.is_playing_show = 0
-                                playerData.is_playing = 0
-                            }
+                        //     if (playing_11 && playing_11.length > 0) {
+                        //         playerData.is_playing_show = 1
+                        //         playerData.is_playing = (playing_11.indexOf(playerData.player_id) > -1) ? 1 : 0;
+                        //     } else {
+                        //         playerData.is_playing_show = 0
+                        //         playerData.is_playing = 0
+                        //     }
                             
-                            if (playerStats && playerStats[playerData.player_id]) {
-                                playerData.selected_by = (playerStats[playerData.player_id]["selectedBy"] && playerStats[playerData.player_id]["selectedBy"] != "NaN") ? `${playerStats[playerData.player_id]["selectedBy"]}%` : "0%";
-                                playerData.captain_selected = (playerStats[playerData.player_id]["captainSelected"] && playerStats[playerData.player_id]["captainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["captainSelected"]}%` : "0%";
-                                playerData.vice_captain_selected = (playerStats[playerData.player_id]["viceCaptainSelected"] && playerStats[playerData.player_id]["viceCaptainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["viceCaptainSelected"]}%` : "0%";
-                            }
-                            resultNew.push(playerData);
-                        }
+                        //     if (playerStats && playerStats[playerData.player_id]) {
+                        //         playerData.selected_by = (playerStats[playerData.player_id]["selectedBy"] && playerStats[playerData.player_id]["selectedBy"] != "NaN") ? `${playerStats[playerData.player_id]["selectedBy"]}%` : "0%";
+                        //         playerData.captain_selected = (playerStats[playerData.player_id]["captainSelected"] && playerStats[playerData.player_id]["captainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["captainSelected"]}%` : "0%";
+                        //         playerData.vice_captain_selected = (playerStats[playerData.player_id]["viceCaptainSelected"] && playerStats[playerData.player_id]["viceCaptainSelected"] != 'NaN') ? `${playerStats[playerData.player_id]["viceCaptainSelected"]}%` : "0%";
+                        //     }
+                        //     resultNew.push(playerData);
+                        // }
                         i++;
                     }
                     
