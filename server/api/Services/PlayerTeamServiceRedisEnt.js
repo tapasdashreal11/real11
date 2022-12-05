@@ -10,7 +10,7 @@ class PlayerTeamServiceRedisEnt {
     static async getCachePlayerList(reqData, cb) {
         const { match_id, sport } = reqData;
         const mpKey = `${redisKeys.MATCH_PLAYER_LIST}${match_id}-${sport}`
-        return PlayerTeamServiceRedisEnt.getDbPlayerList(reqData, cb, true)
+        
         let redisData = await redisEnt.getNormalRedis(mpKey);
         if (!isEmpty(redisData)) {
             return cb(null, redisData)
