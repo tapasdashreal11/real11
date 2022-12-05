@@ -233,7 +233,7 @@ class PlayerTeamServiceRedisEnt {
                             }
                             resultNew.push(playerData);
                         } 
-                        if(sport == 2 || sport == 4) {
+                        if(sport != 1) {
                             if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
                             if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
                             
