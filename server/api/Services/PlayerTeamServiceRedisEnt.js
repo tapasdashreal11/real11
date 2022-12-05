@@ -42,7 +42,6 @@ class PlayerTeamServiceRedisEnt {
         }
         
         if (!isEmpty(playerRcdData)) {
-            console.log(playerRcdData, " >>>>>>>>>> in if condn");
             playerIdsArr = _.map(playerRcdData, 'player_id');
         } else {
             let cond = {};
@@ -68,7 +67,6 @@ class PlayerTeamServiceRedisEnt {
                 is_lastplayed: {$cond: { if: { $ifNull: [ "$is_lastplayed", 0 ] }, then: "$is_lastplayed", else: 0}},
             }
             playerRcdData = await SeriesPlayer.find(cond, projection).lean();
-            console.log(playerRcdData, " >>>>>>>>>>>>>>>>>playerRcdData");
             playerIdsArr = _.map(playerRcdData, 'player_id');
         }
         SeriesSquad.collection.aggregate([
@@ -235,6 +233,7 @@ class PlayerTeamServiceRedisEnt {
                             }
                             resultNew.push(playerData);
                         } else {
+                            console.log(playerData.player_record, " in else........");
                             if (playerData.player_record && playerData.player_record._id) playerData.player_record.id = playerData.player_record._id;
                             if (playerData.player_record && playerData.player_record.image) playerData.player_record.image = playerData.player_record.image;
                             
