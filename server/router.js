@@ -195,6 +195,7 @@ const  contestListNewRedisEnt  =   require('./api/v1/contest/contest-m-list-redi
 const  { contestDetailRedisEnt }  = require('./api/v1/contest/contest-detail-redis-ent');
 const  { switchTeamRedisEnt }  = require('./api/v1/contest/switch-team-redis-ent');
 const  joinContestHeadToHeadRedisEnt  = require('./api/v1/contest/join-contest-head-to-head-redis-ent');
+const { joinedContestListUpcomingEnt } = require('./api/v1/contest/joined-contest-list-redis-ent');
 // Redis Ent End
 const { exportTransactionHistory }  = require('./api/v1/export-transaction-history');
 
@@ -385,6 +386,7 @@ router.post('/api/v1/switch-team-redis-ent', auth.authenticate.jwtLogin, switchT
 router.post('/api/v1/join-contest-new-redis-ent', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt); // old
 // Redis Ent End
 router.get('/api/v1/export-transaction-history/:user_id/:start_date/:end_date', auth.authenticate.jwtLogin, exportTransactionHistory);
+router.get('/api/v1/joined-contest-list-upcoming-redis-ent/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestListUpcomingEnt);
 // Unity Ludo api 
 
 router.post('/api/v1/unity-match-result', unityMatchResult); 
