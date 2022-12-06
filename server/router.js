@@ -196,6 +196,7 @@ const  { contestDetailRedisEnt }  = require('./api/v1/contest/contest-detail-red
 const  { switchTeamRedisEnt }  = require('./api/v1/contest/switch-team-redis-ent');
 const  joinContestHeadToHeadRedisEnt  = require('./api/v1/contest/join-contest-head-to-head-redis-ent');
 // Redis Ent End
+const { exportTransactionHistory }  = require('./api/v1/export-transaction-history');
 
 // Quiz Question answer
 
@@ -383,6 +384,7 @@ router.get('/api/v1/contest-detail-new-redis-ent/:match_id/:contest_id/:sport?',
 router.post('/api/v1/switch-team-redis-ent', auth.authenticate.jwtLogin, switchTeamRedisEnt);
 router.post('/api/v1/join-contest-new-redis-ent', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt); // old
 // Redis Ent End
+router.get('/api/v1/export-transaction-history/:user_id/:start_date/:end_date', auth.authenticate.jwtLogin, exportTransactionHistory);
 // Unity Ludo api 
 
 router.post('/api/v1/unity-match-result', unityMatchResult); 
