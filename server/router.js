@@ -376,7 +376,7 @@ router.get('/api/v1/gamezop-game-win-list/:room_id',auth.authenticate.jwtLogin, 
 router.post('/api/v1/other-games-create-private-contest',auth.authenticate.jwtLogin, createPrivateContestOG);
 
 // Redis Ent Start
-router.post('/api/v1/create-team-redis-ent', auth.authenticate.jwtLogin, createTeamRedisEnt);
+router.post('/api/v1/create-team-redis-ent', /*auth.authenticate.jwtLogin,*/ createTeamRedisEnt);
 router.get('/api/v1/player-team-list-redis-ent/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListRedisEnt);
 router.get('/api/v1/player-list-redis-ent/:series_id/:match_id/:sport?', playerListRedisEnt);
 router.get('/api/v1/preview-player-team-list-redis-ent/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamListRedisEnt);
