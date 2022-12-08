@@ -389,8 +389,6 @@ router.get('/api/v1/export-transaction-history/:user_id/:start_date/:end_date', 
 router.get('/api/v1/joined-contest-list-upcoming-redis-ent/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestListUpcomingEnt);
 // Unity Ludo api 
 
-
-
 router.post('/api/v1/unity-match-result', unityMatchResult); 
 router.post('/api/v1/unity-match-status',unityMatchStatus);
 
