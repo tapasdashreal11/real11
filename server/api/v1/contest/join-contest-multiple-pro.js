@@ -30,8 +30,8 @@ const Helper = require('./../common/helper');
 module.exports = async (req, res) => {
     try {
         let data1 = {};
-        const user_id = req.userId;
-        const { team_data, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id } = req.body;
+        // const user_id = req.userId;
+        const { team_data, contest_id, series_id, match_id, sport, rf_code, refer_by_user_id, user_id } = req.body;
         let refer_code = rf_code ? rf_code : '';
         let refer_by_user = refer_by_user_id ? refer_by_user_id : '';
         let match_sport = sport ? parseInt(sport) : 1;
