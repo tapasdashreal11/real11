@@ -623,6 +623,7 @@ module.exports = async (req, res) => {
                                                             playerContest.id = newContestId;
                                                             if (playerContest.id) {
                                                                 if (contestData) {
+                                                                    console.log("...here1...");
                                                                     let joinedTeamsCountKey = `${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`;
                                                                     redis.getRedis(joinedTeamsCountKey, (err, data) => {
                                                                         if (data) {
@@ -673,11 +674,14 @@ module.exports = async (req, res) => {
                                                                                     redis.setRedisMyMatches(matchContestUserKey, results);
                                                                                 })
                                                                             } else {
+                                                                                console.log("...here2...");
                                                                                 SeriesSquad.findOne({ 'match_id': parseInt(match_id), 'sport': match_sport, 'series_id': parseInt(series_id) }).then(async function (data) {
                                                                                     let conIndex = _.findIndex(contestData.upcoming_match, { "match_id": decoded['match_id'] });
                                                                                     if (conIndex < 0) {
+                                                                                        console.log("...here3...");
                                                                                         const mData = await MyContestModel.findOne({ match_id: parseInt(match_id), sport: match_sport, user_id: user_id }, { _id: 1 });
                                                                                         if (mData && mData._id) {
+                                                                                            console.log("...here5...");
                                                                                             //console.log("after join this is seires squad data*****");
                                                                                             mycontId = mData._id
                                                                                             var newLiveArray = {
@@ -720,12 +724,14 @@ module.exports = async (req, res) => {
 
                                                                                             redis.setRedisMyMatches(matchContestUserKey, contestData);
                                                                                         } else {
+                                                                                            console.log("...here6...");
                                                                                             //console.log("My Match contest id not found for after join *****",match_id);
                                                                                             redis.redisnMyMatchesObj.del(matchContestUserKey);
                                                                                         }
 
 
                                                                                     } else {
+                                                                                        console.log("...here4...");
                                                                                         if (totalContestKey > 0) {
                                                                                             contestData.upcoming_match[conIndex]['total_contest'] = totalContestKey;
                                                                                         }
