@@ -376,7 +376,7 @@ router.get('/api/v1/gamezop-game-win-list/:room_id',auth.authenticate.jwtLogin, 
 router.post('/api/v1/other-games-create-private-contest',auth.authenticate.jwtLogin, createPrivateContestOG);
 
 // Redis Ent Start
-router.post('/api/v1/create-team-redis-ent', /*auth.authenticate.jwtLogin,*/ createTeamRedisEnt);
+router.post('/api/v1/create-team-redis-ent', auth.authenticate.jwtLogin, createTeamRedisEnt);
 router.get('/api/v1/player-team-list-redis-ent/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListRedisEnt);
 router.get('/api/v1/player-list-redis-ent/:series_id/:match_id/:sport?', playerListRedisEnt);
 router.get('/api/v1/preview-player-team-list-redis-ent/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamListRedisEnt);
@@ -589,7 +589,7 @@ router.post('/cashfree/webhook', function(req, res) {
  router.post('/api/v1/game-signup', usersSignup);
  router.post('/api/v1/game-email-login', loginWithEmail);
  router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestNewOne);
- router.post('/api/v1/game-multiple-join-contest', /*auth.authenticate.jwtLogin,*/ joinContestMultipleTeam);
+ router.post('/api/v1/game-multiple-join-contest', auth.authenticate.jwtLogin, joinContestMultipleTeam);
  router.post('/api/v1/game-update-transactions', auth.authenticate.jwtLogin, updateTransaction);
  router.post('/api/v1/game-add-withdraw-request', auth.authenticate.jwtLogin, RazopayWithdrawReq); // added some other addWithdrawRequest     
  /* router.get('/cron/paytmwebhook', function(req, res){
