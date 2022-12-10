@@ -358,7 +358,7 @@ module.exports = async (req, res) => {
                                                             let splitURL=   liveMatch.game_sub_url.split("&");
                                                             let gameEnv =   splitURL && splitURL[1] ? splitURL[1]+"&" : '';
                                                             data1.game_url = process.env.OTHER_GAME_ENDPOINT + liveMatch.game_code + "?" + gameEnv + "roomDetails=" + encodeData;
-                                                            console.log("Game URL >>>>>>>>>>>>>>>>", data1.game_url,">>>>>>>>>>>>>>>");
+                                                            // console.log("Game URL >>>>>>>>>>>>>>>>", data1.game_url,">>>>>>>>>>>>>>>");
                                                         }
                                                         redis.setRedis("match-contest-other-view-" + authUser._id, {});
                                                         let contestLudoJoin = joinedContestCount >= contestData.contest_size ? 0 : joinedContestCount;
