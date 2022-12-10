@@ -92,7 +92,6 @@ module.exports = {
                     isSetOnRedis = true;
                 }
 
-                console.log(isSetOnRedis, " ...... isSetOnRedis status");
                 if(isSetOnRedis == true) {
                     try {
                         const getData = await redisEnt.getHashRedis(joinedTeamKey)
@@ -247,7 +246,6 @@ module.exports = {
                         let teamDataa = [];
     
                         if (req.body.teamType && req.body.teamType == 55) {
-                            console.log('hello team type 55 ****');
                             teamDataa = await PlayerTeam.aggregate([
                                 {
                                     $match: { 'match_id': match_id, 'playerStr': teamString, 'sport': sport }
@@ -428,7 +426,6 @@ async function createTeamOnS3(key, team) {
                     // reject(err.message)
                     resolve(false);
                 } else {
-                    console.log("Successfully uploaded data to bucket");
                     // resolve(data);
                     if(data && data.ETag) {
                         resolve(true);
