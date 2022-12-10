@@ -353,7 +353,7 @@ router.get('/api/v1/player-list/:series_id/:match_id/:sport?', playerList);
 router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListn);
 router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, leaderboard);
 //router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
-router.post('/api/v1/create-team-redis-ent', auth.authenticate.jwtLogin, createTeamNew);
+router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtLogin, joinContestWalletAmountMultiple);
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
@@ -376,7 +376,7 @@ router.get('/api/v1/gamezop-game-win-list/:room_id',auth.authenticate.jwtLogin, 
 router.post('/api/v1/other-games-create-private-contest',auth.authenticate.jwtLogin, createPrivateContestOG);
 
 // Redis Ent Start
-// router.post('/api/v1/create-team-redis-ent', auth.authenticate.jwtLogin, createTeamRedisEnt);
+router.post('/api/v1/create-team-redis-ent', auth.authenticate.jwtLogin, createTeamRedisEnt);
 router.get('/api/v1/player-team-list-redis-ent/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListRedisEnt);
 router.get('/api/v1/player-list-redis-ent/:series_id/:match_id/:sport?', playerListRedisEnt);
 router.get('/api/v1/preview-player-team-list-redis-ent/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamListRedisEnt);
