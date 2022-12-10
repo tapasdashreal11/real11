@@ -9,6 +9,7 @@ const redisKeys = require('../../../constants/redis-keys');
 const Settings = require("../../../models/settings");
 const AWS = require('aws-sdk');
 const PlayerTeamServiceRedisEnt = require('../../Services/PlayerTeamServiceRedisEnt');
+const { isEmpty } = require('lodash');
 
 module.exports = {
 
@@ -21,7 +22,7 @@ module.exports = {
         let data1 = {}, message = "";
         let x_system = (xm_system && (xm_system == 1)) ? 1 : 0;
         try {
-            
+            console.log(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`);
             if (x_system == 0 && (!series_id || !player_id || !captain || !match_id || !vice_captain || !sport)) {
                 return res.send(ApiUtility.failed('Please send proper data'));
             } else if (x_system == 1 && (!series_id || !player_id || !one_five_x || !two_x || !three_x  || !match_id || !sport)) {
@@ -64,260 +65,139 @@ module.exports = {
                     }
                 }
 
-
+                let joinedTeamKey = `${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`;
                 let statusAdd = false;
                 let joinedTeamData = false;
-                let joinedTeamKey = `${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`;
-                try {
-                    const getData = await redisEnt.getHashRedis(joinedTeamKey)
-                    if(getData) {
-                        joinedTeamData = JSON.parse(JSON.stringify(getData));
-                    }
-                } catch(error) {
-                    return res.send(ApiUtility.failed(error.message));
-                }
 
-                if (team_id) {
-                    var teamDataa= [];
-                    if(joinedTeamData) {
-                        cdataRsp = _.find(joinedTeamData, { '_id': team_id });
-                        if(typeof cdataRsp === 'object' && cdataRsp !== null) {
-                            teamDataa.push(cdataRsp);
+
+                let isSetOnRedis = false;
+                const getDataforDB = await redisEnt.getHashRedis(joinedTeamKey)
+                if(isEmpty(getDataforDB)) {
+                    let userTeamDB = await PlayerTeam.find({user_id: user_id, match_id: match_id, series_id: series_id, sport: sport}).lean();
+                    let flag = 0
+                    if(userTeamDB.length > 0) {
+                        for(var team of userTeamDB) {
+                            let fullTeamForDB = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team.team_count, team);
+                            team.full_team = fullTeamForDB
+                            redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                            flag++;
+                            if(userTeamDB.length == flag) {
+                                isSetOnRedis = true;
+                            }
                         }
                     } else {
-                        teamDataa = await PlayerTeam.findOne({ _id: ObjectId(team_id) });
-                    }
-                    
-                    if (_.isEmpty(teamDataa))
-                        return res.send(ApiUtility.failed('Invalid team id'));
-                    let teamDataaCheckAll = [];
-                    if (req.body.teamType && req.body.teamType == 55) {
-                        teamDataaCheckAll = await PlayerTeam.aggregate([
-                            {
-                                $match: { match_id: match_id, playerStr: teamString, sport: sport }
-                            },
-                            {
-                                $lookup: {
-                                    from: "users",
-                                    let: { "userIdd": "$user_id" },
-                                    pipeline: [
-                                        { $match: { $expr: { $and: [{ $eq: ["$_id", "$$userIdd"] }, { $eq: ["$user_type", 55] }] } } }],
-                                    as: "user"
-                                }
-                            },
-                            {
-                                $unwind: {
-                                    "path": "$user",
-                                    "preserveNullAndEmptyArrays": false
-                                }
-                            },
-                        ]);
-                    } else {
-                        if (x_system == 1) {
-                            if (liveMatch.live_fantasy_parent_id) {
-                                if(joinedTeamData) {
-                                    cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'one_five_x': one_five_x, 'two_x': two_x, 'three_x': three_x, 'four_x': four_x, 'five_x': five_x });
-                                    if(typeof cdataRsp === 'object' && cdataRsp !== null) {
-                                        teamDataaCheckAll.push(cdataRsp);
-                                    }
-                                } else {
-                                    teamDataaCheckAll = await PlayerTeam.find({
-                                        user_id: user_id, match_id: match_id, series_id: series_id, playerStr: teamString, sport: sport,
-                                        one_five_x: one_five_x,
-                                        two_x: two_x,
-                                        three_x: three_x,
-                                        four_x: four_x,
-                                        five_x: five_x
-                                    });
-                                }
-                            } else {
-                                if(joinedTeamData) {
-                                    cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'one_five_x': one_five_x, 'two_x': two_x, 'three_x': three_x });
-                                    if(typeof cdataRsp === 'object' && cdataRsp !== null) {
-                                        teamDataaCheckAll.push(cdataRsp);
-                                    }
-                                } else {
-                                    teamDataaCheckAll = await PlayerTeam.find({
-                                        user_id: user_id, match_id: match_id, series_id: series_id, playerStr: teamString, sport: sport,
-                                        one_five_x: one_five_x,
-                                        two_x: two_x,
-                                        three_x: three_x
-                                    });
-                                }
-                            }
-                        } else {
-                            if(joinedTeamData) {
-                                cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'captain': captain, 'vice_captain': vice_captain });
-                                if(typeof cdataRsp === 'object' && cdataRsp !== null) {
-                                    teamDataaCheckAll.push(cdataRsp);
-                                }
-                            } else {
-                                teamDataaCheckAll = await PlayerTeam.find({
-                                    user_id: user_id, match_id: match_id, series_id: series_id, sport: sport, playerStr: teamString,
-                                    captain: captain,
-                                    vice_captain: vice_captain
-                                });
-                            }
-                        }
-
-                    }
-                    
-                    if (teamDataaCheckAll.length > 0) {
-                        message = "Same team already exists."
-                        return res.send(ApiUtility.failed(message));
-                    } else {
-                        teamDataa = teamDataa[0];
-                        statusAdd = _.isEmpty(teamDataa) ? false : true;
-                        let team = {
-                            _id: teamDataa._id, user_id: user_id, match_id: match_id, series_id: series_id, players: playerIds, playerStr: teamString, team_count: teamDataa.team_count, sport: sport,
-                            captain: captain,
-                            vice_captain: vice_captain
-                        };
-                        if (x_system == 1) {
-                            if (liveMatch.live_fantasy_parent_id) {
-                                team['one_five_x'] = one_five_x;
-                                team['two_x'] = two_x;
-                                team['three_x'] = three_x;
-                                team['four_x'] = four_x;
-                                team['five_x'] = five_x;
-                            } else {
-                                team['one_five_x'] = one_five_x;
-                                team['two_x'] = two_x;
-                                team['three_x'] = three_x;
-                            }
-                        } else {
-                            team['captain'] = captain;
-                            team['vice_captain'] = vice_captain;
-
-                            team['one_five_x'] = vice_captain;
-                            team['two_x'] = captain;
-                        }
-                        
-                        if (statusAdd == true) {
-                            let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, teamDataa.team_count, team);
-                            team.full_team = fullTeam;
-                            // team.operation = "update";
-
-                            let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
-                            if(s3Res) {
-                                redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
-                                redisEnt.redisObj.publish('player_team', JSON.stringify(team))
-
-                                message = "Team has been updated successfully."
-                                data1.message = message;
-                                data1.team_id = team_id;
-                                return res.send(ApiUtility.success(data1));
-                            } else {
-                                message = "Something went wrong."
-                                data1.message = message;
-                                return res.send(ApiUtility.failed(data1));
-                            }
-                        } else {
-                            message = team_id ? "Same team already exists." : "You have already created this team";
-                            return res.send(ApiUtility.failed(message));
-                        }
+                        isSetOnRedis = true;
                     }
                 } else {
-                    let teamDataa = [];
+                    isSetOnRedis = true;
+                }
 
-                    if (req.body.teamType && req.body.teamType == 55) {
-                        console.log('hello team type 55 ****');
-                        teamDataa = await PlayerTeam.aggregate([
-                            {
-                                $match: { 'match_id': match_id, 'playerStr': teamString, 'sport': sport }
-                            },
-                            {
-                                $lookup: {
-                                    from: "users",
-                                    let: { "userIdd": "$user_id" },
-                                    pipeline: [
-                                        { $match: { $expr: { $and: [{ $eq: ["$_id", "$$userIdd"] }, { $eq: ["$user_type", 55] }] } } }],
-                                    as: "user"
-                                }
-                            },
-                            {
-                                $unwind: {
-                                    "path": "$user",
-                                    "preserveNullAndEmptyArrays": false
-                                }
-                            },
-                        ]);
-                    } else {
+                console.log(isSetOnRedis, " ...... isSetOnRedis status");
+                if(isSetOnRedis == true) {
+                    try {
+                        const getData = await redisEnt.getHashRedis(joinedTeamKey)
+                        if(getData) {
+                            joinedTeamData = JSON.parse(JSON.stringify(getData));
+                        }
+                    } catch(error) {
+                        return res.send(ApiUtility.failed(error.message));
+                    }
+    
+                    if (team_id) {
+                        var teamDataa= [];
+                        if(joinedTeamData) {
+                            cdataRsp = _.find(joinedTeamData, { '_id': team_id });
+                            if(typeof cdataRsp === 'object' && cdataRsp !== null) {
+                                teamDataa.push(cdataRsp);
+                            }
+                        } else {
+                            teamDataa = await PlayerTeam.findOne({ _id: ObjectId(team_id) });
+                        }
                         
-                        if (x_system == 1) {
-                            if (liveMatch.live_fantasy_parent_id) {
-                                try {
+                        if (_.isEmpty(teamDataa))
+                            return res.send(ApiUtility.failed('Invalid team id'));
+                        let teamDataaCheckAll = [];
+                        if (req.body.teamType && req.body.teamType == 55) {
+                            teamDataaCheckAll = await PlayerTeam.aggregate([
+                                {
+                                    $match: { match_id: match_id, playerStr: teamString, sport: sport }
+                                },
+                                {
+                                    $lookup: {
+                                        from: "users",
+                                        let: { "userIdd": "$user_id" },
+                                        pipeline: [
+                                            { $match: { $expr: { $and: [{ $eq: ["$_id", "$$userIdd"] }, { $eq: ["$user_type", 55] }] } } }],
+                                        as: "user"
+                                    }
+                                },
+                                {
+                                    $unwind: {
+                                        "path": "$user",
+                                        "preserveNullAndEmptyArrays": false
+                                    }
+                                },
+                            ]);
+                        } else {
+                            if (x_system == 1) {
+                                if (liveMatch.live_fantasy_parent_id) {
                                     if(joinedTeamData) {
                                         cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'one_five_x': one_five_x, 'two_x': two_x, 'three_x': three_x, 'four_x': four_x, 'five_x': five_x });
                                         if(typeof cdataRsp === 'object' && cdataRsp !== null) {
-                                            teamDataa.push(cdataRsp);
+                                            teamDataaCheckAll.push(cdataRsp);
                                         }
                                     } else {
-                                        teamDataa = await PlayerTeam.find({ user_id: user_id, match_id: match_id, series_id: series_id,playerStr: teamString,sport: sport,
+                                        teamDataaCheckAll = await PlayerTeam.find({
+                                            user_id: user_id, match_id: match_id, series_id: series_id, playerStr: teamString, sport: sport,
                                             one_five_x: one_five_x,
                                             two_x: two_x,
                                             three_x: three_x,
                                             four_x: four_x,
                                             five_x: five_x
-                                        }).limit(1);
+                                        });
                                     }
-                                } catch (error) {
-                                    return res.send(ApiUtility.failed(error.message));
-                                }
-                            } else {
-                                try {
+                                } else {
                                     if(joinedTeamData) {
                                         cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'one_five_x': one_five_x, 'two_x': two_x, 'three_x': three_x });
                                         if(typeof cdataRsp === 'object' && cdataRsp !== null) {
-                                            teamDataa.push(cdataRsp);
+                                            teamDataaCheckAll.push(cdataRsp);
                                         }
                                     } else {
-                                        teamDataa = await PlayerTeam.find({user_id: user_id, match_id: match_id, series_id: series_id, playerStr: teamString,sport: sport,
+                                        teamDataaCheckAll = await PlayerTeam.find({
+                                            user_id: user_id, match_id: match_id, series_id: series_id, playerStr: teamString, sport: sport,
                                             one_five_x: one_five_x,
                                             two_x: two_x,
                                             three_x: three_x
-                                        }).limit(1);
+                                        });
                                     }
-                                } catch (error) {
-                                    return res.send(ApiUtility.failed(error.message));
                                 }
-                            }
-
-                        } else {
-                            try {
+                            } else {
                                 if(joinedTeamData) {
                                     cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'captain': captain, 'vice_captain': vice_captain });
                                     if(typeof cdataRsp === 'object' && cdataRsp !== null) {
-                                        teamDataa.push(cdataRsp);
+                                        teamDataaCheckAll.push(cdataRsp);
                                     }
                                 } else {
-                                    teamDataa = await PlayerTeam.find({ user_id: user_id, match_id: match_id, series_id: series_id,playerStr: teamString,sport: sport,
+                                    teamDataaCheckAll = await PlayerTeam.find({
+                                        user_id: user_id, match_id: match_id, series_id: series_id, sport: sport, playerStr: teamString,
                                         captain: captain,
                                         vice_captain: vice_captain
-                                    }).limit(1);
+                                    });
                                 }
-                            } catch (error) {
-                                return res.send(ApiUtility.failed(error.message));
                             }
+    
                         }
-                    }
-                    
-                    statusAdd = teamDataa.length > 0 ? false: true;
-                    let team_count = 0;
-                    if (statusAdd) {
-                        if(joinedTeamData) {
-                            joindTeams = _.filter(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'sport': sport });
-                            team_count = joindTeams.length;
+                        
+                        if (teamDataaCheckAll.length > 0) {
+                            message = "Same team already exists."
+                            return res.send(ApiUtility.failed(message));
                         } else {
-                            team_count = await PlayerTeam.countDocuments({user_id: user_id,match_id: match_id,series_id: series_id,sport: sport});
-                        }
-                        let appSettingData = await Settings.findOne({}, { max_team_create: 1 });
-                        const totalTemCount = appSettingData && appSettingData._id && appSettingData.max_team_create ? appSettingData.max_team_create : 20;
-                        if (team_count < totalTemCount) {
-                            team_count += 1;
+                            teamDataa = teamDataa[0];
+                            statusAdd = _.isEmpty(teamDataa) ? false : true;
                             let team = {
-                                user_id: user_id, match_id: match_id, series_id: series_id, players: playerIds, playerStr: teamString, team_count: team_count, sport: sport,
-                                created: new Date()
+                                _id: teamDataa._id, user_id: user_id, match_id: match_id, series_id: series_id, players: playerIds, playerStr: teamString, team_count: teamDataa.team_count, sport: sport,
+                                captain: captain,
+                                vice_captain: vice_captain
                             };
                             if (x_system == 1) {
                                 if (liveMatch.live_fantasy_parent_id) {
@@ -326,43 +206,191 @@ module.exports = {
                                     team['three_x'] = three_x;
                                     team['four_x'] = four_x;
                                     team['five_x'] = five_x;
-                                    team['x_counter'] = 5;
                                 } else {
                                     team['one_five_x'] = one_five_x;
                                     team['two_x'] = two_x;
                                     team['three_x'] = three_x;
-                                    team['x_counter'] = 3;
                                 }
                             } else {
                                 team['captain'] = captain;
                                 team['vice_captain'] = vice_captain;
+    
                                 team['one_five_x'] = vice_captain;
                                 team['two_x'] = captain;
-                                team['x_counter'] = 2;
                             }
-                            let teamId = new ObjectId()
-                            team._id = teamId;
-                            data1.team_id = teamId;
-                            data1.team_count = team_count;
-                            let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team_count, team);
-                            team.full_team = fullTeam;
-                            let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
-                            if(s3Res) {
-                                redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
-                                message = "Team has been created successfully."
-                                data1.message = message;
-                                return res.send(ApiUtility.success(data1));
+                            
+                            if (statusAdd == true) {
+                                let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, teamDataa.team_count, team);
+                                team.full_team = fullTeam;
+                                // team.operation = "update";
+    
+                                let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
+                                if(s3Res) {
+                                    redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                                    redisEnt.redisObj.publish('player_team', JSON.stringify(team))
+    
+                                    message = "Team has been updated successfully."
+                                    data1.message = message;
+                                    data1.team_id = team_id;
+                                    return res.send(ApiUtility.success(data1));
+                                } else {
+                                    message = "Something went wrong."
+                                    data1.message = message;
+                                    return res.send(ApiUtility.failed(data1));
+                                }
                             } else {
-                                message = "Something went wrong."
-                                data1.message = message;
-                                return res.send(ApiUtility.failed(data1));
+                                message = team_id ? "Same team already exists." : "You have already created this team";
+                                return res.send(ApiUtility.failed(message));
                             }
-                        } else {
-                            return res.send(ApiUtility.failed("You can not create team more than " + totalTemCount + " teams."));
                         }
                     } else {
-                        message =  team_id ? "Same team already exists." : "You have already created this team";
-                        return res.send(ApiUtility.failed(message));
+                        let teamDataa = [];
+    
+                        if (req.body.teamType && req.body.teamType == 55) {
+                            console.log('hello team type 55 ****');
+                            teamDataa = await PlayerTeam.aggregate([
+                                {
+                                    $match: { 'match_id': match_id, 'playerStr': teamString, 'sport': sport }
+                                },
+                                {
+                                    $lookup: {
+                                        from: "users",
+                                        let: { "userIdd": "$user_id" },
+                                        pipeline: [
+                                            { $match: { $expr: { $and: [{ $eq: ["$_id", "$$userIdd"] }, { $eq: ["$user_type", 55] }] } } }],
+                                        as: "user"
+                                    }
+                                },
+                                {
+                                    $unwind: {
+                                        "path": "$user",
+                                        "preserveNullAndEmptyArrays": false
+                                    }
+                                },
+                            ]);
+                        } else {
+                            
+                            if (x_system == 1) {
+                                if (liveMatch.live_fantasy_parent_id) {
+                                    try {
+                                        if(joinedTeamData) {
+                                            cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'one_five_x': one_five_x, 'two_x': two_x, 'three_x': three_x, 'four_x': four_x, 'five_x': five_x });
+                                            if(typeof cdataRsp === 'object' && cdataRsp !== null) {
+                                                teamDataa.push(cdataRsp);
+                                            }
+    
+                                        } else {
+                                            teamDataa = await PlayerTeam.find({ user_id: user_id, match_id: match_id, series_id: series_id,playerStr: teamString,sport: sport,
+                                                one_five_x: one_five_x,
+                                                two_x: two_x,
+                                                three_x: three_x,
+                                                four_x: four_x,
+                                                five_x: five_x
+                                            }).limit(1);
+                                        }
+                                    } catch (error) {
+                                        return res.send(ApiUtility.failed(error.message));
+                                    }
+                                } else {
+                                    try {
+                                        if(joinedTeamData) {
+                                            cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'one_five_x': one_five_x, 'two_x': two_x, 'three_x': three_x });
+                                            if(typeof cdataRsp === 'object' && cdataRsp !== null) {
+                                                teamDataa.push(cdataRsp);
+                                            }
+                                        } else {
+                                            teamDataa = await PlayerTeam.find({user_id: user_id, match_id: match_id, series_id: series_id, playerStr: teamString,sport: sport,
+                                                one_five_x: one_five_x,
+                                                two_x: two_x,
+                                                three_x: three_x
+                                            }).limit(1);
+                                        }
+                                    } catch (error) {
+                                        return res.send(ApiUtility.failed(error.message));
+                                    }
+                                }
+    
+                            } else {
+                                try {
+                                    if(joinedTeamData) {
+                                        cdataRsp = _.find(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'playerStr': teamString, 'sport': sport, 'captain': captain, 'vice_captain': vice_captain });
+                                        if(typeof cdataRsp === 'object' && cdataRsp !== null) {
+                                            teamDataa.push(cdataRsp);
+                                        }
+                                    } else {
+                                        teamDataa = await PlayerTeam.find({ user_id: user_id, match_id: match_id, series_id: series_id,playerStr: teamString,sport: sport,
+                                            captain: captain,
+                                            vice_captain: vice_captain
+                                        }).limit(1);
+                                    }
+                                } catch (error) {
+                                    return res.send(ApiUtility.failed(error.message));
+                                }
+                            }
+                        }
+                        
+                        statusAdd = teamDataa.length > 0 ? false: true;
+                        let team_count = 0;
+                        if (statusAdd) {
+                            if(joinedTeamData) {
+                                joindTeams = _.filter(joinedTeamData, { 'user_id': user_id.toString(), 'match_id': match_id, 'series_id': series_id, 'sport': sport });
+                                team_count = joindTeams.length;
+                            } else {
+                                team_count = await PlayerTeam.countDocuments({user_id: user_id,match_id: match_id,series_id: series_id,sport: sport});
+                            }
+                            let appSettingData = await Settings.findOne({}, { max_team_create: 1 });
+                            const totalTemCount = appSettingData && appSettingData._id && appSettingData.max_team_create ? appSettingData.max_team_create : 20;
+                            if (team_count < totalTemCount) {
+                                team_count += 1;
+                                let team = {
+                                    user_id: user_id, match_id: match_id, series_id: series_id, players: playerIds, playerStr: teamString, team_count: team_count, sport: sport,
+                                    created: new Date()
+                                };
+                                if (x_system == 1) {
+                                    if (liveMatch.live_fantasy_parent_id) {
+                                        team['one_five_x'] = one_five_x;
+                                        team['two_x'] = two_x;
+                                        team['three_x'] = three_x;
+                                        team['four_x'] = four_x;
+                                        team['five_x'] = five_x;
+                                        team['x_counter'] = 5;
+                                    } else {
+                                        team['one_five_x'] = one_five_x;
+                                        team['two_x'] = two_x;
+                                        team['three_x'] = three_x;
+                                        team['x_counter'] = 3;
+                                    }
+                                } else {
+                                    team['captain'] = captain;
+                                    team['vice_captain'] = vice_captain;
+                                    team['one_five_x'] = vice_captain;
+                                    team['two_x'] = captain;
+                                    team['x_counter'] = 2;
+                                }
+                                let teamId = new ObjectId()
+                                team._id = teamId;
+                                data1.team_id = teamId;
+                                data1.team_count = team_count;
+                                let fullTeam = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team_count, team);
+                                team.full_team = fullTeam;
+                                let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
+                                if(s3Res) {
+                                    redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                                    message = "Team has been created successfully."
+                                    data1.message = message;
+                                    return res.send(ApiUtility.success(data1));
+                                } else {
+                                    message = "Something went wrong."
+                                    data1.message = message;
+                                    return res.send(ApiUtility.failed(data1));
+                                }
+                            } else {
+                                return res.send(ApiUtility.failed("You can not create team more than " + totalTemCount + " teams."));
+                            }
+                        } else {
+                            message =  team_id ? "Same team already exists." : "You have already created this team";
+                            return res.send(ApiUtility.failed(message));
+                        }
                     }
                 }
 
