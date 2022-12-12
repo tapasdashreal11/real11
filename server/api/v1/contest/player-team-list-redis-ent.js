@@ -114,7 +114,8 @@ module.exports = {
                                 });
                             }
                         } else {
-                            return res.send(ApiUtility.failed('Something went wrong!!'));
+                            // return res.send(ApiUtility.failed('Something went wrong!!'));
+                            return res.send(ApiUtility.failed('Please wait for a few seconds to view other teams!!'));
                         }
                     } else {
                         footballPreview(series_id, match_id, user_id, sport, player_list, result, liveMatch, player_team_id, function (result) {
