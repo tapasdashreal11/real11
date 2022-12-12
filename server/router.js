@@ -308,7 +308,8 @@ router.get('/api/v1/deposit-banner-list', depositBannerList);
 router.get('/api/v1/playstore-banner-list', playstoreBannerList);
 //router.get('/api/v1/contest-list/:match_id/:sport?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList); // not in use for now
-router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
+//@beforeRedis router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
+router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEnt);
 router.get('/api/v1/contest-list-new-latest/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewLatest);
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);  // not in use for now
 router.get('/api/v1/other-game-contest-list/:match_id/:sport',auth.authenticate.jwtLogin, otherGameContestList);   // not in use for now
@@ -332,9 +333,11 @@ router.get('/api/v1/team-states/:series_id', auth.authenticate.jwtLogin, (req, r
 });
 router.get('/api/v1/contest-prize-breakup/:contest_size/:sport?', auth.authenticate.jwtLogin, contestPrizeBreakup);
 router.get('/api/v1/contest-detail/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailLatest); // old
-router.get('/api/v1/contest-detail-new/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest); // old
+//@beforeRedis router.get('/api/v1/contest-detail-new/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest); // old
+router.get('/api/v1/contest-detail-new/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailRedisEnt);
 router.get('/api/v1/joined-contest-list/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestList); //
-router.get('/api/v1/joined-contest-list-upcoming/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestListUpcoming);
+//@beforeRedis router.get('/api/v1/joined-contest-list-upcoming/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestListUpcoming);
+router.get('/api/v1/joined-contest-list-upcoming/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestListUpcomingEnt);
 
 router.get('/api/v1/contest-detail-new-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailNewLatest);
 router.get('/api/v1/contest-detail-latest/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailLatest);
@@ -347,18 +350,23 @@ router.get('/api/v1/series-player-list-new/:series_id/:match_id/:sport?', auth.a
 router.get('/api/v1/team-scores/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, teamScore);
 router.get('/api/v1/before-join-contest/:series_id/:match_id', auth.authenticate.jwtLogin, beforeJoinContest);
 router.get('/api/v1/player-team-list/:series_id/:match_id/:user_id?/:team_no?/:sport?', auth.authenticate.jwtLogin, playerTeamList);
-router.get('/api/v1/preview-player-team-list/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamList);
-router.get('/api/v1/player-team-listn/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListn);
+//@beforeRedis router.get('/api/v1/preview-player-team-list/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamList);
+router.get('/api/v1/preview-player-team-list/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamListRedisEnt);
+//@beforeRedis router.get('/api/v1/player-team-listn/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListn);
+router.get('/api/v1/player-team-listn/:series_id/:match_id/:user_id?/:sport?/:team_no?', auth.authenticate.jwtLogin, playerTeamListRedisEnt);
 router.get('/api/v1/player-list/:series_id/:match_id/:sport?', playerList);
-router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListn);
+//@beforeRedis router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListn);
+router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListRedisEnt);
 router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, leaderboard);
 //router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
-router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
+//@beforeRedis router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
+router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamRedisEnt);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtLogin, joinContestWalletAmountMultiple);
 router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
 router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
-router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); // 
+//@beforeRedis router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); // 
+router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
 router.post('/api/v1/perm-join-contest', permJoinContest); 
 router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joinContestMultipleTeam);
 router.post('/api/v1/other-games-wallet-amount', auth.authenticate.jwtLogin, otherGameContestWallet);
@@ -381,12 +389,12 @@ router.get('/api/v1/player-team-list-redis-ent/:series_id/:match_id/:user_id?/:s
 router.get('/api/v1/player-list-redis-ent/:series_id/:match_id/:sport?', playerListRedisEnt);
 router.get('/api/v1/preview-player-team-list-redis-ent/:series_id/:match_id/:player_team_id/:team_no/:sport/:cat_id?', auth.authenticate.jwtLogin, previewPlayerTeamListRedisEnt);
 router.get('/api/v1/contest-list-new-redis-ent/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEnt);
-router.get('/api/v1/contest-detail-new-redis-ent/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailRedisEnt); // old
+router.get('/api/v1/contest-detail-new-redis-ent/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, contestDetailRedisEnt);
 router.post('/api/v1/switch-team-redis-ent', auth.authenticate.jwtLogin, switchTeamRedisEnt);
 router.post('/api/v1/join-contest-new-redis-ent', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt); // old
+router.get('/api/v1/joined-contest-list-upcoming-redis-ent/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestListUpcomingEnt);
 // Redis Ent End
 router.get('/api/v1/export-transaction-history/:user_id/:start_date/:end_date', auth.authenticate.jwtLogin, exportTransactionHistory);
-router.get('/api/v1/joined-contest-list-upcoming-redis-ent/:series_id/:match_id/:sport?', auth.authenticate.jwtLogin, joinedContestListUpcomingEnt);
 // Unity Ludo api 
 
 router.post('/api/v1/unity-match-result', unityMatchResult); 
@@ -398,7 +406,8 @@ router.get('/api/v1/quiz-question-list',auth.authenticate.jwtLogin, quizQuestion
 router.get('/api/v1/quiz-question-submit/:q_id/:option_id',auth.authenticate.jwtLogin, quizQuestionAnsSubmit);
 router.get('/api/v1/quiz-submited-list',auth.authenticate.jwtLogin, userSubmitedQuestionList);
 
-router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
+//@beforeRedis router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
+router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeamRedisEnt);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
 router.post('/api/v1/generate-payubiz-checksum', auth.authenticate.jwtLogin, generatePayubizChecksum);
 router.post('/api/v1/generate-paytm-checksum', auth.authenticate.jwtLogin, generatePaytmChecksum);
