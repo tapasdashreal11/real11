@@ -228,8 +228,9 @@ module.exports = {
                                 team.full_team = fullTeam;
                                 // team.operation = "update";
     
-                                let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
-                                if(s3Res) {
+                                if (liveMatch.time < Date.now() && req.body.teamType == 55) {
+
+                                    await PlayerTeam.updateOne({_id: team_id, user_id: user_id, match_id: Number(match_id), sport: Number(sport)}, { $set: team });                                    
                                     redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
                                     redisEnt.redisObj.publish('player_team', JSON.stringify(team))
     
@@ -238,9 +239,20 @@ module.exports = {
                                     data1.team_id = team_id;
                                     return res.send(ApiUtility.success(data1));
                                 } else {
-                                    message = "Something went wrong."
-                                    data1.message = message;
-                                    return res.send(ApiUtility.failed(data1));
+                                    let s3Res = await createTeamOnS3(match_id+"_"+sport+"/"+match_id+"_"+sport+"_"+user_id+"_"+team._id+".json", team);
+                                    if(s3Res) {
+                                        redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                                        redisEnt.redisObj.publish('player_team', JSON.stringify(team))
+        
+                                        message = "Team has been updated successfully."
+                                        data1.message = message;
+                                        data1.team_id = team_id;
+                                        return res.send(ApiUtility.success(data1));
+                                    } else {
+                                        message = "Something went wrong."
+                                        data1.message = message;
+                                        return res.send(ApiUtility.failed(data1));
+                                    }
                                 }
                             } else {
                                 message = team_id ? "Same team already exists." : "You have already created this team";
