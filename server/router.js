@@ -597,7 +597,8 @@ router.post('/cashfree/webhook', function(req, res) {
  router.post('/api/v1/game-login', usersLogin);
  router.post('/api/v1/game-signup', usersSignup);
  router.post('/api/v1/game-email-login', loginWithEmail);
- router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestNewOne);
+ // @beforeRedis  router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestNewOne);
+ router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
  router.post('/api/v1/game-multiple-join-contest', auth.authenticate.jwtLogin, joinContestMultipleTeam);
  router.post('/api/v1/game-update-transactions', auth.authenticate.jwtLogin, updateTransaction);
  router.post('/api/v1/game-add-withdraw-request', auth.authenticate.jwtLogin, RazopayWithdrawReq); // added some other addWithdrawRequest     

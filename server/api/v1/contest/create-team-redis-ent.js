@@ -196,7 +196,9 @@ module.exports = {
                             let team = {
                                 _id: teamDataa._id, user_id: user_id, match_id: match_id, series_id: series_id, players: playerIds, playerStr: teamString, team_count: teamDataa.team_count, sport: sport,
                                 captain: captain,
-                                vice_captain: vice_captain
+                                vice_captain: vice_captain,
+                                created: teamDataa.created,
+                                updatedAt: new Date()
                             };
                             if (x_system == 1) {
                                 if (liveMatch.live_fantasy_parent_id) {
@@ -205,10 +207,12 @@ module.exports = {
                                     team['three_x'] = three_x;
                                     team['four_x'] = four_x;
                                     team['five_x'] = five_x;
+                                    team['x_counter'] = 5;
                                 } else {
                                     team['one_five_x'] = one_five_x;
                                     team['two_x'] = two_x;
                                     team['three_x'] = three_x;
+                                    team['x_counter'] = 3;
                                 }
                             } else {
                                 team['captain'] = captain;
@@ -216,6 +220,7 @@ module.exports = {
     
                                 team['one_five_x'] = vice_captain;
                                 team['two_x'] = captain;
+                                team['x_counter'] = 2;
                             }
                             
                             if (statusAdd == true) {

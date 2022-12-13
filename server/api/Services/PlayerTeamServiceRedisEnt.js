@@ -67,7 +67,15 @@ class PlayerTeamServiceRedisEnt {
                 player_status: 1,
                 is_lastplayed: {$cond: { if: { $ifNull: [ "$is_lastplayed", 0 ] }, then: "$is_lastplayed", else: 0}},
             }
-            playerRcdData = await SeriesPlayer.find(cond, projection).lean();
+            // playerRcdData = await SeriesPlayer.find(cond, projection).lean();
+            playerRcdData = await SeriesPlayer.aggregate([
+                {
+                    $match: cond,
+                },
+                {
+                    $project: projection
+                }
+            ]);
             playerIdsArr = _.map(playerRcdData, 'player_id');
         }
         SeriesSquad.collection.aggregate([
@@ -198,7 +206,7 @@ class PlayerTeamServiceRedisEnt {
                         playerData.player_record = {
                             player_id: playerData.player_id,
                             series_id: commonData.series_id,
-                            player_credit: playerData.player_credit,
+                            player_credit: playerData.player_credit.toString(),
                             player_name: playerData.player_name,
                             playing_role: playerData.player_role,
                             sport: playerData.sport,
