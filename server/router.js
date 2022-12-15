@@ -358,8 +358,8 @@ router.get('/api/v1/player-list/:series_id/:match_id/:sport?', playerList);
 router.get('/api/v1/player-listn/:series_id/:match_id/:sport?', playerListRedisEnt);
 router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.authenticate.jwtLogin, leaderboard);
 //router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeam);
-//@beforeRedis router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
-router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamRedisEnt);
+router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
+//@beforeRedis router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamRedisEnt);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
 
 ////Join Contest Start that used
