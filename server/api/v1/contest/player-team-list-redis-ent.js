@@ -15,6 +15,7 @@ const PlayerTeamServiceRedisEnt = require('../../Services/PlayerTeamServiceRedis
 const AWS = require('aws-sdk');
 const { isEmpty } = require('lodash');
 const { resolve } = require('path');
+const {multipleUserTeamS3Bucket, singleUserTeamS3Bucket} = require("../common/s3-helper");
 
 module.exports = {
 
@@ -37,7 +38,7 @@ module.exports = {
         redisEnt.getRedis(joinedTeamKey, async (err, data) => {
             if (isEmpty(data)) {
                 let key = match_id+"_"+sport+"/"+match_id + "_" + sport + "_" + user_id + "_";
-                let data = await listAllObjectsFromS3Bucket(key, match_id,user_id,sport)
+                let data = await multipleUserTeamS3Bucket(key, match_id,user_id,sport)
                 if(isEmpty(data)) {
                     PlayerTeamService.getCachePlayerTeamList({ match_id, series_id, team_no, user_id, sport }, (err, playerList) => {
                         if (err) {
@@ -93,7 +94,7 @@ module.exports = {
                 redisEnt.getHGETRedis(joinedTeamKey,player_team_id, async (err, result) => {
                     if(isEmpty(result)) {
                         let key = match_id+"_"+sport+"/"+match_id + "_" + sport + "_" + user_id + "_" + player_team_id + ".json";
-                        result = await readTeamOns3(key, match_id,user_id,sport)
+                        result = await singleUserTeamS3Bucket(key, match_id,user_id,sport)
                         if(isEmpty(result)) {
                             result = await PlayerTeam.findOne({_id:ObjectId(player_team_id)});
                         }
@@ -519,52 +520,4 @@ async function getFootballPlayerPoint(series_id, match_id, player_ids, captain, 
         }
     }
     return teamDataArray
-}
-
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-    Bucket: process.env.S3_BUCKET_TEAM
-});
-
-async function listAllObjectsFromS3Bucket(prefix, match_id,user_id,sport) {
-    let allJoinedTeamTeams = [];
-    let params = { Bucket: process.env.S3_BUCKET_TEAM };
-    if (prefix) params.Prefix = prefix;
-    try {
-        const response = await s3.listObjects(params).promise();
-        await Promise.all(response.Contents.map(async (item) => {
-            const joinedTeam = await readTeamOns3(item.Key, match_id,user_id,sport)
-            if(typeof joinedTeam === 'object' && joinedTeam !== null) {
-                allJoinedTeamTeams.push(joinedTeam);
-            }
-        }));
-        return allJoinedTeamTeams;
-    } catch (error) {
-        console.log("err0r");
-        throw error;
-    }
-    
-}
-
-async function readTeamOns3(key, match_id,user_id,sport) { 
-    return await new Promise((resolve, reject) => {
-
-        const params = {
-            Key: key,
-            Bucket: process.env.S3_BUCKET_TEAM
-        };
-        
-        s3.getObject(params, function (err, data) {
-            if (err) {
-                // reject(err)
-                resolve(false);
-            } else {
-                let finalData = JSON.parse(data.Body.toString());
-                redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, finalData._id, finalData);
-                resolve(finalData);
-            }
-        });
-        
-    });
 }
