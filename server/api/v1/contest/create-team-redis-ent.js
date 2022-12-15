@@ -73,6 +73,9 @@ module.exports = {
                 let isSetOnRedis = false;
                 const getDataforDB = await redisEnt.getHashRedis(joinedTeamKey)
                 if(isEmpty(getDataforDB)) {
+                    let s3key = match_id+"_"+sport+"/"+match_id + "_" + sport + "_" + user_id + "_";
+                    let data = await listAllObjectsFromS3Bucket(s3key, match_id,user_id,sport)
+
                     let userTeamDB = await PlayerTeam.find({user_id: user_id, match_id: match_id, series_id: series_id, sport: sport}).lean();
                     let flag = 0
                     if(userTeamDB.length > 0) {
@@ -453,4 +456,46 @@ async function createTeamOnS3(key, team) {
             });
     });
     
+}
+
+async function listAllObjectsFromS3Bucket(prefix, match_id,user_id,sport) {
+    let allJoinedTeamTeams = [];
+    let params = { Bucket: process.env.S3_BUCKET_TEAM };
+    if (prefix) params.Prefix = prefix;
+    try {
+        const response = await s3.listObjects(params).promise();
+        await Promise.all(response.Contents.map(async (item) => {
+            const joinedTeam = await readTeamOns3(item.Key, match_id,user_id,sport)
+            if(typeof joinedTeam === 'object' && joinedTeam !== null) {
+                allJoinedTeamTeams.push(joinedTeam);
+            }
+        }));
+        return allJoinedTeamTeams;
+    } catch (error) {
+        console.log("err0r");
+        throw error;
+    }
+    
+}
+
+async function readTeamOns3(key, match_id,user_id,sport) { 
+    return await new Promise((resolve, reject) => {
+
+        const params = {
+            Key: key,
+            Bucket: process.env.S3_BUCKET_TEAM
+        };
+        
+        s3.getObject(params, function (err, data) {
+            if (err) {
+                // reject(err)
+                resolve(false);
+            } else {
+                let finalData = JSON.parse(data.Body.toString());
+                redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, finalData._id, finalData);
+                resolve(finalData);
+            }
+        });
+        
+    });
 }

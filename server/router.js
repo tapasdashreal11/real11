@@ -9,7 +9,6 @@ const path = require('path');
 const amazonS3 = require('./controllers/amazon-s3');
 const auth = require('../lib/auth');
 const redis = require('../lib/redis');
-const passport = require('passport');
 
 const AWS = require('aws-sdk');
 const fs = require('fs');
@@ -85,16 +84,16 @@ const  { createPrivateContestOG }  = require('./api/v1/contest/other-game-privat
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-new-one');
 //const  joinContestNewOne  = require('./api/v1/contest/join-contest-session-pro');
 const  permJoinContest  = require('./api/v1/contest/perm-join-contest');
-const  joinContestNewOne  = require('./api/v1/contest/join-contest-head-to-head');
-const  joinContestNewOne1  = require('./api/v1/contest/join-contest-head-to-head-redis');  //not in use for now
-const  joinContestMultipleTeam1  = require('./api/v1/contest/join-contest-multiple-team');
+// const  joinContestNewOne  = require('./api/v1/contest/join-contest-head-to-head');
+// const  joinContestNewOne1  = require('./api/v1/contest/join-contest-head-to-head-redis');  //not in use for now
+// const  joinContestMultipleTeam1  = require('./api/v1/contest/join-contest-multiple-team');
 const  joinContestMultipleTeam  = require('./api/v1/contest/join-contest-multiple-pro');
-const  joinContestMultipleTeamNew  = require('./api/v1/contest/join-contest-multiple-redis');
+// const  joinContestMultipleTeamNew  = require('./api/v1/contest/join-contest-multiple-redis');
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
 const  otherGameContestList  = require('./api/v1/contest/other-games-contest');  // not in use for now
 const  contestList  = require('./api/v1/contest/contest-list');  // not in use for now
-const  contestListNew  =   require('./api/v1/contest/contest-m-list');  // require('./api/v1/contest/contest-list-new');
+// const  contestListNew  =   require('./api/v1/contest/contest-m-list');  // require('./api/v1/contest/contest-list-new');
 const  contestListNewLatest  = require('./api/v1/contest/contest-m-list');
 const  { contestDetailNew,contestLeaderboard, contestDetail,contestDetailNewLatest,contestLeaderboardLatest,contestDetailLatest }  = require('./api/v1/contest/contest-detail');
 const  { contestPrizeBreakup }  = require('./api/v1/contest/contest-prize-breakup');
@@ -362,22 +361,29 @@ router.get('/api/v1/leaderboard/:series_id/:match_id/:contest_id/:sport?', auth.
 //@beforeRedis router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamNew);
 router.post('/api/v1/create-team', auth.authenticate.jwtLogin, createTeamRedisEnt);
 router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, joinContestWalletAmount);
+
+////Join Contest Start that used
 router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtLogin, joinContestWalletAmountMultiple);
-router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
-router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
-//@beforeRedis router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); // 
-router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
-router.post('/api/v1/perm-join-contest', permJoinContest); 
-router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joinContestMultipleTeam);
+router.post('/api/v1/game-multiple-join-contest', auth.authenticate.jwtLogin, joinContestMultipleTeam);
+// @beforeRedis  router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestNewOne);
+router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
 router.post('/api/v1/other-games-wallet-amount', auth.authenticate.jwtLogin, otherGameContestWallet);
-router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, joinContestOtherGames);
+router.post('/api/v1/gamezop-games-join-contest',auth.authenticate.jwtLogin, gamezopJoinContest);
+////Join Contest End
+
+// router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
+// router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
+//@beforeRedis router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); // 
+// router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
+router.post('/api/v1/perm-join-contest', permJoinContest); 
+// router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joinContestMultipleTeam);
+// router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, joinContestOtherGames);
 router.post('/api/v1/other-games-cancel-contest', auth.authenticate.jwtLogin, otherGamesCancelContest);
 router.get('/api/v1/other-games-transation-history', auth.authenticate.jwtLogin, otherGamesTransationHistory); 
 router.post('/api/v1/other-games-wining-dis', otherGameWinningDis);
 router.get('/api/v1/check-contest-ref-count/:match_id/:series_id/:contest_id',auth.authenticate.jwtLogin, sharedContestCounts);
 router.get('/api/v1/gamezop-match-list', gameZopMatchList);
 router.get('/api/v1/gamezop-contest-list/:match_id',auth.authenticate.jwtLogin, redis.cacheMiddle, gameZopContestList);
-router.post('/api/v1/gamezop-games-join-contest',auth.authenticate.jwtLogin, gamezopJoinContest);
 router.post('/gamezop/match-status',gamezopMatchStatus);
 router.post('/gamezop/match-result',gamezopMatchResult); 
 router.get('/api/v1/gamezop-game-win-list/:room_id',auth.authenticate.jwtLogin, gamezopMatchResultForuser);
@@ -597,9 +603,6 @@ router.post('/cashfree/webhook', function(req, res) {
  router.post('/api/v1/game-login', usersLogin);
  router.post('/api/v1/game-signup', usersSignup);
  router.post('/api/v1/game-email-login', loginWithEmail);
- // @beforeRedis  router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestNewOne);
- router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
- router.post('/api/v1/game-multiple-join-contest', auth.authenticate.jwtLogin, joinContestMultipleTeam);
  router.post('/api/v1/game-update-transactions', auth.authenticate.jwtLogin, updateTransaction);
  router.post('/api/v1/game-add-withdraw-request', auth.authenticate.jwtLogin, RazopayWithdrawReq); // added some other addWithdrawRequest     
  /* router.get('/cron/paytmwebhook', function(req, res){
