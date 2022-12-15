@@ -5,10 +5,8 @@ const { ObjectId } = require('mongodb');
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 const _ = require('lodash');
-const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
-const UserService = require('../../Services/UserService');
+// const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 const { transaction_type } = require('../../../constants/permissions');
-const { isError } = require('lodash');
 const moment = require('moment');
 
 module.exports = async (req, res, dbs) => {
