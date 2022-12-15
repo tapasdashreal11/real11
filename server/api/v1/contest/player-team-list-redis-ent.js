@@ -40,13 +40,21 @@ module.exports = {
                 let key = match_id+"_"+sport+"/"+match_id + "_" + sport + "_" + user_id + "_";
                 let data = await multipleUserTeamS3Bucket(key, match_id,user_id,sport)
                 if(isEmpty(data)) {
-                    PlayerTeamService.getCachePlayerTeamList({ match_id, series_id, team_no, user_id, sport }, (err, playerList) => {
-                        if (err) {
-                            return res.send(ApiUtility.failed(err.message));
-                        } else {
-                            return res.send(ApiUtility.success(playerList));
+                    let userTeamDB = await PlayerTeam.find({user_id: user_id, match_id: match_id, series_id: series_id, sport: sport}).sort({team_count:1}).lean();
+                    let flag = 0;
+                    if(userTeamDB.length > 0) {
+                        let teamArr    =   [];
+                        for(var team of userTeamDB) {
+                            let fullTeamForDB = await PlayerTeamServiceRedisEnt.getUserCreatedTeam(series_id, match_id, sport, team.team_count, team);
+                            team.full_team = fullTeamForDB
+                            redisEnt.setRedis(`${redisKeys.USER_CREATED_TEAMS}${match_id}-${sport}-${user_id}`, `${team._id}`, team);
+                            flag++;
+                            teamArr.push(fullTeamForDB);
+                            if(userTeamDB.length == flag) {
+                                return res.send(ApiUtility.success(teamArr));
+                            }
                         }
-                    })
+                    }
                 } else {
                     let full_team = _.map(data, 'full_team');
                     let team = full_team.sort((a,b)=>{
