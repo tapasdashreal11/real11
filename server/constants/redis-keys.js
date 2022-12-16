@@ -15,7 +15,7 @@ const redisKeys = {
     CONTEST_DETAIL_API_DATA:'contest-detail-api-',
     MY_MATCHES_LIST:'my-matches-list-',
     PLAYER_STATS:'player-stats-',
-    USER_AUTH_CHECK:'user-auth-',
+    USER_AUTH_CHECK:'user-auth-', //user_id
     getMatchPlayerListKey: (match_id, sport) => redisKeys.MATCH_PLAYER_LIST + match_id + '-' + sport,
     getMatchPlayerStatsKey: (match_id, sport) => redisKeys.PLAYER_STATS + match_id + '-' + sport,
     getUserDataKey: (user_id) => redisKeys.USER_DATA + user_id,

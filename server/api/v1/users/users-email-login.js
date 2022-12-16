@@ -10,6 +10,7 @@ const { generateClientToken } = require("../common/helper");
 const { RedisKeys } = require('../../../constants/app');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const redis = require('../../../../lib/redis');
+const redisEnt = require('../../../../lib/redisEnterprise');
 const EmailLoginIp = require("../../../models/email-login-ip");
 
 module.exports = async (req, res) => {
@@ -96,6 +97,7 @@ module.exports = async (req, res) => {
 					//****************Set Toen In Redis**************** */
 					var newTokenObj = { user_id: user._id, token: token }
 					redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + user._id, newTokenObj);
+					redisEnt.setNormalRedis(RedisKeys.USER_AUTH_CHECK + user._id, newTokenObj);
 					//******************************* */
 
 					Tokens.create(tokenInsertData);

@@ -15,6 +15,7 @@ const config = require('../../../config');
 const _ = require('lodash');
 const moment = require('moment');
 const redis = require('../../../../lib/redis');
+const redisEnt = require('../../../../lib/redisEnterprise');
 const Helper = require('./../common/helper');
 // var sha256 = require('sha256');
 const { RedisKeys } = require('../../../constants/app');
@@ -79,6 +80,7 @@ module.exports = {
                             //****************Set Toen In Redis**************** */
                             var newTokenObj = { user_id: userGmailsignup._id, token: token }
                             redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
+                            redisEnt.setNormalRedis(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
                             //************************************************************** */
                             response["message"] = "Successfully login!!";
                             response["status"] = true;
@@ -600,6 +602,7 @@ module.exports = {
                             //****************Set Toen In Redis**************** */
                             var newTokenObj = { user_id: userGmailsignup._id, token: token }
                             redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
+                            redisEnt.setNormalRedis(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
                             //************************************************************** */
                             response["message"] = "Successfully login!!";
                             response["status"] = true;

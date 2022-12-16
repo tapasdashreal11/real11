@@ -13,6 +13,7 @@ const logger = require("../../../../utils/logger")(module);
 const { generateClientToken, sendSMTPMail} = require("../common/helper");
 const {TransactionTypes, RedisKeys } = require('../../../constants/app');
 const redis = require('../../../../lib/redis');
+const redisEnt = require('../../../../lib/redisEnterprise');
 const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const Real11ReferalCodeModel = require('../../../models/real-ref-code-model');
 const UserGaidModel = require('../../../models/user-gaid-model');
@@ -162,6 +163,7 @@ module.exports = async (req, res) => {
 				//****************Set Toen In Redis**************** */
 				var newTokenObj = {user_id : user._id, token : token}
 				redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + user._id, newTokenObj);
+				redisEnt.setNormalRedis(RedisKeys.USER_AUTH_CHECK + user._id, newTokenObj);
 				//************************************************************** */
 								
 				response["status"] = true;
