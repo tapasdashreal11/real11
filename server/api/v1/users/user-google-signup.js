@@ -79,7 +79,7 @@ module.exports = {
                             } catch (eror) { }
                             //****************Set Toen In Redis**************** */
                             var newTokenObj = { user_id: userGmailsignup._id, token: token }
-                            redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
+                            // redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
                             redisEnt.setNormalRedis(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
                             //************************************************************** */
                             response["message"] = "Successfully login!!";
@@ -601,7 +601,7 @@ module.exports = {
                             } catch (eror) { }
                             //****************Set Toen In Redis**************** */
                             var newTokenObj = { user_id: userGmailsignup._id, token: token }
-                            redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
+                            // redis.setRedisLogin(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
                             redisEnt.setNormalRedis(RedisKeys.USER_AUTH_CHECK + userGmailsignup._id, newTokenObj);
                             //************************************************************** */
                             response["message"] = "Successfully login!!";
