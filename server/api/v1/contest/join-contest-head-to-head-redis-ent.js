@@ -1807,7 +1807,10 @@ async function getContestCount(isCommit, isPrivateCreate, contest, user_id, matc
 
 async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, session, matchContest) {
     try {
-
+        let usedBonusAmnt = contestData.used_bonus;
+        if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContest.category_slug == "last-man-standing" || matchContest.category_slug == "head-to-head")) {
+            usedBonusAmnt 	=	0;
+        }
         let catID = contestData.category_id;
         let entity = {};
         entity.category_id = catID;
@@ -1818,7 +1821,7 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
         entity.min_contest_size = contestData.min_contest_size;
         entity.contest_type = contestData.contest_type;
         entity.entry_fee = contestData.entry_fee;
-        entity.used_bonus = contestData.used_bonus;
+        entity.used_bonus = usedBonusAmnt;
         entity.confirmed_winning = contestData.confirmed_winning;
         entity.multiple_team = contestData.multiple_team;
         entity.auto_create = contestData.auto_create;
@@ -1892,7 +1895,7 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
                 winning_amount_times: contestData.winning_amount_times,
                 is_auto_create: contestData.is_auto_create,
                 auto_create: contestData.auto_create,
-                used_bonus: contestData.used_bonus,
+                used_bonus: usedBonusAmnt, //contestData.used_bonus,
                 winner_percent: contestData.winner_percent,
                 breakup: contestData.breakup,
                 is_private: isPrivateCreate ? 1 : 0,
