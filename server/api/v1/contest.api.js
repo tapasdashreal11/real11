@@ -721,6 +721,11 @@ module.exports = {
                                         usableAmt = useAmount;
                                     }
                                 }
+                                let liveMatch = await SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] });
+                                if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContestData.category_slug == "last-man-standing" || matchContestData.category_slug == "head-to-head")) {
+                                    usableAmt 	=	0;
+                                } 
+
                                 let extraBalance = userdata.extra_amount || 0;
                                 calEntryFees = retention_bonus_amount > 0 ?(offerableAppled && calEntryFees > 0 && calEntryFees >= usableAmt ? calEntryFees - usableAmt: calEntryFees ): totalEntryFee - usableAmt;
                                 let indianDate = Date.now();
