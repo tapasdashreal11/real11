@@ -54,6 +54,8 @@ module.exports = {
                                 return res.send(ApiUtility.success(teamArr));
                             }
                         }
+                    } else {
+                        return res.send(ApiUtility.failed("No Team Found."));
                     }
                 } else {
                     let full_team = _.map(data, 'full_team');
