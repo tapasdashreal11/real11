@@ -706,7 +706,7 @@ module.exports = {
                                  });
                              }
                           }
-
+                        
                         if (userdata) {
                             if (decoded['contest_id'] || is_private_create) {
                                 if(retention_bonus_amount > 0 && !offerableAppled){
@@ -721,10 +721,6 @@ module.exports = {
                                         usableAmt = useAmount;
                                     }
                                 }
-                                let liveMatch = await SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] });
-                                if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContestData.category_slug == "last-man-standing" || matchContestData.category_slug == "head-to-head")) {
-                                    usableAmt 	=	0;
-                                } 
 
                                 let extraBalance = userdata.extra_amount || 0;
                                 calEntryFees = retention_bonus_amount > 0 ?(offerableAppled && calEntryFees > 0 && calEntryFees >= usableAmt ? calEntryFees - usableAmt: calEntryFees ): totalEntryFee - usableAmt;
@@ -747,6 +743,10 @@ module.exports = {
                             winningBalance = userdata.winning_balance;
                            
                         }
+                        let liveMatch = await SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] });
+                        if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContestData.category_slug == "last-man-standing" || matchContestData.category_slug == "head-to-head")) {
+                            usableAmt 	=	0;
+                        } 
                         data['cash_balance'] = (cashBalance) ? cashBalance : 0;
                         data['winning_balance'] = (winningBalance) ? winningBalance : 0;
                         data['usable_bonus'] = usableAmt ? parseFloat(usableAmt.toFixed(2)) : 0;
