@@ -550,6 +550,7 @@ module.exports = {
                 adminPer = 0; //(setting.admin_percentage) ? setting.admin_percentage : 0;
                 let useableBonusPer = adminPer;
                 let entryFee = 0;
+                let usableAmt = 0;
                 let totalCouponsToBeUsed =1;
                 if (decoded['contest_id']) {
                     let contestData = await Contest.findOne({ '_id': decoded['contest_id'] });
@@ -595,7 +596,6 @@ module.exports = {
                 }
                 let useAmountCal = eval((useableBonusPer / 100) * entryFee);
                 let useAmount = eval(useAmountCal * total_team_number);
-                let usableAmt = 0;
                 let extraAmount = 0;
                 let cashBalance = 0;
                 let winningBalance = 0;
