@@ -264,6 +264,11 @@ module.exports = async (req, res) => {
                                                     joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
 
                                                     if (joinStatus == true) {
+                                                        let usedBonusAmnt = contestData.used_bonus;
+                                                        if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContest.category_slug == "last-man-standing" || matchContest.category_slug == "head-to-head")) {
+                                                            usedBonusAmnt 	=	0;
+                                                        } 
+
                                                         let contest = {};
                                                         let newContestId = new ObjectId();
                                                         contest._id = newContestId;
@@ -278,7 +283,7 @@ module.exports = async (req, res) => {
                                                         contest.team_count = teamCount;
                                                         contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                         contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
-                                                        let useableBonusPer = contestData.used_bonus || 0;
+                                                        let useableBonusPer = usedBonusAmnt; //contestData.used_bonus || 0;
                                                         let contestType = contestData.contest_type;
                                                         let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                                                         let isOfferused = false;
@@ -1810,7 +1815,7 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
         let usedBonusAmnt = contestData.used_bonus;
         if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContest.category_slug == "last-man-standing" || matchContest.category_slug == "head-to-head")) {
             usedBonusAmnt 	=	0;
-        }
+        } 
         let catID = contestData.category_id;
         let entity = {};
         entity.category_id = catID;
