@@ -195,6 +195,10 @@ module.exports = async (req, res) => {
                                     } else {
                                         // This is used to create contest and join contest when user did not found any contest
                                         let mcontestObj = {}
+                                        // let usedBonusAmnt = contestData.used_bonus;
+                                        if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContest.category_slug == "last-man-standing" || matchContest.category_slug == "head-to-head")) {
+                                            contestData.used_bonus 	=	0;
+                                        } 
                                         await joinContestGlobal(res, refer_by_user, refer_code, 1, indianDate, decoded, contestData, series_id, contest_id, match_id, parentContestId, match_sport, liveMatch, teamId, user_id, teamCount, authUser, results, matchContest, mcontestObj);
                                         if (queryMatchContest.contest_id) {
                                             delete queryMatchContest.contest_id;
@@ -264,10 +268,6 @@ module.exports = async (req, res) => {
                                                     joinStatus = joinedContest && (joinedContest < contestData.contest_size || contestData.infinite_contest_size == 1) ? true : (joinedContest == 0 ? true : false);
 
                                                     if (joinStatus == true) {
-                                                        let usedBonusAmnt = contestData.used_bonus;
-                                                        if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContest.category_slug == "last-man-standing" || matchContest.category_slug == "head-to-head")) {
-                                                            usedBonusAmnt 	=	0;
-                                                        } 
 
                                                         let contest = {};
                                                         let newContestId = new ObjectId();
@@ -283,7 +283,7 @@ module.exports = async (req, res) => {
                                                         contest.team_count = teamCount;
                                                         contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                         contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
-                                                        let useableBonusPer = usedBonusAmnt; //contestData.used_bonus || 0;
+                                                        let useableBonusPer = contestData.used_bonus || 0;
                                                         let contestType = contestData.contest_type;
                                                         let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
                                                         let isOfferused = false;

@@ -374,7 +374,7 @@ router.post('/api/v1/gamezop-games-join-contest',auth.authenticate.jwtLogin, gam
 // router.post('/api/v1/join-contest', auth.authenticate.jwtLogin, joinContest);
 // router.post('/api/v1/join-contest-with-multiple', auth.authenticate.jwtLogin, joinContestWithMultipleTeam);
 //@beforeRedis router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestNewOne); // 
-// router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
+router.post('/api/v1/join-contest-new', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
 router.post('/api/v1/perm-join-contest', permJoinContest); 
 // router.post('/api/v1/multiple-join-contest-new', auth.authenticate.jwtLogin, joinContestMultipleTeam);
 // router.post('/api/v1/other-games-join-contest', auth.authenticate.jwtLogin, joinContestOtherGames);
