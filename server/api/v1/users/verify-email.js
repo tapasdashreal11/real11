@@ -237,7 +237,7 @@ module.exports = {
 					}
 				}
 				let ref_key = redisKeys.USER_REFFERAL + caps_invite_code;
-				redis.getNormalFunRedis(ref_key, async (err, data) => {
+				redisEnt.getNormalFunRedis(ref_key, async (err, data) => {
 					if (data && data.status) {
 						response["status"] = data.status == 1 ? true : false;
 						response["message"] = data.status == 1 ? "Verified" : "Not Valid Code";
