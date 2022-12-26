@@ -574,10 +574,6 @@ module.exports = {
                             useableBonusPer = matchContestData.after_time_bonus;
                         }
                     } else {
-                        // let liveMatch = await SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] });
-                        // if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContestData.category_slug == "last-man-standing" || matchContestData.category_slug == "head-to-head")) {
-                        //     usableAmt 	=	0;
-                        // }
                         useableBonusPer = (contestData && contestData.used_bonus) ? contestData.used_bonus : 0;
                     }
 
@@ -749,7 +745,6 @@ module.exports = {
                         } 
                         let liveMatch = await SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] });
                         if(liveMatch.is_parent == false && liveMatch.live_fantasy_parent_id && (matchContestData.category_slug == "last-man-standing" || matchContestData.category_slug == "head-to-head")) {
-                            console.log("Console is here in if .............");
                             usableAmt 	=	0;
                         }
 

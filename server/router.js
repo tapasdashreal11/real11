@@ -195,7 +195,8 @@ const  { contestDetailRedisEnt }  = require('./api/v1/contest/contest-detail-red
 const  { switchTeamRedisEnt }  = require('./api/v1/contest/switch-team-redis-ent');
 const  joinContestHeadToHeadRedisEnt  = require('./api/v1/contest/join-contest-head-to-head-redis-ent');
 const { joinedContestListUpcomingEnt } = require('./api/v1/contest/joined-contest-list-redis-ent');
-// Redis Ent End
+const { joinedContestMatchesNewRedisEnt } = require('./api/v1/contest/joined-contest-matches-new-redis-ent');
+// Redis Ent End 
 const { exportTransactionHistory }  = require('./api/v1/export-transaction-history');
 
 // Quiz Question answer
@@ -420,6 +421,7 @@ router.post('/api/v1/generate-paytm-checksum', auth.authenticate.jwtLogin, gener
 router.post('/api/v1/create-transaction-id', auth.authenticate.jwtLogin, createTransactionId);
 router.get('/api/v1/joined-contest-matches/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatchesNew);
 router.get('/api/v1/joined-contest-matches-new/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatchesNew);
+router.get('/api/v1/joined-contest-matches-new-redis-ent/:is_complete?/:sport?', auth.authenticate.jwtLogin, joinedContestMatchesNewRedisEnt);
 router.get('/api/v1/apply-contest-invite-code/:invite_code',auth.authenticate.jwtLogin, applyContestInviteCode);
 router.get('/api/v1/get-match-list/:sport?', redis.cacheMiddle, matchList);
 router.get('/api/v1/other-match-list', otherGamesMatch);

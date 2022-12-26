@@ -776,12 +776,13 @@ module.exports = async (req, res) => {
                                                                             };
                                                                             let sortm = { createdAt: -1 }
                                                                             let serverTimeu = moment(Date.now()).format(config.DateFormat.datetime);
-                                                                            await redis.getRedisMyMatches(matchContestUserKey, function (err, contestData) { // Get Redis
-                                                                                if (!contestData) {
+                                                                            await redisEnt.getNormalFunRedis(matchContestUserKey, function (err, contestData) {
+                                                                                //await redis.getRedisMyMatches(matchContestUserKey, function (err, contestData) { // Get Redis
+                                                                                if (_.isEmpty(contestData)) {
                                                                                     getMatchRedisData(0, { "user_id": user_id, "pagesize": 25 }, {}, sortm, match_sport, function (results) {
                                                                                         results['server_time'] = serverTimeu;
                                                                                         // console.log("Join contest data in redis when data is empty****");
-                                                                                        redis.setRedisMyMatches(matchContestUserKey, results);
+                                                                                        redisEnt.setNormalRedis(matchContestUserKey, results);
                                                                                     })
                                                                                 } else {
                                                                                     SeriesSquad.findOne({ 'match_id': parseInt(match_id), 'sport': match_sport, 'series_id': parseInt(series_id) }).then(async function (data) {
@@ -830,10 +831,10 @@ module.exports = async (req, res) => {
                                                                                                 contestData.upcoming_match = newContDataSort;
                                                                                                 contestData['server_time'] = serverTimeu;
 
-                                                                                                redis.setRedisMyMatches(matchContestUserKey, contestData);
+                                                                                                redisEnt.setNormalRedis(matchContestUserKey, contestData);
                                                                                             } else {
                                                                                                 //console.log("My Match contest id not found for after join *****",match_id);
-                                                                                                redis.redisnMyMatchesObj.del(matchContestUserKey);
+                                                                                                redisEnt.redisObj.del(matchContestUserKey);
                                                                                             }
 
 
@@ -845,7 +846,7 @@ module.exports = async (req, res) => {
                                                                                             var newContDataSort = _.sortBy(contestData.upcoming_match, ['sort_time', 'desc']);
                                                                                             contestData.upcoming_match = newContDataSort;
                                                                                             contestData['server_time'] = serverTimeu;
-                                                                                            redis.setRedisMyMatches(matchContestUserKey, contestData);
+                                                                                            redisEnt.setNormalRedis(matchContestUserKey, contestData);
                                                                                         }
                                                                                     });
                                                                                 }
@@ -1525,12 +1526,13 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                 };
                                 let sortm = { createdAt: -1 }
                                 let serverTimeu = moment(Date.now()).format(config.DateFormat.datetime);
-                                await redis.getRedisMyMatches(matchContestUserKey, function (err, contestData) { // Get Redis
-                                    if (!contestData) {
+                                await redisEnt.getNormalFunRedis(matchContestUserKey, function (err, contestData) {
+                                    // await redis.getRedisMyMatches(matchContestUserKey, function (err, contestData) { // Get Redis
+                                    if (_.isEmpty(contestData)) {
                                         getMatchRedisData(0, { "user_id": user_id, "pagesize": 25 }, {}, sortm, match_sport, function (results) {
                                             results['server_time'] = serverTimeu;
                                             // console.log("Join contest data in redis when data is empty****");
-                                            redis.setRedisMyMatches(matchContestUserKey, results);
+                                            redisEnt.setNormalRedis(matchContestUserKey, results);
                                         })
                                     } else {
                                         SeriesSquad.findOne({ 'match_id': parseInt(match_id), 'sport': match_sport, 'series_id': parseInt(series_id) }).then(async function (data) {
@@ -1579,10 +1581,10 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                                     contestData.upcoming_match = newContDataSort;
                                                     contestData['server_time'] = serverTimeu;
 
-                                                    redis.setRedisMyMatches(matchContestUserKey, contestData);
+                                                    redisEnt.setNormalRedis(matchContestUserKey, contestData);
                                                 } else {
                                                     //console.log("My Match contest id not found for after join *****",match_id);
-                                                    redis.redisnMyMatchesObj.del(matchContestUserKey);
+                                                    redisEnt.redisObj.del(matchContestUserKey);
                                                 }
 
 
@@ -1594,7 +1596,7 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
                                                 var newContDataSort = _.sortBy(contestData.upcoming_match, ['sort_time', 'desc']);
                                                 contestData.upcoming_match = newContDataSort;
                                                 contestData['server_time'] = serverTimeu;
-                                                redis.setRedisMyMatches(matchContestUserKey, contestData);
+                                                redisEnt.setNormalRedis(matchContestUserKey, contestData);
                                             }
                                         });
                                     }
