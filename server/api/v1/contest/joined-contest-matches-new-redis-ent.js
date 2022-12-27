@@ -65,7 +65,7 @@ module.exports = {
                 sport: parseInt(sport) || 1
             }
             let serverTime = moment(Date.now()).format(config.DateFormat.datetime);
-            let serverTimeForalc = moment().utc().toDate();
+            let serverTimeForalc = moment().utc().toDate(); 
 
             if (decoded) {
                 if (decoded['user_id']) {
@@ -107,7 +107,7 @@ module.exports = {
                             if (_.isEmpty(contestData)) {
                                 getMatchRedisData(skip, decoded, filter, sort, sport, function (results) {
                                     results['server_time'] = serverTime;
-                                    redisEnt.setNormalRedis(matchContestKey, results); // Set Redis                                 
+                                    redisEnt.setNormalRedis(matchContestKey, results, 30); // Set Redis                                 
                                     return res.send(ApiUtility.success(results));
                                 })
                             } else {
@@ -125,7 +125,7 @@ module.exports = {
                                     })
                                     if (key === contestDataUp) {
                                         newLiveArray['server_time'] = serverTime;
-                                        redisEnt.setNormalRedis(matchContestKey, newLiveArray); // Set Redis
+                                        redisEnt.setNormalRedis(matchContestKey, newLiveArray, 30); // Set Redis
                                         return res.send(ApiUtility.success(newLiveArray));
                                     }
                                 } else {
