@@ -18,6 +18,7 @@ const Coupon = require("../../../models/coupon");
 const AppSettings = require("../../../models/settings");
 const moment = require('moment');
 
+
 module.exports = async (req, res) => {
  
 try {
@@ -30,10 +31,9 @@ try {
             "sport": match_sport,
             is_full: { $ne: 1 }
         };
-        console.log("Apt start **************************");
         try{
             let appSData = await getPromiseForAppSetting('app-setting',"{}");
-            let dataItem = appSData ?  JSON.parse(appSData) :{};
+            let dataItem = appSData ? JSON.parse(appSData) :{};
             if(dataItem && dataItem.match_id && dataItem.coupon_id && filter.match_id == parseInt(dataItem.match_id) ){
                 var checkSaleCoupon  = await CouponSale.findOne({ user_id: ObjectId(user_id)});
                 if(checkSaleCoupon && checkSaleCoupon._id){
@@ -48,15 +48,13 @@ try {
         
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
         let userCoupons = [];
-        let queryArray = [
-            (new ModelService(MatchContest)).getMatchContestLatestWithoutCat({ status: 1 }, filter, 5)
-        ];
+        let redisNewMatchContestData = await redisEnt.getNormalRedis(`${RedisKeys.MATCH_CONTEST_LIST}${match_id}-${sport}`)
+        let queryArray =  isEmpty(redisNewMatchContestData) ? [ await (new ModelService(MatchContest)).getMatchContestLatestWithoutCat({ status: 1 }, filter, 5)] : [redisNewMatchContestData];
         if (user_id) {
             let redisKeyForUserCategory = 'user-category-' + user_id;
             let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
-            let myTeamCountKey = `${RedisKeys.USER_CREATED_TEAMS}${match_id}-${match_sport}-${user_id}`;
             queryArray.push(
-                redisEnt.getHashCount(myTeamCountKey),
+                PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }).countDocuments(),
                 PlayerTeamContest.find({ user_id: ObjectId(user_id), match_id: parseInt(match_id), sport: match_sport }, { _id: 1, contest_id: 1, parent_contest_id:1,player_team_id: 1 }).exec(),
                 getPromiseForAnalysis(redisKeyForUserCategory, "{}"),
                 getPromiseForUserCoupons(redisKeyForUserMyCoupons, "{}",user_id,match_series_id)
@@ -74,10 +72,7 @@ try {
             let userFavouriteContest = {};
            
             if (user_id) {
-                myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : null;
-                if(myTeamsCount == null) {
-                    myTeamsCount = await PlayerTeam.find({ user_id: user_id, match_id: parseInt(match_id), sport: match_sport }).countDocuments();
-                }
+                myTeamsCount = mcResult && mcResult[1] ? mcResult[1] : 0;
                 myContestCount = mcResult && mcResult[2] ? mcResult[2] : [];
                 userCategory = mcResult && mcResult.length > 3 && mcResult[3] && !_.isEmpty(mcResult[3]) ? JSON.parse(mcResult[3])  : userCategory;
                 
@@ -129,7 +124,7 @@ try {
                     redis.redisObj.set(`${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`, JSON.stringify(joinedTeamsCount));
                     redis.redisObj.set('user-contest-teamIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(Helper.parseUserTeams(userTeamIds)));
                     redis.redisObj.set('user-contest-joinedContestIds-' + user_id + '-' + req.params.match_id + '-' + match_sport, JSON.stringify(joinedContestIds));
-                    redis.setRedis(RedisKeys.MATCH_CONTEST_LIST + req.params.match_id, match_contest_data);
+                    // redis.setRedis(RedisKeys.MATCH_CONTEST_LIST + req.params.match_id, match_contest_data);
                     let newMatchContestData = match_contest_data;
                     try{
                          newMatchContestData = _.reject(newMatchContestData, function(e) {
@@ -142,6 +137,7 @@ try {
                             (ObjectId(e.category_id).equals(ObjectId(config.user_category.looser_cat)) && userCategory && userCategory.is_looser_user == 0 )
                         });
                     }catch(eerrrr){}
+                    isEmpty(redisNewMatchContestData) && await redisEnt.setNormalRedis(`${RedisKeys.MATCH_CONTEST_LIST}${match_id}-${sport}`,newMatchContestData)
                     let resObj = {
                         match_contest: newMatchContestData,
                         my_teams: myTeamsCount,
