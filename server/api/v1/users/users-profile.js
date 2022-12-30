@@ -201,6 +201,7 @@ module.exports = {
           userData['winning_balance'] = user && user.winning_balance ? user.winning_balance : 0;
           userData['bonus_amount'] = user && user.bonus_amount ? user.bonus_amount : 0;
           userData['affiliate_amount'] = user && user.affiliate_amount ? parseInt(user.affiliate_amount) : 0;
+          userData['extra_amount'] = user && user.extra_amount ? user.extra_amount : 0;
           userData['_id'] = user._id;
           userData['is_profile_complete'] = is_profile_complete;
           userData['is_user_fund_ac'] = is_user_fund_ac;
