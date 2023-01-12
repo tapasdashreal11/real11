@@ -39,7 +39,7 @@ try {
                 if(checkSaleCoupon && checkSaleCoupon._id){
                 } else {
                    // await getCouponForFreeEntry('61458c048523421b225c8af2',user_id);
-                   await getCouponForFreeEntry(dataItem.coupon_id,user_id); 
+                   await getCouponForFreeEntry(dataItem.coupon_id,user_id);
                 }
              }
         } catch(errorapp){
