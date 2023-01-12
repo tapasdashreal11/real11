@@ -191,6 +191,7 @@ const { createTeamRedisEnt } = require('./api/v1/contest/create-team-redis-ent')
 const { playerTeamListRedisEnt, previewPlayerTeamListRedisEnt } = require('./api/v1/contest/player-team-list-redis-ent');
 const { playerListRedisEnt } = require('./api/v1/contest/player-list-redis-ent');
 const  contestListNewRedisEnt  =   require('./api/v1/contest/contest-m-list-redis-ent');
+const  contestListNewRedisEntNew  =   require('./api/v1/contest/contest-m-list-redis-ent-new');
 const  { contestDetailRedisEnt }  = require('./api/v1/contest/contest-detail-redis-ent');
 const  { switchTeamRedisEnt }  = require('./api/v1/contest/switch-team-redis-ent');
 const  joinContestHeadToHeadRedisEnt  = require('./api/v1/contest/join-contest-head-to-head-redis-ent');
@@ -309,7 +310,8 @@ router.get('/api/v1/playstore-banner-list', playstoreBannerList);
 //router.get('/api/v1/contest-list/:match_id/:sport?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList); // not in use for now
 //@beforeRedis router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
-router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEnt);
+//router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEnt);
+router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEntNew);
 router.get('/api/v1/contest-list-new-latest/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewLatest);
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);  // not in use for now
 router.get('/api/v1/other-game-contest-list/:match_id/:sport',auth.authenticate.jwtLogin, otherGameContestList);   // not in use for now
