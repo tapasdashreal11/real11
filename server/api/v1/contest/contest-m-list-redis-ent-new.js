@@ -48,8 +48,11 @@ try {
         
         let userCategory = {is_super_user : 0,is_dimond_user : 0,is_beginner_user :0,is_looser_user :0};
         let userCoupons = [];
-        let redisNewMatchContestData = await redisEnt.getNormalRedis(`${RedisKeys.MATCH_CONTEST_LIST}${match_id}-${sport}`)
-        let queryArray =  isEmpty(redisNewMatchContestData) ? [ await (new ModelService(MatchContest)).getMatchContestLatestWithoutCat({ status: 1 }, filter, 5)] : [redisNewMatchContestData];
+        // let redisNewMatchContestData = await redisEnt.getNormalRedis(`${RedisKeys.MATCH_CONTEST_LIST}${match_id}-${sport}`)
+        // let queryArray =  isEmpty(redisNewMatchContestData) ? [ await (new ModelService(MatchContest)).getMatchContestLatestWithoutCat({ status: 1 }, filter, 5)] : [redisNewMatchContestData];
+        let queryArray = [
+            (new ModelService(MatchContest)).getMatchContestLatestWithoutCat({ status: 1 }, filter, 5)
+        ];
         if (user_id) {
             let redisKeyForUserCategory = 'user-category-' + user_id;
             let redisKeyForUserMyCoupons = 'my-coupons-'+ user_id;
