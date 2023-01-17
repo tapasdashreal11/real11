@@ -3,7 +3,7 @@ const User = require('../../../models/user');
 const Contest = require('../../../models/contest');
 const SeriesSquad = require('../../../models/series-squad');
 const MatchContest = require('../../../models/match-contest');
-const PlayerTeam = require('../../../models/player-team');
+// const PlayerTeam = require('../../../models/player-team');
 const PlayerTeamContest = require('../../../models/player-team-contest');
 const MyContestModel = require('../../../models/my-contest-model');
 const ApiUtility = require('../../api.utility');
@@ -11,14 +11,14 @@ const Transaction = require('../../../models/transaction');
 
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
-const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
+const { TransactionTypes, RedisKeys } = require('../../../constants/app');
 const ModelService = require("../../ModelService");
 const asyncp = require("async");
 const _ = require("lodash");
 const redis = require('../../../../lib/redis');
 const redisEnt = require('../../../../lib/redisEnterprise');
 const mqtt = require('../../../../lib/mqtt');
-const db = require('../../../db');
+// const db = require('../../../db');
 const { startSession } = require('mongoose');
 const UserAnalysis = require("../../../models/user-analysis");
 const ContestInvite = require("../../../models/contest-invite");
@@ -111,7 +111,6 @@ module.exports = async (req, res) => {
                                         response.error_code = null;
                                         return res.json(response);
                                     }
-
                                 }
                                 let tIds = _.map(team_data, 'team_id');
                                 var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': { $in: tIds } }
@@ -120,7 +119,6 @@ module.exports = async (req, res) => {
                                 let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
 
                                 if (joinedContestWithTeamCounts < maxTeamSize) {
-
                                     if (playerTeamRes && playerTeamRes.length == 0) {
                                         if ((!contestData.multiple_team && joinedContestWithTeamCounts >= 1) || ((contestData.multiple_team !== 'yes') && joinedContestWithTeamCounts >= 1)) {
                                             return res.send(ApiUtility.failed('Multiple Teams Not Allowed'));
@@ -128,12 +126,13 @@ module.exports = async (req, res) => {
                                         const session = await startSession()
                                         session.startTransaction();
                                         const sessionOpts = { session, new: true };
-                                           let teamArray = [];
-                                            if (team_data && team_data.length > 0) {
-                                                teamArray = await removeDuplicateEntry(team_data);
-                                            }
+                                        let teamArray = [];
+                                        
+                                        if (team_data && team_data.length > 0) {
+                                            teamArray = await removeDuplicateEntry(team_data);
+                                        }
+                                        // console.log(team_data, teamArray);
                                         try {
-                                            
                                             let contestDataArray = [];
                                             let newContestId;
                                             for (const team_data_item of teamArray) {
@@ -154,7 +153,6 @@ module.exports = async (req, res) => {
                                                 contest.sport = match_sport;
                                                 contestDataArray.push(contest);
                                             }
-
                                             let totalTeamJoinedCount = contestDataArray.length;
                                             let total_team_number = totalTeamJoinedCount;
                                             const doc = await MatchContest.findOneAndUpdate({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id }, { $inc: { joined_users: totalTeamJoinedCount } }, { new: true});
@@ -321,7 +319,7 @@ module.exports = async (req, res) => {
                                                                         retention_bonus_amount = totalOfferdAmount;
                                                                     }
                                                                  } 
-                                                              } else if(matchContest && matchContest.is_offerable_multiple){
+                                                            } else if(matchContest && matchContest.is_offerable_multiple){
                                                                 // This is used to calculate offer for multiple team  
                                                                 let totalJoinedTeam = joinedContestWithTeamCounts;
                                                                 let calJoinTeam = total_team_number + totalJoinedTeam;
@@ -340,10 +338,10 @@ module.exports = async (req, res) => {
                                                                                 let totalOfferdAmount = retention_bonus_amount + offerdAmount;
                                                                                 retention_bonus_amount = totalOfferdAmount;
                                                                             }
-                                                                          }
-                                                                     });
-                                                                 }
-                                                              }
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
 
                                                             if (calEntryFees > 0) {
                                                                 let contestSizeCal = (contestData && contestData.contest_size) ? (contestData.contest_size) :(contestData.infinite_contest_size ? 100 : 2);
@@ -625,7 +623,7 @@ module.exports = async (req, res) => {
                                                             if (playerContest.id) {
                                                                 if (contestData) {
                                                                     let joinedTeamsCountKey = `${RedisKeys.CONTEST_JOINED_TEAMS_COUNT}${match_id}`;
-                                                                    redis.getRedis(joinedTeamsCountKey, (err, data) => {
+                                                                    redisEnt.getNormalFunRedis(joinedTeamsCountKey, (err, data) => {
                                                                         if (data) {
                                                                             let userContests = data;
                                                                             if (userContests[contest_id]) {
@@ -639,8 +637,24 @@ module.exports = async (req, res) => {
                                                                             data[contest_id] = joinedContest + 1;
                                                                         }
                                                                         mqtt.publishContestTeamCounts(match_id, JSON.stringify(data));
-                                                                        redis.setRedis(joinedTeamsCountKey, data);
+                                                                        redisEnt.setNormalRedis(joinedTeamsCountKey, data, 10);
                                                                     });
+                                                                    // redis.getRedis(joinedTeamsCountKey, (err, data) => {
+                                                                    //     if (data) {
+                                                                    //         let userContests = data;
+                                                                    //         if (userContests[contest_id]) {
+                                                                    //             userContests[contest_id] = joinedContest + 1;
+                                                                    //         } else {
+                                                                    //             userContests[contest_id] = joinedContest + 1;
+                                                                    //         }
+                                                                    //         data = userContests;
+                                                                    //     } else {
+                                                                    //         data = {}
+                                                                    //         data[contest_id] = joinedContest + 1;
+                                                                    //     }
+                                                                    //     mqtt.publishContestTeamCounts(match_id, JSON.stringify(data));
+                                                                    //     redis.setRedis(joinedTeamsCountKey, data);
+                                                                    // });
 
                                                                     let joinedContestCountData = {};
                                                                     joinedContestCountData[contest_id] = joinedContest + 1;
@@ -862,8 +876,6 @@ module.exports = async (req, res) => {
                     } else {
                         return res.send(ApiUtility.failed('You can not join contest, match already started'));
                     }
-
-
                 } else {
                     return res.send(ApiUtility.failed("You are not authenticated user."));
                 }
@@ -989,7 +1001,7 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
             });
         })
     } catch (error) {
-        console.log("JC eroor in catch erorr error at 800", error);
+        console.log("JC eroor in catch erorr at 800", error);
     }
 }
 
@@ -1088,7 +1100,7 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
             session.endSession();
 
             try {
-                let matchContestKey = RedisKeys.MATCH_CONTEST_LIST + match_id;
+                let matchContestKey = RedisKeys.MATCH_CONTEST_LIST + match_id + '-' + match_sport;
                 redis.getRedis(matchContestKey, (err, categories) => {
                     let catId = contestData.category_id.toString();
                     let catIndex = _.findIndex(categories, { "_id": catId });
@@ -1125,9 +1137,6 @@ async function contestAutoCreateAferJoin(contestData, series_id, contest_id, mat
         console.log('sometjhing went wrong in autocreate***************************wrong in auto error');
         return {}
     }
-
-
-
 }
 /**
  * This is used to payment calculation before join paid contest
