@@ -160,10 +160,14 @@ module.exports = async (req, res) => {
 										return res.json(response);
 									}
 									if (params.instant_withdraw && params.instant_withdraw == "1") {
-									   const start = new Date(new Date().setDate(new Date().getDate() - 1));
-                                       start.setUTCHours(18,30,0,0);
-									   console.log(start);
-							 		   let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
+									   	const start = new Date(new Date().setDate(new Date().getDate() - 1));
+										start.setUTCHours(18,30,0,0);
+									   	let indianDate = Date.now();
+										indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
+									   	console.log(indianDate, new Date(moment(indianDate)) );
+										// console.log(new Date(new Date().setDate(new Date().getDate() - 1)),new Date() );
+										// return false
+							 		   	let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
 									   
 										let instantComm = 0;
 										if (params.type == "bank" && totalUserReqOnToday >=2) {
