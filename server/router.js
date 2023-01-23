@@ -312,7 +312,7 @@ router.get('/api/v1/playstore-banner-list', playstoreBannerList);
 //router.get('/api/v1/contest-list/:match_id/:sport?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList);
 router.get('/api/v1/contest-list/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestList); // not in use for now
 //@beforeRedis router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNew);
-//router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEnt);
+router.get('/api/v1/contest-list-new1/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEnt);
 router.get('/api/v1/contest-list-new/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewRedisEntNew);
 router.get('/api/v1/contest-list-new-latest/:match_id/:sport?/:series_id?', auth.authenticate.jwtLogin, redis.cacheMiddle, contestListNewLatest);
 router.get('/api/v1/contest-list-wredis/:match_id', auth.authenticate.jwtLogin, contestList);  // not in use for now
