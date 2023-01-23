@@ -557,6 +557,9 @@ module.exports = async (req, res) => {
                                                                             joinedContestDetailsArr = await multipleJoinContestDetail(session,contestDataArray, decoded, bonusAmount, winAmount, cashAmount, newContestId, contestData, extraAmount, match_sport, retention_bonus_amount);
                                                                         }
                                                                         totalContestKey = await getContestCount(contestDataFinal, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest, joinedContestDetailsArr);
+                                                                        if(totalContestKey == "Something went wrong!!!.") {
+                                                                            return res.send(ApiUtility.failed("Something went wrong!!!."));
+                                                                        }
                                                                     } else {
                                                                         console.log("Team data not match before join");
                                                                         await session.abortTransaction();
@@ -937,7 +940,8 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                                     
                                     await session.abortTransaction();
                                     session.endSession();
-                                    return res.send(ApiUtility.failed("Something went wrong!!."));
+                                    return resolve("Something went wrong!!!.");
+                                    // return res.send(ApiUtility.failed("Something went wrong!!."));
                                 }
                             }
                         }
@@ -966,7 +970,8 @@ async function getContestCount(contest, user_id, match_id, series_id, contest_id
                                 
                                 await session.abortTransaction();
                                 session.endSession();
-                                return res.send(ApiUtility.failed("Something went wrong!!."));
+                                return resolve("Something went wrong!!!.");
+                                // return res.send(ApiUtility.failed("Something went wrong!!."));
                             }
                         }
                     }
