@@ -88,6 +88,7 @@ const  permJoinContest  = require('./api/v1/contest/perm-join-contest');
 // const  joinContestNewOne1  = require('./api/v1/contest/join-contest-head-to-head-redis');  //not in use for now
 // const  joinContestMultipleTeam1  = require('./api/v1/contest/join-contest-multiple-team');
 const  joinContestMultipleTeam  = require('./api/v1/contest/join-contest-multiple-pro');
+const  joinContestMultipleTeamRedisEnt  = require('./api/v1/contest/join-contest-multiple-pro-redis-ent');
 // const  joinContestMultipleTeamNew  = require('./api/v1/contest/join-contest-multiple-redis');
 //const  joinContest  = require('./api/v1/contest/join-contest-session');
 //const  joinContest  = require('./api/v1/contest/join-contest-new');
@@ -195,6 +196,7 @@ const  contestListNewRedisEntNew  =   require('./api/v1/contest/contest-m-list-r
 const  { contestDetailRedisEnt }  = require('./api/v1/contest/contest-detail-redis-ent');
 const  { switchTeamRedisEnt }  = require('./api/v1/contest/switch-team-redis-ent');
 const  joinContestHeadToHeadRedisEnt  = require('./api/v1/contest/join-contest-head-to-head-redis-ent');
+const  joinContestHeadToHeadRedisEntNew  = require('./api/v1/contest/join-contest-head-to-head-redis-ent-new');
 const { joinedContestListUpcomingEnt } = require('./api/v1/contest/joined-contest-list-redis-ent');
 const { joinedContestMatchesNewRedisEnt } = require('./api/v1/contest/joined-contest-matches-new-redis-ent');
 // Redis Ent End 
@@ -368,8 +370,10 @@ router.post('/api/v1/join-contest-wallet-amount', auth.authenticate.jwtLogin, jo
 ////Join Contest Start that used
 router.post('/api/v1/join-contest-wallet-amount-multple', auth.authenticate.jwtLogin, joinContestWalletAmountMultiple);
 router.post('/api/v1/game-multiple-join-contest', auth.authenticate.jwtLogin, joinContestMultipleTeam);
+router.post('/api/v1/game-multiple-join-contest-redis-ent', auth.authenticate.jwtLogin, joinContestMultipleTeamRedisEnt);
 // @beforeRedis  router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestNewOne);
 router.post('/api/v1/game-join-contest', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEnt);
+router.post('/api/v1/game-join-contest-redis-ent-new', auth.authenticate.jwtLogin, joinContestHeadToHeadRedisEntNew);
 router.post('/api/v1/other-games-wallet-amount', auth.authenticate.jwtLogin, otherGameContestWallet);
 router.post('/api/v1/gamezop-games-join-contest',auth.authenticate.jwtLogin, gamezopJoinContest);
 ////Join Contest End

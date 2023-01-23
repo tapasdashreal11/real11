@@ -26,6 +26,8 @@ const redisKeys = {
     MATCH_PREVIEW: 'match-preview-', //sport-series_id-match_id-player_team_id
     USER_CREATED_TEAMS: 'userteam-', //match_id-sport-user_id
     USER_REFFERAL: 'user-referal-', //invite_code
+    JOINED_CONTEST_DETAILS: 'joined_contest_details-', //match_id-sport-user_id-contest_id
+    PLAYER_TEAM_CONTEST: 'player_team_contest-', //match_id_sport_contest_user_id
 }
     
 module.exports = redisKeys
