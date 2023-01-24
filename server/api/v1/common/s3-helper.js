@@ -183,6 +183,62 @@ async function deletePTCDataOnS3(keyArrS3, keyArrRedis) {
     });
 }
 
+/** This function for count PTC data on s3 bucket */
+async function getPTCCountS3(prefix) {
+    return new Promise((resolve, reject) => {
+        let params = { Bucket: process.env.S3_BUCKET_JOINED_CONTEST_DETAILS };
+        if (prefix) params.Prefix = prefix;
+        
+        s3.listObjectsV2(params, function (err, data) {
+            if (err) {
+                resolve(0);
+            } else {
+                resolve(data['KeyCount']);
+            }
+        });
+    });
+}
+
+const multipleDataS3Bucket = async (prefix) => {
+    let allJoinedPTC = [];
+    let params = { Bucket: process.env.S3_BUCKET_JOINED_CONTEST_DETAILS };
+    if (prefix) params.Prefix = prefix;
+    try {
+        const response = await s3.listObjects(params).promise();
+        await Promise.all(response.Contents.map(async (item) => {
+            const joinedPtc = await singleDataS3Bucket(item.Key)
+            if (typeof joinedPtc === 'object' && joinedPtc !== null) {
+                allJoinedPTC.push(joinedPtc);
+            }
+        }));
+        return allJoinedPTC;
+    } catch (error) {
+        console.log("err0r");
+        throw error;
+    }
+}
+
+const singleDataS3Bucket = async (key) => {
+    return await new Promise((resolve, reject) => {
+
+        const params = {
+            Key: key,
+            Bucket: process.env.S3_BUCKET_JOINED_CONTEST_DETAILS
+        };
+
+        s3.getObject(params, function (err, data) {
+            if (err) {
+                // reject(err)
+                resolve(false);
+            } else {
+                let finalData = JSON.parse(data.Body.toString());
+                resolve(finalData);
+            }
+        });
+
+    });
+}
+
 module.exports = {
     createTeamOnS3,
     multipleUserTeamS3Bucket,
@@ -190,4 +246,6 @@ module.exports = {
     saveDataOnS3,
     deleteDataOnS3,
     savePTCDataArrOnS3, // Use for upload an array on s3
+    getPTCCountS3,
+    multipleDataS3Bucket,
 };

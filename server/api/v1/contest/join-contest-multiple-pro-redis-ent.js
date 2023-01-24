@@ -50,10 +50,12 @@ module.exports = async (req, res) => {
 
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
+
+            var ptcCountKey = process.env.S3_FOLDER_PLAYER_TEAM_CONTEST+"/"+match_id+"_"+match_sport+"/"+contest_id+"_"+user_id;
             let apiList = [
                 User.findById(user_id).select({"affiliate_amount":1,"win_dis_status":1,"xtra_cash_block":1,"fair_play_violation":1, "avatar": 1,"winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
-                PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
+                S3Helper.getPTCCountS3(ptcCountKey), //PlayerTeamContest.find({ 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }).countDocuments(),
                 redis.getRedis('contest-detail-' + contest_id),
                 MatchContest.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'contest_id': contest_id })
             ];
@@ -90,7 +92,9 @@ module.exports = async (req, res) => {
                                         redis.setRedis('contest-detail-' + contest_id, contestData);
                                     }
                                 }
-                                let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
+                                var ptcCountKeyContestBased = process.env.S3_FOLDER_PLAYER_TEAM_CONTEST+"/"+match_id+"_"+match_sport+"/"+contest_id;
+                                let joinedContest = await S3Helper.getPTCCountS3(ptcCountKeyContestBased)
+                                //let joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
 
                                 var parentContestId = (contestData && contestData.parent_id) ? contestData.parent_id : contestData._id;
                                 let infinteStatus = contestData && contestData.infinite_contest_size != 1 ? true : false;
@@ -116,8 +120,14 @@ module.exports = async (req, res) => {
 
                                 }
                                 let tIds = _.map(team_data, 'team_id');
-                                var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': { $in: tIds } }
-                                let playerTeamRes = await PlayerTeamContest.find(PlayerTeamContestFilter, { _id: 1 });
+
+                                var ptcCountKeyUserBased = process.env.S3_FOLDER_PLAYER_TEAM_CONTEST+"/"+match_id+"_"+match_sport+"/"+contest_id+"_"+user_id;
+                                var ptcDataUserBased = await S3Helper.multipleDataS3Bucket(ptcCountKeyUserBased)
+                                let playerTeamRes = ptcDataUserBased.filter(a => tIds.includes(a.player_team_id));
+
+                                // var PlayerTeamContestFilter = { 'contest_id': contest_id, 'user_id': user_id, 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'], 'player_team_id': { $in: tIds } }
+                                // let playerTeamRes = await PlayerTeamContest.find(PlayerTeamContestFilter, { _id: 1 });
+                                
                                 let joinedContestWithTeamCounts = results[2] ? results[2] : 0;
                                 let maxTeamSize = contestData && contestData.maximum_team_size && !_.isNull(contestData.maximum_team_size) ? contestData.maximum_team_size : 9;
 
@@ -183,7 +193,9 @@ module.exports = async (req, res) => {
                                                         let remainJoinTeam = contestData.contest_size - joinedContest;
                                                         let remainteamCount   = joinedContestCount - total_team_number;
                                                          if(remainteamCount != joinedContest){
-                                                            joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
+                                                            // joinedContest = await PlayerTeamContest.find({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': series_id, 'contest_id': contest_id }).countDocuments();
+                                                            var ptcCountKeyNew = process.env.S3_FOLDER_PLAYER_TEAM_CONTEST+"/"+match_id+"_"+match_sport+"/"+contest_id;
+                                                            joinedContest = await S3Helper.getPTCCountS3(ptcCountKeyNew);
                                                             remainJoinTeam = contestData.contest_size - joinedContest;
                                                           }
                                                         response.message = "Please Join with only " + remainJoinTeam + "teams";
