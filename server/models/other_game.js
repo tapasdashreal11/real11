@@ -28,6 +28,10 @@ var otherGameSchema = new Schema({
 	game_sub_url: {
 		type: String
 	},
+	game_source: {
+		type: String,
+		default: "gamezop"
+	},
 }, {
 	timestamps: true
 });

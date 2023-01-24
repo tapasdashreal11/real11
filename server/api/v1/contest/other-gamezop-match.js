@@ -31,6 +31,7 @@ module.exports = {
                                     itemObj.match_id = o.match_id;
                                     itemObj.local_match_name = o.match_name ? o.match_name : "";
                                     itemObj.match_img = o && o.match_logo ? imageurl+"/"+o.match_logo :'';
+                                    itemObj.game_source = o && o.game_source ? o.game_source :'';
                                     matchListData.push(itemObj);
                                     return itemObj;
                                 }
