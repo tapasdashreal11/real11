@@ -2165,7 +2165,7 @@ async function saveJoinContestDetailAtJoin(jcd_contest_id,session, decoded, bonu
     saveEntity.admin_comission = comission ? parseFloat(comission) : 0;
     saveEntity.player_team_contest_id = playerTeamContestId;
     saveEntity.retention_bonus = retention_bonus_amount || 0;
-    saveEntity.createdAt = new Date();
+    saveEntity.createdat = new Date();
     //await JoinContestDetail.insertMany([saveEntity], { session: session });
     return saveEntity;
 

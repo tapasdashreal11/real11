@@ -154,7 +154,7 @@ module.exports = async (req, res) => {
                                                 contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
                                                 contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
                                                 contest.sport = match_sport;
-                                                contest.createdAt = new Date();
+                                                contest.createdat = new Date();
                                                 contest.counter = 0;
                                                 contest.points = 0;
                                                 contest.previous_rank = 0;
@@ -1398,7 +1398,7 @@ async function multipleJoinContestDetail(session,contestTeamData, decoded, bonus
         saveEntity.admin_comission = comission ? parseFloat(comission) : 0;
         saveEntity.player_team_contest_id = team_data_item._id;
         saveEntity.retention_bonus = retention_bonus_amount || 0;
-        saveEntity.createdAt = new Date();
+        saveEntity.createdat = new Date();
         jcdArray.push(saveEntity);
         // var s3key = decoded['match_id']+"_"+match_sport+"/"+decoded['match_id']+"_"+decoded['contest_id']+"_"+decoded['user_id']+"_"+unique_id+".json";
         // await S3Helper.saveDataOnS3(s3key,saveEntity);
