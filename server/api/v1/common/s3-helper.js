@@ -123,12 +123,15 @@ async function deleteDataOnS3(key) {
 }
 
 /** This function for upload PTC data on s3 bucket */
-async function savePTCDataArrOnS3(saveData) {
+async function savePTCDataArrOnS3(saveData, callType) {
     return await new Promise((resolve, reject) => {
         let keyArr = [];
         let keyArrRedis = [];
         for(const sData of saveData) {
             var s3key = process.env.S3_FOLDER_PLAYER_TEAM_CONTEST+"/"+sData.match_id+"_"+sData.sport+"/"+sData.contest_id+"_"+sData.user_id+"_"+sData._id+".json";
+            if(callType == "H2H") {
+                s3key = process.env.S3_FOLDER_PLAYER_TEAM_CONTEST+"/"+sData.match_id+"_"+sData.sport+"/"+sData.parent_contest_id+"_"+sData.contest_id+"_"+sData.user_id+"_"+sData._id+".json";
+            }
             keyArr.push(s3key);
             let redisKey = `${redisKeys.PLAYER_TEAM_CONTEST}${sData.match_id}-${sData.sport}-${sData.contest_id}-${sData.user_id}`;
             keyArrRedis.push(redisKey);

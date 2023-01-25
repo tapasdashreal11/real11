@@ -920,7 +920,7 @@ module.exports = async (req, res) => {
 async function getContestCount(contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest, joinedContestDetailsArr) {
     try {
         return new Promise(async (resolve, reject) => {
-            let newDataPTC = await S3Helper.savePTCDataArrOnS3(contest);
+            let newDataPTC = await S3Helper.savePTCDataArrOnS3(contest,"multiple");
             // await PlayerTeamContest.create(contest, { session: session }).then(async (newDataPTC) => {
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
                 var isAutoCreateStatus = (contestData.auto_create && (contestData.auto_create.toLowerCase()).includes("yes")) ? true : false;
