@@ -160,18 +160,10 @@ module.exports = async (req, res) => {
 										return res.json(response);
 									}
 									if (params.instant_withdraw && params.instant_withdraw == "1") {
-									   	const start = new Date(new Date().setDate(new Date().getDate() - 1));
-										start.setUTCHours(18,30,0,0);
-									   	// let indianDate = new Date();
-									   	let indianDate = new Date(new Date().setDate());
-										let currentDate  =   moment().format(config.DateFormat.datetime);
-										// indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
-									   	// console.log(currentDate );
-									   	// console.log(new Date(indianDate.getTime() + process.env.UTCOffset * 60000) );
-									   	console.log(moment().add(process.env.UTCOffset, "minute").format(config.DateFormat.datetime) );return
-									   	// console.log(indianDate, Date(moment(indianDate).add(process.env.UTCOffset, "minute").toISOString()) );return
-										// console.log(new Date(new Date().setDate(new Date().getDate() - 1)),new Date() );
-										// return false
+									   	// const start = new Date(new Date().setDate(new Date().getDate() - 1));
+										// start.setUTCHours(18,30,0,0);
+									   	const start = moment().add(process.env.UTCOffset, "minute").format(config.DateFormat.datetime);
+										console.log(moment().add(process.env.UTCOffset, "minute").format(config.DateFormat.datetime) );
 							 		   	let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
 									   
 										let instantComm = 0;
