@@ -24,7 +24,7 @@ const CouponSale = require("../../../models/coupon-sale");
 const JoinContestDetail = require("../../../models/join-contest-detail");
 const { appsFlyerEntryService } = require("../users/appsflyer-api");
 const Helper = require('./../common/helper');
-const s3Helper = require('../common/s3-helper');
+const S3Helper = require('../common/s3-helper');
 const redisKeys = require('../../../constants/redis-keys');
 const redisEnt = require('../../../../lib/redisEnterprise');
 
@@ -51,6 +51,7 @@ module.exports = async (req, res) => {
         if (match_id && series_id && contest_id && user_id) {
             let indianDate = Date.now();
             indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
+            var ptcCountKey = process.env.S3_FOLDER_PLAYER_TEAM_CONTEST+"/"+match_id+"_"+match_sport+"/"+contest_id+"_"+user_id;
             let apiList = [
                 User.findById(user_id).select({ "affiliate_amount": 1, "win_dis_status": 1, "xtra_cash_block": 1, "fair_play_violation": 1, "avatar": 1, "winning_balance": 1, "cash_balance": 1, "bonus_amount": 1, "extra_amount": 1, "extra_amount_date": 1, "extra_amount_date": 1, "perday_extra_amount": 1, "referal_code_detail": 1, "email": 1, "is_beginner_user": 1, "is_super_user": 1, "is_dimond_user": 1, "is_looser_user": 1, "team_name": 1, "appsflayer_id": 1, "clevertap_id": 1 }),
                 SeriesSquad.findOne({ 'match_id': decoded['match_id'], 'sport': match_sport, 'series_id': decoded['series_id'] }),
@@ -66,7 +67,7 @@ module.exports = async (req, res) => {
             try {
                 getData = await redisEnt.getHashRedis(joinedTeamKey) //data from redis
                 if(_.isEmpty(getData)) {
-                    getData = await s3Helper.multipleUserTeamS3Bucket(s3Key, match_id,user_id,match_sport) // team by s3 bucket
+                    getData = await S3Helper.multipleUserTeamS3Bucket(s3Key, match_id,user_id,match_sport) // team by s3 bucket
                 }
             } catch(error) {
                 return res.send(ApiUtility.failed(error.message));
@@ -568,7 +569,7 @@ module.exports = async (req, res) => {
                                                                                     userWalletData.extra_amount = (_.isNaN(userWalletData.extra_amount) || _.isNull(userWalletData.extra_amount)) ? 0 : userWalletData.extra_amount;
                                                                                     await User.updateOne({ _id: user_id }, { $set: userWalletData });
                                                                                 }
-                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again."));
+                                                                                return res.send(ApiUtility.failed("Something went wrong, Please try again.."));
                                                                             }
                                                                         } else {
                                                                             await session.abortTransaction();
@@ -1688,7 +1689,8 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
 async function getContestCount(isCommit, isPrivateCreate, contest, user_id, match_id, series_id, contest_id, contestData, parentContestId, session, match_sport, liveMatch, joinedContestCount, refer_code, refer_by_user, matchContest, joinedContestDetailsArr) {
     try {
         return new Promise(async (resolve, reject) => {
-            await PlayerTeamContest.insertMany([contest], { session: session }).then(async (newDataPTC) => {
+            let newDataPTC = await S3Helper.savePTCDataArrOnS3([contest]);
+            // await PlayerTeamContest.insertMany([contest], { session: session }).then(async (newDataPTC) => {
 
                 var newPTC = newDataPTC && newDataPTC.length > 0 ? newDataPTC[0] : {};
 
@@ -1703,9 +1705,8 @@ async function getContestCount(isCommit, isPrivateCreate, contest, user_id, matc
                     } else {
                         if(!_.isEmpty(joinedContestDetailsArr)) {
                             var jcd = joinedContestDetailsArr
-                            console.log("here1");
-                            var s3key = jcd.match_id+"_"+jcd.sport+"/"+jcd.match_id+"_"+jcd.contest_id+"_"+jcd.user_id+"_"+jcd._id+".json";
-                            let s3Res = await s3Helper.saveDataOnS3(s3key,jcd);
+                            var s3key = process.env.S3_FOLDER_JOINED_CONTEST_DETAILS+"/"+jcd.match_id+"_"+jcd.sport+"/"+jcd.match_id+"_"+jcd.contest_id+"_"+jcd.user_id+"_"+jcd._id+".json";
+                            let s3Res = await S3Helper.saveDataOnS3(s3key,jcd);
                             if(s3Res) {
                                 redisEnt.setRedis(`${RedisKeys.JOINED_CONTEST_DETAILS}${jcd.match_id}-${jcd.sport}-${jcd.user_id}-${jcd.contest_id}`, `${jcd._id}`, jcd);
                             } else {
@@ -1722,8 +1723,8 @@ async function getContestCount(isCommit, isPrivateCreate, contest, user_id, matc
                     if(!_.isEmpty(joinedContestDetailsArr)) {
                         var jcd = joinedContestDetailsArr
                         console.log("here2");
-                        var s3key = jcd.match_id+"_"+jcd.sport+"/"+jcd.match_id+"_"+jcd.contest_id+"_"+jcd.user_id+"_"+jcd._id+".json";
-                        let s3Res = await s3Helper.saveDataOnS3(s3key,jcd);
+                        var s3key = process.env.S3_FOLDER_JOINED_CONTEST_DETAILS+"/"+jcd.match_id+"_"+jcd.sport+"/"+jcd.match_id+"_"+jcd.contest_id+"_"+jcd.user_id+"_"+jcd._id+".json";
+                        let s3Res = await S3Helper.saveDataOnS3(s3key,jcd);
                         if(s3Res) {
                             redisEnt.setRedis(`${RedisKeys.JOINED_CONTEST_DETAILS}${jcd.match_id}-${jcd.sport}-${jcd.user_id}-${jcd.contest_id}`, `${jcd._id}`, jcd);
                         } else {
@@ -1827,7 +1828,7 @@ async function getContestCount(isCommit, isPrivateCreate, contest, user_id, matc
                     return resolve(totalContestKey);
                 });
 
-            });
+            // });
         })
     } catch (error) {
         console.log("JC eroor in catch erorr error at 800", error);
@@ -1944,8 +1945,8 @@ async function contestAutoCreateAferJoin(isCommit, isPrivateCreate, contestData,
                 if(!_.isEmpty(joinedContestDetailsArr)) {
                     console.log("here3");
                     var jcd = joinedContestDetailsArr;
-                    var s3key = jcd.match_id+"_"+jcd.sport+"/"+jcd.match_id+"_"+jcd.contest_id+"_"+jcd.user_id+"_"+jcd._id+".json";
-                    let s3Res = await s3Helper.saveDataOnS3(s3key,jcd);
+                    var s3key = process.env.S3_FOLDER_JOINED_CONTEST_DETAILS+"/"+jcd.match_id+"_"+jcd.sport+"/"+jcd.match_id+"_"+jcd.contest_id+"_"+jcd.user_id+"_"+jcd._id+".json";
+                    let s3Res = await S3Helper.saveDataOnS3(s3key,jcd);
                     if(s3Res) {
                         redisEnt.setRedis(`${RedisKeys.JOINED_CONTEST_DETAILS}${jcd.match_id}-${jcd.sport}-${jcd.user_id}-${jcd.contest_id}`, `${jcd._id}`, jcd);
                     } else {
