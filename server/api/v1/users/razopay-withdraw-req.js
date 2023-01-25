@@ -160,11 +160,13 @@ module.exports = async (req, res) => {
 										return res.json(response);
 									}
 									if (params.instant_withdraw && params.instant_withdraw == "1") {
-									   	// const start = new Date(new Date().setDate(new Date().getDate() - 1));
-										// start.setUTCHours(18,30,0,0);
-									   	const start = moment().add(process.env.UTCOffset, "minute").format(config.DateFormat.datetime);
+									   	const start = new Date(new Date().setDate(new Date().getDate() - 1));
+										start.setUTCHours(18,30,0,0);
+										const currentDate = moment().add(process.env.UTCOffset, "minute").format(config.DateFormat.datetime);
+										console.log(moment(currentDate).startOf('day').toDate());
 										console.log(moment().add(process.env.UTCOffset, "minute").format(config.DateFormat.datetime) );
-							 		   	let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
+							 		   	// let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
+							 		   	let totalUserReqOnToday = await WithdrawRequest.countDocuments({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}});
 									   
 										let instantComm = 0;
 										if (params.type == "bank" && totalUserReqOnToday >=2) {
