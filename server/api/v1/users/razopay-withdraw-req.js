@@ -162,9 +162,14 @@ module.exports = async (req, res) => {
 									if (params.instant_withdraw && params.instant_withdraw == "1") {
 									   	const start = new Date(new Date().setDate(new Date().getDate() - 1));
 										start.setUTCHours(18,30,0,0);
-									   	let indianDate = Date.now();
-										indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
-									   	console.log(indianDate, new Date(moment(indianDate)) );
+									   	// let indianDate = new Date();
+									   	let indianDate = new Date(new Date().setDate());
+										let currentDate  =   moment().format(config.DateFormat.datetime);
+										// indianDate = new Date(moment(indianDate).format('YYYY-MM-DD'));
+									   	// console.log(currentDate );
+									   	// console.log(new Date(indianDate.getTime() + process.env.UTCOffset * 60000) );
+									   	console.log(moment().add(process.env.UTCOffset, "minute").format(config.DateFormat.datetime) );return
+									   	// console.log(indianDate, Date(moment(indianDate).add(process.env.UTCOffset, "minute").toISOString()) );return
 										// console.log(new Date(new Date().setDate(new Date().getDate() - 1)),new Date() );
 										// return false
 							 		   	let totalUserReqOnToday = await WithdrawRequest.find({user_id:ObjectId(userId),request_status:{$in:[0,1]},created:{$gte:start}}).count();
