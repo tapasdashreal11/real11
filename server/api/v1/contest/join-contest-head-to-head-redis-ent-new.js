@@ -1067,6 +1067,15 @@ async function joinContestGlobal(res, refer_by_user, refer_code, joinedContestCo
             contest.team_count = teamCount;
             contest.team_name = authUser && authUser.team_name ? authUser.team_name : '';
             contest.avatar = authUser && authUser.avatar ? authUser.avatar : '';
+            contest.createdat = new Date();
+            contest.counter = 0;
+            contest.points = 0;
+            contest.previous_rank = 0;
+            contest.rank = 0;
+            contest.winning_amount_distributed = 0;
+            contest.match_start_notification = 0;
+            contest.is_cancelled = 0;
+            contest.bonus_amount = 0;
             let useableBonusPer = contestData.used_bonus || 0;
             let contestType = contestData.contest_type;
             let entryFee = (contestData && contestData.entry_fee) ? contestData.entry_fee : 0;
