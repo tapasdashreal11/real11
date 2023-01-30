@@ -199,6 +199,7 @@ const  joinContestHeadToHeadRedisEnt  = require('./api/v1/contest/join-contest-h
 const  joinContestHeadToHeadRedisEntNew  = require('./api/v1/contest/join-contest-head-to-head-redis-ent-new');
 const { joinedContestListUpcomingEnt } = require('./api/v1/contest/joined-contest-list-redis-ent');
 const { joinedContestMatchesNewRedisEnt } = require('./api/v1/contest/joined-contest-matches-new-redis-ent');
+const  { switchTeamRedisEntNew }  = require('./api/v1/contest/switch-team-redis-ent-new');
 // Redis Ent End 
 const { exportTransactionHistory }  = require('./api/v1/export-transaction-history');
 
@@ -421,6 +422,7 @@ router.get('/api/v1/quiz-submited-list',auth.authenticate.jwtLogin, userSubmited
 
 //@beforeRedis router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeam);
 router.post('/api/v1/switch-team', auth.authenticate.jwtLogin, switchTeamRedisEnt);
+router.post('/api/v1/switch-team-redis-ent-new', auth.authenticate.jwtLogin, switchTeamRedisEntNew);
 router.post('/api/v1/entry-per-team', auth.authenticate.jwtLogin, entryPerTeam);
 router.post('/api/v1/generate-payubiz-checksum', auth.authenticate.jwtLogin, generatePayubizChecksum);
 router.post('/api/v1/generate-paytm-checksum', auth.authenticate.jwtLogin, generatePaytmChecksum);
