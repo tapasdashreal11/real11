@@ -202,6 +202,49 @@ async function getPTCCountS3(prefix) {
     });
 }
 
+/** This function for count PTC data on s3 bucket */
+const getH2HPTCCountS3 = async (prefix, user_id) => {
+    let allJoinedTeamTeams = [];
+    let params = { Bucket: process.env.S3_BUCKET_JOINED_CONTEST_DETAILS };
+    if (prefix) params.Prefix = prefix;
+    try {
+        const response = await s3.listObjects(params).promise();
+        await Promise.all(response.Contents.map(async (item) => {
+            if(item.Key.includes(user_id)) {
+                allJoinedTeamTeams.push(item.Key);
+            }
+        }));
+        let joinLength = allJoinedTeamTeams ? allJoinedTeamTeams.length : 0;
+        return joinLength;
+    } catch (error) {
+        console.log("err0r");
+        throw error;
+    }
+}
+
+const getH2HPTCDataS3 = async (prefix, user_id) => {
+    let contest_id = [];
+    let params = { Bucket: process.env.S3_BUCKET_JOINED_CONTEST_DETAILS };
+    if (prefix) params.Prefix = prefix;
+    try {
+        const response = await s3.listObjects(params).promise();
+        await Promise.all(response.Contents.map(async (item) => {
+            if(item.Key.includes(user_id)) {
+                var keys = item.Key;
+                var keyPart = keys.split("_");
+                contest_id.push(keyPart[2]);
+            }
+        }));
+        if(!_.isEmpty(contest_id)) {
+            contest_id = [...new Set(contest_id)];
+        }
+        return contest_id;
+    } catch (error) {
+        console.log("err0r");
+        throw error;
+    }
+}
+
 const multipleDataS3Bucket = async (prefix) => {
     let allJoinedPTC = [];
     let params = { Bucket: process.env.S3_BUCKET_JOINED_CONTEST_DETAILS };
@@ -251,4 +294,6 @@ module.exports = {
     savePTCDataArrOnS3, // Use for upload an array on s3
     getPTCCountS3,
     multipleDataS3Bucket,
+    getH2HPTCCountS3,
+    getH2HPTCDataS3,
 };
