@@ -1,53 +1,5 @@
 const mongoose = require('mongoose');
 var _ = require('lodash');
-// var mongoosePaginate = require('mongoose-paginate-v2');
-
-
-// "id" : "1",
-//     "first_name" : "Amit",
-//     "last_name" : "Yadav",
-//     "role_id" : "1",
-//     "email" : "rohit@mailinator.com",
-//     "phone" : "9649545044",
-//     "password" : "$2y$10$smX8dYwNKdzL.s7tEL21H.WHuA0nqmPNnRaM6mWtvogKg30TC07OK",
-//     "team_name" : "ADMIZ472R3",
-//     "date_of_bith" : "1994-08-16",
-//     "gender" : "1",
-//     "country" : "India",
-//     "state" : "Uttar Pardesh",
-//     "city" : "Ghaziabad",
-//     "postal_code" : "201001",
-//     "address" : "Ghaziabad",
-//     "image" : "user_1553922379.png",
-//     "fb_id" : "",
-//     "google_id" : "",
-//     "refer_id" : "",
-//     "otp" : "",
-//     "otp_time" : "2020-03-04 03:02:20",
-//     "is_login" : "0",
-//     "last_login" : "0000-00-00 00:00:00",
-//     "device_id" : "ksbjiojgr3q904tjdfg834jnelr834laj809239fjs",
-//     "device_type" : "iphone",
-//     "module_access" : null,
-//     "current_password" : null,
-//     "language" : "en",
-//     "cash_balance" : "3",
-//     "winning_balance" : "18",
-//     "bonus_amount" : "177",
-//     "reward_level" : null,
-//     "status" : "1",
-//     "is_updated" : "0",
-//     "email_verified" : "0",
-//     "verify_string" : "1551414690YWRtaW5AZ21haWwuY29t",
-//     "sms_notify" : "1",
-//     "auth_token" : "5366h41n3yc15b145u3j",
-//     "is_youtuber" : "0",
-//     "bonus_type" : "0",
-//     "bonus_percent" : "0.00",
-//     "refer_able" : "1",
-//     "created" : "2017-08-30 00:00:00",
-//     "modified" : "2018-10-05 18:14:34"
-
 
 const AdminSchema = mongoose.Schema({
     first_name: { type: String, default: '' },

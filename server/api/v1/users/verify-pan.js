@@ -1,13 +1,11 @@
 const Users = require("../../../models/user");
 const PanDetails = require("../../../models/user-pan-details");
-const { ObjectId } = require('mongodb');
+
 const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
-const ModelService = require("../../ModelService");
 const { panVerification } = require("./panAPI");
 const moment = require('moment');
-const ReferralCodeDetails = require('../../../models/user-referral-code-details');
 const Transaction = require('../../../models/transaction');
 const { TransactionTypes, MatchStatus, RedisKeys } = require('../../../constants/app');
 
