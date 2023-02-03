@@ -3,6 +3,7 @@ const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
 const _ = require("lodash");
 const AadhaarDetails = require("../../../models/aadhar-details");
+const Users = require("../../../models/user");
 const request = require("request");
 
 const submitAadhaarOtp = async (req, res, next) => {
@@ -56,9 +57,18 @@ const submitAadhaarOtp = async (req, res, next) => {
         response["message"] = resBody?.message;
         response["code"] = resBody?.code;
 
+        const { isAadhaarVerified } = await Users.findOne({ _id: userId });
+
         if (statusCode === 200) {
-          const aadhaarData = { ...resBody, user: userId, isVerified: true };
-          await AadhaarDetails.addData(aadhaarData);
+          if (!isAadhaarVerified) {
+            const aadhaarData = {
+              ...resBody,
+              user: userId,
+              isVerified: true,
+              verifiedThrough: "OTP",
+            };
+            await AadhaarDetails.addData(aadhaarData);
+          }
           response["status"] = true;
           response["ref_id"] = resBody?.ref_id;
         } else {

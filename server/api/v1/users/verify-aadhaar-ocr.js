@@ -56,7 +56,12 @@ const verifyAadhaarOcr = async (req, res, next) => {
 
         if (statusCode === 200) {
           if (resBody.valid) {
-            const aadhaarData = { ...resBody, user: userId, isVerified: true };
+            const aadhaarData = {
+              ...resBody,
+              user: userId,
+              isVerified: true,
+              verifiedThrough: "Ocr",
+            };
             await AadhaarDetails.addData(aadhaarData);
           }
           response["status"] = true;

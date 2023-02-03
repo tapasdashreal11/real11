@@ -32,13 +32,17 @@ const aadhaarDetailsSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  verifiedThrough: {
+    type: String,
+    enum: ["OTP", "OCR"],
+  },
   user: {
     type: Schema.Types.ObjectId,
     ref: "user",
   },
 });
 
-aadhaarDetailsSchema.static("addData", async function (aadhaarData) {
+aadhaarDetailsSchema.statics.addData = async function (aadhaarData) {
   const {
     status,
     message,
@@ -96,7 +100,7 @@ aadhaarDetailsSchema.static("addData", async function (aadhaarData) {
     user,
     isVerified,
   });
-});
+};
 
 const AadhaarDetails = mongoose.model("AadhaarDetails", aadhaarDetailsSchema);
 module.exports = AadhaarDetails;
