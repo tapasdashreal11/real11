@@ -5,18 +5,17 @@ const _ = require("lodash");
 const AadhaarDetails = require("../../../models/aadhar-details");
 const request = require("request");
 
-const submitAadhaarOtp = async (req, res, next) => {
+const verifyAadhaarOcr = async (req, res, next) => {
   try {
     var response = { status: false, message: "Invalid Request", data: {} };
-    console.log("**body**", req.body);
+    const { front_image, back_image, verification_id } = req.body;
+    console.log({ front_image, back_image, verification_id });
     const { userId } = req;
-    const { otp, ref_id } = req.body;
-    console.log({ userId, otp, ref_id });
     const constraints = {
-      otp: "required",
-      ref_id: "required",
+      front_image: "required",
+      back_image: "required",
+      verification_id: "required",
     };
-
     const validator = new Validator(req.body, constraints);
     const matched = await validator.check();
     if (!matched) {
@@ -27,18 +26,17 @@ const submitAadhaarOtp = async (req, res, next) => {
 
     const options = {
       method: "POST",
-      url:
-        process.env.CASHFREE_ENDPOINT_AADHAAR +
-        "verification/offline-aadhaar/verify",
+      url: `${process.env.CASHFREE_ENDPOINT_AADHAAR}verification/document/aadhaar`,
       headers: {
-        "Content-Type": "application/json",
         "x-client-id": process.env.CASHFREE_CLIENT_ID,
         "x-client-secret": process.env.CASHFREE_CLIENT_SECRET,
+        "Content-Type": "multipart/form-data",
       },
-      body: JSON.stringify({
-        otp,
-        ref_id,
-      }),
+      formData: {
+        verification_id,
+        front_image,
+        back_image,
+      },
     };
     request(options, async (error, resp) => {
       if (error) {
@@ -57,8 +55,10 @@ const submitAadhaarOtp = async (req, res, next) => {
         response["code"] = resBody?.code;
 
         if (statusCode === 200) {
-          const aadhaarData = { ...resBody, user: userId, isVerified: true };
-          await AadhaarDetails.addData(aadhaarData);
+          if (resBody.valid) {
+            const aadhaarData = { ...resBody, user: userId, isVerified: true };
+            await AadhaarDetails.addData(aadhaarData);
+          }
           response["status"] = true;
           response["ref_id"] = resBody?.ref_id;
         } else {
@@ -77,4 +77,4 @@ const submitAadhaarOtp = async (req, res, next) => {
   }
 };
 
-module.exports = submitAadhaarOtp;
+module.exports = verifyAadhaarOcr;

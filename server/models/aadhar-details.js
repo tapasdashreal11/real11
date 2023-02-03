@@ -66,7 +66,7 @@ aadhaarDetailsSchema.static("addData", async function (aadhaarData) {
     },
     user,
     isVerified,
-  } = aadhaarData;
+  } = aadhaarData || {};
 
   return await this.create({
     status,

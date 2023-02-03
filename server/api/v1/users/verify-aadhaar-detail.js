@@ -1,55 +1,36 @@
-const { ObjectId } = require("mongodb");
-const Users = require("../../../models/user");
-const Settings = require("../../../models/settings");
-// const Transaction = require('../../../models/transaction');
 const { Validator } = require("node-input-validator");
 const ApiUtility = require("../../api.utility");
 const logger = require("../../../../utils/logger")(module);
-const { TransactionTypes } = require("../../../constants/app");
-const config = require("../../../config.js");
-const redis = require("../../../../lib/redis.js");
-// const { sendSMTPMail, sendNotificationFCM, sendMailToDeveloper } = require("../common/helper.js");
-// const https = require('https');
-// const { parse } = require('url')
-// const UserRazopayFundAc = require("../../../models/razopay-contact-fund-ac")
-// const { razopayPayoutToUserFundAc } = require("./razopay-contact-fund-ac")
-// const RazopayPayoutStatus = require("../../../models/razopay-payout-status")
-const { startSession } = require("mongoose");
-const moment = require("moment");
 const request = require("request");
 const _ = require("lodash");
-const AadhaarDetails = require("../../../models/aadhar-details");
 
 module.exports = async (req, res) => {
   try {
     var response = { status: false, message: "Invalid Request", data: {} };
-    let params = req.body;
-    console.log("**body**", req.body);
-    let userId = req.userId;
+    // let params = req.body;
+    const { userId } = req;
+    const { aadhaar_number } = req.body;
     let constraints = {
       aadhaar_number: "required",
     };
 
-    let validator = new Validator(params, constraints);
-    let matched = await validator.check();
+    const validator = new Validator(req.body, constraints);
+    const matched = await validator.check();
     if (!matched) {
       response["message"] = "Required fields are Empty.";
       response["errors"] = validator.errors;
-      return res.json(response);
+      return res.status(500).json(response);
     }
-    var options = {
+    const options = {
       method: "POST",
-      url:
-        process.env.CASHFREE_ENDPOINT_AADHAAR +
-        "verification/offline-aadhaar/otp",
+      url: `${process.env.CASHFREE_ENDPOINT_AADHAAR}verification/document/aadhaar`,
       headers: {
         "Content-Type": "application/json",
-        accept: "application/json",
         "x-client-id": process.env.CASHFREE_CLIENT_ID,
         "x-client-secret": process.env.CASHFREE_CLIENT_SECRET,
       },
       body: JSON.stringify({
-        aadhaar_number: params.aadhaar_number,
+        aadhaar_number,
       }),
     };
     console.log(options);
@@ -58,11 +39,10 @@ module.exports = async (req, res) => {
         console.log(error.message);
         response["message"] =
           "Something went wrong, please try after some time!!";
-        return res.json(response);
+        return res.status(500).json(response);
       }
 
       const { statusCode } = resBody;
-      console.log({ statusCode }, typeof statusCode);
       const responseBody = JSON.parse(resBody.body);
 
       if (resBody && !_.isEmpty(responseBody)) {

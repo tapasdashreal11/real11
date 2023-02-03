@@ -32,6 +32,7 @@ const verifyAadhaarDetail = require('./api/v1/users/verify-aadhaar-detail');
 
 const { imageFilter } = require("./api/v1/common/helper");
 const submitAadhaarOtp = require('./api/v1/users/submit-aadhaar-otp');
+const verifyAadhaarOcr = require('./api/v1/users/verify-aadhaar-ocr');
 /** update player image */
 const playerImageDirPath = path.resolve('server', 'public', 'images');
 
@@ -101,6 +102,35 @@ router.get('/',function(req,res){
 
 router.post('/api/v1/verify-aadhaar-detail', auth.authenticate.jwtLogin, verifyAadhaarDetail);
 router.post('/api/v1/submit-aadhaar-otp', auth.authenticate.jwtLogin, submitAadhaarOtp);
+router.post(
+    "/api/v1/verify-aadhaar-ocr",
+    auth.authenticate.jwtLogin,
+    [
+      upload.fields([
+        { name: "front_image", maxCount: 1 },
+        { name: "back_image", maxCount: 1 },
+      ]),
+      function (req, res, next) {
+        const frontFileName = req?.files?.front_image[0]?.filename;
+        const frontFilePath = playerImageDirPath + "/" + frontFileName;
+        const backFileName = req?.files?.back_image[0]?.filename;
+        const backFilePath = playerImageDirPath + "/" + backFileName;
+        uploadFile(frontFilePath, frontFileName);
+        uploadFile(backFilePath, backFileName);
+        const front_image = {
+          value: fs.createReadStream(frontFilePath),
+          options: { filename: frontFilePath, contentType: null },
+        };
+        const back_image = {
+          value: fs.createReadStream(backFilePath),
+          options: { filename: backFilePath, contentType: null },
+        };
+        req.body = { ...req.body, front_image, back_image };
+        return next();
+      },
+    ],
+    verifyAadhaarOcr
+  );
 
 
 //API ROUTES//
